@@ -15,50 +15,47 @@ class SpecialLoopStructure extends SpecialPage {
 		
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
-
-		$out->addHtml(
 		
-			Html::rawElement(
+		$loopEditMode = $this->getSkin()->getUser()->getOption( 'loopeditmode', false, true );
+		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'looprendermode' );
+	
+		$out->addHtml(Html::openElement(
 				'h1',
 				array(
 					'id' => 'loopstructure-h1'
-				),
-				$this->msg( 'loopstructure-specialpage-title' )->parse()
+				)
 			)
-			. Html::rawElement(
+			. $this->msg( 'loopstructure-specialpage-title' )->parse()
+		);
+		
+		if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode == true ) {
+			
+			# show link to the edit page if user is permitted
+			
+			$out->addHtml(
+				Html::rawElement(
+					'a',
+					array(
+						'href' => Title::newFromText( 'Special:LoopStructureEdit' )->getFullURL(),
+						'id' => 'edittoclink',
+						'class' => 'ml-2'
+					),
+					'<i class="ic ic-edit"></i>'
+				)
+			);
+		}
+		
+		$out->addHtml(Html::closeElement(
+					'h1'
+				)
+				. Html::rawElement(
 				'div',
 				array(
 					'style' => 'white-space: pre;'
 				),
 				$loopStructure->render()
 			)
-			
 		);
-
-		if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) ) {
-			
-			# show link to the edit page if user is permitted
-			
-			$out->addHtml(
-				Html::openElement(
-					'div',
-					array(
-						'class' => 'mt-3 mb-3'
-					)
-				)
-				. Html::rawElement(
-					'a',
-					array(
-						'href' => Title::newFromText( 'Special:LoopStructureEdit' )->getFullURL()
-					),
-					$this->msg( 'loopstructure-edit-specialpage-title' )
-				)
-				. Html::closeElement(
-					'div'
-				)
-			);
-			
-		}
 		
 	}
 	
@@ -230,8 +227,6 @@ class SpecialLoopStructureEdit extends SpecialPage {
 	                    'id' => 'loopstructure-textarea',
 	                    'tabindex' => ++$tabindex,
 	                    'class' => 'd-block mt-3',
-	                    '',
-	                    'style' => 'width: 700px; height: 700px;' # TODO set size in skin, remove it from here later
 	                ),
 	                $currentStructureAsWikiText
 	            )
@@ -249,7 +244,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 	                array(
 	                    'type' => 'submit',
 	                    'tabindex' => ++$tabindex,
-	                    'class' => 'btn btn-primary mt-3',
+	                    'class' => 'mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2',
 	                    'id' => 'loopstructure-submit',
 	                    'value' => $this->msg( 'submit' )->parse()
 	                )

@@ -4,7 +4,8 @@
 	"type": "other",
 	"author": [
 		"Marc Vorreiter",
-		"Kevin Berg"
+		"Kevin Berg",
+		"Dennis Krohn"
 	],
 	"version": "2.0.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
@@ -31,11 +32,18 @@
 		"LoopExportEpub": "includes/LoopExport.php",
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
-		"SpecialLoopExport": "includes/SpecialLoopExport.php"		
+		"SpecialLoopExport": "includes/SpecialLoopExport.php",
+		"LoopHooks": "includes/Loop.hooks.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
 			"LoopUpdater::onLoadExtensionSchemaUpdates"
+		],
+		"MediaWikiPerformAction":[
+			"LoopHooks::onMediaWikiPerformAction"
+		], 				
+		"ParserMakeImageParams":[
+			"LoopHooks::onParserMakeImageParams"
 		]
 	},
 	"SpecialPages": {
@@ -90,7 +98,8 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
-			"createpage": true
+			"createpage": true,
+			"loop-rendermode": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -188,7 +197,7 @@
 			"purgecache": true
 		},
 		"student_edit": {
-			"loop-toc-edit": true,
+			"edit": true,
 			"loop-export-pdf": true,
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
@@ -200,16 +209,9 @@
 			"purge": true,
 			"purgecache": true,
 			"createpage": true,
-			"move": true,
-			"movefile": true,
 			"deletedtext": true,
 			"deletedhistory": true,
-			"browsearchive": true,
-			"rollback": true,
-			"delete": true,
-			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"browsearchive": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -220,6 +222,12 @@
 			"loop-export-scorm": true
 		}
 	},	
+    "DefaultUserOptions": {
+		"LoopEditMode": false
+    },
+    "HiddenPrefs": {
+		"LoopRenderMode": "default"
+    },
 	"AvailableRights": [
 		"loop-toc-edit",
 		"loop-export-pdf",
@@ -227,7 +235,8 @@
 		"loop-export-mp3",
 		"loop-export-epub",
 		"loop-export-html",
-		"loop-export-scorm"
+		"loop-export-scorm",
+		"loop-rendermode"
 	],
 	"MessagesDirs": {
 		"Loop": [
