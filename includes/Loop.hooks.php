@@ -61,4 +61,5 @@ class LoopHooks {
 	
 		return true;
 	}
+	
 }

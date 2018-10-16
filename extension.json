@@ -41,9 +41,6 @@
 		],
 		"MediaWikiPerformAction":[
 			"LoopHooks::onMediaWikiPerformAction"
-		], 				
-		"ParserMakeImageParams":[
-			"LoopHooks::onParserMakeImageParams"
 		]
 	},
 	"SpecialPages": {
