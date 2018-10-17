@@ -1,7 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Marc Vorreiter"
+			"Marc Vorreiter",
+			"Kevin Berg",
+			"Dennis Krohn"
 		]
 	},
 	"loop-extensionname": "LOOP",
