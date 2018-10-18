@@ -15,32 +15,34 @@ class LoopHooks {
 	 */
 	public static function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
 		
-		// catch action loopeditmode and save setting in user options
-		if ( $user->isAllowed( 'edit' ) ) {
-			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
-			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( '0', '1' ) ) ) ) {
-				$user->setOption( 'loopeditmode', $loopeditmodeRequestValue );
-				$user->saveSettings();
-			}
-		}	
-		
-		// catch action loopeditmode and save setting in user options
-		
-		if ( $user->isAllowed( 'loop-rendermode' ) ) {
-			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
-			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
-				$user->setOption( 'looprendermode', $looprendermodeRequestValue );
-				$user->saveSettings();
-			} else {
-				$user->setOption( 'looprendermode', 'default' );
-				$user->saveSettings();
-			}
-		}		
+		Loop::handleLoopRequest( $output, $request, $user );
 		
 		return true;
 	}
 	/**
-	 * Cache different page version depending on status of LoopEditMode
+	 * Catch request to perform LoopEditMode on Special Pages
+	 * 
+	 * This is attached to the MediaWiki 'SpecialPageBeforeExecute' hook.
+	 * 
+	 * @param SpecialPage $special
+	 * @param string $subPage
+	 */
+	public static function onSpecialPageBeforeExecute( $special, $subPage ) { 
+	
+		global $wgRequest, $wgOut;
+		$output = $wgOut;
+		$user = $output->getUser();
+		$request = $wgRequest;
+	
+		Loop::handleLoopRequest( $output, $request, $user );
+		
+		return true;
+	
+	}
+	
+	
+	/**
+	 * Cache different page version depending on status of Mode
 	 *
 	 * This is attached to the MediaWiki 'PageRenderingHash' hook.
 	 *

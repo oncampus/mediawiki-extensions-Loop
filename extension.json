@@ -12,12 +12,14 @@
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.29.0",
+		"MediaWiki": ">= 1.31.0",
 		"extensions": {
 			"WikiEditor": "*"
 		}
 	},
 	"AutoloadClasses": {
+		"Loop": "includes/Loop.php",
+		"LoopHooks": "includes/Loop.hooks.php",
 		"LoopUpdater": "schema/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
@@ -32,8 +34,7 @@
 		"LoopExportEpub": "includes/LoopExport.php",
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
-		"SpecialLoopExport": "includes/SpecialLoopExport.php",
-		"LoopHooks": "includes/Loop.hooks.php"
+		"SpecialLoopExport": "includes/SpecialLoopExport.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -41,6 +42,9 @@
 		],
 		"MediaWikiPerformAction":[
 			"LoopHooks::onMediaWikiPerformAction"
+		],
+		"SpecialPageBeforeExecute":[
+			"LoopHooks::onSpecialPageBeforeExecute"
 		]
 	},
 	"SpecialPages": {
