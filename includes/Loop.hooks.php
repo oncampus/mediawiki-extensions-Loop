@@ -12,6 +12,7 @@ class LoopHooks {
 	 * @param User $user
 	 * @param Request $request
 	 * @param Wiki $wiki
+	 * @return boolean
 	 */
 	public static function onBeforeInitialize( $title, $article = null, $output, $user, $request, $wiki ) {
 		
@@ -32,13 +33,8 @@ class LoopHooks {
 	 */
 	public static function onPageRenderingHash( &$confstr, User $user, &$forOptions ) {
 	
-		if ( in_array( 'loopeditmode', $forOptions ) ) {
-			$confstr .= "!loopeditmode=" . $user->getOption( 'loopeditmode', false, true );
-		}
-		
-		if ( in_array( 'looprendermode', $forOptions ) ) {
-			$confstr .= "!looprendermode=" . $user->getOption( 'looprendermode' );
-		}
+		$confstr .= "!loopeditmode=" . $user->getOption( 'loopeditmode', false, true );
+		$confstr .= "!looprendermode=" . $user->getOption( 'looprendermode' );
 	
 		return true;
 	}
