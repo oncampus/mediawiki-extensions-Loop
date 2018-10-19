@@ -28,7 +28,7 @@ class SpecialLoopStructure extends SpecialPage {
 			. $this->msg( 'loopstructure-specialpage-title' )->parse()
 		);
 		
-		if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode == true ) {
+		if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
 			
 			# show link to the edit page if user is permitted
 			
