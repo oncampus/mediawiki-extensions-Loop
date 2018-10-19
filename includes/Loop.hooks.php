@@ -2,44 +2,23 @@
 class LoopHooks {
 
 	/**
-	 * Catch the Request to perform custom action LoopEditMode
+	 * Catch the Request to perform custom action LoopEditMode and LoopRenderMode
 	 * 
-	 * This is attached to the MediaWiki 'MediaWikiPerformAction' hook.
+	 * This is attached to the MediaWiki 'onBeforeInitialize' hook.
 	 * 
-	 * @param OutputPage $output
-	 * @param Article $article
 	 * @param Title $title
+	 * @param Article $article
+	 * @param OutputPage $output
 	 * @param User $user
 	 * @param Request $request
 	 * @param Wiki $wiki
 	 */
-	public static function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
+	public static function onBeforeInitialize( $title, $article = null, $output, $user, $request, $wiki ) {
 		
 		Loop::handleLoopRequest( $output, $request, $user );
 		
 		return true;
 	}
-	/**
-	 * Catch request to perform LoopEditMode on Special Pages
-	 * 
-	 * This is attached to the MediaWiki 'SpecialPageBeforeExecute' hook.
-	 * 
-	 * @param SpecialPage $special
-	 * @param string $subPage
-	 */
-	public static function onSpecialPageBeforeExecute( $special, $subPage ) { 
-	
-		global $wgRequest, $wgOut;
-		$output = $wgOut;
-		$user = $output->getUser();
-		$request = $wgRequest;
-	
-		Loop::handleLoopRequest( $output, $request, $user );
-		
-		return true;
-	
-	}
-	
 	
 	/**
 	 * Cache different page version depending on status of Mode

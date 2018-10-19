@@ -40,11 +40,8 @@
 		"LoadExtensionSchemaUpdates":[
 			"LoopUpdater::onLoadExtensionSchemaUpdates"
 		],
-		"MediaWikiPerformAction":[
-			"LoopHooks::onMediaWikiPerformAction"
-		],
-		"SpecialPageBeforeExecute":[
-			"LoopHooks::onSpecialPageBeforeExecute"
+		"BeforeInitialize":[
+			"LoopHooks::onBeforeInitialize"
 		]
 	},
 	"SpecialPages": {
