@@ -5,5 +5,5 @@
 
 	<hyphenate>true</hyphenate>
 
-	<font_family>Cambria, 'Cambria Math'</font_family>
+	<font_family>Cambria, 'Cambria Math', NotoSerif, NotoSerifCJK, loopfont</font_family>
 </config>

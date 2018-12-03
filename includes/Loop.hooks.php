@@ -32,12 +32,14 @@ class LoopHooks {
 	 */
 	public static function onPageRenderingHash( &$confstr, User $user, &$forOptions ) {
 	
+		global $wgHiddenPrefs;
+		
 		if ( in_array( 'loopeditmode', $forOptions ) ) {
-			$confstr .= "!loopeditmode=" . $user->getOption( 'loopeditmode', false, true );
+			$confstr .= "!loopeditmode=" . $user->getOption( 'LoopEditMode', false, true );
 		}
 		
 		if ( in_array( 'looprendermode', $forOptions ) ) {
-			$confstr .= "!looprendermode=" . $user->getOption( 'looprendermode' );
+			$confstr .= "!looprendermode=" . $wgHiddenPrefs[ 'LoopRenderMode' ];
 		}
 	
 		return true;

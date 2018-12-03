@@ -16,8 +16,8 @@ class SpecialLoopStructure extends SpecialPage {
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
 		
-		$loopEditMode = $this->getSkin()->getUser()->getOption( 'loopeditmode', false, true );
-		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'looprendermode' );
+		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
+		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
 	
 		$out->addHtml(Html::openElement(
 				'h1',
