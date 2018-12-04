@@ -18,21 +18,20 @@ $( document ).ready( function () {
 		} else {
 		$("#" + link[clicked]).prop("disabled", false).focus()
 		}
-		
+		/* 
 		var empty = 0;
 		$( "input[required], textfield[required]textfield[enabled], select[required]" ).each(function(){
 
 			if ( $(this).val() == "" ) {
 				empty++; 
-				console.log($(this).attr("id"))
 			}
 			if ( empty > 0 ) {
-				//$( "#loopstructure-submit" ).prop("disabled", true);
+				$( "#loopstructure-submit" ).prop("disabled", true);
 			} else {
-				//$( "#loopstructure-submit" ).prop("disabled", false);
+				$( "#loopstructure-submit" ).prop("disabled", false);
 			}
-			console.log(empty)
 		})
+		*/
 		
 	})
 	$( ".upload-button" ).click( function() {

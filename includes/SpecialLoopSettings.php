@@ -8,10 +8,15 @@ class SpecialLoopSettings extends SpecialPage {
 
 	function execute( $sub ) {
 		
-		global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, 
-		$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
 		
 		$user = $this->getUser();
+		
+		
+		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
+			
+		global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, 
+		$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
+			
 		$this->setHeaders();
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -102,8 +107,6 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 		
 		$saltedToken = $user->getEditToken( $wgSecretKey, $request );
 			
-		
-		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			$html .= "
 			<nav>
 				<div class='nav nav-tabs' id='nav-tab' role='tablist'> 
