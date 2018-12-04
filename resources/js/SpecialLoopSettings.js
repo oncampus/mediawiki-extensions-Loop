@@ -10,7 +10,7 @@ $( document ).ready( function () {
 		"logo-use-custom": "custom-logo-filename"
 	};
 	
-	$( "input, select" ).on("change", function() {
+	$( "input, select, textfield" ).on("change", function() {
 		var clicked = $(this).attr("id");
 	
 		if ( $( "#" + clicked ).is(":checked") == false ) {
@@ -18,6 +18,21 @@ $( document ).ready( function () {
 		} else {
 		$("#" + link[clicked]).prop("disabled", false).focus()
 		}
+		
+		var empty = 0;
+		$( "input[required], textfield[required]textfield[enabled], select[required]" ).each(function(){
+
+			if ( $(this).val() == "" ) {
+				empty++; 
+				console.log($(this).attr("id"))
+			}
+			if ( empty > 0 ) {
+				//$( "#loopstructure-submit" ).prop("disabled", true);
+			} else {
+				//$( "#loopstructure-submit" ).prop("disabled", false);
+			}
+			console.log(empty)
+		})
 		
 	})
 	$( ".upload-button" ).click( function() {

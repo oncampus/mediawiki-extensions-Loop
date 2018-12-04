@@ -8,7 +8,8 @@ class SpecialLoopSettings extends SpecialPage {
 
 	function execute( $sub ) {
 		
-		global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, $wgSkinStyles;
+		global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, 
+		$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
 		
 		$user = $this->getUser();
 		$this->setHeaders();
@@ -51,6 +52,7 @@ $wgRightsType = "' . htmlspecialchars($newLoopSettings['rightsType']) . '";
 $wgRightsUrl = "' . htmlspecialchars($newLoopSettings['rightsUrl']) . '";
 $wgRightsIcon = "' . htmlspecialchars($newLoopSettings['rightsIcon']) . '";
 $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
+$wgLanguageCode = "'.$newLoopSettings['language'].'";
 
 
 ';
@@ -105,14 +107,15 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 			$html .= "
 			<nav>
 				<div class='nav nav-tabs' id='nav-tab' role='tablist'> 
-					<a class='nav-item nav-link active' id='nav-footer-tab' data-toggle='tab' href='#nav-footer' role='tab' aria-controls='nav-footer' aria-selected='true'>".$this->msg('loopsettings-tab-footer')."</a>
+					<a class='nav-item nav-link active' id='nav-general-tab' data-toggle='tab' href='#nav-general' role='tab' aria-controls='nav-general' aria-selected='true'>".$this->msg('loopsettings-tab-general')."</a>
 					<a class='nav-item nav-link' id='nav-appearance-tab' data-toggle='tab' href='#nav-appearance' role='tab' aria-controls='nav-appearance' aria-selected='true'>".$this->msg('loopsettings-tab-appearance')."</a>
+					<a class='nav-item nav-link' id='nav-footer-tab' data-toggle='tab' href='#nav-footer' role='tab' aria-controls='nav-footer' aria-selected='true'>".$this->msg('loopsettings-tab-footer')."</a>
 				</div>
 			</nav>
 			<form class='mw-editform mt-3 mb-3' id='loopsettings-form' method='post' enctype='multipart/form-data'>";
 			 
 			$html .= '<div class="tab-content" id="nav-tabContent">
-			<div class="tab-pane fade show active" id="nav-footer" role="tabpanel" aria-labelledby="nav-footer-tab">';
+			<div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">';
 			
 			### LINK BLOCK ###
 			$html .= '<h3>'.$this->msg('loopsettings-headline-footerlinks').'</h3>';
@@ -132,7 +135,7 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 			# cc-license
 			$licenseOptions = "";
 			foreach( $wgAvailableLicenses as $license => $option ) { 
-			if ( $license == $currentLoopSettings['rightsType'] ) {
+				if ( $license == $currentLoopSettings['rightsType'] ) {
 					$selected = "selected";
 				} else {
 					$selected = "";
@@ -151,9 +154,62 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 					" . $licenseOptions . "</select><br>".
 				"<input type='hidden' name='rights-url' id='rights-url' value='".$wgAvailableLicenses[ $currentLoopSettings['rightsType'] ]['url']."'>" . 
 				"<input type='hidden' name='rights-icon' id='rights-icon' value='".$wgAvailableLicenses[ $currentLoopSettings['rightsType'] ]['icon']."'>";
-			# footer-copyright text
+			# copyright text
 			$html .= "<label for='rights-text'>" . $this->msg( "loopsettings-rights-label" ) . "</label><input type='text' name='rights-text' id='rights-text' class='ml-2 mt-1 setting-input' value='".$currentLoopSettings['rightsText']."'><br><br>";	
 			
+			
+			### LANGUAGE BLOCK ###
+			$html .= '<h3>'.$this->msg('loopsettings-headline-language').'</h3>'; 
+			
+			$languageOptions = "";
+			foreach( $wgSupportedLoopLanguages as $language ) { 
+				if ( $language == $currentLoopSettings['language'] ) { 
+					$selected = "selected";
+				} else {
+					$selected = "";
+				}
+				
+				$languageOptions .= '<option value="'.$language.'" '.$selected.'>'. $language .'</option>';
+			}
+			$html .= "<label for='language-select'>" . $this->msg( "loopsettings-language-label" ) . "</label>
+				<select name='language-select' id='language-select' selected='". $currentLoopSettings['language'] ." '>
+					" . $languageOptions . "</select><br><br>";
+			
+			$html .= '</div>'; // end of general-tab
+			
+		### APPEARENCE TAB ###
+			$html .= '<div class="tab-pane fade" id="nav-appearance" role="tabpanel" aria-labelledby="nav-appearance-tab">';
+			### SKIN BLOCK ###
+			$html .= '<h3>'.$this->msg('loopsettings-headline-skinstyle').'</h3>'; 
+			
+			$skinStyleOptions = "";
+			foreach( $wgSkinStyles as $style ) { 
+			if ( $style == $currentLoopSettings['skinStyle'] ) { #TODO: Some styles should not be selectable from every loop
+					$selected = "selected";
+				} else {
+					$selected = "";
+				}
+				
+				$skinStyleOptions .= '<option value="'.$style.'" '.$selected.'>'. $this->msg( "loop-skinstyle-". $style ) .'</option>';
+			}
+			$html .= "<label for='skin-style'>" . $this->msg( "loopsettings-skin-style-label" ) . "</label>
+				<select ". ( empty( $currentLoopSettings['skinStyle'] ) ? "disabled" : "" ) ." name='skin-style' id='skin-style' selected='". $currentLoopSettings['skinStyle'] ." '>
+					" . $skinStyleOptions . "</select><br><br>";
+			
+			### LOGO BLOCK ###
+			$html .= '<h3>'.$this->msg('loopsettings-headline-logo').'</h3>';
+			# logo
+			$html .= "<input type='checkbox' name='logo-use-custom' id='logo-use-custom' value='useCustomLogo' ". ( ! empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "checked" : "" ) .">
+				<label for='use-custom-logo'>" . $this->msg( 'loopsettings-customlogo-label' ) . "</label>
+				<input ". ( empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "disabled" : "" ) ." name='custom-logo-filename' placeholder='Logo.png' title='".$this->msg( 'loopsettings-customlogo-hint' )."' pattern='[a-zA-Z-_.()0-9äöüßÄÖÜ]{1,}[.]{1}[a-zA-Z]{3,}' id='custom-logo-filename' class='setting-input' value='".$currentLoopSettings['customLogo']['customFileName']."'>
+				<input type='hidden' name='custom-logo-filepath' id='custom-logo-filepath' value='".$currentLoopSettings['customLogo']['customFilePath']."'><br>";
+			#upload
+			$html .= $this->msg( "loopsettings-upload-hint" ) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( "upload" ) . '</button><br>';
+			
+			$html .= '</div>'; // end of appearence-tab
+			
+		### FOOTER TAB ###	
+			$html .= '<div class="tab-pane fade" id="nav-footer" role="tabpanel" aria-labelledby="nav-footer-tab">';
 			
 			### EXTRA FOOTER BLOCK ###
 			$html .= '<h3>'.$this->msg('loopsettings-headline-extrafooter').'</h3>';
@@ -175,37 +231,7 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 			} 
 			$html .= '</div>'; // end of footer-tab
 			
-		### APPEARENCE TAB ###
-			$html .= '<div class="tab-pane fade" id="nav-appearance" role="tabpanel" aria-labelledby="nav-appearance-tab">';
-			### SKIN BLOCK ###
-			$html .= '<h3>'.$this->msg('loopsettings-headline-skinstyle').'</h3>'; 
-			
-			$skinStyleOptions = "";
-			foreach( $wgSkinStyles as $style ) { 
-			if ( $style == $currentLoopSettings['skinStyle'] ) { #TODO: Some styles should not be selectable from every loop
-					$selected = "selected";
-				} else {
-					$selected = "";
-				}
-				
-				$skinStyleOptions .= '<option value="'.$style.'" '.$selected.'>'. $this->msg( "loop-skinstyle-". $style ) .'</option>';
-			}
-			$html .= "<label for='skin-style'>" . $this->msg( "loopsettings-skin-style-label" ) . "</label>
-				<select ". ( empty( $currentLoopSettings['skinStyle'] ) ? "disabled" : "" ) ." name='skin-style' id='skin-style' selected='". $currentLoopSettings['skinStyle'] ." '>
-					" . $skinStyleOptions . "</select><br>";
-			
-			### LOGO BLOCK ###
-			$html .= '<h3>'.$this->msg('loopsettings-headline-logo').'</h3>';
-			# logo
-			$html .= "<input type='checkbox' name='logo-use-custom' id='logo-use-custom' value='useCustomLogo' ". ( ! empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "checked" : "" ) .">
-				<label for='use-custom-logo'>" . $this->msg( 'loopsettings-customlogo-label' ) . "</label>
-				<input ". ( empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "disabled" : "" ) ." name='custom-logo-filename' placeholder='Logo.png' title='".$this->msg( 'loopsettings-customlogo-hint' )."' pattern='[a-zA-Z-_.()0-9äöüßÄÖÜ]{1,}[.]{1}[a-zA-Z]{3,}' id='custom-logo-filename' class='setting-input' value='".$currentLoopSettings['customLogo']['customFileName']."'>
-				<input type='hidden' name='custom-logo-filepath' id='custom-logo-filepath' value='".$currentLoopSettings['customLogo']['customFilePath']."'><br>";
-			#upload
-			$html .= $this->msg( "loopsettings-upload-hint" ) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( "upload" ) . '</button><br>';
-			
-			$html .= '</div>
-			</div>'; // end of tab-content
+			$html .= '</div>'; // end of tab-content
 			$html .= Html::rawElement(
 					'input',
 					array(
@@ -243,6 +269,12 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 		$out->addHTML($html);
 	}
 	
+	/**
+	 * Puts request content into array
+	 *
+	 * @param Request $request 
+	 * @return Array $newLoopSettings
+	 */
 	private function getLoopSettingsFromRequest ( $request ) {
 		
 		$newLoopSettings = array(
@@ -285,6 +317,7 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 			'rightsIcon' =>  $request->getText( 'rights-icon' ),
 			'rightsUrl' =>  $request->getText( 'rights-url' ),
 			'skinStyle' =>  $request->getText( 'skin-style' ),
+			'language' =>  $request->getText( 'language-select' ),
 			
 			'errors' =>  array()
 			
@@ -334,7 +367,7 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 		
 		global $wgRightsText, $wgRightsType, $wgRightsIcon, $wgRightsUrl, $wgSocialIcons, 
 		$wgExtraFooter, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgCustomLogo, 
-		$wgSkinStyles, $wgHiddenPrefs;
+		$wgSkinStyles, $wgHiddenPrefs, $wgLanguageCode;
 		
 		$fileLoopSettings = array(
 			'rightsText' => htmlspecialchars_decode($wgRightsText),
@@ -347,7 +380,8 @@ $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
 			'imprintLink' => htmlspecialchars_decode($wgImprintLink),
 			'privacyLink' => htmlspecialchars_decode($wgPrivacyLink),
 			'oncampusLink' => htmlspecialchars_decode($wgOncampusLink),
-			'skinStyle' => $wgHiddenPrefs["LoopSkinStyle"]
+			'skinStyle' => $wgHiddenPrefs["LoopSkinStyle"],
+			'language' => $wgLanguageCode
 		);
 		
 		return $fileLoopSettings;

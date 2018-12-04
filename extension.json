@@ -118,7 +118,8 @@
 			"loop-export-scorm": true,
 			"loop-settings-edit": true,
 			"createpage": true,
-			"loop-rendermode": true
+			"loop-rendermode": true,
+			"purgecache": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -137,6 +138,7 @@
 			"createpage": true,
 			"purge": true,
 			"review": true,
+			"purgecache": true,
 			"reupload": true,
 			"move": true,
 			"movefile": true,
@@ -166,6 +168,7 @@
 			"createpage": true,
 			"purge": true,
 			"review": true,
+			"purgecache": true,
 			"reupload": true,
 			"move": true,
 			"movefile": true,
@@ -194,6 +197,7 @@
 			"createpage": true,
 			"purge": true,
 			"reupload": true,
+			"purgecache": true,
 			"move": true,
 			"movefile": true,
 			"deletedtext": true,
@@ -354,6 +358,15 @@
 			"value": [
 				"loop-common",
 				"loop-oncampus"
+			],
+			"description" : "Array of available skin styles to use"
+		},
+		"SupportedLoopLanguages": {
+			"value": [
+				"de",
+				"de-formal",
+				"en",
+				"sv"
 			],
 			"description" : "Array of available skin styles to use"
 		}
