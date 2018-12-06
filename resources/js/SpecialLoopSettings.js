@@ -1,10 +1,10 @@
 $( document ).ready( function () {
 	var link = { 
-		"footer-Facebook-icon": "footer-Facebook-link",
-		"footer-Twitter-icon": "footer-Twitter-link",
-		"footer-Youtube-icon": "footer-Youtube-link",
-		"footer-Github-icon": "footer-Github-link",
-		"footer-Instagram-icon": "footer-Instagram-link",
+		"footer-Facebook-icon": "footer-Facebook-url",
+		"footer-Twitter-icon": "footer-Twitter-url",
+		"footer-Youtube-icon": "footer-Youtube-url",
+		"footer-Github-icon": "footer-Github-url",
+		"footer-Instagram-icon": "footer-Instagram-url",
 		"license-use-cc": "rights-type",
 		"extra-footer-active": "extra-footer-wikitext",
 		"logo-use-custom": "custom-logo-filename"
@@ -18,23 +18,34 @@ $( document ).ready( function () {
 		} else {
 		$("#" + link[clicked]).prop("disabled", false).focus()
 		}
-		/* 
-		var empty = 0;
-		$( "input[required], textfield[required]textfield[enabled], select[required]" ).each(function(){
-
-			if ( $(this).val() == "" ) {
-				empty++; 
-			}
-			if ( empty > 0 ) {
-				$( "#loopstructure-submit" ).prop("disabled", true);
-			} else {
-				$( "#loopstructure-submit" ).prop("disabled", false);
-			}
-		})
-		*/
-		
 	})
+	
+	/**
+	 * Show invalid fields 
+	 * of file description textfield. Changed marked with oc
+	 * 
+	 */
+	
+	// Fetch all the forms for custom Bootstrap validation
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+
+		$id = $( "input:invalid" ).parent(".tab-pane").attr("id")//.addClass("show").show()
+		$( "#" + $id + "-tab" ).tab('show')
+		$( "input:invalid" ).focus()
+		
+      }, false);
+    });
+    
 	$( ".upload-button" ).click( function() {
+		
 		var uploadDialog = new mw.Upload.Dialog();
 		var windowManager = new OO.ui.WindowManager();
 		$( 'body' ).append( windowManager.$element );

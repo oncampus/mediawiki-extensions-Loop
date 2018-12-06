@@ -14,40 +14,29 @@ class SpecialLoopSettings extends SpecialPage {
 		
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
-		global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, 
-		$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
-			
-		$this->setHeaders();
-		$out = $this->getOutput();
-		$request = $this->getRequest();
-		
-		$out->addModules("ext.loop-settings.js");
-		$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
-		$html = "";
-		
-		$html .= Html::openElement(
-				'h1',
-				array(
-					'id' => 'loopsettings-h1'
-				)
-			)
-			. $this->msg( 'loopsettings-specialpage-title' ) .
-			Html::closeElement(
-				'h1'
-			);
-			
-		$errors = array();	
-		$requestToken = $request->getText( 't' );
-		$newLoopSettings = $this->getLoopSettingsFromRequest($request);
-		$fileLoopSettings = $this->getLoopSettingsFromFile();
-		
-		if( ! empty( $requestToken )) {
-			if( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
+			global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, 
+			$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
 				
-				$newFileContent = '<?php
+			$this->setHeaders();
+			$out = $this->getOutput();
+			$request = $this->getRequest();
+			
+			$out->addModules("ext.loop-settings.js");
+			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
+			$html = '<h1 id="loopsettings-h1">'.$this->msg('loopsettings-specialpage-title').'</h1>';
+				
+			$errors = array();	
+			$requestToken = $request->getText( 't' );
+			$fileLoopSettings = $this->getLoopSettingsFromFile();
+			$newLoopSettings = $this->getLoopSettingsFromRequest($request, $fileLoopSettings);
+			
+			if( ! empty( $requestToken )) {
+				if( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
+					
+					$newFileContent = '<?php
 $wgSocialIcons = ' . var_export($newLoopSettings['socialIcons'], true) . ';
 $wgExtraFooter = ' . var_export($newLoopSettings['extraFooter'], true) . ';
-$wgHiddenPrefs["LoopSkinStyle"] = "' . $newLoopSettings['skinStyle'] . '";
+$wgHiddenPrefs["LoopSkinStyle"] = "' . htmlspecialchars($newLoopSettings['skinStyle']) . '";
 $wgImprintLink = "' . htmlspecialchars($newLoopSettings['imprintLink']) . '";
 $wgPrivacyLink = "' . htmlspecialchars($newLoopSettings['privacyLink']) . '";
 $wgOncampusLink = "' . htmlspecialchars($newLoopSettings['oncampusLink']) . '";
@@ -57,13 +46,11 @@ $wgRightsType = "' . htmlspecialchars($newLoopSettings['rightsType']) . '";
 $wgRightsUrl = "' . htmlspecialchars($newLoopSettings['rightsUrl']) . '";
 $wgRightsIcon = "' . htmlspecialchars($newLoopSettings['rightsIcon']) . '";
 $wgCustomLogo = '. var_export($newLoopSettings['customLogo'], true) .';
-$wgLanguageCode = "'.$newLoopSettings['language'].'";
-
+$wgLanguageCode = "'.htmlspecialchars($newLoopSettings['language']).'";
 
 ';
-
 				$servername = $_SERVER["SERVER_NAME"];
-				$settingsFilePath = $IP . "/LoopSettings/LoopSettings_" . $servername . ".php";
+				$settingsFilePath = $IP . "/LocalSettings/LocalSettings_" . $servername . ".php";
 				
 				$settingsFile = fopen($settingsFilePath, 'w') or die("can't write settings");
 				fwrite($settingsFile, $newFileContent);
@@ -115,23 +102,25 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 					<a class='nav-item nav-link' id='nav-footer-tab' data-toggle='tab' href='#nav-footer' role='tab' aria-controls='nav-footer' aria-selected='true'>".$this->msg('loopsettings-tab-footer')."</a>
 				</div>
 			</nav>
-			<form class='mw-editform mt-3 mb-3' id='loopsettings-form' method='post' enctype='multipart/form-data'>";
+			<form class='needs-validation mw-editform mt-3 mb-3' id='loopsettings-form' method='post' novalidate enctype='multipart/form-data'>";
 			 
 			$html .= '<div class="tab-content" id="nav-tabContent">
 			<div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">';
 			
 			### LINK BLOCK ###
-			$html .= '<h3>'.$this->msg('loopsettings-headline-footerlinks').'</h3>';
+			$html .= '<h3>'.$this->msg('loopsettings-headline-important-links').'</h3>';
+			$html .= '<div class="form-row">';
 			# imprint link
-			$html .= "<label for='imprint-link'>" . $this->msg( "loopsettings-imprint-label" ) . "</label>
-				<input type='text' pattern='([htp]{4,5}[s]{0,1}[:/]{3}.[-a-zA-Z0-9äöüÄÖÜß%&?=_:./()\[\]]{1,})|([/lop]{6}.[-a-zA-Z0-9äöüÄÖÜß_:./()\[\]]{1,})' title='" . $this->msg( "loopsettings-url-imprint-privacy-hint" ) . "'  required name='imprint-link' placeholder='URL' id='imprint-link' class='ml-2 mt-1 setting-input' value='". $currentLoopSettings['imprintLink'] ."'><br>";
-			# privacy link
-			$html .= "<label for='privacy-link'>" . $this->msg( "loopsettings-privacy-label" ) . "</label>
-				<input type='text' pattern='([htp]{4,5}[s]{0,1}[:/]{3}.[-a-zA-Z0-9äöüÄÖÜß%&?=_:./()\[\]]{1,})|([/lop]{6}.[-a-zA-Z0-9äöüÄÖÜß_:./()\[\]]{1,})' title='" . $this->msg( "loopsettings-url-imprint-privacy-hint" ) . "' required name='privacy-link' placeholder='URL' id='privacy-link' class='ml-2 mt-1 setting-input' value='". $currentLoopSettings['privacyLink'] ."'><br>";
-			# oncampus link
-			$html .= "<input type='checkbox' name='oncampus-link' id='oncampus-link' value='showOncampusLink' ". ( ! empty( $currentLoopSettings['oncampusLink'] ) ? "checked" : "" ) .">
-				<label for='oncampus-link'>" . $this->msg( "loopsettings-oncampus-label" ) . "</label><br><br>";
 			
+			$html .= "<div class='col-12 col-sm-6'><label for='imprint-link'>" . $this->msg( "loopsettings-imprint-label" ) . "</label>
+				<input type='text' pattern='([Hh]{1}[Tt]{2}[Pp]{1}[Ss]{0,1}[:]{1}[/]{2}[-a-zA-Z0-9äöüÄÖÜß%&?=_:./()\[\]]{1,})|([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9äöüÄÖÜß_:.\/()\[\]]{1,})' required name='imprint-link' placeholder='URL' id='imprint-link' class='setting-input form-control' value='". $currentLoopSettings['imprintLink'] ."'>
+				<div class='invalid-feedback'>" . $this->msg( "loopsettings-url-imprint-privacy-hint" ) . "</div>
+				</div>";
+			# privacy link
+			$html .= "<div class='col-12 col-sm-6'><label for='privacy-link'>" . $this->msg( "loopsettings-privacy-label" ) . "</label>
+				<input type='text' pattern='([Hh]{1}[Tt]{2}[Pp]{1}[Ss]{0,1}[:]{1}[/]{2}[-a-zA-Z0-9äöüÄÖÜß%&?=_:./()\[\]]{1,})|([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9äöüÄÖÜß_:.\/()\[\]]{1,})' required name='privacy-link' placeholder='URL' id='privacy-link' class='setting-input form-control' value='". $currentLoopSettings['privacyLink'] ."'>
+				<div class='invalid-feedback'>" . $this->msg( "loopsettings-url-imprint-privacy-hint" ) . "</div>";
+			$html .= '</div></div><br>';
 			
 			### LICENSE BLOCK ###
 			$html .= '<h3>'.$this->msg('loopsettings-headline-license').'</h3>';
@@ -151,15 +140,14 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 				
 				$licenseOptions .= '<option value="'.$license.'" '.$selected.'>'.$licenseText.'</option>';
 			}
-			$html .= "<input type='checkbox' name='license-use-cc' id='license-use-cc' value='licenseUseCC' ". ( ! empty( $currentLoopSettings['rightsType'] ) ? "checked" : "" ) .">
+			$html .= '<div class="form-row">';
+			$html .= "<div class='col-12 col-sm-6'><input type='checkbox' name='license-use-cc' id='license-use-cc' value='licenseUseCC' ". ( ! empty( $currentLoopSettings['rightsType'] ) ? "checked" : "" ) .">
 				<label for='license-use-cc'>" . $this->msg( "loopsettings-use-cc-label" ) . "</label>
-				<select ". ( empty( $currentLoopSettings['rightsType'] ) ? "disabled" : "" ) ." name='rights-type' id='rights-type' selected='". $currentLoopSettings['rightsType'] ." '>
-					" . $licenseOptions . "</select><br>".
-				"<input type='hidden' name='rights-url' id='rights-url' value='".$wgAvailableLicenses[ $currentLoopSettings['rightsType'] ]['url']."'>" . 
-				"<input type='hidden' name='rights-icon' id='rights-icon' value='".$wgAvailableLicenses[ $currentLoopSettings['rightsType'] ]['icon']."'>";
+				<select class='form-control' ". ( empty( $currentLoopSettings['rightsType'] ) ? "disabled" : "" ) ." name='rights-type' id='rights-type' selected='". $currentLoopSettings['rightsType'] ." '>
+					" . $licenseOptions . "</select></div>";
 			# copyright text
-			$html .= "<label for='rights-text'>" . $this->msg( "loopsettings-rights-label" ) . "</label><input type='text' name='rights-text' id='rights-text' class='ml-2 mt-1 setting-input' value='".$currentLoopSettings['rightsText']."'><br><br>";	
-			
+			$html .= "<div class='col-12 col-sm-6'><label for='rights-text'>" . $this->msg( "loopsettings-rights-label" ) . "</label><input type='text' placeholder='". $this->msg( "loopsettings-rights-text-placeholder" ) ."' name='rights-text' id='rights-text' class='setting-input form-control' value='".$currentLoopSettings['rightsText']."'></div>";
+			$html .= '</div><br>';
 			
 			### LANGUAGE BLOCK ###
 			$html .= '<h3>'.$this->msg('loopsettings-headline-language').'</h3>'; 
@@ -175,7 +163,7 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 				$languageOptions .= '<option value="'.$language.'" '.$selected.'>'. $language .'</option>';
 			}
 			$html .= "<label for='language-select'>" . $this->msg( "loopsettings-language-label" ) . "</label>
-				<select name='language-select' id='language-select' selected='". $currentLoopSettings['language'] ." '>
+				<select class='form-control w-50' name='language-select' id='language-select' selected='". $currentLoopSettings['language'] ." '>
 					" . $languageOptions . "</select><br><br>";
 			
 			$html .= '</div>'; // end of general-tab
@@ -196,15 +184,16 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 				$skinStyleOptions .= '<option value="'.$style.'" '.$selected.'>'. $this->msg( "loop-skinstyle-". $style ) .'</option>';
 			}
 			$html .= "<label for='skin-style'>" . $this->msg( "loopsettings-skin-style-label" ) . "</label>
-				<select ". ( empty( $currentLoopSettings['skinStyle'] ) ? "disabled" : "" ) ." name='skin-style' id='skin-style' selected='". $currentLoopSettings['skinStyle'] ." '>
-					" . $skinStyleOptions . "</select><br><br>";
+				<select class='form-control' ". ( empty( $currentLoopSettings['skinStyle'] ) ? "disabled" : "" ) ." name='skin-style' id='skin-style' selected='". $currentLoopSettings['skinStyle'] ." '>
+					" . $skinStyleOptions . "</select><br>";
 			
 			### LOGO BLOCK ###
 			$html .= '<h3>'.$this->msg('loopsettings-headline-logo').'</h3>';
 			# logo
 			$html .= "<input type='checkbox' name='logo-use-custom' id='logo-use-custom' value='useCustomLogo' ". ( ! empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "checked" : "" ) .">
-				<label for='use-custom-logo'>" . $this->msg( 'loopsettings-customlogo-label' ) . "</label>
-				<input ". ( empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "disabled" : "" ) ." name='custom-logo-filename' placeholder='Logo.png' title='".$this->msg( 'loopsettings-customlogo-hint' )."' pattern='[a-zA-Z-_.()0-9äöüßÄÖÜ]{1,}[.]{1}[a-zA-Z]{3,}' id='custom-logo-filename' class='setting-input' value='".$currentLoopSettings['customLogo']['customFileName']."'>
+				<label for='logo-use-custom'>" . $this->msg( 'loopsettings-customlogo-label' ) . "</label>
+				<input ". ( empty( $currentLoopSettings['customLogo']['useCustomLogo'] ) ? "disabled" : "" ) ." name='custom-logo-filename' placeholder='Logo.png' pattern='[a-zA-Z-_.()0-9äöüßÄÖÜ]{1,}[.]{1}[a-zA-Z]{3,}' id='custom-logo-filename' class='form-control setting-input' value='".$currentLoopSettings['customLogo']['customFileName']."'>
+				<div class='invalid-feedback'>".$this->msg( 'loopsettings-customlogo-hint' )."</div>
 				<input type='hidden' name='custom-logo-filepath' id='custom-logo-filepath' value='".$currentLoopSettings['customLogo']['customFilePath']."'><br>";
 			#upload
 			$html .= $this->msg( "loopsettings-upload-hint" ) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( "upload" ) . '</button><br>';
@@ -219,18 +208,25 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 			# extra footer
 			$html .= "<input type='checkbox' name='extra-footer-active' id='extra-footer-active' value='useExtraFooter' ". ( ! empty( $currentLoopSettings['extraFooter']['useExtraFooter'] ) ? "checked" : "" ) .">
 				<label for='extra-footer-active'>" . $this->msg( "loopsettings-extra-footer-label" ) . "</label><br>
-				<textarea rows='2' " . ( empty( $currentLoopSettings['extraFooter']['useExtraFooter'] ) ? "disabled" : "" ) . " required name='extra-footer-wikitext' placeholder='" . $this->msg( "loopsettings-extra-footer-placeholder" ) . "' id='extra-footer-wikitext' class='ml-4 mr-3 mw-editfont-monospace ml-2 mt-1 setting-input'>".$currentLoopSettings[ 'extraFooter' ][ 'wikiText' ]."</textarea><br>";
+				<textarea rows='2' " . ( empty( $currentLoopSettings['extraFooter']['useExtraFooter'] ) ? "disabled" : "" ) . " name='extra-footer-wikitext' placeholder='" . $this->msg( "loopsettings-extra-footer-placeholder" ) . "' id='extra-footer-wikitext' class='form-control mw-editfont-monospace setting-input'>".$currentLoopSettings[ 'extraFooter' ][ 'wikiText' ]."</textarea><br>";
 			#upload
 			$html .= $this->msg( "loopsettings-upload-hint" ) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( "upload" ) . '</button><br>';
 			
-			### SOCIAL BLOCK ###
-			$html .= '<h3>'.$this->msg('loopsettings-headline-social-icons').'</h3>';
+			### LINK BLOCK ###
+			$html .= '<h3>'.$this->msg('loopsettings-headline-footer-links').'</h3>';
+			
+			
+			#oncampus link
+			$html .= "<input type='checkbox' name='oncampus-link' id='oncampus-link' value='showOncampusLink' ". ( ! empty( $currentLoopSettings['oncampusLink'] ) ? "checked" : "" ) .">
+				<label for='oncampus-link'>" . $this->msg( "loopsettings-oncampus-label" ) . "</label><br>";
+			
 			#footer-social
 			foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
 				$html .= "<input type='checkbox' name='footer-". $socialIcons ."-icon' id='footer-". $socialIcons ."-icon' value='". $socialIcons ."' ". ( ! empty( $currentLoopSettings['socialIcons'][ $socialIcons ]["icon"]) ? "checked" : "" ) .">
 					<label for='footer-". $socialIcons ."-icon'><span class='ic ic-social-". strtolower($socialIcons) ."'></span>
 					". $socialIcons . " " . $this->msg( "loopsettings-link-icon-label" ) . "</label>
-					<input type='url' title='" . $this->msg( "loopsettings-url-hint" ) . "' ". ( empty( $currentLoopSettings['socialIcons'][ $socialIcons ]["icon"] ) ? "disabled" : "" ) ." name='footer-". $socialIcons ."-link' placeholder='https://www.". strtolower($socialIcons) .".com/' id='footer-". $socialIcons ."-link' class='ml-2 mt-1 setting-input' value='". $currentLoopSettings['socialIcons'][ $socialIcons ]['link'] ."'><br>";
+					<input type='url' ". ( empty( $currentLoopSettings['socialIcons'][ $socialIcons ]['icon'] ) ? "disabled" : "" ) ." name='footer-". $socialIcons ."-url' placeholder='https://www.". strtolower($socialIcons) .".com/' id='footer-". $socialIcons ."-url' class='setting-input form-control' value='". $currentLoopSettings['socialIcons'][ $socialIcons ]['url'] ."'>
+					 <div class='invalid-feedback'>" . $this->msg( "loopsettings-url-hint" ) . "</div><br>";
 			} 
 			$html .= '</div>'; // end of footer-tab
 			
@@ -278,31 +274,35 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 	 * @param Request $request 
 	 * @return Array $newLoopSettings
 	 */
-	private function getLoopSettingsFromRequest ( $request ) {
+	private function getLoopSettingsFromRequest ( $request, $previousSettings ) {
+		
+		global $wgRightsText, $wgRightsType, $wgRightsIcon, $wgRightsUrl, $wgSocialIcons, 
+		$wgExtraFooter, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgCustomLogo, 
+		$wgSkinStyles, $wgHiddenPrefs, $wgLanguageCode, $wgAvailableLicenses, $wgSupportedLoopLanguages;
 		
 		$newLoopSettings = array(
-			'socialIcons' => array(
+			/*'socialIcons' => array(
 				'Facebook' => array (
 					'icon' => $request->getText( 'footer-Facebook-icon' ),
-					'link' => $request->getText( 'footer-Facebook-link' )
+					'url' => $request->getText( 'footer-Facebook-link' )
 				),
 				'Twitter' => array (
 					'icon' => $request->getText( 'footer-Twitter-icon' ),
-					'link' => $request->getText( 'footer-Twitter-link' )
+					'url' => $request->getText( 'footer-Twitter-link' )
 				),
 				'Youtube' => array (
 					'icon' => $request->getText( 'footer-Youtube-icon' ),
-					'link' => $request->getText( 'footer-Youtube-link' )
+					'url' => $request->getText( 'footer-Youtube-link' )
 				),
 				'Github' => array (
 					'icon' => $request->getText( 'footer-Github-icon' ),
-					'link' => $request->getText( 'footer-Github-link' )
+					'url' => $request->getText( 'footer-Github-link' )
 				),
 				'Instagram' => array (
 					'icon' => $request->getText( 'footer-Instagram-icon' ),
-					'link' => $request->getText( 'footer-Instagram-link' )
+					'url' => $request->getText( 'footer-Instagram-link' )
 				),
-			),
+			),*/
 			'extraFooter' => array(
 				'useExtraFooter' => $request->getText( 'extra-footer-active' ),
 				'wikiText' => $request->getText( 'extra-footer-wikitext' )
@@ -312,33 +312,152 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 				'customFileName' => $request->getText( 'custom-logo-filename' ),
 				'customFilePath' => $request->getText( 'custom-logo-filepath' )
 			),
-			'imprintLink' => $request->getText( 'imprint-link' ),
-			'privacyLink' => $request->getText( 'privacy-link' ),
-			'oncampusLink' => $request->getText( 'oncampus-link' ),
+			//'imprintLink' => $request->getText( 'imprint-link' ), #check url
+			//'privacyLink' => $request->getText( 'privacy-link' ), #check url
+			///'oncampusLink' => $request->getText( 'oncampus-link' ), #check url
 			'rightsText' =>  $request->getText( 'rights-text' ),
-			'rightsType' =>  $request->getText( 'rights-type' ),
-			'rightsIcon' =>  $request->getText( 'rights-icon' ),
-			'rightsUrl' =>  $request->getText( 'rights-url' ),
-			'skinStyle' =>  $request->getText( 'skin-style' ),
-			'language' =>  $request->getText( 'language-select' ),
+			//'rightsType' =>  $request->getText( 'rights-type' ),
+			//'rightsIcon' =>  $request->getText( 'rights-icon' ),
+			//'rightsUrl' =>  $request->getText( 'rights-url' ),
+			//'skinStyle' =>  $request->getText( 'skin-style' ),
+			//'language' =>  $request->getText( 'language-select' ),
 			
 			'errors' =>  array()
 			
 		);
+		
 	
-		if ( ! empty( $newLoopSettings['extraFooter']['wikiText'] ) ) {
-			$newLoopSettings['extraFooter']['parsedText'] = $this->parse($newLoopSettings['extraFooter']['wikiText']);
+		if ( empty( $request->getText( 'footer-Facebook-icon' ) ) || $request->getText( 'footer-Facebook-icon' ) == 'Facebook' ) {
+			$newLoopSettings[ 'socialIcons' ][ 'Facebook' ][ 'icon' ] = $request->getText( 'footer-Facebook-icon' );
+			
+			if ( ! empty( $request->getText( 'footer-Facebook-icon' ) && filter_var( $request->getText( 'footer-Facebook-url' ), FILTER_VALIDATE_URL ) ) ) {
+				$newLoopSettings[ 'socialIcons' ][ 'Facebook' ][ 'url' ] = $request->getText( 'footer-Facebook-url' );
+			} else {
+				$newLoopSettings[ 'socialIcons' ][ 'Facebook' ][ 'url' ] = '';
+			}
+		} else {
+			$newLoopSettings[ 'socialIcons' ][ 'Facebook' ][ 'icon' ] = $previousSettings[ 'socialIcons' ][ 'Facebook' ][ 'icon' ];
+			$newLoopSettings[ 'socialIcons' ][ 'Facebook' ][ 'url' ] = $previousSettings[ 'socialIcons' ][ 'Facebook' ][ 'url' ];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-facebook' ) );
+		}		
+		if ( empty( $request->getText( 'footer-Twitter-icon' ) ) || $request->getText( 'footer-Twitter-icon' ) == 'Twitter' ) {
+			$newLoopSettings[ 'socialIcons' ][ 'Twitter' ][ 'icon' ] = $request->getText( 'footer-Twitter-icon' );
+			
+			if ( ! empty( $request->getText( 'footer-Twitter-icon' ) && filter_var( $request->getText( 'footer-Twitter-url' ), FILTER_VALIDATE_URL ) ) ) {
+				$newLoopSettings[ 'socialIcons' ][ 'Twitter' ][ 'url' ] = $request->getText( 'footer-Twitter-url' );
+			} else {
+				$newLoopSettings[ 'socialIcons' ][ 'Twitter' ][ 'url' ] = '';
+			}
+		} else {
+			$newLoopSettings[ 'socialIcons' ][ 'Twitter' ][ 'icon' ] = $previousSettings[ 'socialIcons' ][ 'Twitter' ][ 'icon' ];
+			$newLoopSettings[ 'socialIcons' ][ 'Twitter' ][ 'url' ] = $previousSettings[ 'socialIcons' ][ 'Twitter' ][ 'url' ];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-twitter' ) );
 		}
+	
+		if ( empty( $request->getText( 'footer-Instagram-icon' ) ) || $request->getText( 'footer-Instagram-icon' ) == 'Instagram' ) {
+			$newLoopSettings[ 'socialIcons' ][ 'Instagram' ][ 'icon' ] = $request->getText( 'footer-Instagram-icon' );
+			
+			if ( ! empty( $request->getText( 'footer-Instagram-icon' ) && filter_var( $request->getText( 'footer-Instagram-url' ), FILTER_VALIDATE_URL ) ) ) {
+				$newLoopSettings[ 'socialIcons' ][ 'Instagram' ][ 'url' ] = $request->getText( 'footer-Instagram-url' );
+			} else {
+				$newLoopSettings[ 'socialIcons' ][ 'Instagram' ][ 'url' ] = '';
+			}
+		} else {
+			$newLoopSettings[ 'socialIcons' ][ 'Instagram' ][ 'icon' ] = $previousSettings[ 'socialIcons' ][ 'Instagram' ][ 'icon' ];
+			$newLoopSettings[ 'socialIcons' ][ 'Instagram' ][ 'url' ] = $previousSettings[ 'socialIcons' ][ 'Instagram' ][ 'url' ];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-instagram' ) );
+		}
+	
+		if ( empty( $request->getText( 'footer-Github-icon' ) ) || $request->getText( 'footer-Github-icon' ) == 'Github' ) {
+			$newLoopSettings[ 'socialIcons' ][ 'Github' ][ 'icon' ] = $request->getText( 'footer-Github-icon' );
+			
+			if ( ! empty( $request->getText( 'footer-Github-icon' ) && filter_var( $request->getText( 'footer-Github-url' ), FILTER_VALIDATE_URL ) ) ) {
+				$newLoopSettings[ 'socialIcons' ][ 'Github' ][ 'url' ] = $request->getText( 'footer-Github-url' );
+			} else {
+				$newLoopSettings[ 'socialIcons' ][ 'Github' ][ 'url' ] = '';
+			}
+		} else {
+			$newLoopSettings[ 'socialIcons' ][ 'Github' ][ 'icon' ] = $previousSettings[ 'socialIcons' ][ 'Github' ][ 'icon' ];
+			$newLoopSettings[ 'socialIcons' ][ 'Github' ][ 'url' ] = $previousSettings[ 'socialIcons' ][ 'Github' ][ 'url' ];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-Github' ) );
+		}
+		
+		if ( empty( $request->getText( 'footer-Youtube-icon' ) ) || $request->getText( 'footer-Youtube-icon' ) == 'Youtube' ) {
+			$newLoopSettings[ 'socialIcons' ][ 'Youtube' ][ 'icon' ] = $request->getText( 'footer-Youtube-icon' );
+			
+			if ( ! empty( $request->getText( 'footer-Youtube-icon' ) && filter_var( $request->getText( 'footer-Youtube-url' ), FILTER_VALIDATE_URL ) ) ) {
+				$newLoopSettings[ 'Youtube' ][ 'url' ] = $request->getText( 'footer-Youtube-url' );
+			} else {
+				$newLoopSettings[ 'socialIcons' ][ 'Youtube' ][ 'url' ] = '';
+			}
+		} else {
+			$newLoopSettings[ 'socialIcons' ][ 'Youtube' ][ 'icon' ] = $previousSettings[ 'socialIcons' ][ 'Youtube' ][ 'icon' ];
+			$newLoopSettings[ 'socialIcons' ][ 'Youtube' ][ 'url' ] = $previousSettings[ 'socialIcons' ][ 'Youtube' ][ 'url' ];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-youtube' ) );
+		}
+		
+		$regExLoopLink = '/([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9äöüÄÖÜß_:.\/()\[\]]{1,})/';
+		
+		if ( filter_var( $request->getText( 'privacy-link' ), FILTER_VALIDATE_URL ) || preg_match($regExLoopLink, $request->getText( 'privacy-link' )) ) {
+			$newLoopSettings[ 'privacyLink' ] = $request->getText( 'privacy-link' );
+		} else {
+			$newLoopSettings['privacyLink'] = $previousSettings['privacyLink'];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-privacy-link' ) );
+		}
+		
+		if ( filter_var( $request->getText( 'imprint-link' ), FILTER_VALIDATE_URL ) || preg_match($regExLoopLink, $request->getText( 'imprint-link' )) ) {
+			$newLoopSettings[ 'imprintLink' ] = $request->getText( 'imprint-link' );
+		} else {
+			$newLoopSettings['imprintLink'] = $previousSettings['imprintLink'];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-imprint-link' ) );
+		}
+		
+		if ( empty( $request->getText( 'oncampus-link' ) ) || $request->getText( 'oncampus-link' ) == 'showOncampusLink' ) {
+			$newLoopSettings[ 'oncampusLink' ] = $request->getText( 'oncampus-link' );
+		} else {
+			$newLoopSettings['oncampusLink'] = $previousSettings['oncampusLink'];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-oncampus-link' ) );
+		}
+		
+		if ( empty( $request->getText( 'rights-type' ) ) || isset( $wgAvailableLicenses[ $request->getText( 'rights-type' ) ] ) ) {
+			$newLoopSettings[ 'rightsType' ] = $request->getText( 'rights-type' );
+			$newLoopSettings[ 'rightsIcon' ] = $wgAvailableLicenses[$newLoopSettings['rightsType']]['icon'];
+			$newLoopSettings[ 'rightsUrl' ] = $wgAvailableLicenses[$newLoopSettings['rightsType']]['url'];
+		} else {
+			$newLoopSettings['rightsType'] = $previousSettings['rightsType'];
+			$newLoopSettings['rightsIcon'] = $previousSettings['rightsIcon'];
+			$newLoopSettings['rightsUrl'] = $previousSettings['rightsUrl'];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-rights-type' ) );
+		}
+		
+		if ( in_array( $request->getText( 'skin-style' ), $wgSkinStyles ) ) {
+			$newLoopSettings['skinStyle'] = $request->getText( 'skin-style' );
+		} else {
+			$newLoopSettings['skinStyle'] = $previousSettings['skinStyle'];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-skin-style' ) );
+		}
+		
+		if ( in_array( $request->getText( 'language-select' ), $wgSupportedLoopLanguages ) ) {
+			$newLoopSettings['language'] = $request->getText( 'language-select' );
+		} else {
+			$newLoopSettings['language'] = $previousSettings['language'];
+			array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-language' ) );
+		}
+		
+		if ( ! empty( $newLoopSettings['extraFooter']['wikiText'] ) ) {
+			$newLoopSettings['extraFooter']['parsedText'] = $this->parse( $newLoopSettings['extraFooter']['wikiText'] );
+		}
+		
 		if ( ! empty( $newLoopSettings['customLogo']['customFileName'] ) ) {
-			$tmpParsedResult = $this->parse("{{filepath:" . $newLoopSettings['customLogo']['customFileName'] . "}}" );
+			$tmpParsedResult = $this->parse('{{filepath:' . $newLoopSettings['customLogo']['customFileName'] . '}}' );
 			preg_match('/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
-			if ( isset($tmpOutputArray[1]) ) {
+			if ( isset($tmpOutputArray[1] ) ) {
 				$newLoopSettings['customLogo']['customFilePath'] = $tmpOutputArray[1];
 			} else {
 				$newLoopSettings['customLogo']['customFileName'] = "";
 				$newLoopSettings['customLogo']['customFilePath'] = "";
 				$newLoopSettings['customLogo']['useCustomLogo'] = "";
-				array_push($newLoopSettings['errors'], $this->msg('loopsettings-error-customlogo-notfound'));
+				array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error-customlogo-notfound' ) );
 			}
 		}
 		
@@ -377,13 +496,13 @@ $wgLanguageCode = "'.$newLoopSettings['language'].'";
 			'rightsType' => htmlspecialchars_decode($wgRightsType),
 			'rightsIcon' => htmlspecialchars_decode($wgRightsIcon),
 			'rightsUrl' => htmlspecialchars_decode($wgRightsUrl),
-			'socialIcons' => $wgSocialIcons,
-			'extraFooter' => $wgExtraFooter,
-			'customLogo' => $wgCustomLogo,
 			'imprintLink' => htmlspecialchars_decode($wgImprintLink),
 			'privacyLink' => htmlspecialchars_decode($wgPrivacyLink),
 			'oncampusLink' => htmlspecialchars_decode($wgOncampusLink),
-			'skinStyle' => $wgHiddenPrefs["LoopSkinStyle"],
+			'skinStyle' => $wgHiddenPrefs['LoopSkinStyle'],
+			'socialIcons' => $wgSocialIcons,
+			'extraFooter' => $wgExtraFooter,
+			'customLogo' => $wgCustomLogo,
 			'language' => $wgLanguageCode
 		);
 		
