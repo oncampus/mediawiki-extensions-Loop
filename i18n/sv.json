@@ -29,6 +29,7 @@
 	"loopsettings-use-cc-label": "Använd Creative Commons licens",
 	"loopsettings-rights-label": "Deklaration av rättigheter i footer",
 	"loopsettings-rights-text-placeholder": "t.ex. namnet av upphovsrättsinnehavaren",
+	"loopsettings-rights-text-hint": "Inmatningen måste innehålla endast alfanumeriska tecken och följande specialtecken:",
 	"loopsettings-imprint-label": "Länk till imprint (webb-)sida",
 	"loopsettings-privacy-label": "Länk till dataskydd (webb-)sida",
 	"loopsettings-oncampus-label": "Visa länk till oncampus webbsida",
@@ -50,6 +51,7 @@
 	"loopsettings-tab-appearance": "Utseende",
 	"loopsettings-url-imprint-privacy-hint": "Ange ett URL (http:// ingår) eller länka till en LOOP sida som /loop/Dataskydd",
 	"loopsettings-skin-style-label": "Skin-Stil",
+	"loopsettings-error": "Det gick inte att spara den här inställningen",
 		
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",

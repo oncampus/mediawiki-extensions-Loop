@@ -31,6 +31,7 @@
 	"loopsettings-use-cc-label": "Creative Commons Lizenz verwenden",
 	"loopsettings-rights-label": "Rechteangabe im Footer",
 	"loopsettings-rights-text-placeholder": "z.B. Name des Rechteinhabers",
+	"loopsettings-rights-text-hint": "Der Text darf nur alphanumerische Zeichen sowie folgende Sonderzeichen enthalten:",
 	"loopsettings-imprint-label": "Link zum Impressum",
 	"loopsettings-privacy-label": "Link zum Datenschutz",
 	"loopsettings-oncampus-label": "Link zu oncampus anzeigen",
@@ -55,6 +56,7 @@
 	"loopsettings-url-imprint-privacy-hint": "Bitte geben Sie eine gültige URL mit http:// an, oder einen lokalen Link in diesem LOOP, z.B. /loop/Impressum",
 	"loopsettings-url-hint": "Bitte geben Sie eine gültige URL mit http:// an.",
 	"loopsettings-skin-style-label": "Skin-Stil",
+	"loopsettings-error": "Es ist ein Fehler beim Speichern dieser Einstellung aufgetreten",
 		
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
