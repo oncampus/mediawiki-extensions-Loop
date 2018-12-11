@@ -74,6 +74,12 @@
 	"action-loop-export-scorm": "Export LOOP som Scorm paket",
   
 	"export-linktext-xml": "Ladda ner som XML",
-	"export-linktext-pdf": "Ladda ner som PDF"
+	"export-linktext-pdf": "Ladda ner som PDF",
+	
+	"purgecache": "Rensa cachen",
+	"purgecache-warning": "Detta rensar cachetabellerna.",
+	"purgecache-purged": "Cachen har rensats.",
+	"purgecache-button": "Rensa",
+	"right-purgecache": "Rensa OBJECTCACHE-tabellen"
 
 }

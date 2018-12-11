@@ -35,7 +35,8 @@
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
 		"SpecialLoopExport": "includes/SpecialLoopExport.php",
-		"SpecialLoopSettings": "includes/SpecialLoopSettings.php"
+		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
+		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -52,7 +53,8 @@
 		"LoopStructure": "SpecialLoopStructure",
 		"LoopStructureEdit": "SpecialLoopStructureEdit",
 		"LoopExport": "SpecialLoopExport",
-		"LoopSettings": "SpecialLoopSettings"
+		"LoopSettings": "SpecialLoopSettings",
+		"PurgeCache": "SpecialPurgeCache"
 	},		
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",

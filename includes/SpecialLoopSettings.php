@@ -9,6 +9,8 @@ class SpecialLoopSettings extends SpecialPage {
 	function execute( $sub ) {
 		
 		$user = $this->getUser();
+		$out = $this->getOutput();
+		$html = '<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
 		
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
@@ -22,7 +24,6 @@ class SpecialLoopSettings extends SpecialPage {
  			$out->addModules( 'ext.loop-settings.js' );
 			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
 			
-			$html = '<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
 				
 			$errors = array();	
 			$requestToken = $request->getText( 't' );
@@ -72,13 +73,11 @@ $wgLanguageCode = "'.htmlspecialchars( $newLoopSettings['language']) . '";
 					$html .= '<div class="alert alert-danger" role="alert">' . $errorMsgs.'</div>';
 					
 				}
-				if ( isset ( $wgSpecialPages['PurgeCache'] ) ) {
-					
-					$cache_button = '<button type="button" class="mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'purgecache' ) . '</button><br>';
-					$link = Linker::link( new TitleValue( NS_SPECIAL, 'PurgeCache' ), $cache_button ); 
-					$html .= $link;
-					
-				} 
+				
+				$cache_button = '<button type="button" class="mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'purgecache' ) . '</button><br>';
+				$cache_link = Linker::link( new TitleValue( NS_SPECIAL, 'PurgeCache' ), $cache_button ); 
+				$html .= $cache_link;
+				
 			} else {
 				$currentLoopSettings = $fileLoopSettings;
 			}
