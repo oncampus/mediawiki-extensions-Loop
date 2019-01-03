@@ -11,8 +11,6 @@
 	 */
 	public static function handleLoopRequest( $output, $request, $user ) { 
 		
-		global $wgHiddenPrefs;
-		
 		if ( $user->isAllowed( 'edit' ) ) {
 			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
 			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( "0", "1" ) ) ) ) {
@@ -24,9 +22,11 @@
 		if ( $user->isAllowed( 'loop-rendermode' ) ) {
 			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
 			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
-				$wgHiddenPrefs['LoopRenderMode'] = $looprendermodeRequestValue;
+				$user->setOption( 'LoopRenderMode', $looprendermodeRequestValue );
+				$user->saveSettings();
 			} else {
-				$wgHiddenPrefs['LoopRenderMode'] = 'default';
+				$user->setOption( 'LoopRenderMode', 'default' );
+				$user->saveSettings();
 			}
 		}	
 			

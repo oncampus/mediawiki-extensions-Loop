@@ -31,15 +31,13 @@ class LoopHooks {
 	 * @return boolean
 	 */
 	public static function onPageRenderingHash( &$confstr, User $user, &$forOptions ) {
-	
-		global $wgHiddenPrefs;
 		
 		if ( in_array( 'loopeditmode', $forOptions ) ) {
 			$confstr .= "!loopeditmode=" . $user->getOption( 'LoopEditMode', false, true );
 		}
 		
 		if ( in_array( 'looprendermode', $forOptions ) ) {
-			$confstr .= "!looprendermode=" . $wgHiddenPrefs[ 'LoopRenderMode' ];
+			$confstr .= "!looprendermode=" . $user->getOption( 'LoopRenderMode' );
 		}
 	
 		return true;

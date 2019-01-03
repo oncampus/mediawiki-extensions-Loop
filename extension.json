@@ -247,13 +247,71 @@
 			"loop-export-scorm": true,
 			"loop-settings-edit": false
 		}
-	},	
-	"DefaultUserOptions": {
-		"LoopEditMode": false
 	},
-	"HiddenPrefs": {
+	"DefaultUserOptions": {
+		"LoopEditMode": false,
 		"LoopRenderMode": "default"
 	},
+	"HiddenPrefs": [
+		"LoopRenderMode",
+		"language",
+		"fancysig",
+		"nickname",
+		"gender",
+		"skin",
+		"math",
+		"imagesize",
+		"thumbsize",
+		"date",
+		"diffonly",
+		"norollbackdiff",
+		"underline",
+		"stubthreshold",
+		"showhiddencats",
+		"numberheadings",
+		"showhiddencats",
+		"timecorrection",
+		"editsectiononrightclick",
+		"editondblclick",
+		"flaggedrevseditdiffs",
+		"editfont",
+		"forceeditsummary",
+		"useeditwarning",
+		"showtoolbar",
+		"usebetatoolbar",
+		"previewonfirst",
+		"previewontop",
+		"uselivepreview",
+		"rcdays",
+		"rclimit",
+		"usenewrc",
+		"hideminor",
+		"newpageshidepatrolled",
+		"flaggedrevssimpleui",
+		"flaggedrevsstable",
+		"flaggedrevsviewdiffs",
+		"watchlistdays",
+		"extendwatchlist",
+		"wllimit",
+		"watchlisthideown",
+		"watchlisthidebots",
+		"watchlisthideminor",
+		"watchcreations",
+		"watchrollback",
+		"watchlisthideanons",
+		"watchlisthideliu",
+		"watchlisttoken",
+		"watchlisthidepatrolled",
+		"watchlistreloadautomatically",
+		"watchlistunwatchlinks",
+		"watchlisthidecategorization",
+		"watchrollback",
+		"watchdefault",
+		"watchmoves",
+		"watchdeletion",
+		"watchuploads",
+		"flaggedrevswatch"
+	],
 	"AvailableRights": [
 		"loop-toc-edit",
 		"loop-export-pdf",
@@ -333,20 +391,64 @@
 					"icon": "",
 					"url": ""
 				},
-				  "CC-BY": {
+				  "Public Domain": {
+					"url": "https://creativecommons.org/publicdomain/mark/1.0/",
+					"icon": "https://licensebuttons.net/p/mark/1.0/80x15.png"
+				},
+				  "CC-0": {
+					"url": "https://creativecommons.org/publicdomain/zero/1.0",
+					"icon": "https://licensebuttons.net/l/zero/1.0/80x15.png"
+				},
+				  "CC-BY-3.0": {
+					"url": "https://creativecommons.org/licenses/by/3.0/",
+					"icon": "https://licensebuttons.net/l/by/3.0/80x15.png"
+				},
+				  "CC-BY-4.0": {
 					"url": "https://creativecommons.org/licenses/by/4.0/",
-					"icon": "/mediawiki/extensions/Loop/resources/img/cc-by-4.png"
+					"icon": "https://licensebuttons.net/l/by/4.0/80x15.png"
 				},
-				  "CC-BY-SA": {
+				  "CC-BY-SA-3.0": {
+					"url": "https://creativecommons.org/licenses/by-sa/3.0/",
+					"icon": "https://licensebuttons.net/l/by-sa/3.0/80x15.png"
+				},
+				  "CC-BY-SA-4.0": {
 					"url": "https://creativecommons.org/licenses/by-sa/4.0/",
-					"icon": "/mediawiki/extensions/Loop/resources/img/cc-by-sa-4.png"
+					"icon": "https://licensebuttons.net/l/by-sa/4.0/80x15.png"
 				},
-				  "CC-BY-NC-SA": {
+				  "CC-BY-NC-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nc/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nc/3.0/80x15.png"
+				},
+				  "CC-BY-NC-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nc/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nc/4.0/80x15.png"
+				},
+				  "CC-BY-ND-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nd/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nd/3.0/80x15.png"
+				},
+				  "CC-BY-ND-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nd/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nd/4.0/80x15.png"
+				},
+				  "CC-BY-NC-SA-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-sa/3.0/80x15.png"
+				},
+				  "CC-BY-NC-SA-4.0": {
 					"url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-					"icon": "/mediawiki/extensions/Loop/resources/img/cc-by-nc-sa-4.png"
+					"icon": "https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png"
+				},
+				  "CC-BY-NC-ND-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-nd/3.0/80x15.png"
+				},
+				  "CC-BY-NC-ND-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nd-nd/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-nd/4.0/80x15.png"
 				}
 			},
-			"description" : "Array of settings to configure social icons in footer area"
+			"description" : "Array of available Creative Commons licenses to apply"
 		},
 		"CustomLogo": {
 			"value" : {
@@ -370,8 +472,9 @@
 				"en",
 				"sv"
 			],
-			"description" : "Array of available skin styles to use"
+			"description" : "Array of available languages to use"
 		}
+		
 	}, 	
 	"manifest_version": 2
 }

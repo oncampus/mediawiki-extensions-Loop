@@ -21,7 +21,7 @@
 	"loopstructure-save-parsed-structure-error": "Error message occurs when the parsed structure content is empty",
 	"loopstructure-save-parse-error": "Parse error for the LOOP strucutre",
 	"loopstructure-save-success": "Saving succes of the LOOP structure",
-	"submit": "Replacement for submit button text"
+	"submit": "Replacement for submit button text",
 	"loopstructure-default-newpage-content": "Standard content for new pages",
 	
 	"loopsettings" : "Name of the LOOP settings special page in special:loopsettings",
