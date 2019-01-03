@@ -34,7 +34,9 @@
 		"LoopExportEpub": "includes/LoopExport.php",
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
-		"SpecialLoopExport": "includes/SpecialLoopExport.php"
+		"SpecialLoopExport": "includes/SpecialLoopExport.php",
+		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
+		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -50,12 +52,27 @@
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
 		"LoopStructureEdit": "SpecialLoopStructureEdit",
-		"LoopExport": "SpecialLoopExport"
+		"LoopExport": "SpecialLoopExport",
+		"LoopSettings": "SpecialLoopSettings",
+		"PurgeCache": "SpecialPurgeCache"
 	},		
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",
 		"remoteExtPath": "Loop/resources"
-	},		
+	},
+	"ResourceModules": {
+		"ext.loop-settings.js": {
+			"position": "bottom",
+			"scripts": [
+				"js/SpecialLoopSettings.js"
+			],
+			"dependencies": [
+				"oojs-ui-core",
+				"oojs-ui-widgets",
+				"mediawiki.Upload.Dialog"
+			]
+		}
+	},			
 	"TrackingCategories": [
 		"loop-tracking-category-error"
 	],
@@ -79,7 +96,8 @@
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
-			"loop-export-scorm": false
+			"loop-export-scorm": false,
+			"loop-settings-edit": false
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -89,6 +107,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": false,
+			"loop-settings-edit": false,
 			"createpage": true
 		},	
 		"sysop": {
@@ -99,8 +118,10 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-settings-edit": true,
 			"createpage": true,
-			"loop-rendermode": true
+			"loop-rendermode": true,
+			"purgecache": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -110,6 +131,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-settings-edit": true,
 			"unreviewedpages": true,
 			"upload": true,
 			"autoreview": true,
@@ -139,6 +161,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-settings-edit": true,
 			"unreviewedpages": true,
 			"upload": true,
 			"autoreview": true,
@@ -168,14 +191,15 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-settings-edit": false,
 			"unreviewedpages": true,
 			"upload": true,
 			"noratelimit": true,
 			"edit": true,
 			"createpage": true,
 			"purge": true,
-			"purgecache": true,
 			"reupload": true,
+			"purgecache": true,
 			"move": true,
 			"movefile": true,
 			"deletedtext": true,
@@ -194,8 +218,8 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
-			"purge": true,
-			"purgecache": true
+			"loop-settings-edit": false,
+			"purge": true
 		},
 		"student_edit": {
 			"edit": true,
@@ -205,10 +229,10 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-settings-edit": false,
 			"reupload": true,
 			"upload": true,
 			"purge": true,
-			"purgecache": true,
 			"createpage": true,
 			"deletedtext": true,
 			"deletedhistory": true,
@@ -220,15 +244,74 @@
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": true,
-			"loop-export-scorm": true
+			"loop-export-scorm": true,
+			"loop-settings-edit": false
 		}
-	},	
-    "DefaultUserOptions": {
-		"LoopEditMode": false
-    },
-    "HiddenPrefs": {
+	},
+	"DefaultUserOptions": {
+		"LoopEditMode": false,
 		"LoopRenderMode": "default"
-    },
+	},
+	"HiddenPrefs": [
+		"LoopRenderMode",
+		"language",
+		"fancysig",
+		"nickname",
+		"gender",
+		"skin",
+		"math",
+		"imagesize",
+		"thumbsize",
+		"date",
+		"diffonly",
+		"norollbackdiff",
+		"underline",
+		"stubthreshold",
+		"showhiddencats",
+		"numberheadings",
+		"showhiddencats",
+		"timecorrection",
+		"editsectiononrightclick",
+		"editondblclick",
+		"flaggedrevseditdiffs",
+		"editfont",
+		"forceeditsummary",
+		"useeditwarning",
+		"showtoolbar",
+		"usebetatoolbar",
+		"previewonfirst",
+		"previewontop",
+		"uselivepreview",
+		"rcdays",
+		"rclimit",
+		"usenewrc",
+		"hideminor",
+		"newpageshidepatrolled",
+		"flaggedrevssimpleui",
+		"flaggedrevsstable",
+		"flaggedrevsviewdiffs",
+		"watchlistdays",
+		"extendwatchlist",
+		"wllimit",
+		"watchlisthideown",
+		"watchlisthidebots",
+		"watchlisthideminor",
+		"watchcreations",
+		"watchrollback",
+		"watchlisthideanons",
+		"watchlisthideliu",
+		"watchlisttoken",
+		"watchlisthidepatrolled",
+		"watchlistreloadautomatically",
+		"watchlistunwatchlinks",
+		"watchlisthidecategorization",
+		"watchrollback",
+		"watchdefault",
+		"watchmoves",
+		"watchdeletion",
+		"watchuploads",
+		"flaggedrevswatch"
+	],
 	"AvailableRights": [
 		"loop-toc-edit",
 		"loop-export-pdf",
@@ -237,7 +320,8 @@
 		"loop-export-epub",
 		"loop-export-html",
 		"loop-export-scorm",
-		"loop-rendermode"
+		"loop-rendermode",
+		"loop-settings-edit"
 	],
 	"MessagesDirs": {
 		"Loop": [
@@ -248,14 +332,149 @@
 		"LoopAlias": "Loop.i18n.alias.php"
 	},		
 	"config": {
-        "Xmlfo2PdfServiceUrl": {
-        	"value" : "",
-        	"description" : "URL of the Service to convert XMLFO to PDF"
-        },
-        "Xmlfo2PdfServiceToken": {
-        	"value" : "",
-        	"description" : "Token for the Service to convert XMLFO to PDF"
-        }
+		"Xmlfo2PdfServiceUrl": {
+			"value" : "",
+			"description" : "URL of the Service to convert XMLFO to PDF"
+		},
+		"Xmlfo2PdfServiceToken": {
+			"value" : "",
+			"description" : "Token for the Service to convert XMLFO to PDF"
+		},
+		"SocialIcons": {
+			"value" : {
+				"Facebook": {
+					"icon": "",
+					"link": ""
+				},
+				  "Twitter": {
+					"icon": "",
+					"link": ""
+				},
+				  "Youtube": {
+					"icon": "",
+					"link": ""
+				},
+				  "Github": {
+					"icon": "",
+					"link": ""
+				},
+				  "Instagram": {
+					"icon": "",
+					"link": ""
+				}
+			},
+			"description" : "Array of settings to configure social icons in footer area"
+		},
+		"ImprintLink": {
+			"value": "/loop/Impressum",
+			"description": "Link to imprint page; required"
+		},
+		"PrivacyLink": {
+			"value": "/loop/Datenschutz",
+			"description": "Link to privacy policy page; required"
+		},
+		"OncampusLink": {
+			"value": "showOncampusLink",
+			"description": "Whether a link to oncampus should be shown or not"
+		},
+		"extraFooter": {
+			"value" : {
+				"useExtraFooter": "false",
+				"wikiText": "",
+				"parsedText": ""
+			},
+			"description": "Array for adding an additional footer with custom content, pre-rendered as parsedText"
+		},
+		"AvailableLicenses": {
+			"value" : {
+				"": {
+					"icon": "",
+					"url": ""
+				},
+				  "Public Domain": {
+					"url": "https://creativecommons.org/publicdomain/mark/1.0/",
+					"icon": "https://licensebuttons.net/p/mark/1.0/80x15.png"
+				},
+				  "CC-0": {
+					"url": "https://creativecommons.org/publicdomain/zero/1.0",
+					"icon": "https://licensebuttons.net/l/zero/1.0/80x15.png"
+				},
+				  "CC-BY-3.0": {
+					"url": "https://creativecommons.org/licenses/by/3.0/",
+					"icon": "https://licensebuttons.net/l/by/3.0/80x15.png"
+				},
+				  "CC-BY-4.0": {
+					"url": "https://creativecommons.org/licenses/by/4.0/",
+					"icon": "https://licensebuttons.net/l/by/4.0/80x15.png"
+				},
+				  "CC-BY-SA-3.0": {
+					"url": "https://creativecommons.org/licenses/by-sa/3.0/",
+					"icon": "https://licensebuttons.net/l/by-sa/3.0/80x15.png"
+				},
+				  "CC-BY-SA-4.0": {
+					"url": "https://creativecommons.org/licenses/by-sa/4.0/",
+					"icon": "https://licensebuttons.net/l/by-sa/4.0/80x15.png"
+				},
+				  "CC-BY-NC-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nc/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nc/3.0/80x15.png"
+				},
+				  "CC-BY-NC-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nc/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nc/4.0/80x15.png"
+				},
+				  "CC-BY-ND-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nd/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nd/3.0/80x15.png"
+				},
+				  "CC-BY-ND-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nd/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nd/4.0/80x15.png"
+				},
+				  "CC-BY-NC-SA-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-sa/3.0/80x15.png"
+				},
+				  "CC-BY-NC-SA-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png"
+				},
+				  "CC-BY-NC-ND-3.0": {
+					"url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-nd/3.0/80x15.png"
+				},
+				  "CC-BY-NC-ND-4.0": {
+					"url": "https://creativecommons.org/licenses/by-nd-nd/4.0/",
+					"icon": "https://licensebuttons.net/l/by-nc-nd/4.0/80x15.png"
+				}
+			},
+			"description" : "Array of available Creative Commons licenses to apply"
+		},
+		"CustomLogo": {
+			"value" : {
+				"useCustomLogo": "",
+				"customFileName": "",
+				"customFilePath": ""
+			},
+			"description" : "Array of information about a custom logo for header"
+		},
+		"SkinStyles": {
+			"value": [
+				"loop-common",
+				"loop-oncampus"
+			],
+			"description" : "Array of available skin styles to use"
+		},
+		"SupportedLoopLanguages": {
+			"value": [
+				"de",
+				"de-formal",
+				"en",
+				"sv"
+			],
+			"description" : "Array of available languages to use"
+		}
+		
 	}, 	
 	"manifest_version": 2
 }

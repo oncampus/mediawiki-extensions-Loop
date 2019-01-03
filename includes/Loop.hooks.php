@@ -31,13 +31,15 @@ class LoopHooks {
 	 * @return boolean
 	 */
 	public static function onPageRenderingHash( &$confstr, User $user, &$forOptions ) {
-	
+		
+		global $wgDefaultUserOptions;
+		
 		if ( in_array( 'loopeditmode', $forOptions ) ) {
-			$confstr .= "!loopeditmode=" . $user->getOption( 'loopeditmode', false, true );
+			$confstr .= "!loopeditmode=" . $user->getOption( 'LoopEditMode', false, true );
 		}
 		
 		if ( in_array( 'looprendermode', $forOptions ) ) {
-			$confstr .= "!looprendermode=" . $user->getOption( 'looprendermode' );
+			$confstr .= "!looprendermode=" . $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions["LoopRenderMode"], true );
 		}
 	
 		return true;

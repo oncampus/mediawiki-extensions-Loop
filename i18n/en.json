@@ -22,7 +22,40 @@
 	"loopstructure-save-parse-error": "The format of the table of contents is invalid.",
 	"loopstructure-save-success": "The table of contents has been updated successfully.",
 	"submit": "Save",
-	"loopstructure-default-newpage-content": "This is a new page.",
+	"loopstructure-default-newpage-content": "This is a new page.",	
+	
+	"loopsettings" : "LOOP settings",
+	"loopsettings-specialpage-title" : "LOOP settings",
+	"loopsettings-no-permission": "You are not permitted to view this page.",
+	"loopsettings-save-success": "The changes were updated. Empty cache to see all changes.",
+	"loopsettings-use-cc-label": "Use Creative Commons license",
+	"loopsettings-rights-label": "Rights text in footer",
+	"loopsettings-rights-text-placeholder": "for example the name of the copyright owner",
+	"loopsettings-rights-text-hint": "Only alphanumeric and these special characters are permitted:",
+	"loopsettings-imprint-label": "Link to imprint page / website",
+	"loopsettings-privacy-label": "Link to privacy page / website",
+	"loopsettings-oncampus-label": "Show link to oncampus website",
+	"loopsettings-language-label": "LOOP's standard language",
+	"loopsettings-extra-footer-label": "Add an additional footer, for example to add '''sponsors' logos'''",
+	"loopsettings-extra-footer-placeholder": "for example Presented by <nowiki>[[File:logo.png|100px]]</nowiki>",
+	"loopsettings-link-icon-label": "Show icon and link to: ",
+	"loopsettings-upload-hint": "You can enter previously uploaded files or upload new ones here.",
+	"loopsettings-customlogo-label": "Show custom logo in header",
+	"loopsettings-customlogo-hint": "Please enter a filename, for example Filename.jpg",
+	"loopsettings-error-customlogo-notfound": "There is no uploaded file with the given filename for a custom logo. Please check spelling or upload the file first.",
+	"loopsettings-headline-important-links": "Important links",
+	"loopsettings-headline-license": "License",
+	"loopsettings-headline-extrafooter": "Additional footer",
+	"loopsettings-headline-footer-links": "Links in Footer area",
+	"loopsettings-headline-logo": "Logo",
+	"loopsettings-headline-skinstyle": "Theme",
+	"loopsettings-headline-language": "Language",
+	"loopsettings-tab-general": "General",
+	"loopsettings-tab-footer": "Footer",
+	"loopsettings-tab-appearance": "Appearance",
+	"loopsettings-url-imprint-privacy-hint": "Please enter a full URL, including http:// OR link to a page in LOOP, for example /loop/Imprint",
+	"loopsettings-skin-style-label": "Skin-Style",
+	"loopsettings-error": "An error occurred trying to save",
 	
 	"loopexport-specialpage-title" : "Export",
 	"loopexport": "Export",
@@ -34,6 +67,7 @@
 	"right-loop-export-epub": "Export LOOP as ePub",
 	"right-loop-export-html": "Export LOOP as Offline HTML",
 	"right-loop-export-scorm": "Export LOOP as Scorm",
+	"right-loop-settings-edit": "Change LOOP settings",
 	
 	"action-loop-toc-edit": "Edit toc",
 	"action-loop-export-pdf": "Export LOOP as PDF",
@@ -44,6 +78,12 @@
 	"action-loop-export-scorm": "Export LOOP as Scorm",
 
 	"export-linktext-xml": "Download as XML",
-	"export-linktext-pdf": "Download as PDF"
+	"export-linktext-pdf": "Download as PDF",
+	
+	"purgecache"  : "Purge cache",
+	"purgecache-warning": "This will purge the cache tables.",
+	"purgecache-purged": "The cache has been purged.",
+	"purgecache-button": "Purge",
+	"right-purgecache": "Wipe the OBJECTCACHE table"
 
 }

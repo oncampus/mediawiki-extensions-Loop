@@ -13,8 +13,8 @@
 	"specialpages-group-loop" : "LOOP",
 	"loopstructure-specialpage-title" : "Inhaltsverzeichnis",
 	"loopstructure-edit-specialpage-title" : "Inhaltsverzeichnis bearbeiten",
-	"loopstructure" : "Inhaltsverzeichnis",
-	"loopstructureedit" : "Inhaltsverzeichnis bearbeiten",
+	"loopstructure": "Inhaltsverzeichnis",
+	"loopstructureedit": "Inhaltsverzeichnis bearbeiten",
 	"loop-token-error": "Der User Token ist ungültig.",
 	"loop-permission-error": "Sie verügen nicht über genügend Rechte, um die gewünschte Aktion durchzuführen.",
 	"loopstructure-save-equal-error": "Es konnte keine Änderung festgestellt werden.",
@@ -23,8 +23,42 @@
 	"loopstructure-save-success": "Das Inhaltsverzeichnis wurde erfolgreich aktualisiert",
 	"submit": "Speichern",
 	"loopstructure-default-newpage-content": "Dies ist eine neu erstellte Seite.",
+	
+	"loopsettings": "LOOP-Einstellungen",
+	"loopsettings-specialpage-title": "LOOP-Einstellungen",
+	"loopsettings-no-permission": "Sie haben nicht die Rechte, um diese Seite sehen zu können.",
+	"loopsettings-save-success": "Die Änderungen wurden übernommen. Löschen Sie den Cache, um alle Änderungen sehen zu können.",
+	"loopsettings-use-cc-label": "Creative Commons Lizenz verwenden",
+	"loopsettings-rights-label": "Rechteangabe im Footer",
+	"loopsettings-rights-text-placeholder": "z.B. Name des Rechteinhabers",
+	"loopsettings-rights-text-hint": "Der Text darf nur alphanumerische Zeichen sowie folgende Sonderzeichen enthalten:",
+	"loopsettings-imprint-label": "Link zum Impressum",
+	"loopsettings-privacy-label": "Link zum Datenschutz",
+	"loopsettings-oncampus-label": "Link zu oncampus anzeigen",
+	"loopsettings-language-label": "Sprache des LOOPs",
+	"loopsettings-extra-footer-label": "Extra Footer einblenden, z.B. für '''Förderlogos'''. Hier kann WikiText eingegeben werden.",
+	"loopsettings-extra-footer-placeholder": "z.B. Präsentiert von <nowiki>[[Datei:logo.png|100px]]</nowiki>",
+	"loopsettings-link-icon-label": "Icon anzeigen und verlinken: ",
+	"loopsettings-upload-hint": "Sie können bereits hochgeladene Dateien angeben oder hier neue Dateien hochladen.",
+	"loopsettings-customlogo-label": "Eigenes Logo in der Kopfzeile anzeigen",
+	"loopsettings-customlogo-hint": "Bitte geben Sie einen Dateinamen an, z.B. Dateiname.png",
+	"loopsettings-error-customlogo-notfound": "Die angegebene Datei für das Logo konnte nicht gefunden werden. Bitte überprüfen Sie die Schreibweise oder laden Sie die Datei erst hoch.",
+	"loopsettings-headline-important-links": "Wichtige Links",
+	"loopsettings-headline-license": "Lizenzangaben",
+	"loopsettings-headline-extrafooter": "Zusätzlicher Footer",
+	"loopsettings-headline-footer-links": "Verlinkungen im Footer",
+	"loopsettings-headline-logo": "Logo",
+	"loopsettings-headline-skinstyle": "Theme",
+	"loopsettings-headline-language": "Sprache",
+	"loopsettings-tab-general": "Allgemeines",
+	"loopsettings-tab-footer": "Footer",
+	"loopsettings-tab-appearance": "Aussehen",
+	"loopsettings-url-imprint-privacy-hint": "Bitte geben Sie eine gültige URL mit http:// an, oder einen lokalen Link in diesem LOOP, z.B. /loop/Impressum",
+	"loopsettings-url-hint": "Bitte geben Sie eine gültige URL mit http:// an.",
+	"loopsettings-skin-style-label": "Skin-Stil",
+	"loopsettings-error": "Es ist ein Fehler beim Speichern dieser Einstellung aufgetreten",
 		
-	"loopexport-specialpage-title" : "Export",
+	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
 	
 	"right-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
@@ -34,6 +68,7 @@
 	"right-loop-export-epub": "Export LOOP als ePub",
 	"right-loop-export-html": "Export LOOP als Offline HTML",
 	"right-loop-export-scorm": "Export LOOP als Scorm Paket",
+	"right-loop-settings-edit": "LOOP-Einstellungen ändern",
 	
 	"action-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"action-loop-export-pdf": "Export LOOP als PDF",
@@ -44,7 +79,12 @@
 	"action-loop-export-scorm": "Export LOOP als Scorm Paket",
   
 	"export-linktext-xml": "Als XML herunterladen",
-	"export-linktext-pdf": "Als PDF herunterladen"
-
+	"export-linktext-pdf": "Als PDF herunterladen",
+	
+	"purgecache": "Cache löschen",
+	"purgecache-warning": "Dies löscht den Cache.",
+	"purgecache-purged": "Der Cache wurde gelöscht.",
+	"purgecache-button": "Löschen",
+	"right-purgecache": "OBJECTCACHE-Tabelle löschen"
 
 }
