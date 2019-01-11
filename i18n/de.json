@@ -80,11 +80,11 @@
   
 	"export-linktext-xml": "Als XML herunterladen",
 	"export-linktext-pdf": "Als PDF herunterladen",
+	"export-linktext-mp3": "Als MP3 herunterladen",
 	
 	"purgecache": "Cache löschen",
 	"purgecache-warning": "Dies löscht den Cache.",
 	"purgecache-purged": "Der Cache wurde gelöscht.",
 	"purgecache-button": "Löschen",
 	"right-purgecache": "OBJECTCACHE-Tabelle löschen"
-
 }

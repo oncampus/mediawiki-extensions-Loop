@@ -79,11 +79,11 @@
 
 	"export-linktext-xml": "Linktext to download LOOP in export format XML",
 	"export-linktext-pdf": "Linktext to download LOOP in export format PDF",
+	"export-linktext-mp3": "Linktext to download LOOP in export format MP3",
 	
 	"purgecache": "Special Page name for PurgeCache",
 	"purgecache-warning": "Warning before execution of PurgeCache",
 	"purgecache-purged": "Message after purging",
 	"purgecache-button": "Button label for purging",
 	"right-purgecache": "Right for PurgeCache"
-
 }
