@@ -566,6 +566,8 @@ class LoopStructureItem {
 	}
 	
 	public function getBreadcrumb ( $max_len = 100 ) {
+		
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	
 		$breadcrumb = '<li class="active">' . $this->tocNumber . ' ' . $this->tocText .'</li>';
 		$len = strlen( $this->tocNumber ) + strlen( $this->tocText ) + 1;
