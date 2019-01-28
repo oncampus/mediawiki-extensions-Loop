@@ -480,3 +480,70 @@ class SpecialLoopSettings extends SpecialPage {
 	}
 	
 }
+class LoopSettings {
+
+	public $imprintlink;
+	public $privacylink;
+	public $oncampuslink;
+	public $rightstext;
+	public $rightstype;
+	public $rightsurl;
+	public $rightsicon;
+	public $customlogo_use;
+	public $customlogo_filename;
+	public $customlogo_filepath;
+	public $languagecode;
+	public $soc_fb_icon;
+	public $soc_fb_link;
+	public $soc_tw_icon;
+	public $soc_tw_link;
+	public $soc_yt_icon;
+	public $soc_yt_link;
+	public $soc_gh_icon;
+	public $soc_gh_link;
+	public $soc_in_icon;
+	public $soc_in_link;
+	/**
+	 * Add settings to the database
+	 * @return bool true
+	 */
+	function addToDatabase() {
+		
+		$dbw = wfGetDB( DB_MASTER );
+		$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
+			
+		$dbw->insert(
+			'loop_settings',
+			array(
+					'lset_imprintlink' => $imprintlink,
+					'lset_privacylink' => $privacylink,
+					'lset_oncampuslink' => $oncampuslink,
+					'lset_rightstext' => $rightstext,
+					'lset_rightstype' => $rightstype,
+					'lset_rightsurl' => $rightsurl,
+					'lset_rightsicon' => $rightsicon,
+					'lset_customlogo_use' => $customlogo_use,
+					'lset_customlogo_filename' => $customlogo_filename,
+					'lset_customlogo_filepath' => $customlogo_filepath,
+					'lset_languagecode' => $languagecode,
+					'lset_soc_fb_icon' => $soc_fb_icon,
+					'lset_soc_fb_link' => $soc_fb_link,
+					'lset_soc_tw_icon' => $soc_tw_icon,
+					'lset_soc_tw_link' => $soc_tw_link,
+					'lset_soc_yt_icon' => $soc_yt_icon,
+					'lset_soc_yt_link' => $soc_yt_link,
+					'lset_soc_gh_icon' => $soc_gh_icon,
+					'lset_soc_gh_link' => $soc_gh_link,
+					'lset_soc_in_icon' => $soc_in_icon,
+					'lset_soc_in_link' => $soc_in_link
+			),
+			__METHOD__,
+			array(
+					'ORDER BY' => 'lsi_sequence ASC'
+			)
+		);
+		
+		return true;
+		
+	}
+}
