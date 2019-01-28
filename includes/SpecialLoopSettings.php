@@ -33,29 +33,7 @@ class SpecialLoopSettings extends SpecialPage {
 			
 			if( ! empty( $requestToken ) ) {
 				if( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
-# unusual formatting for writing a file					
-$newFileContent = 
-'<?php
-$wgSocialIcons = ' . var_export( $newLoopSettings['socialIcons'], true) . ';
-$wgExtraFooter = ' . var_export( $newLoopSettings['extraFooter'], true) . ';
-$wgHiddenPrefs["LoopSkinStyle"] = "' . htmlspecialchars( $newLoopSettings['skinStyle']) . '";
-$wgImprintLink = "' . htmlspecialchars( $newLoopSettings['imprintLink']) . '";
-$wgPrivacyLink = "' . htmlspecialchars( $newLoopSettings['privacyLink']) . '";
-$wgOncampusLink = "' . htmlspecialchars( $newLoopSettings['oncampusLink']) . '";
 
-$wgRightsText = "' . htmlspecialchars( $newLoopSettings['rightsText']) . '";
-$wgRightsType = "' . htmlspecialchars( $newLoopSettings['rightsType']) . '";
-$wgRightsUrl = "' . htmlspecialchars( $newLoopSettings['rightsUrl']) . '";
-$wgRightsIcon = "' . htmlspecialchars( $newLoopSettings['rightsIcon']) . '";
-$wgCustomLogo = '. var_export( $newLoopSettings['customLogo'], true) .';
-$wgLanguageCode = "'.htmlspecialchars( $newLoopSettings['language']) . '";
-';
-				$servername = $_SERVER['SERVER_NAME'];
-				$settingsFilePath = $IP . '/LocalSettings/LocalSettings_' . $servername . '.php';
-				
-				$settingsFile = fopen( $settingsFilePath, 'w' ) or die( "can't write settings" );
-				fwrite( $settingsFile, $newFileContent);
-				fclose( $settingsFile);
 				
 				$currentLoopSettings = $newLoopSettings;
 				
@@ -257,7 +235,7 @@ $wgLanguageCode = "'.htmlspecialchars( $newLoopSettings['language']) . '";
 						$html .= '<input type="checkbox" name="footer-'. $socialIcons .'-icon" id="footer-'. $socialIcons .'-icon" value="'. $socialIcons .'" '. ( ! empty ( $currentLoopSettings['socialIcons'][$socialIcons]['icon']) ? 'checked' : '' ) .'>
 							<label for="footer-' . $socialIcons .'-icon"><span class="ic ic-social-' . strtolower( $socialIcons ) . '"></span>
 							'. $socialIcons . ' ' . $this->msg( 'loopsettings-link-icon-label' ) . '</label>
-							<input type="url" ' . ( empty( $currentLoopSettings['socialIcons'][$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $currentLoopSettings['socialIcons'][$socialIcons]['url'] .'">
+							<input type="url" ' . ( empty( $currentLoopSettings['socialIcons'][$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $currentLoopSettings['socialIcons'][$socialIcons]['link'] .'">
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
 							<br>';
 					} 
@@ -303,13 +281,13 @@ $wgLanguageCode = "'.htmlspecialchars( $newLoopSettings['language']) . '";
 				$newLoopSettings['socialIcons'][$socialIcons]['icon'] = $request->getText( 'footer-' . $socialIcons . '-icon' );
 				
 				if ( ! empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) && filter_var( $request->getText( 'footer-' . $socialIcons . '-url' ), FILTER_VALIDATE_URL ) ) ) {
-					$newLoopSettings['socialIcons'][$socialIcons]['url'] = $request->getText( 'footer-' . $socialIcons . '-url' );
+					$newLoopSettings['socialIcons'][$socialIcons]['link'] = $request->getText( 'footer-' . $socialIcons . '-url' );
 				} else {
-					$newLoopSettings['socialIcons'][$socialIcons]['url'] = '';
+					$newLoopSettings['socialIcons'][$socialIcons]['link'] = '';
 				}
 			} else {
 				$newLoopSettings['socialIcons'][$socialIcons]['icon'] = $previousSettings['socialIcons'][$socialIcons]['icon'];
-				$newLoopSettings['socialIcons'][$socialIcons]['url'] = $previousSettings['socialIcons'][$socialIcons]['url'];
+				$newLoopSettings['socialIcons'][$socialIcons]['link'] = $previousSettings['socialIcons'][$socialIcons]['link'];
 				array_push( $newLoopSettings['errors'], $this->msg( 'loopsettings-error' )  . ': ' . $socialIcons );
 			}	
 			
