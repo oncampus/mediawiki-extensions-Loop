@@ -150,8 +150,7 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"protect": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -180,8 +179,7 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"protect": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -208,8 +206,7 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"protect": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
