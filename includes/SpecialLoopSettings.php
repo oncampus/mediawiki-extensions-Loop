@@ -460,6 +460,9 @@ class LoopSettings {
 	public $customlogo_filename;
 	public $customlogo_filepath;
 	public $languagecode;
+	public $extrafooter_use;
+	public $extrafooter_wikitext;
+	public $extrafooter_parsed;
 	public $soc_fb_icon;
 	public $soc_fb_link;
 	public $soc_tw_icon;
@@ -492,6 +495,9 @@ class LoopSettings {
 					'lset_customlogo_filename' => $this->customlogo_filename,
 					'lset_customlogo_filepath' => $this->customlogo_filepath,
 					'lset_languagecode' => $this->languagecode,
+					'lset_extrafooter_use' => $this->extrafooter_use,
+					'lset_extrafooter_wiki' => $this->extrafooter_wiki,
+					'lset_extrafooter_parsed' => $this->extrafooter_parsed,
 					'lset_soc_fb_icon' => $this->soc_fb_icon,
 					'lset_soc_fb_link' => $this->soc_fb_link,
 					'lset_soc_tw_icon' => $this->soc_tw_icon,
@@ -533,6 +539,9 @@ class LoopSettings {
 				'lset_customlogo_filename',
 				'lset_customlogo_filepath',
 				'lset_languagecode',
+				'lset_extrafooter_use',
+				'lset_extrafooter_wiki',
+				'lset_extrafooter_parsed',
 				'lset_soc_fb_icon',
 				'lset_soc_fb_link',
 				'lset_soc_tw_icon',
@@ -546,32 +555,34 @@ class LoopSettings {
 			)
 		);
 	
-	
 		if( $row = $res->fetchObject() ) {
 	
 			$loopSettings = new loopSettings();
 
-			$loopSettings->imprintLink = $row->imprintlink;
-			$loopSettings->privacyLink = $row->privacylink;
-			$loopSettings->oncampusLink = $row->oncampuslink;
-			$loopSettings->rightsText = $row->rightstext;
-			$loopSettings->rightsType = $row->rightstype;
-			$loopSettings->rightsUrl = $row->rightsurl;
-			$loopSettings->rightsIcon = $row->rightsicon;
-			$loopSettings->customLogo = $row->customlogo_use;
-			$loopSettings->customLogoFileName = $row->customlogo_filename;
-			$loopSettings->customLogoFilePath = $row->customlogo_filepath;
-			$loopSettings->languageCode = $row->languagecode;
-			$loopSettings->facebookIcon = $row->soc_fb_icon;
-			$loopSettings->facebookLink = $row->soc_fb_link;
-			$loopSettings->twitterIcon = $row->soc_tw_icon;
-			$loopSettings->twitterLink = $row->soc_tw_link;
-			$loopSettings->youtubeIcon = $row->soc_yt_icon;
-			$loopSettings->youtubeLink = $row->soc_yt_link;
-			$loopSettings->githubIcon = $row->soc_gh_icon;
-			$loopSettings->githubLink = $row->soc_gh_link;
-			$loopSettings->instagramIcon = $row->soc_in_icon;
-			$loopSettings->instagramLink = $row->soc_in_link;
+			$loopSettings->imprintLink = $row->lset_imprintlink;
+			$loopSettings->privacyLink = $row->lset_privacylink;
+			$loopSettings->oncampusLink = $row->lset_oncampuslink;
+			$loopSettings->rightsText = $row->lset_rightstext;
+			$loopSettings->rightsType = $row->lset_rightstype;
+			$loopSettings->rightsUrl = $row->lset_rightsurl;
+			$loopSettings->rightsIcon = $row->lset_rightsicon;
+			$loopSettings->customLogo = $row->lset_customlogo_use;
+			$loopSettings->customLogoFileName = $row->lset_customlogo_filename;
+			$loopSettings->customLogoFilePath = $row->lset_customlogo_filepath;
+			$loopSettings->languageCode = $row->lset_languagecode;
+			$loopSettings->extrafooter_use = $row->lset_extrafooter_use;
+			$loopSettings->extrafooter_wiki = $row->lset_extrafooter_wiki;
+			$loopSettings->extrafooter_parsed = $row->lset_extrafooter_parsed;
+			$loopSettings->facebookIcon = $row->lset_soc_fb_icon;
+			$loopSettings->facebookLink = $row->lset_soc_fb_link;
+			$loopSettings->twitterIcon = $row->lset_soc_tw_icon;
+			$loopSettings->twitterLink = $row->lset_soc_tw_link;
+			$loopSettings->youtubeIcon = $row->lset_soc_yt_icon;
+			$loopSettings->youtubeLink = $row->lset_soc_yt_link;
+			$loopSettings->githubIcon = $row->lset_soc_gh_icon;
+			$loopSettings->githubLink = $row->lset_soc_gh_link;
+			$loopSettings->instagramIcon = $row->lset_soc_in_icon;
+			$loopSettings->instagramLink = $row->lset_soc_in_link;
 				
 			return $loopSettings;
 				
