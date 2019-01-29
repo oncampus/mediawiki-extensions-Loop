@@ -405,40 +405,7 @@ class SpecialLoopSettings extends SpecialPage {
 		
 	}
 
-	/**
-	 * Load items from database
-	 */
-	public function loadSettings() {
 	
-		$dbr = wfGetDB( DB_SLAVE );
-		
-		$res = $dbr->select(
-			'loop_settings',
-			array(
-				'lset_imprintlink',
-				'lset_privacylink',
-				'lset_oncampuslink',
-				'lset_rightstext',
-				'lset_rightstype',
-				'lset_rightsurl',
-				'lset_rightsicon',
-				'lset_customlogo_use',
-				'lset_customlogo_filename',
-				'lset_customlogo_filepath',
-				'lset_languagecode',
-				'lset_soc_fb_icon',
-				'lset_soc_fb_link',
-				'lset_soc_tw_icon',
-				'lset_soc_tw_link',
-				'lset_soc_yt_icon',
-				'lset_soc_yt_link',
-				'lset_soc_gh_icon',
-				'lset_soc_gh_link',
-				'lset_soc_in_icon',
-				'lset_soc_in_link'
-			)
-		);
-	}
 
 	/**
 	 * Gets variables from Settings file and puts it into an Array
@@ -510,40 +477,109 @@ class LoopSettings {
 	function addToDatabase() {
 		
 		$dbw = wfGetDB( DB_MASTER );
-		$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
 			
 		$dbw->insert(
 			'loop_settings',
 			array(
-					'lset_imprintlink' => $imprintlink,
-					'lset_privacylink' => $privacylink,
-					'lset_oncampuslink' => $oncampuslink,
-					'lset_rightstext' => $rightstext,
-					'lset_rightstype' => $rightstype,
-					'lset_rightsurl' => $rightsurl,
-					'lset_rightsicon' => $rightsicon,
-					'lset_customlogo_use' => $customlogo_use,
-					'lset_customlogo_filename' => $customlogo_filename,
-					'lset_customlogo_filepath' => $customlogo_filepath,
-					'lset_languagecode' => $languagecode,
-					'lset_soc_fb_icon' => $soc_fb_icon,
-					'lset_soc_fb_link' => $soc_fb_link,
-					'lset_soc_tw_icon' => $soc_tw_icon,
-					'lset_soc_tw_link' => $soc_tw_link,
-					'lset_soc_yt_icon' => $soc_yt_icon,
-					'lset_soc_yt_link' => $soc_yt_link,
-					'lset_soc_gh_icon' => $soc_gh_icon,
-					'lset_soc_gh_link' => $soc_gh_link,
-					'lset_soc_in_icon' => $soc_in_icon,
-					'lset_soc_in_link' => $soc_in_link
-			),
-			__METHOD__,
-			array(
-					'ORDER BY' => 'lsi_sequence ASC'
+					'lset_imprintlink' => $this->imprintlink,
+					'lset_privacylink' => $this->privacylink,
+					'lset_oncampuslink' => $this->oncampuslink,
+					'lset_rightstext' => $this->rightstext,
+					'lset_rightstype' => $this->rightstype,
+					'lset_rightsurl' => $this->rightsurl,
+					'lset_rightsicon' => $this->rightsicon,
+					'lset_customlogo_use' => $this->customlogo_use,
+					'lset_customlogo_filename' => $this->customlogo_filename,
+					'lset_customlogo_filepath' => $this->customlogo_filepath,
+					'lset_languagecode' => $this->languagecode,
+					'lset_soc_fb_icon' => $this->soc_fb_icon,
+					'lset_soc_fb_link' => $this->soc_fb_link,
+					'lset_soc_tw_icon' => $this->soc_tw_icon,
+					'lset_soc_tw_link' => $this->soc_tw_link,
+					'lset_soc_yt_icon' => $this->soc_yt_icon,
+					'lset_soc_yt_link' => $this->soc_yt_link,
+					'lset_soc_gh_icon' => $this->soc_gh_icon,
+					'lset_soc_gh_link' => $this->soc_gh_link,
+					'lset_soc_in_icon' => $this->soc_in_icon,
+					'lset_soc_in_link' => $this->soc_in_link
 			)
 		);
 		
 		return true;
 		
+	}
+
+	
+	/**
+	 * Get item for given article and structure from database
+	 *
+	 * @param int $articleId
+	 * @param int $structure
+	 */
+	public static function newFromIds( $article ) {
+	
+		$dbr = wfGetDB( DB_SLAVE );
+		$res = $dbr->select(
+			'loop_settings',
+			array(
+				'lset_imprintlink',
+				'lset_privacylink',
+				'lset_oncampuslink',
+				'lset_rightstext',
+				'lset_rightstype',
+				'lset_rightsurl',
+				'lset_rightsicon',
+				'lset_customlogo_use',
+				'lset_customlogo_filename',
+				'lset_customlogo_filepath',
+				'lset_languagecode',
+				'lset_soc_fb_icon',
+				'lset_soc_fb_link',
+				'lset_soc_tw_icon',
+				'lset_soc_tw_link',
+				'lset_soc_yt_icon',
+				'lset_soc_yt_link',
+				'lset_soc_gh_icon',
+				'lset_soc_gh_link',
+				'lset_soc_in_icon',
+				'lset_soc_in_link'
+			)
+		);
+	
+	
+		if( $row = $res->fetchObject() ) {
+	
+			$loopSettings = new loopSettings();
+
+			$loopSettings->imprintLink = $row->imprintlink;
+			$loopSettings->privacyLink = $row->privacylink;
+			$loopSettings->oncampusLink = $row->oncampuslink;
+			$loopSettings->rightsText = $row->rightstext;
+			$loopSettings->rightsType = $row->rightstype;
+			$loopSettings->rightsUrl = $row->rightsurl;
+			$loopSettings->rightsIcon = $row->rightsicon;
+			$loopSettings->customLogo = $row->customlogo_use;
+			$loopSettings->customLogoFileName = $row->customlogo_filename;
+			$loopSettings->customLogoFilePath = $row->customlogo_filepath;
+			$loopSettings->languageCode = $row->languagecode;
+			$loopSettings->facebookIcon = $row->soc_fb_icon;
+			$loopSettings->facebookLink = $row->soc_fb_link;
+			$loopSettings->twitterIcon = $row->soc_tw_icon;
+			$loopSettings->twitterLink = $row->soc_tw_link;
+			$loopSettings->youtubeIcon = $row->soc_yt_icon;
+			$loopSettings->youtubeLink = $row->soc_yt_link;
+			$loopSettings->githubIcon = $row->soc_gh_icon;
+			$loopSettings->githubLink = $row->soc_gh_link;
+			$loopSettings->instagramIcon = $row->soc_in_icon;
+			$loopSettings->instagramLink = $row->soc_in_link;
+				
+			return $loopSettings;
+				
+		} else {
+				
+			return false;
+				
+		}
+	
 	}
 }
