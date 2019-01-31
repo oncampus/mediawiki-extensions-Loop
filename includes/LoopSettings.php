@@ -114,6 +114,11 @@ public function loadSettings() {
             'lset_socialghlink',
             'lset_socialinicon',
             'lset_socialinlink'
+        ),
+        array(),
+        __METHOD__,
+        array(
+            'ORDER BY' => 'lset_id DESC LIMIT 1'
         )
     );
     //echo "test";
