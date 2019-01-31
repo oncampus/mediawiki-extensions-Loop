@@ -248,9 +248,9 @@ class SpecialLoopSettings extends SpecialPage {
 					#		<input type="url" ' . ( empty( $currentLoopSettings->socialIcons'][$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $currentLoopSettings->socialIcons'][$socialIcons]['link'] .'">
 					#		<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
 					#		<br>';
-					} 
+					} */
 				$html .= '</div>'; // end of footer-tab
-				*/
+				
 			$html .= '</div>'; // end of tab-content
 			
 			$html .= '<input type="hidden" name="t" id="loopsettings-token" value="' . $saltedToken . '"></input>
