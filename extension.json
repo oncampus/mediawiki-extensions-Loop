@@ -35,6 +35,7 @@
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
 		"SpecialLoopExport": "includes/SpecialLoopExport.php",
+		"LoopSettings": "includes/LoopSettings.php",
 		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
 		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
 	},
