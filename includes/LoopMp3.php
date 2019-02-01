@@ -78,12 +78,29 @@ class LoopMp3 {
 			var_dump($e);
 		}
 		
+		if ( isset( $ssml ) ) {
+			
+		//echo $ssml; 
+			//var_dump(explode('<mark name="start_article2"/>',$ssml ));
+					
+		$dom = new DOMDocument;
+		$dom->loadXML($ssml);
+		$marks = $dom->getElementsByTagName('article');
+		foreach ($marks as $mark) {
+			$article_data = array (
+				"id" => $mark,
+				"content" => $dom->saveXML($mark)
+				);
+   		 	var_dump( $article_data);
+}
+		// (<article id="article)(\d*)(">)(.*)(</article>)
 		
-		var_dump($ssml); exit;
+//var_dump($marks); 
+			exit;
+		}
 		
-		
-		
-		
+
+		//
 		
 		/*
 		 * ToDo

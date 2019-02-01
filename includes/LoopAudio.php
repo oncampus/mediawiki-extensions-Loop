@@ -1,6 +1,7 @@
 <?php 
 $server = $_REQUEST[ 'server' ];
 $articleId = $_REQUEST[ 'articleid' ];
+$revId = $_REQUEST[ 'revid' ];
 
 require_once( "../../../LocalSettings/LoopSettings.php" );
 
@@ -109,12 +110,14 @@ function getAudio ( $articleData ) {
 	
 	return $returnpath.$returnId.".mp3";
 }
-
+function fetchSsml ( $server ) {
+	$url = "mediawiki/";
+}
 function fetchArticleContent ( $articleId ) {
 	
 	global $apiurl;
 	
-	$params_revid = "action=query&pageids=$articleId&prop=info|flagged&format=json";
+	$params_revid = "action=query&pageids=$articleId&prop=info&format=json";
 	$data_revid = json_decode( httpRequest( $apiurl, $params_revid ), true );
 	
 	$stable_revid = $data_revid["query"]["pages"][$articleId]["lastrevid"]; 
@@ -138,7 +141,8 @@ function fetchArticleContent ( $articleId ) {
 	
 }
 
-login( $audiologinuser, $audiologinpw );
-$articleData = fetchArticleContent ( $articleId );
-$filePath = getAudio( $articleData );
-echo $filePath;
+//login( $audiologinuser, $audiologinpw );
+//$articleData = fetchArticleContent ( $articleId );
+//$filePath = getAudio( $articleData );
+
+echo ":)";

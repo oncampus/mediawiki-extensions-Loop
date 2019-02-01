@@ -125,7 +125,8 @@
 			"loop-settings-edit": true,
 			"createpage": true,
 			"loop-rendermode": true,
-			"purgecache": true
+			"purgecache": true,
+			"edit": true
 		},
 		"author": {
 			"loop-toc-edit": true,
