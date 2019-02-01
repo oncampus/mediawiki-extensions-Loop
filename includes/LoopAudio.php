@@ -141,8 +141,8 @@ function fetchArticleContent ( $articleId ) {
 	
 }
 
-//login( $audiologinuser, $audiologinpw );
-//$articleData = fetchArticleContent ( $articleId );
-//$filePath = getAudio( $articleData );
+login( $audiologinuser, $audiologinpw );
+$articleData = fetchArticleContent ( $articleId );
+$filePath = getAudio( $articleData );
 
-echo ":)";
+echo $filePath;
