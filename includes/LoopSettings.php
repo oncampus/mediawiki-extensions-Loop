@@ -198,25 +198,42 @@ public function getLoopSettingsFromRequest ( $request ) {
         $this->rightsText = $this->rightsText;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-rights-label' ) );
     }
-    /*
+    $socialArray = array(
+        'Facebook' => array(),
+        'Twitter' => array(),
+        'Youtube' => array(),
+        'Github' => array( ),
+        'Instagram' => array()
+    );
     foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
         
         if ( empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) ) || $request->getText( 'footer-' . $socialIcons . '-icon' ) == $socialIcons ) {
-            $this['socialIcons'][$socialIcons]['icon'] = $request->getText( 'footer-' . $socialIcons . '-icon' );
+           $socialArray[$socialIcons]['icon'] = $request->getText( 'footer-' . $socialIcons . '-icon' );
             
             if ( ! empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) && filter_var( $request->getText( 'footer-' . $socialIcons . '-url' ), FILTER_VALIDATE_URL ) ) ) {
-                $this['socialIcons'][$socialIcons]['link'] = $request->getText( 'footer-' . $socialIcons . '-url' );
+               $socialArray[$socialIcons]['link'] = $request->getText( 'footer-' . $socialIcons . '-url' );
             } else {
-                $this['socialIcons'][$socialIcons]['link'] = '';
+               $socialArray[$socialIcons]['link'] = '';
             }
         } else {
-            $this['socialIcons'][$socialIcons]['icon'] = $this['socialIcons'][$socialIcons]['icon'];
-            $this['socialIcons'][$socialIcons]['link'] = $this['socialIcons'][$socialIcons]['link'];
+           $socialArray[$socialIcons]['icon'] = $socialArray[$socialIcons]['icon'];
+           $socialArray[$socialIcons]['link'] = $socialArray[$socialIcons]['link'];
             array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . $socialIcons );
         }	
         
     }
-    */
+    $this->facebookIcon = $socialArray['Facebook']['icon'];
+    $this->facebookLink = $socialArray['Facebook']['link'];
+    $this->twitterIcon = $socialArray['Twitter']['icon'];
+    $this->twitterLink = $socialArray['Twitter']['link'];
+    $this->youtubeIcon = $socialArray['Youtube']['icon'];
+    $this->youtubeLink = $socialArray['Youtube']['link'];
+    $this->githubIcon = $socialArray['Github']['icon'];
+    $this->githubLink = $socialArray['Github']['link'];
+    $this->instagramIcon = $socialArray['Instagram']['icon'];
+    $this->instagramLink = $socialArray['Instagram']['link'];
+
+    
     
     $regExLoopLink = '/([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9äöüØåæÅÆøÄÖÜß_:.\/()\[\]]{1,})/';
     

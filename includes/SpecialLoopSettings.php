@@ -239,16 +239,39 @@ class SpecialLoopSettings extends SpecialPage {
 					#oncampus link
 					$html .= '<input type="checkbox" name="oncampus-link" id="oncampus-link" value="showOncampusLink" ' . ( ! empty ( $currentLoopSettings->oncampusLink ) ? 'checked' : '' ) .'>
 						<label for="oncampus-link">' . $this->msg( 'loopsettings-oncampus-label' ) . '</label><br>';
-					/*
+						
 					#footer-social
-					#foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
-					#	$html .= '<input type="checkbox" name="footer-'. $socialIcons .'-icon" id="footer-'. $socialIcons .'-icon" value="'. $socialIcons .'" '. ( ! empty ( $currentLoopSettings->socialIcons'][$socialIcons]['icon']) ? 'checked' : '' ) .'>
-					#		<label for="footer-' . $socialIcons .'-icon"><span class="ic ic-social-' . strtolower( $socialIcons ) . '"></span>
-					#		'. $socialIcons . ' ' . $this->msg( 'loopsettings-link-icon-label' ) . '</label>
-					#		<input type="url" ' . ( empty( $currentLoopSettings->socialIcons'][$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $currentLoopSettings->socialIcons'][$socialIcons]['link'] .'">
-					#		<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
-					#		<br>';
-					} */
+					$socialArray = array(
+						'Facebook' => array(
+							'icon' => $currentLoopSettings->facebookIcon,
+							'link' => $currentLoopSettings->facebookLink
+						),
+						'Twitter' => array(
+							'icon' => $currentLoopSettings->twitterIcon,
+							'link' => $currentLoopSettings->twitterLink
+						),
+						'Youtube' => array(
+							'icon' => $currentLoopSettings->youtubeIcon,
+							'link' => $currentLoopSettings->youtubeLink
+						),
+						'Github' => array(
+							'icon' => $currentLoopSettings->githubIcon,
+							'link' => $currentLoopSettings->githubLink
+						),
+						'Instagram' => array(
+							'icon' => $currentLoopSettings->instagramIcon,
+							'link' => $currentLoopSettings->instagramLink
+						)
+					);
+					foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
+					
+						$html .= '<input type="checkbox" name="footer-'. $socialIcons .'-icon" id="footer-'. $socialIcons .'-icon" value="'. $socialIcons .'" '. ( ! empty ( $socialArray[$socialIcons]['icon']) ? 'checked' : '' ) .'>
+							<label for="footer-' . $socialIcons .'-icon"><span class="ic ic-social-' . strtolower( $socialIcons ) . '"></span>
+							'. $socialIcons . ' ' . $this->msg( 'loopsettings-link-icon-label' ) . '</label>
+							<input type="url" ' . ( empty( $socialArray[$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $socialArray[$socialIcons]['link'] .'">
+							<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
+							<br>';
+					} 
 				$html .= '</div>'; // end of footer-tab
 				
 			$html .= '</div>'; // end of tab-content
@@ -278,36 +301,6 @@ class SpecialLoopSettings extends SpecialPage {
 	    $parserOutput = $localParser->parse( $input, $tmpTitle, new ParserOptions() );
 	    return $parserOutput->mText;
 		
-	}
-
-	/**
-	 * Gets variables from Settings file and puts it into an Array
-	 *
-	 * @return Array
-	 */
-	private function getLoopSettingsFromFile () {
-		
-		global $wgRightsText, $wgRightsType, $wgRightsIcon, $wgRightsUrl, $wgSocialIcons, 
-		$wgExtraFooter, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgCustomLogo, 
-		$wgSkinStyles, $wgHiddenPrefs, $wgLanguageCode;
-		
-		$fileLoopSettings = array(
-			'rightsText' => htmlspecialchars_decode( $wgRightsText ),
-			'rightsType' => htmlspecialchars_decode( $wgRightsType ),
-			'rightsIcon' => htmlspecialchars_decode( $wgRightsIcon ),
-			'rightsUrl' => htmlspecialchars_decode( $wgRightsUrl ),
-			'imprintLink' => htmlspecialchars_decode( $wgImprintLink ),
-			'privacyLink' => htmlspecialchars_decode( $wgPrivacyLink ),
-			'oncampusLink' => htmlspecialchars_decode( $wgOncampusLink ),
-			'skinStyle' => $wgHiddenPrefs['LoopSkinStyle'],
-			'socialIcons' => $wgSocialIcons,
-			'extraFooter' => $wgExtraFooter,
-			'customLogo' => $wgCustomLogo,
-			'language' => $wgLanguageCode
-		);
-		
-		return $fileLoopSettings;
-	
 	}
 		
 	/**
