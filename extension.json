@@ -45,9 +45,13 @@
 		],
 		"BeforeInitialize":[
 			"LoopHooks::onBeforeInitialize"
+
 		],
 		"PageRenderingHash":[
 			"LoopHooks::onPageRenderingHash"
+		],
+		"SetupAfterCache": [
+			"LoopHooks::onSetupAfterCache"
 		]
 	},
 	"SpecialPages": {

@@ -248,35 +248,25 @@ class SpecialLoopSettings extends SpecialPage {
 						
 					#footer-social
 					$socialArray = array(
-						'Facebook' => array(
-							'icon' => $currentLoopSettings->facebookIcon,
-							'link' => $currentLoopSettings->facebookLink
-						),
-						'Twitter' => array(
-							'icon' => $currentLoopSettings->twitterIcon,
-							'link' => $currentLoopSettings->twitterLink
-						),
-						'Youtube' => array(
-							'icon' => $currentLoopSettings->youtubeIcon,
-							'link' => $currentLoopSettings->youtubeLink
-						),
-						'Github' => array(
-							'icon' => $currentLoopSettings->githubIcon,
-							'link' => $currentLoopSettings->githubLink
-						),
-						'Instagram' => array(
-							'icon' => $currentLoopSettings->instagramIcon,
-							'link' => $currentLoopSettings->instagramLink
-						)
+						'Facebook' => array( 'icon' => $currentLoopSettings->facebookIcon, 'link' => $currentLoopSettings->facebookLink ),
+						'Twitter' => array( 'icon' => $currentLoopSettings->twitterIcon, 'link' => $currentLoopSettings->twitterLink ),
+						'Youtube' => array( 'icon' => $currentLoopSettings->youtubeIcon, 'link' => $currentLoopSettings->youtubeLink ),
+						'Github' => array( 'icon' => $currentLoopSettings->githubIcon, 'link' => $currentLoopSettings->githubLink ), 
+						'Instagram' => array( 'icon' => $currentLoopSettings->instagramIcon, 'link' => $currentLoopSettings->instagramLink )
 					);
 					foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
 					
-						$html .= '<input type="checkbox" name="footer-'. $socialIcons .'-icon" id="footer-'. $socialIcons .'-icon" value="'. $socialIcons .'" '. ( ! empty ( $socialArray[$socialIcons]['icon']) ? 'checked' : '' ) .'>
+						$html .= '
+						
+							<input type="checkbox" name="footer-'. $socialIcons .'-icon" id="footer-'. $socialIcons .'-icon" value="'. $socialIcons .'" '. ( ! empty ( $socialArray[$socialIcons]['icon']) ? 'checked' : '' ) .'>
+								
 							<label for="footer-' . $socialIcons .'-icon"><span class="ic ic-social-' . strtolower( $socialIcons ) . '"></span>
 							'. $socialIcons . ' ' . $this->msg( 'loopsettings-link-icon-label' ) . '</label>
-							<input type="url" ' . ( empty( $socialArray[$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $socialArray[$socialIcons]['link'] .'">
-							<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
-							<br>';
+							
+							<div class="input-group mb-3">
+								<input type="url" ' . ( empty( $socialArray[$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $socialArray[$socialIcons]['link'] .'">
+								<div class="invalid-feedback" id="feedback-'. $socialIcons .'">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
+							</div>';
 					} 
 				$html .= '</div>'; // end of footer-tab
 				
