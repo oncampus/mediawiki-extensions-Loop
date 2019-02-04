@@ -19,16 +19,16 @@ public $extraFooter;
 public $extraFooterWikitext;
 public $extraFooterParsed;
 public $skinStyle;
-public $socialFbIcon;
-public $socialFbLink;
-public $socialTwIcon;
-public $socialTwLink;
-public $socialYtIcon;
-public $socialYtLink;
-public $socialGhIcon;
-public $socialGhLink;
-public $socialInIcon;
-public $socialInLink;
+public $facebookIcon;
+public $facebookLink;
+public $twitterIcon;
+public $twitterLink;
+public $youtubeIcon;
+public $youtubeLink;
+public $githubIcon;
+public $githubLink;
+public $instagramIcon;
+public $instagramLink;
 
 /**
  * Add settings to the database
@@ -55,20 +55,20 @@ function addToDatabase() {
             'lset_customlogofilename' => $this->customLogoFileName,
             'lset_customlogofilepath' => $this->customLogoFilePath,
             'lset_languagecode' => $this->languageCode,
-            'lset_extrafooter' => $this->extraFooter/*,
+            'lset_extrafooter' => $this->extraFooter,
             'lset_extrafooterwikitext' => $this->extraFooterWikitext,
             'lset_extrafooterparsed' => $this->extraFooterParsed,
             'lset_skinstyle' => $this->skinStyle,
-            'lset_socialfbicon' => $this->socialFbIcon,
-            'lset_socialfblink' => $this->socialFbLink,
-            'lset_socialtwicon' => $this->socialTwIcon,
-            'lset_socialtwlink' => $this->socialTwLink,
-            'lset_socialyticon' => $this->socialYtIcon,
-            'lset_socialytlink' => $this->socialYtLink,
-            'lset_socialghicon' => $this->socialGhIcon,
-            'lset_socialghlink' => $this->socialGhLink,
-            'lset_socialinicon' => $this->socialInIcon,
-            'lset_socialinlink' => $this->socialInLink*/
+            'lset_facebookicon' => $this->facebookIcon,
+            'lset_facebooklink' => $this->facebookLink,
+            'lset_twittericon' => $this->twitterIcon,
+            'lset_twitterlink' => $this->twitterLink,
+            'lset_youtubeicon' => $this->youtubeIcon,
+            'lset_youtubelink' => $this->youtubeLink,
+            'lset_githubicon' => $this->githubIcon,
+            'lset_githublink' => $this->githubLink,
+            'lset_instagramicon' => $this->instagramIcon,
+            'lset_instagramlink' => $this->instagramLink
         )
     );
     //$this->id = $dbw->insertId();
@@ -104,16 +104,16 @@ public function loadSettings() {
             'lset_extrafooterwikitext',
             'lset_extrafooterparsed',
             'lset_skinstyle',
-            'lset_socialfbicon',
-            'lset_socialfblink',
-            'lset_socialtwicon',
-            'lset_socialtwlink',
-            'lset_socialyticon',
-            'lset_socialytlink',
-            'lset_socialghicon',
-            'lset_socialghlink',
-            'lset_socialinicon',
-            'lset_socialinlink'
+            'lset_facebookicon',
+            'lset_facebooklink',
+            'lset_twittericon',
+            'lset_twitterlink',
+            'lset_youtubeicon',
+            'lset_youtubelink',
+            'lset_githubicon',
+            'lset_githublink',
+            'lset_instagramicon',
+            'lset_instagramlink'
         ),
         array(),
         __METHOD__,
@@ -124,56 +124,73 @@ public function loadSettings() {
     //echo "test";
     $row = $res->fetchObject();
     if ( isset($row->lset_id) ) {
-    if( $row ) {
-        //$loopSettings = new LoopSettings();
+        if( $row ) {
+            //$loopSettings = new LoopSettings();
 
-        $this->id = $row->lset_id;
-        $this->timeStamp = $row->lset_timestamp;
-        $this->imprintLink = $row->lset_imprintlink;
-        $this->privacyLink = $row->lset_privacylink;
-        $this->oncampusLink = $row->lset_oncampuslink;
-        $this->rightsText = $row->lset_rightstext;
-        $this->rightsType = $row->lset_rightstype;
-        $this->rightsUrl = $row->lset_rightsurl;
-        $this->rightsIcon = $row->lset_rightsicon;
-        $this->customLogo = $row->lset_customlogo;
-        $this->customLogoFileName = $row->lset_customlogofilename;
-        $this->customLogoFilePath = $row->lset_customlogofilepath;
-        $this->languageCode = $row->lset_languagecode;
-        $this->extraFooter = $row->lset_extrafooter;
-        $this->extraFooterWikitext = $row->lset_extrafooterwikitext;
-        $this->extraFooterParsed = $row->lset_extrafooterparsed;
-        $this->skinStyle = $row->lset_skinstyle;
-        $this->facebookIcon = $row->lset_socialfbicon;
-        $this->facebookLink = $row->lset_socialfblink;
-        $this->twitterIcon = $row->lset_socialtwicon;
-        $this->twitterLink = $row->lset_socialtwlink;
-        $this->youtubeIcon = $row->lset_socialyticon;
-        $this->youtubeLink = $row->lset_socialytlink;
-        $this->githubIcon = $row->lset_socialghicon;
-        $this->githubLink = $row->lset_socialghlink;
-        $this->instagramIcon = $row->lset_socialinicon;
-        $this->instagramLink = $row->lset_socialinlink;
-            
+            $this->id = $row->lset_id;
+            $this->timeStamp = $row->lset_timestamp;
+            $this->imprintLink = $row->lset_imprintlink;
+            $this->privacyLink = $row->lset_privacylink;
+            $this->oncampusLink = $row->lset_oncampuslink;
+            $this->rightsText = $row->lset_rightstext;
+            $this->rightsType = $row->lset_rightstype;
+            $this->rightsUrl = $row->lset_rightsurl;
+            $this->rightsIcon = $row->lset_rightsicon;
+            $this->customLogo = $row->lset_customlogo;
+            $this->customLogoFileName = $row->lset_customlogofilename;
+            $this->customLogoFilePath = $row->lset_customlogofilepath;
+            $this->languageCode = $row->lset_languagecode;
+            $this->extraFooter = $row->lset_extrafooter;
+            $this->extraFooterWikitext = $row->lset_extrafooterwikitext;
+            $this->extraFooterParsed = $row->lset_extrafooterparsed;
+            $this->skinStyle = $row->lset_skinstyle;
+            $this->facebookIcon = $row->lset_facebookicon;
+            $this->facebookLink = $row->lset_facebooklink;
+            $this->twitterIcon = $row->lset_twittericon;
+            $this->twitterLink = $row->lset_twitterlink;
+            $this->youtubeIcon = $row->lset_youtubeicon;
+            $this->youtubeLink = $row->lset_youtubelink;
+            $this->githubIcon = $row->lset_githubicon;
+            $this->githubLink = $row->lset_githublink;
+            $this->instagramIcon = $row->lset_instagramicon;
+            $this->instagramLink = $row->lset_instagramlink;
+                
+            //echo "" . $this->extraFooterWikitext;
+            return true;
+        } else {
+                
+            return false;
+                
+        }
+    } else { // fetch data from global variables
+        global $wgHiddenPrefs, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink;
+
+        $this->oncampusLink = $wgOncampusLink;
+        $this->skinStyle = $wgHiddenPrefs['LoopSkinStyle'];
+        $this->imprintLink = $wgImprintLink;
+        $this->privacyLink = $wgPrivacyLink;
+
         return true;
-    } else {
-            
-        return false;
-            
     }
-} else { // fetch data from global variables
-    global $wgSkinStyles, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink;
-
-    $this->oncampusLink = $wgOncampusLink;
-    $this->skinStyles = $wgSkinStyles;
-    $this->imprintLink = $wgImprintLink;
-    $this->privacyLink = $wgPrivacyLink;
-
-    var_dump($this);
-    return true;
-}
 
 }
+
+
+	
+	/**
+	 * Parses custom content
+	 *
+	 * @param String $input Content to parse
+	 * @return String
+	 */
+	function parse( $input ) {
+		
+		$localParser = new Parser();
+		$tmpTitle = Title::newFromText( 'NO TITLE' );
+	    $parserOutput = $localParser->parse( $input, $tmpTitle, new ParserOptions() );
+	    return $parserOutput->mText;
+		
+	}
 
 
 
@@ -195,7 +212,6 @@ public function getLoopSettingsFromRequest ( $request ) {
     if ( empty ( $request->getText( 'rights-text' ) ) || preg_match( "/([-a-zA-Z0-9äöüAÖÜß:_\/\(\)©åæÅÆç&!é\?,\.')]{0,})/", $request->getText( 'rights-text' ) ) ) {
         $this->rightsText = $request->getText( 'rights-text' );
     } else {
-        $this->rightsText = $this->rightsText;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-rights-label' ) );
     }
     $socialArray = array(
@@ -216,8 +232,6 @@ public function getLoopSettingsFromRequest ( $request ) {
                $socialArray[$socialIcons]['link'] = '';
             }
         } else {
-           $socialArray[$socialIcons]['icon'] = $socialArray[$socialIcons]['icon'];
-           $socialArray[$socialIcons]['link'] = $socialArray[$socialIcons]['link'];
             array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . $socialIcons );
         }	
         
@@ -232,29 +246,24 @@ public function getLoopSettingsFromRequest ( $request ) {
     $this->githubLink = $socialArray['Github']['link'];
     $this->instagramIcon = $socialArray['Instagram']['icon'];
     $this->instagramLink = $socialArray['Instagram']['link'];
-
-    
     
     $regExLoopLink = '/([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9äöüØåæÅÆøÄÖÜß_:.\/()\[\]]{1,})/';
     
     if ( filter_var( $request->getText( 'privacy-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'privacy-link' ) ) ) {
         $this->privacyLink = $request->getText( 'privacy-link' );
     } else {
-        $this->privacyLink = $this->privacyLink;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-privacy-label' ) );
     }
     
     if ( filter_var( $request->getText( 'imprint-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'imprint-link' ) ) ) {
         $this->imprintLink = $request->getText( 'imprint-link' );
     } else {
-        $this->imprintLink = $this->imprintLink;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-imprint-label' ) );
     }
     
     if ( empty ( $request->getText( 'oncampus-link' ) ) || $request->getText( 'oncampus-link' ) == 'showOncampusLink' ) {
         $this->oncampusLink = $request->getText( 'oncampus-link' );
     } else {
-        $this->oncampusLink = $this->oncampusLink;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-oncampus-label' ) );
     }
     
@@ -263,43 +272,39 @@ public function getLoopSettingsFromRequest ( $request ) {
         $this->rightsIcon = $wgAvailableLicenses[$this->rightsType]['icon'];
         $this->rightsUrl = $wgAvailableLicenses[$this->rightsType]['url'];
     } else {
-        $this->rightsType = $this->rightsType;
-        $this->rightsIcon = $this->rightsIcon;
-        $this->rightsUrl = $this->rightsUrl;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
     }
     
     if ( in_array( $request->getText( 'skin-style' ), $wgSkinStyles ) ) {
         $this->skinStyle = $request->getText( 'skin-style' );
     } else {
-        $this->skinStyle = $this->skinStyle;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
     }
     
     if ( in_array( $request->getText( 'language-select' ), $wgSupportedLoopLanguages ) ) {
         $this->languageCode = $request->getText( 'language-select' );
     } else {
-        $this->languageCode = $this->languageCode;
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-language-label' ) );
     }
     
     if ( empty ( $request->getText( 'extra-footer-active' ) ) || $request->getText( 'extra-footer-active' ) == 'useExtraFooter' ) {
             $this->extraFooter = $request->getText( 'extra-footer-active' );
+            $this->extraFooterWikitext = "";
+            $this->extraFooterParsed = "";
         if ( ! empty ( $request->getText( 'extra-footer-wikitext' ) ) ) {
             $this->extraFooterWikitext = $request->getText( 'extra-footer-wikitext' );
             $this->extraFooterParsed = $this->parse( $this->extraFooterWikitext );
-        }
+        } 
     } else {
-        $this->extraFooter = $this->extraFooter;
-        $this->extraFooterWikitext = $this->extraFooter;
-        $this->extraFooterParsed = $this->extraFooterParsed;
+        $this->extraFooterWikitext = "";
+        $this->extraFooterParsed = "";
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-footer-label' ) );
     }
     
     if ( empty( $request->getText( 'logo-use-custom' ) ) ) {
-        $this->customLogo = '';
-        $this->customLogoFileName = '';
-        $this->customLogoFilePath = '';
+        $this->customLogo = "";
+        $this->customLogoFileName = "";
+        $this->customLogoFilePath = "";
     } else if ( $request->getText( 'logo-use-custom' ) == 'useCustomLogo' ) {
         $this->customLogo = 'useCustomLogo';
         if ( preg_match( '/[-a-zA-Z_\.\(\)0-9äöüØåæÅÆßÄÖÜØ]{1,}[\.]{1}[a-zA-Z]{3,}/', $request->getText( 'custom-logo-filename' ) ) ) {
@@ -309,21 +314,21 @@ public function getLoopSettingsFromRequest ( $request ) {
             if ( isset ( $tmpOutputArray[1] ) ) {
                 $this->customLogoFilePath = $tmpOutputArray[1];
             } else {
-                $this->customLogo = $previousLoopSettings->customLogo;
-                $this->customLogoFileName = $previousLoopSettings->customLogoFileName;
-                $this->customLogoFilePath = $previousLoopSettings->customLogoFilePath;
+                $this->customLogo = "";
+                $this->customLogoFileName = "";
+                $this->customLogoFilePath = "";
                 array_push( $errors, wfMessage( 'loopsettings-error-customlogo-notfound' ) );
             }
         } else {
-            $this->customLogo = $previousLoopSettings->customLogo;
-            $this->customLogoFileName = $previousLoopSettings->customLogoFileName;
-            $this->customLogoFilePath = $previousLoopSettings->customLogoFilePath;
+            $this->customLogo = "";
+            $this->customLogoFileName = "";
+            $this->customLogoFilePath = "";
             array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
         }
     } else {
-        $this->customLogo = $previousLoopSettings->customLogo;
-        $this->customLogoFileName = $previousLoopSettings->customLogoFileName;
-        $this->customLogoFilePath = $previousLoopSettings->customLogoFilePath;
+        $this->customLogo = "";
+        $this->customLogoFileName = "";
+        $this->customLogoFilePath = "";
         array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
     }
         

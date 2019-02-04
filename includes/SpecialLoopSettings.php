@@ -177,7 +177,7 @@ class SpecialLoopSettings extends SpecialPage {
 				$html .= '<div class="tab-pane fade" id="nav-appearance" role="tabpanel" aria-labelledby="nav-appearance-tab">';
 					### SKIN BLOCK ###
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
-					
+					//echo $currentLoopSettings->skinStyle;
 					$skinStyleOptions = '';
 					foreach( $wgSkinStyles as $style ) { 
 					if ( $style == $currentLoopSettings->skinStyle ) { #TODO: Some styles should not be selectable from every loop
@@ -287,21 +287,6 @@ class SpecialLoopSettings extends SpecialPage {
 		$out->addHTML( $html );
 	}
 	
-	
-	/**
-	 * Parses custom content
-	 *
-	 * @param String $input Content to parse
-	 * @return String
-	 */
-	function parse( $input ) {
-		
-		$localParser = new Parser();
-		$tmpTitle = Title::newFromText( 'NO TITLE' );
-	    $parserOutput = $localParser->parse( $input, $tmpTitle, new ParserOptions() );
-	    return $parserOutput->mText;
-		
-	}
 		
 	/**
 	 * Specify the specialpages-group loop
