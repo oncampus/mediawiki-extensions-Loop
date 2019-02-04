@@ -1,24 +1,24 @@
 <?php
 
 class SpecialLoopStructure extends SpecialPage {
-	
+
 	public function __construct() {
 		parent::__construct( 'LoopStructure' );
 	}
-	
+
 	public function execute( $sub ) {
-		
+
 		$user = $this->getUser();
 		$this->setHeaders();
 		$out = $this->getOutput();
 		$out->setPageTitle( $this->msg( 'loopstructure-specialpage-title' ) );
-		
+
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
-		
+
 		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
-	
+
 		$out->addHtml(Html::openElement(
 				'h1',
 				array(
@@ -27,11 +27,11 @@ class SpecialLoopStructure extends SpecialPage {
 			)
 			. $this->msg( 'loopstructure-specialpage-title' )->parse()
 		);
-		
+
 		if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
-			
+
 			# show link to the edit page if user is permitted
-			
+
 			$out->addHtml(
 				Html::rawElement(
 					'a',
@@ -44,7 +44,7 @@ class SpecialLoopStructure extends SpecialPage {
 				)
 			);
 		}
-		
+
 		$out->addHtml(Html::closeElement(
 					'h1'
 				)
@@ -56,9 +56,9 @@ class SpecialLoopStructure extends SpecialPage {
 				$loopStructure->render()
 			)
 		);
-		
+
 	}
-	
+
 	/**
 	 * Specify the specialpages-group loop
 	 *
@@ -67,24 +67,24 @@ class SpecialLoopStructure extends SpecialPage {
 	protected function getGroupName() {
 		return 'loop';
 	}
-	
+
 }
 
 
 /**
  *  Special page representing the table of contents
  */
- 
+
 class SpecialLoopStructureEdit extends SpecialPage {
-	
+
 	public function __construct() {
 		parent::__construct( 'LoopStructureEdit' );
 	}
 
 	public function execute( $sub ) {
-		
+
 		global $wgSecretKey;
-		
+
 		$user = $this->getUser();
 		$this->setHeaders();
 		$out = $this->getOutput();
@@ -106,14 +106,14 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
 		$currentStructureAsWikiText = $loopStructure->renderAsWikiText();
-		
+
         $request = $this->getRequest();
         $saltedToken = $user->getEditToken( $wgSecretKey, $request );
 		$newStructureContent = $request->getText( 'loopstructure-content' );
 		$requestToken = $request->getText( 't' );
 
 		$userIsPermitted = (! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ));
-		
+
 		$error = false;
 		$feedbackMessageClass = 'success';
 
@@ -122,6 +122,9 @@ class SpecialLoopStructureEdit extends SpecialPage {
 				if( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
 
 					# the content was changend
+					# force toc rendering for tocs with three or fewer headings.
+					$newStructureContent = '__FORCETOC__' . PHP_EOL . $newStructureContent;
+
 					# use local parser to get a default parsed result
 					$localParser = new Parser();
 					$tmpTitle = Title::newFromText( 'NO TITLE' );
@@ -169,17 +172,17 @@ class SpecialLoopStructureEdit extends SpecialPage {
                                 $error = $this->msg( 'loopstructure-save-parse-error' )->parse();
                                 $feedbackMessageClass = 'danger';
                             }
-								
+
 						} else {
 							$error = $this->msg( 'loopstructure-save-parsed-structure-error' )->parse();
                             $feedbackMessageClass = 'danger';
 						}
-					
+
 					} else {
 						$error = $this->msg( 'loopstructure-save-parse-error' )->parse();
                         $feedbackMessageClass = 'danger';
 					}
-					
+
 				} else {
 					$error = $this->msg( 'loop-token-error' )->parse();
                     $feedbackMessageClass = 'danger';
@@ -189,7 +192,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 				$error = $this->msg( 'loop-permission-error' )->parse();
                 $feedbackMessageClass = 'danger';
 			}
-			
+
 		}
 
         # error message output (if exists)
@@ -205,11 +208,11 @@ class SpecialLoopStructureEdit extends SpecialPage {
                 )
             );
         }
-        
+
         if( $userIsPermitted ) {
-        	
+
         	# user is permitted to edit the toc, print edit form here
-        	
+
 	        $out->addHTML(
 	            Html::openElement(
 	                'form',
@@ -252,11 +255,11 @@ class SpecialLoopStructureEdit extends SpecialPage {
 	                'form'
 	            )
 	        );
-	        
+
         } else {
 
         	# user has no permission, just show content without textarea
-        	
+
         	$out->addHtml(
         		Html::rawElement(
         			'div',
