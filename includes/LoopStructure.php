@@ -1,10 +1,12 @@
 <?php 
 
+use MediaWiki\MediaWikiServices;
 
 /**
  * Class representing a bookstructure and other metainformation
  *
  */
+
 class LoopStructure {
 	
 	private $id = 0; // id of the structure
@@ -26,6 +28,7 @@ class LoopStructure {
 	public function render() {
 		
 		$text = '';
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		
 		foreach( $this->structureItems as $structureItem ) {
 			
@@ -41,9 +44,9 @@ class LoopStructure {
 					$tabLevel = 1;
 				}
 				
-				$link = Linker::link(
+				$link = $linkRenderer->makeLink(
 					Title::newFromID( $structureItem->article ),
-					$structureItem->tocNumber .' '. $structureItem->tocText
+					new HtmlArmor( $structureItem->tocNumber .' '. $structureItem->tocText )
 				); 
 				
 				$text .= '<div class="loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat('	',  $tabLevel ) . $link . '</div>';
@@ -563,6 +566,8 @@ class LoopStructureItem {
 	}
 	
 	public function getBreadcrumb ( $max_len = 100 ) {
+		
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	
 		$breadcrumb = '<li class="active">' . $this->tocNumber . ' ' . $this->tocText .'</li>';
 		$len = strlen( $this->tocNumber ) + strlen( $this->tocText ) + 1;
@@ -595,7 +600,7 @@ class LoopStructureItem {
 			}
 			
 			$title = Title::newFromID( $item->article );
-			$link = Linker::link( $title, $item->tocNumber .' '. $link_text );
+			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $item->tocNumber .' '. $link_text ) );
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 			
 		}
