@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+
 class SpecialLoopSettings extends SpecialPage {
 	
 	function __construct() {
@@ -8,6 +10,7 @@ class SpecialLoopSettings extends SpecialPage {
 
 	function execute( $sub ) {
 		
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$user = $this->getUser();
 		$out = $this->getOutput();
 		$html = '<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
@@ -34,8 +37,11 @@ class SpecialLoopSettings extends SpecialPage {
 
 			$errors = array();	
 			$requestToken = $request->getText( 't' );
-
-			$uploadButton = $this->msg( 'loopsettings-upload-hint' ) . " " . Linker::link( new TitleValue( NS_SPECIAL, 'ListFiles' ), $this->getSkin()->msg ( 'listfiles' ) ) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'upload' ) . '</button><br>';
+			$uploadButton = $this->msg( 'loopsettings-upload-hint' ) . " " . 
+				$linkRenderer->makelink( 
+					new TitleValue( NS_SPECIAL, 'ListFiles' ), 
+					new HtmlArmor( $this->getSkin()->msg ( 'listfiles' )  . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'upload' ) . '</button><br>' )
+				);
 			
 			$currentLoopSettings = new LoopSettings();
 			
@@ -64,7 +70,7 @@ class SpecialLoopSettings extends SpecialPage {
 				}
 				
 				$cache_button = '<button type="button" class="mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'purgecache' ) . '</button><br>';
-				$cache_link = Linker::link( new TitleValue( NS_SPECIAL, 'PurgeCache' ), $cache_button ); 
+				$cache_link = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'PurgeCache' ), new HtmlArmor( $cache_button ) ); 
 				$html .= $cache_link;
 				
 			} else {
