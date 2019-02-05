@@ -19,20 +19,20 @@ class LoopHtml{
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
 
-dd("todo dauert zu lange!");
+//dd("todo dauert zu lange!");
 
         $loopStructureItems = $loopStructure->getStructureItems();
 
         if(is_array($loopStructureItems)) {
 
-            global $wgLoopRenderMode, $wgResourceLoaderDebug, $wgUploadDirectory;
+            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory;
 
             LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
 
             # prepare global config
-            $renderModeBefore = $wgLoopRenderMode;
+            $renderModeBefore = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );;
             $debugModeBefore = $wgResourceLoaderDebug;
-            $wgLoopRenderMode = 'offline';
+            $wgDefaultUserOptions['LoopRenderMode'] = 'offline';
             $wgResourceLoaderDebug = true;
 
             # Todo $this->copyResources();
