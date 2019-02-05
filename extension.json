@@ -27,6 +27,7 @@
 		"SpecialLoopStructureEdit": "includes/SpecialLoopStructure.php",
 		"LoopXml": "includes/LoopXml.php",
 		"LoopPdf": "includes/LoopPdf.php",
+		"LoopHtml": "includes/LoopHtml.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -55,7 +56,7 @@
 		"LoopExport": "SpecialLoopExport",
 		"LoopSettings": "SpecialLoopSettings",
 		"PurgeCache": "SpecialPurgeCache"
-	},		
+	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "resources",
 		"remoteExtPath": "Loop/resources"
@@ -72,7 +73,7 @@
 				"mediawiki.Upload.Dialog"
 			]
 		}
-	},			
+	},
 	"TrackingCategories": [
 		"loop-tracking-category-error"
 	],
@@ -109,7 +110,7 @@
 			"loop-export-scorm": false,
 			"loop-settings-edit": false,
 			"createpage": true
-		},	
+		},
 		"sysop": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
@@ -330,7 +331,7 @@
 	},
 	"ExtensionMessagesFiles": {
 		"LoopAlias": "Loop.i18n.alias.php"
-	},		
+	},
 	"config": {
 		"Xmlfo2PdfServiceUrl": {
 			"value" : "",
@@ -474,7 +475,7 @@
 			],
 			"description" : "Array of available languages to use"
 		}
-		
-	}, 	
+
+	},
 	"manifest_version": 2
 }

@@ -45,7 +45,7 @@ class SpecialLoopExport extends SpecialPage {
 				break;
 			case 'html':
 				if ($user->isAllowed( 'loop-export-html' )) {
-					$export = new LoopExportHtml($structure);
+					$export = new LoopExportHtml($structure, $this->getContext());
 				}
 				break;
 			case 'epub':
@@ -56,7 +56,8 @@ class SpecialLoopExport extends SpecialPage {
 		}
 
 		if ($export != false) {
-			if (!$export->getExistingExportFile()) {
+
+			if ( TRUE || !$export->getExistingExportFile()) { # TODO remove TRUE!!!
 				$export->generateExportContent();
 				$export->saveExportFile();
 			}
