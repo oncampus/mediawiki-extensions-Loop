@@ -21,7 +21,7 @@
 	"loopstructure-save-success": "Innehållet har uppdaterats",
 	"submit": "Spara",
 	"loopstructure-default-newpage-content": "Den här är en ny sida.",
-	
+
 	"loopsettings": "LOOP-Inställningar",
 	"loopsettings-specialpage-title": "LOOP-Inställningar",
 	"loopsettings-no-permission": "Du har inte behörighet för att visa den här sidan.",
@@ -52,10 +52,10 @@
 	"loopsettings-url-imprint-privacy-hint": "Ange ett URL (http:// ingår) eller länka till en LOOP sida som /loop/Dataskydd",
 	"loopsettings-skin-style-label": "Skin-Stil",
 	"loopsettings-error": "Det gick inte att spara den här inställningen",
-		
+
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
-	
+
 	"right-loop-toc-edit": "Regidera innehåll",
 	"right-loop-export-pdf": "Export LOOP som PDF",
 	"right-loop-export-xml": "Export LOOP som XML",
@@ -64,7 +64,7 @@
 	"right-loop-export-html": "Export LOOP som offline HTML",
 	"right-loop-export-scorm": "Export LOOP som Scorm paket",
 	"right-loop-settings-edit": "Ändra LOOP-Inställningar",
-	
+
 	"action-loop-toc-edit": "Regidera innehåll",
 	"action-loop-export-pdf": "Export LOOP som PDF",
 	"action-loop-export-xml": "Export LOOP som XML",
@@ -72,10 +72,11 @@
 	"action-loop-export-epub": "Export LOOP som ePub",
 	"action-loop-export-html": "Export LOOP som offline HTML",
 	"action-loop-export-scorm": "Export LOOP som Scorm paket",
-  
+
 	"export-linktext-xml": "Ladda ner som XML",
 	"export-linktext-pdf": "Ladda ner som PDF",
-	
+	"export-linktext-html": "Ladda ner som HTML",
+
 	"purgecache": "Rensa cachen",
 	"purgecache-warning": "Detta rensar cachetabellerna.",
 	"purgecache-purged": "Cachen har rensats.",

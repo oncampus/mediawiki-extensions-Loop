@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class SpecialLoopExport extends SpecialPage {
 	public function __construct() {
@@ -21,9 +21,9 @@ class SpecialLoopExport extends SpecialPage {
 
 		$out->addHtml ($sub);
 
-		
+
 		$structure = new LoopStructure();
-		
+
 		$sub = mb_strtolower($sub);
 
 		$export = false;
@@ -60,27 +60,32 @@ class SpecialLoopExport extends SpecialPage {
 				$export->generateExportContent();
 				$export->saveExportFile();
 			}
-				
+
 			$this->getOutput()->disable();
 			wfResetOutputBuffers();
 			$export->sendExportHeader();
 			echo $export->getExportContent();
 		} else {
-			
+
 			$out->addHtml('<ul>');
-			
+
 			if ($user->isAllowed( 'loop-export-xml' )) {
-				$xmlExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/xml' ), wfMessage ( 'export-linktext-xml' )->inContentLanguage ()->text () ); 
+				$xmlExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/xml' ), wfMessage ( 'export-linktext-xml' )->inContentLanguage ()->text () );
 				$out->addHtml ('<li>'.$xmlExportLink.'</li>');
 			}
-			
+
 			if ($user->isAllowed( 'loop-export-pdf' )) {
 				$pdfExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () );
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
-			
+
+			if ($user->isAllowed( 'loop-export-html' )) {
+				$htmlExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/html' ), wfMessage ( 'export-linktext-html' )->inContentLanguage ()->text () );
+				$out->addHtml ('<li>'.$htmlExportLink.'</li>');
+			}
+
 			$out->addHtml('</ul>');
-			
+
 		}
 	}
 

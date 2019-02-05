@@ -23,7 +23,7 @@
 	"loopstructure-save-success": "Das Inhaltsverzeichnis wurde erfolgreich aktualisiert",
 	"submit": "Speichern",
 	"loopstructure-default-newpage-content": "Dies ist eine neu erstellte Seite.",
-	
+
 	"loopsettings": "LOOP-Einstellungen",
 	"loopsettings-specialpage-title": "LOOP-Einstellungen",
 	"loopsettings-no-permission": "Sie haben nicht die Rechte, um diese Seite sehen zu können.",
@@ -57,10 +57,10 @@
 	"loopsettings-url-hint": "Bitte geben Sie eine gültige URL mit http:// an.",
 	"loopsettings-skin-style-label": "Skin-Stil",
 	"loopsettings-error": "Es ist ein Fehler beim Speichern dieser Einstellung aufgetreten",
-		
+
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
-	
+
 	"right-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"right-loop-export-pdf": "Export LOOP als PDF",
 	"right-loop-export-xml": "Export LOOP als XML",
@@ -69,7 +69,7 @@
 	"right-loop-export-html": "Export LOOP als Offline HTML",
 	"right-loop-export-scorm": "Export LOOP als Scorm Paket",
 	"right-loop-settings-edit": "LOOP-Einstellungen ändern",
-	
+
 	"action-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"action-loop-export-pdf": "Export LOOP als PDF",
 	"action-loop-export-xml": "Export LOOP als XML",
@@ -77,10 +77,11 @@
 	"action-loop-export-epub": "Export LOOP als ePub",
 	"action-loop-export-html": "Export LOOP als Offline HTML",
 	"action-loop-export-scorm": "Export LOOP als Scorm Paket",
-  
+
 	"export-linktext-xml": "Als XML herunterladen",
 	"export-linktext-pdf": "Als PDF herunterladen",
-	
+	"export-linktext-html": "Als HTML herunterladen",
+
 	"purgecache": "Cache löschen",
 	"purgecache-warning": "Dies löscht den Cache.",
 	"purgecache-purged": "Der Cache wurde gelöscht.",

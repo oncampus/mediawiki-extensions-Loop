@@ -23,7 +23,7 @@
 	"loopstructure-save-success": "Saving succes of the LOOP structure",
 	"submit": "Replacement for submit button text",
 	"loopstructure-default-newpage-content": "Standard content for new pages",
-	
+
 	"loopsettings" : "Name of the LOOP settings special page in special:loopsettings",
 	"loopsettings-specialpage-title" : "Page title for LOOP Settings special page",
 	"loopsettings-no-permission": "Error message, user has no permission to view this page",
@@ -56,10 +56,10 @@
 	"loopsettings-url-imprint-privacy-hint": "Hint for imprint and privacy input field. URL required or page in LOOP as /loop/page",
 	"loopsettings-skin-style-label": "Label for Skin-Style dropdown",
 	"loopsettings-error": "Error message after server-side validation failing",
-	
+
 	"loopexport-specialpage-title" : "Page title for Loop Export special page",
 	"loopexport": "Name of Specialpage Export in List of Specialpages",
-	
+
 	"right-loop-toc-edit": "Right to edit toc",
 	"right-loop-export-pdf": "Right to export LOOP as PDF",
 	"right-loop-export-xml": "Right to export LOOP as XML",
@@ -68,7 +68,7 @@
 	"right-loop-export-html": "Right to export LOOP as Offline HTML",
 	"right-loop-export-scorm": "Right to export LOOP as Scorm",
 	"right-loop-settings-edit": "Right to change LOOP settings",
-	
+
 	"action-loop-toc-edit": "Edit toc",
 	"action-loop-export-pdf": "Export LOOP as PDF",
 	"action-loop-export-xml": "Export LOOP as XML",
@@ -79,7 +79,8 @@
 
 	"export-linktext-xml": "Linktext to download LOOP in export format XML",
 	"export-linktext-pdf": "Linktext to download LOOP in export format PDF",
-	
+	"export-linktext-html": "Linktext to download LOOP in export format HTML",
+
 	"purgecache": "Special Page name for PurgeCache",
 	"purgecache-warning": "Warning before execution of PurgeCache",
 	"purgecache-purged": "Message after purging",
