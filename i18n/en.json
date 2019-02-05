@@ -80,6 +80,7 @@
 	"export-linktext-xml": "Download as XML",
 	"export-linktext-pdf": "Download as PDF",
 	"export-linktext-html": "Download as HTML",
+	"export-linktext-mp3": "Download as mp3",
 
 	"purgecache"  : "Purge cache",
 	"purgecache-warning": "This will purge the cache tables.",

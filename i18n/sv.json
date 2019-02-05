@@ -76,6 +76,7 @@
 	"export-linktext-xml": "Ladda ner som XML",
 	"export-linktext-pdf": "Ladda ner som PDF",
 	"export-linktext-html": "Ladda ner som HTML",
+	"export-linktext-mp3": "Ladda ner som mp3",
 
 	"purgecache": "Rensa cachen",
 	"purgecache-warning": "Detta rensar cachetabellerna.",

@@ -81,6 +81,7 @@
 	"export-linktext-xml": "Als XML herunterladen",
 	"export-linktext-pdf": "Als PDF herunterladen",
 	"export-linktext-html": "Als HTML herunterladen",
+	"export-linktext-mp3": "Als mp3 herunterladen",
 
 	"purgecache": "Cache löschen",
 	"purgecache-warning": "Dies löscht den Cache.",
