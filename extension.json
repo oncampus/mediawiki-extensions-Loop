@@ -12,7 +12,7 @@
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.32.0",
+		"MediaWiki": ">= 1.31.0",
 		"extensions": {
 			"WikiEditor": "*"
 		}
@@ -35,7 +35,6 @@
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
 		"SpecialLoopExport": "includes/SpecialLoopExport.php",
-		"LoopSettings": "includes/LoopSettings.php",
 		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
 		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
 	},
@@ -48,9 +47,6 @@
 		],
 		"PageRenderingHash":[
 			"LoopHooks::onPageRenderingHash"
-		],
-		"SetupAfterCache": [
-			"LoopHooks::onSetupAfterCache"
 		]
 	},
 	"SpecialPages": {
@@ -154,7 +150,8 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"undelete": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -183,7 +180,8 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"undelete": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -210,7 +208,8 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"undelete": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
