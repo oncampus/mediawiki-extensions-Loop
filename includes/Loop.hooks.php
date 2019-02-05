@@ -1,11 +1,11 @@
-<?php 
+<?php
 class LoopHooks {
 
 	/**
 	 * Catch the Request to perform custom action LoopEditMode and LoopRenderMode
-	 * 
+	 *
 	 * This is attached to the MediaWiki 'BeforeInitialize' hook.
-	 * 
+	 *
 	 * @param Title $title
 	 * @param Article $article
 	 * @param OutputPage $output
@@ -14,23 +14,23 @@ class LoopHooks {
 	 * @param Wiki $wiki
 	 */
 	public static function onBeforeInitialize( $title, $article = null, $output, $user, $request, $wiki ) {
-		
+
 		Loop::handleLoopRequest( $output, $request, $user );
-	
+
 		return true;
 	}
 
 	/**
-	 * Apply settings set on Special:LoopSettings 
-	 * 
+	 * Apply settings set on Special:LoopSettings
+	 *
 	 * This is attached to the MediaWiki 'SetupAfterCache' hook.
-	 * 
+	 *
 	 * @return true
 	 */
 	public static function onSetupAfterCache(  ) {
 
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions;
-
+/*
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_settings',
@@ -47,11 +47,11 @@ class LoopHooks {
 			$wgRightsIcon = ( empty( $row->lset_rightsicon ) ? $wgRightsIcon : $row->lset_rightsicon  );
 			$wgLanguageCode = ( empty( $row->lset_languagecode ) ? $wgLanguageCode : $row->lset_languagecode );
 			$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
-		}
-		
+		}*/
+
 		return true;
 	}
-	
+
 	/**
 	 * Cache different page version depending on status of Mode
 	 *
@@ -63,18 +63,18 @@ class LoopHooks {
 	 * @return boolean
 	 */
 	public static function onPageRenderingHash( &$confstr, User $user, &$forOptions ) {
-		
+
 		global $wgDefaultUserOptions;
-		
+
 		if ( in_array( 'loopeditmode', $forOptions ) ) {
 			$confstr .= "!loopeditmode=" . $user->getOption( 'LoopEditMode', false, true );
 		}
-		
+
 		if ( in_array( 'looprendermode', $forOptions ) ) {
 			$confstr .= "!looprendermode=" . $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions["LoopRenderMode"], true );
 		}
-	
+
 		return true;
 	}
-	
+
 }

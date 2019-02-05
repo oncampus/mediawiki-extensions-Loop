@@ -19,6 +19,8 @@ class LoopHtml{
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
 
+        dd("todo dauert zu lange!");
+
         $loopStructureItems = $loopStructure->getStructureItems();
 
         if(is_array($loopStructureItems)) {
@@ -64,7 +66,7 @@ class LoopHtml{
 
                     $html = LoopHtml::getInstance()->replaceLoadPhp($html);
                     file_put_contents($htmlFileName, $html);
-
+dd($html);
                 }
 
             }
