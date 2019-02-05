@@ -19,7 +19,7 @@ class LoopHtml{
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
 
-        dd("todo dauert zu lange!");
+dd("todo dauert zu lange!");
 
         $loopStructureItems = $loopStructure->getStructureItems();
 
