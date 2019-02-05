@@ -156,10 +156,10 @@ class LoopSettings {
                     
             }
         } else { // fetch data from global variables
-            global $wgHiddenPrefs, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink;
+            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink;
 
             $this->oncampusLink = $wgOncampusLink;
-            $this->skinStyle = $wgHiddenPrefs['LoopSkinStyle'];
+            $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
             $this->imprintLink = $wgImprintLink;
             $this->privacyLink = $wgPrivacyLink;
 
