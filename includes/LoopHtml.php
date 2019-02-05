@@ -84,6 +84,10 @@ dd($html);
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->loadHtml($html);
+        
+        if ( !file_exists( $this->exportDirectory ) ) {
+            mkdir( $this->exportDirectory, 0775, true );
+        }
 
         $linkElements = $doc->getElementsByTagName('link');
         if($linkElements) {
@@ -97,11 +101,11 @@ dd($html);
         }
 
         # request contents for all matched <link> urls
-        $requestUrls = $this->requestContent($requestUrls);
-        foreach($requestUrls as $url => $content) {
-            $fileName = $this->resolveUrl($url, '.css');
-            if(!file_exists($this->exportDirectory.$fileName)) {
-                file_put_contents($this->exportDirectory.$fileName, $content);
+        $requestUrls = $this->requestContent( $requestUrls );
+        foreach ( $requestUrls as $url => $content ) {
+            $fileName = $this->resolveUrl( $url, '.css' );
+                if ( !file_exists( $this->exportDirectory.$fileName ) ) {
+                file_put_contents( $this->exportDirectory.$fileName, $content );
             }
         }
 
