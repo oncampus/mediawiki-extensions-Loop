@@ -4,7 +4,7 @@ class LoopHooks {
 	/**
 	 * Catch the Request to perform custom action LoopEditMode and LoopRenderMode
 	 *
-	 * This is attached to the MediaWiki 'onBeforeInitialize' hook.
+	 * This is attached to the MediaWiki 'BeforeInitialize' hook.
 	 *
 	 * @param Title $title
 	 * @param Article $article
@@ -15,7 +15,25 @@ class LoopHooks {
 	 */
 	public static function onBeforeInitialize( $title, $article = null, $output, $user, $request, $wiki ) {
 
+		Loop::handleLoopRequest( $output, $request, $user );
+
+		return true;
+	}
+
+	/**
+	 * Apply settings set on Special:LoopSettings
+	 *
+	 * This is attached to the MediaWiki 'SetupAfterCache' hook.
+	 *
+	 * @return true
+	 */
+	public static function onSetupAfterCache(  ) {
+
+		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions;
+
 		$dbr = wfGetDB( DB_REPLICA );
+		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
+		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
 		if ( $dbr->tableExists( 'loop_settings' ) ) {
 
 			$res = $dbr->select(
