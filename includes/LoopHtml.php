@@ -25,7 +25,7 @@ class LoopHtml{
 
         if(is_array($loopStructureItems)) {
 
-            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory;
+            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgScriptPath;
 
             LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
 
@@ -34,6 +34,7 @@ class LoopHtml{
             $debugModeBefore = $wgResourceLoaderDebug;
             $wgOut->getUser()->setOption( 'LoopRenderMode', 'offline' );
             $wgResourceLoaderDebug = true;
+            $wgStyleDirectory=$wgScriptPath."/skins/Loop/";
 
             # Todo $this->copyResources();
 
@@ -77,7 +78,7 @@ dd($html);
 
     private function replaceLoadPhp($html) {
 
-        global $wgServer;
+        global $wgServer, $wgDefaultUserOptions;
 
         $requestUrls = array();
 
@@ -95,7 +96,7 @@ dd($html);
                 $tmpHref = $link->getAttribute( 'href' );
                 if(strpos($tmpHref, 'load.php') !== false) {
                     $requestUrls[] = $wgServer.$tmpHref;
-                    $link->setAttribute('href', md5($wgServer.$tmpHref).'.css');
+                    $link->setAttribute('href', "resources/styles/".md5($wgServer.$tmpHref).'.css');
                 }
             }
         }
@@ -103,9 +104,11 @@ dd($html);
         # request contents for all matched <link> urls
         $requestUrls = $this->requestContent( $requestUrls );
         foreach ( $requestUrls as $url => $content ) {
+            $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/styles\/)/', '', $content);
+            $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/js\/)/', '', $contentR);
             $fileName = $this->resolveUrl( $url, '.css' );
-                if ( !file_exists( $this->exportDirectory.$fileName ) ) {
-                file_put_contents( $this->exportDirectory.$fileName, $content );
+                if ( !file_exists( $this->exportDirectory."resources/styles/".$fileName ) ) {
+                file_put_contents( $this->exportDirectory."resources/styles/".$fileName, $contentR );
             }
         }
 
@@ -119,7 +122,7 @@ dd($html);
                 if(strpos($tmpScript, 'load.php') !== false) {
                     $requestUrls[] = $wgServer.$tmpScript;
                     //echo ($wgServer.$tmpScript);
-                    $script->setAttribute('src', md5($wgServer.$tmpScript).'.js');
+                    $script->setAttribute('src', "resources/js/".md5($wgServer.$tmpScript).'.js');
                 }
             }
       
@@ -127,59 +130,88 @@ dd($html);
         # request contents for all matched <link> urls
         $requestUrls = $this->requestContent($requestUrls);
         foreach($requestUrls as $url => $content) {
-
             $fileName = $this->resolveUrl($url, '.js');
             //echo ($url);
 
             if(!file_exists($this->exportDirectory.$fileName)) {
-                file_put_contents($this->exportDirectory.$fileName, $content);
+                file_put_contents($this->exportDirectory."resources/js/".$fileName, $content);
             }
         }
 
        
-
-        $resourcePath = $wgServer . "/mediawiki/skins/Loop/resources/";
+        $skinPath = $wgServer . "/mediawiki/skins/Loop/";
+        $resourcePath = $skinPath . "resources/";
         $resources = array(
             //"loopicons" => array(
                 "jquery.js" => array(
                     "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
-                    "targetpath" => "resources/",
+                    "targetpath" => "resources/js/",
+                    "link" => "script"
+                ),
+                "bootstrap.js" => array(
+                    "srcpath" => $skinPath . "/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js",
+                    "targetpath" => "resources/js/",
                     "link" => "script"
                 ),
                 "loopiconstyle.css" => array(
                     "srcpath" => $resourcePath."loopicons/style.css",
-                    "targetpath" => "resources/loopicons/",
-                    "content" => "",
-                    "link" => "link"
+                    "targetpath" => "resources/styles/",
+                    "link" => "style"
                 ),
                 "loopfont.eot" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.eot",
-                    "targetpath" => "resources/loopicons/fonts/",
+                    "targetpath" => "resources/styles/fonts/",
                 ),
                 "loopfont.svg" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.svg",
-                    "targetpath" => "resources/loopicons/fonts/",
+                    "targetpath" => "resources/styles/fonts/",
                 ),
                 "loopfont.ttf" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.ttf",
-                    "targetpath" => "resources/loopicons/fonts/",
+                    "targetpath" => "resources/styles/fonts/",
                 ),
                 "loopfont.woff" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.woff",
-                    "targetpath" => "resources/loopicons/fonts/",
+                    "targetpath" => "resources/styles/fonts/",
+                ),
+                "32px.png" => array(
+                    "srcpath" => $resourcePath."js/jstree/dist/themes/default/32px.png",
+                    "targetpath" => "resources/styles/jstree/dist/themes/default/",
+                ),
+                "throbber.png" => array(
+                    "srcpath" => $resourcePath."js/jstree/dist/themes/default/throbber.png",
+                    "targetpath" => "resources/styles/jstree/dist/themes/default/",
                 ),
                 "loop.js" => array(
                     "srcpath" => $resourcePath."js/loop.js",
-                    "targetpath" => "resources/",
+                    "targetpath" => "resources/js/",
                     "link" => "script"
                 ),
                 "jstree.js" => array(
-                    "srcpath" => $resourcePath."js/jstree/dist/jstree.js",
-                    "targetpath" => "resources/jstree/",
+                    "srcpath" => $resourcePath."js/jstree/dist/jstree.min.js",
+                    "targetpath" => "resources/js/",
+                    "link" => "script"
+                ),
+                "plyr.js" => array(
+                    "srcpath" => $resourcePath."js/plyr/dist/plyr.min.js",
+                    "targetpath" => "resources/js/",
                     "link" => "script"
                 )
             //)
         );
+
+        $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
+        $skinPath = "resources/styles/$skinStyle/img/";
+        $skinFiles = scandir("skins/Loop/$skinPath");
+        $skinFiles = array_slice($skinFiles, 2);
+
+        foreach( $skinFiles as $file => $data ) {
+                $resources[$data] = array(
+                    "srcpath" => "skins/Loop/$skinPath$data",
+                    "targetpath" => $skinPath
+                );
+        
+        }
        // $this->requestResourceContent( $resources );
 
         $headElements = $doc->getElementsByTagName('head');
@@ -196,9 +228,10 @@ dd($html);
                 file_put_contents( $this->exportDirectory.$data["targetpath"] . $file, $tmpContent[$file]["content"] );
             }
             if ( isset ( $data["link"] ) )  {
-                if ($data["link"] == "link") {
+                if ($data["link"] == "style") {
                     $tmpNode = $doc->createElement("link");
                     $tmpNode->setAttribute('href', $data["targetpath"] . $file );
+                    $tmpNode->setAttribute('rel', "stylesheet" );
                 } else if ( $data["link"] == "script" ) {
                     $tmpNode = $doc->createElement("script");
                     $tmpNode->setAttribute('src', $data["targetpath"] . $file );
