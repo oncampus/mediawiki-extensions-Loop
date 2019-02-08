@@ -83,8 +83,14 @@ dd($html);
         $requestUrls = array();
 
         libxml_use_internal_errors(true);
+        
+        # suppress error message in console for mw.loader not working
+        $html = preg_replace('/mw.loader.load\(RLPAGEMODULES\);/', '/*mw.loader.load\(RLPAGEMODULES\);*/', $html);
+
         $doc = new DOMDocument();
         $doc->loadHtml($html);
+
+        
         
         if ( !file_exists( $this->exportDirectory ) ) {
             mkdir( $this->exportDirectory, 0775, true );
@@ -203,6 +209,7 @@ dd($html);
         # js modules are missing, so we fetch those.
         preg_match_all('/"(([skins]{5}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["skin"]);
         preg_match_all('/"(([ext]{3}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["ext"]);
+
 
         
         # adds modules that have been declared for resourceloader on $doc to our $resources array.
