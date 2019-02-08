@@ -104,8 +104,9 @@ dd($html);
         # request contents for all matched <link> urls
         $requestUrls = $this->requestContent( $requestUrls );
         foreach ( $requestUrls as $url => $content ) {
-            $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/styles\/)/', '', $content);
-            $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/js\/)/', '', $contentR);
+            //$contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/styles\/)/', '', $content);
+            //$contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/js\/)/', '', $contentR);
+            $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
                 if ( !file_exists( $this->exportDirectory."resources/styles/".$fileName ) ) {
                 file_put_contents( $this->exportDirectory."resources/styles/".$fileName, $contentR );
@@ -142,93 +143,91 @@ dd($html);
         $skinPath = $wgServer . "/mediawiki/skins/Loop/";
         $resourcePath = $skinPath . "resources/";
         $resources = array(
-            //"loopicons" => array(
                 "jquery.js" => array(
                     "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
                     "targetpath" => "resources/js/",
                     "link" => "script"
                 ),
-                "bootstrap.js" => array(
-                    "srcpath" => $skinPath . "/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js",
-                    "targetpath" => "resources/js/",
-                    "link" => "script"
-                ),
-                "loopiconstyle.css" => array(
-                    "srcpath" => $resourcePath."loopicons/style.css",
-                    "targetpath" => "resources/styles/",
-                    "link" => "style"
-                ),
                 "loopfont.eot" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.eot",
-                    "targetpath" => "resources/styles/fonts/",
+                    "targetpath" => "resources/loopicons/fonts/",
                 ),
                 "loopfont.svg" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.svg",
-                    "targetpath" => "resources/styles/fonts/",
+                    "targetpath" => "resources/loopicons/fonts/",
                 ),
                 "loopfont.ttf" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.ttf",
-                    "targetpath" => "resources/styles/fonts/",
+                    "targetpath" => "resources/loopicons/fonts/",
                 ),
                 "loopfont.woff" => array(
                     "srcpath" => $resourcePath."loopicons/fonts/loopfont.woff",
-                    "targetpath" => "resources/styles/fonts/",
+                    "targetpath" => "resources/loopicons/fonts/",
                 ),
                 "32px.png" => array(
                     "srcpath" => $resourcePath."js/jstree/dist/themes/default/32px.png",
-                    "targetpath" => "resources/styles/jstree/dist/themes/default/",
+                    "targetpath" => "resources/js/jstree/dist/themes/default/",
                 ),
                 "throbber.gif" => array(
                     "srcpath" => $resourcePath."js/jstree/dist/themes/default/throbber.gif",
-                    "targetpath" => "resources/styles/jstree/dist/themes/default/",
-                ),
-                "loop.js" => array(
-                    "srcpath" => $resourcePath."js/loop.js",
-                    "targetpath" => "resources/js/",
-                    "link" => "script"
-                ),
-                "jstree.js" => array(
-                    "srcpath" => $resourcePath."js/jstree/dist/jstree.min.js",
-                    "targetpath" => "resources/js/",
-                    "link" => "script"
-                ),
-                "plyr.js" => array(
-                    "srcpath" => $resourcePath."js/plyr/dist/plyr.min.js",
-                    "targetpath" => "resources/js/",
-                    "link" => "script"
-                ),
-                "favicon.ico" => array(
-                    "srcpath" => $resourcePath."img/favicon.ico",
-                    "targetpath" => ""
+                    "targetpath" => "resources/js/jstree/dist/themes/default/",
                 )
-            //)
         );
 
         $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
-        $skinPath = "resources/styles/$skinStyle/img/";
-        $skinFiles = scandir("skins/Loop/$skinPath");
+        $skinFolder = "resources/styles/$skinStyle/img/";
+        $skinFiles = scandir("skins/Loop/$skinFolder");
         $skinFiles = array_slice($skinFiles, 2);
+
+
 
         foreach( $skinFiles as $file => $data ) {
                 $resources[$data] = array(
-                    "srcpath" => "skins/Loop/$skinPath$data",
-                    "targetpath" => $skinPath
+                    "srcpath" => "skins/Loop/$skinFolder$data",
+                    "targetpath" => $skinFolder
                 );
         
         }
+        # load resourcemodules from skin and extension json
+        $skinJson = json_decode(file_get_contents("$wgServer/mediawiki/skins/Loop/skin.json"), 1);
+        $extJson = json_decode(file_get_contents("$wgServer/mediawiki/extensions/Loop/extension.json"), 1);
+        $resourceModules = array_merge($skinJson["ResourceModules"], $extJson["ResourceModules"]);
+        
+        $tmpHtml = $doc->saveHtml();
+        $requiredModules = array();
+        # lines encaptured by ", start with skin.loop or ext.loop and end with .js 
+        # js modules are missing, so we fetch those.
+        preg_match_all('/"(([skinext]{3,5}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules);
+
+        
+        foreach ( $requiredModules[1] as $module => $modulename ) {
+            
+            if ( isset($resourceModules[$modulename]["scripts"]) ) {
+
+                foreach( $resourceModules[$modulename]["scripts"] as $pos => $scriptpath) {
+                    $targetPath = "";
+                    $resources[$modulename] = array(
+                        "srcpath" => $skinPath . $scriptpath,
+                        "targetpath" => "resources/js/",
+                        "link" => "script"
+                    );
+                }
+
+            }
+        }
+        //dd($resources);
        // $this->requestResourceContent( $resources );
 
         $headElements = $doc->getElementsByTagName('head');
 
         foreach( $resources as $file => $data ) {
-            echo $file;
             //if ( file_exists( $data["srcpath"] ) ) {
                 $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
             //}
             if ( ! file_exists( $this->exportDirectory.$data["targetpath"] ) ) {
                 mkdir( $this->exportDirectory.$data["targetpath"], 0775, true );
             }
-            if ( ! file_exists( $this->exportDirectory.$data["targetpath"]. $file ) ) {
+            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] . $file ) ) {
                 file_put_contents( $this->exportDirectory.$data["targetpath"] . $file, $tmpContent[$file]["content"] );
             }
             if ( isset ( $data["link"] ) )  {
