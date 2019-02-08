@@ -107,7 +107,11 @@ dd($html);
             # Undoing MW's absolute paths in CSS files
             $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
-                if ( !file_exists( $this->exportDirectory."resources/styles/".$fileName ) ) {
+            
+            if ( ! file_exists( $this->exportDirectory."resources/styles/" ) ) { # folder creation
+                mkdir( $this->exportDirectory."resources/styles/", 0775, true );
+            }
+            if ( ! file_exists( $this->exportDirectory."resources/styles/".$fileName ) ) {
                 file_put_contents( $this->exportDirectory."resources/styles/".$fileName, $contentR );
             }
         }
@@ -131,7 +135,10 @@ dd($html);
         foreach($requestUrls as $url => $content) {
             $fileName = $this->resolveUrl($url, '.js');
 
-            if(!file_exists($this->exportDirectory.$fileName)) {
+            if ( ! file_exists( $this->exportDirectory."resources/js/" ) ) { # folder creation
+                mkdir( $this->exportDirectory."resources/js/", 0775, true );
+            }
+            if( ! file_exists( $this->exportDirectory.$fileName ) ) {
                 file_put_contents($this->exportDirectory."resources/js/".$fileName, $content);
             }
         }
