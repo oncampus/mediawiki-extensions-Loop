@@ -104,8 +104,7 @@ dd($html);
         # request contents for all matched <link> urls
         $requestUrls = $this->requestContent( $requestUrls );
         foreach ( $requestUrls as $url => $content ) {
-            //$contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/styles\/)/', '', $content);
-            //$contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/js\/)/', '', $contentR);
+            # Undoing MW's absolute paths in CSS files
             $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
                 if ( !file_exists( $this->exportDirectory."resources/styles/".$fileName ) ) {
@@ -122,28 +121,27 @@ dd($html);
                 $tmpScript = $script->getAttribute( 'src' );
                 if(strpos($tmpScript, 'load.php') !== false) {
                     $requestUrls[] = $wgServer.$tmpScript;
-                    //echo ($wgServer.$tmpScript);
                     $script->setAttribute('src', "resources/js/".md5($wgServer.$tmpScript).'.js');
                 }
             }
-      
         }
+
         # request contents for all matched <link> urls
         $requestUrls = $this->requestContent($requestUrls);
         foreach($requestUrls as $url => $content) {
             $fileName = $this->resolveUrl($url, '.js');
-            //echo ($url);
 
             if(!file_exists($this->exportDirectory.$fileName)) {
                 file_put_contents($this->exportDirectory."resources/js/".$fileName, $content);
             }
         }
 
-       
         $skinPath = $wgServer . "/mediawiki/skins/Loop/";
         $extPath = $wgServer . "/mediawiki/extensions/Loop/";
         $resourcePath = $skinPath . "resources/";
+
         # Files that are called from our resources (e.g. in some css or js file) need to be added manually
+        # - will be extended by skin files and resource modules
         $resources = array(
                 "jquery.js" => array(
                     "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
@@ -203,13 +201,14 @@ dd($html);
         preg_match_all('/"(([ext]{3}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["ext"]);
 
         
+        # adds modules that have been declared for resourceloader on $doc to our $resources array.
         foreach ( $requiredModules as $type => $res ) { // skin or ext?
 
             foreach ( $res[1] as $module => $modulename ) { 
             
-                if ( isset($resourceModules[$modulename]["scripts"]) ) {
+                if ( isset($resourceModules[$modulename]["scripts"]) ) { // does our requested module have scripts?
 
-                    foreach( $resourceModules[$modulename]["scripts"] as $pos => $scriptpath) {
+                    foreach( $resourceModules[$modulename]["scripts"] as $pos => $scriptpath ) { // include all scripts
                         if ( $type == "skin" ){
                             $sourcePath = $skinPath;
                         } else {
@@ -225,22 +224,21 @@ dd($html);
                 }
             }
         }
-        //dd($resources);
-       // $this->requestResourceContent( $resources );
 
         $headElements = $doc->getElementsByTagName('head');
 
+        # request contents for all entries in $resources array,
+        # writes file in it's targetpath and links it on output page.
         foreach( $resources as $file => $data ) {
-            //if ( file_exists( $data["srcpath"] ) ) {
-                $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
-            //}
-            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] ) ) {
+            $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
+            
+            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] ) ) { # folder creation
                 mkdir( $this->exportDirectory.$data["targetpath"], 0775, true );
             }
-            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] . $file ) ) {
+            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] . $file ) ) { # copy source file 
                 file_put_contents( $this->exportDirectory.$data["targetpath"] . $file, $tmpContent[$file]["content"] );
             }
-            if ( isset ( $data["link"] ) )  {
+            if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
                     $tmpNode = $doc->createElement("link");
                     $tmpNode->setAttribute('href', $data["targetpath"] . $file );
@@ -254,27 +252,7 @@ dd($html);
                 }
             }
 
-            
         }
-
-        /*
-       // $fontElements = $resources["loopicons"];
-        foreach( $resources as $file => $path ) {
-            $array[] = array( $resourcePath . $path . key($path) );
-            $fontElements = $this->requestContent( $array );
-        }
-        //dd($requestUrls);
-            dd($fontElements);
-        foreach( $fontElements as $url => $content ) {
-            //$fileName = $fontElements;
-            
-            if(!file_exists($this->exportDirectory."resources/".$fileName)) {
-                file_put_contents($this->exportDirectory."resources/".$fileName, $content);
-            }
-            dd($fontElements);
-        }
-*/
-        
 
         $html = $doc->saveHtml();
         libxml_clear_errors();
