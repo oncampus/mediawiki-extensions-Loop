@@ -62,14 +62,14 @@
 		"PurgeCache": "SpecialPurgeCache"
 	},
 	"ResourceFileModulePaths": {
-		"localBasePath": "resources",
-		"remoteExtPath": "Loop/resources"
+		"localBasePath": "",
+		"remoteExtPath": "Loop"
 	},
 	"ResourceModules": {
 		"ext.loop-settings.js": {
 			"position": "bottom",
 			"scripts": [
-				"js/SpecialLoopSettings.js"
+				"resources/js/SpecialLoopSettings.js"
 			],
 			"dependencies": [
 				"oojs-ui-core",
