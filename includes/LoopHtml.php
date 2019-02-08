@@ -178,8 +178,8 @@ dd($html);
                     "srcpath" => $resourcePath."js/jstree/dist/themes/default/32px.png",
                     "targetpath" => "resources/styles/jstree/dist/themes/default/",
                 ),
-                "throbber.png" => array(
-                    "srcpath" => $resourcePath."js/jstree/dist/themes/default/throbber.png",
+                "throbber.gif" => array(
+                    "srcpath" => $resourcePath."js/jstree/dist/themes/default/throbber.gif",
                     "targetpath" => "resources/styles/jstree/dist/themes/default/",
                 ),
                 "loop.js" => array(
@@ -196,6 +196,10 @@ dd($html);
                     "srcpath" => $resourcePath."js/plyr/dist/plyr.min.js",
                     "targetpath" => "resources/js/",
                     "link" => "script"
+                ),
+                "favicon.ico" => array(
+                    "srcpath" => $resourcePath."img/favicon.ico",
+                    "targetpath" => ""
                 )
             //)
         );
