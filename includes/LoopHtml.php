@@ -78,7 +78,7 @@ dd($html);
 
     private function replaceLoadPhp($html) {
 
-        global $wgServer, $wgDefaultUserOptions;
+        global $wgServer, $wgDefaultUserOptions, $wgResourceModules;
 
         $requestUrls = array();
 
@@ -143,63 +143,60 @@ dd($html);
             }
         }
 
-        $skinPath = $wgServer . "/mediawiki/skins/Loop/";
-        $extPath = $wgServer . "/mediawiki/extensions/Loop/";
-        $resourcePath = $skinPath . "resources/";
+        $skinPath = $wgServer . "/mediawiki/skins/";
+        $extPath = $wgServer . "/mediawiki/extensions/";
 
         # Files that are called from our resources (e.g. in some css or js file) need to be added manually
         # - will be extended by skin files and resource modules
         $resources = array(
-                "jquery.js" => array(
-                    "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
-                    "targetpath" => "resources/js/",
-                    "link" => "script"
-                ),
-                "loopfont.eot" => array(
-                    "srcpath" => $resourcePath."loopicons/fonts/loopfont.eot",
-                    "targetpath" => "resources/loopicons/fonts/",
-                ),
-                "loopfont.svg" => array(
-                    "srcpath" => $resourcePath."loopicons/fonts/loopfont.svg",
-                    "targetpath" => "resources/loopicons/fonts/",
-                ),
-                "loopfont.ttf" => array(
-                    "srcpath" => $resourcePath."loopicons/fonts/loopfont.ttf",
-                    "targetpath" => "resources/loopicons/fonts/",
-                ),
-                "loopfont.woff" => array(
-                    "srcpath" => $resourcePath."loopicons/fonts/loopfont.woff",
-                    "targetpath" => "resources/loopicons/fonts/",
-                ),
-                "32px.png" => array(
-                    "srcpath" => $resourcePath."js/jstree/dist/themes/default/32px.png",
-                    "targetpath" => "resources/js/jstree/dist/themes/default/",
-                ),
-                "throbber.gif" => array(
-                    "srcpath" => $resourcePath."js/jstree/dist/themes/default/throbber.gif",
-                    "targetpath" => "resources/js/jstree/dist/themes/default/",
-                )
+            "jquery.js" => array(
+                "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
+                "targetpath" => "resources/js/",
+                "link" => "script"
+            ),
+            "loopfont.eot" => array(
+                "srcpath" => $skinPath."Loop/resources/loopicons/fonts/loopfont.eot",
+                "targetpath" => "resources/loopicons/fonts/",
+            ),
+            "loopfont.svg" => array(
+                "srcpath" => $skinPath."Loop/resources/loopicons/fonts/loopfont.svg",
+                "targetpath" => "resources/loopicons/fonts/",
+            ),
+            "loopfont.ttf" => array(
+                "srcpath" => $skinPath."Loop/resources/loopicons/fonts/loopfont.ttf",
+                "targetpath" => "resources/loopicons/fonts/",
+            ),
+            "loopfont.woff" => array(
+                "srcpath" => $skinPath."Loop/resources/loopicons/fonts/loopfont.woff",
+                "targetpath" => "resources/loopicons/fonts/",
+            ),
+            "32px.png" => array(
+                "srcpath" => $skinPath."Loop/resources/js/jstree/dist/themes/default/32px.png",
+                "targetpath" => "resources/js/jstree/dist/themes/default/",
+            ),
+            "throbber.gif" => array(
+                "srcpath" => $skinPath."Loop/resources/js/jstree/dist/themes/default/throbber.gif",
+                "targetpath" => "resources/js/jstree/dist/themes/default/",
+            )
         );
 
         $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
         $skinFolder = "resources/styles/$skinStyle/img/";
         $skinFiles = scandir("skins/Loop/$skinFolder");
         $skinFiles = array_slice($skinFiles, 2);
-
-
-
+        
         foreach( $skinFiles as $file => $data ) {
-                $resources[$data] = array(
-                    "srcpath" => "skins/Loop/$skinFolder$data",
-                    "targetpath" => $skinFolder
-                );
+            $resources[$data] = array(
+                "srcpath" => "skins/Loop/$skinFolder$data",
+                "targetpath" => $skinFolder
+            );
         
         }
         # load resourcemodules from skin and extension json
-        $skinJson = json_decode(file_get_contents("$wgServer/mediawiki/skins/Loop/skin.json"), 1);
-        $extJson = json_decode(file_get_contents("$wgServer/mediawiki/extensions/Loop/extension.json"), 1);
-        $resourceModules = array_merge($skinJson["ResourceModules"], $extJson["ResourceModules"]);
         
+        $resourceModules = $wgResourceModules;
+        
+
         $tmpHtml = $doc->saveHtml();
         $requiredModules = array("skin" => array(), "ext" => array() );
         # lines encaptured by ", start with skin.loop or ext.loop and end with .js 
@@ -217,9 +214,9 @@ dd($html);
 
                     foreach( $resourceModules[$modulename]["scripts"] as $pos => $scriptpath ) { // include all scripts
                         if ( $type == "skin" ){
-                            $sourcePath = $skinPath;
+                            $sourcePath = $skinPath . $resourceModules[$modulename]["remoteSkinPath"]."/";
                         } else {
-                            $sourcePath = $extPath;
+                            $sourcePath = $extPath . $resourceModules[$modulename]["remoteExtPath"]."/";
                         }
 
                         $resources[$modulename] = array(
