@@ -192,7 +192,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false,
 			"unreviewedpages": true,
@@ -218,7 +218,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false,
 			"purge": true
@@ -229,7 +229,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false,
 			"reupload": true,
@@ -245,7 +245,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false
 		}
