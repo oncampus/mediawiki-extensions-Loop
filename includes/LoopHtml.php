@@ -141,7 +141,9 @@ dd($html);
 
        
         $skinPath = $wgServer . "/mediawiki/skins/Loop/";
+        $extPath = $wgServer . "/mediawiki/extensions/Loop/";
         $resourcePath = $skinPath . "resources/";
+        # Files that are called from our resources (e.g. in some css or js file) need to be added manually
         $resources = array(
                 "jquery.js" => array(
                     "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
@@ -194,25 +196,33 @@ dd($html);
         $resourceModules = array_merge($skinJson["ResourceModules"], $extJson["ResourceModules"]);
         
         $tmpHtml = $doc->saveHtml();
-        $requiredModules = array();
+        $requiredModules = array("skin" => array(), "ext" => array() );
         # lines encaptured by ", start with skin.loop or ext.loop and end with .js 
         # js modules are missing, so we fetch those.
-        preg_match_all('/"(([skinext]{3,5}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules);
+        preg_match_all('/"(([skins]{5}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["skin"]);
+        preg_match_all('/"(([ext]{3}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["ext"]);
 
         
-        foreach ( $requiredModules[1] as $module => $modulename ) {
+        foreach ( $requiredModules as $type => $res ) { // skin or ext?
+
+            foreach ( $res[1] as $module => $modulename ) { 
             
-            if ( isset($resourceModules[$modulename]["scripts"]) ) {
+                if ( isset($resourceModules[$modulename]["scripts"]) ) {
 
-                foreach( $resourceModules[$modulename]["scripts"] as $pos => $scriptpath) {
-                    $targetPath = "";
-                    $resources[$modulename] = array(
-                        "srcpath" => $skinPath . $scriptpath,
-                        "targetpath" => "resources/js/",
-                        "link" => "script"
-                    );
+                    foreach( $resourceModules[$modulename]["scripts"] as $pos => $scriptpath) {
+                        if ( $type == "skin" ){
+                            $sourcePath = $skinPath;
+                        } else {
+                            $sourcePath = $extPath;
+                        }
+
+                        $resources[$modulename] = array(
+                            "srcpath" => $sourcePath . $scriptpath,
+                            "targetpath" => "resources/js/",
+                            "link" => "script"
+                        );
+                    }
                 }
-
             }
         }
         //dd($resources);
