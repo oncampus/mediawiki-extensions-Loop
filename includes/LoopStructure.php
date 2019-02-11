@@ -600,7 +600,7 @@ class LoopStructureItem {
 			}
 
 			$title = Title::newFromID( $item->article );
-			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $item->tocNumber .' '. $link_text ) );
+			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $item->tocNumber .' '. $link_text ), array('class' => 'breadcrumb-link') );
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 
 		}
