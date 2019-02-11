@@ -18,7 +18,7 @@ class LoopHtml{
    private $exportDirectory;
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
-        set_time_limit(0);
+        //set_time_limit(0);
 //dd("todo dauert zu lange!");
 
         $loopStructureItems = $loopStructure->getStructureItems();
@@ -34,7 +34,6 @@ class LoopHtml{
             $debugModeBefore = $wgResourceLoaderDebug;
             $wgOut->getUser()->setOption( 'LoopRenderMode', 'offline' );
             $wgResourceLoaderDebug = true;
-            $wgStyleDirectory=$wgScriptPath."/skins/Loop/";
 
             # Todo $this->copyResources();
 
@@ -51,7 +50,7 @@ class LoopHtml{
                     $revision = $wikiPage->getRevision();
                     $content = $revision->getContent( Revision::RAW );
                     $text = ContentHandler::getContentText( $content );
-                    $htmlFileName = LoopHtml::getInstance()->exportDirectory.$title->mTextform.'.html';
+                    $htmlFileName = LoopHtml::getInstance()->exportDirectory.$title->mUrlform.'.html';
 
 
                     # prepare skin
@@ -65,22 +64,28 @@ class LoopHtml{
                     $html = ob_get_contents();
                     ob_end_clean();
 
-                    $html = LoopHtml::getInstance()->replaceLoadPhp($html);
+                    $html = LoopHtml::getInstance()->replaceResourceLoader($html);
+                    $html = LoopHtml::getInstance()->replaceTemplateLinks($html);
                     file_put_contents($htmlFileName, $html);
-dd($html);
+                   
+                    dd($html);
                 }
 
             }
+            dd($html);
 
         }
 
     }
 
-    private function replaceLoadPhp($html) {
+    private function replaceResourceLoader($html) {
 
         global $wgServer, $wgDefaultUserOptions, $wgResourceModules;
 
         $requestUrls = array();
+
+        $loopSettings = new LoopSettings();
+        $loopSettings->loadSettings();
 
         libxml_use_internal_errors(true);
         
@@ -89,15 +94,13 @@ dd($html);
 
         $doc = new DOMDocument();
         $doc->loadHtml($html);
-
-        
         
         if ( !file_exists( $this->exportDirectory ) ) {
             mkdir( $this->exportDirectory, 0775, true );
         }
 
         $linkElements = $doc->getElementsByTagName('link');
-        if($linkElements) {
+        if( $linkElements ) {
             foreach($linkElements as $link) {
                 $tmpHref = $link->getAttribute( 'href' );
                 if(strpos($tmpHref, 'load.php') !== false) {
@@ -111,15 +114,9 @@ dd($html);
         $requestUrls = $this->requestContent( $requestUrls );
         foreach ( $requestUrls as $url => $content ) {
             # Undoing MW's absolute paths in CSS files
-            $contentR = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
+            $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
-            
-            if ( ! file_exists( $this->exportDirectory."resources/styles/" ) ) { # folder creation
-                mkdir( $this->exportDirectory."resources/styles/", 0775, true );
-            }
-            if ( ! file_exists( $this->exportDirectory."resources/styles/".$fileName ) ) {
-                file_put_contents( $this->exportDirectory."resources/styles/".$fileName, $contentR );
-            }
+            $this->writeFile( "resources/styles/", $fileName, $content );
         }
 
         # reset container for <script> hrefs
@@ -140,13 +137,7 @@ dd($html);
         $requestUrls = $this->requestContent($requestUrls);
         foreach($requestUrls as $url => $content) {
             $fileName = $this->resolveUrl($url, '.js');
-
-            if ( ! file_exists( $this->exportDirectory."resources/js/" ) ) { # folder creation
-                mkdir( $this->exportDirectory."resources/js/", 0775, true );
-            }
-            if( ! file_exists( $this->exportDirectory.$fileName ) ) {
-                file_put_contents($this->exportDirectory."resources/js/".$fileName, $content);
-            }
+            $this->writeFile( "resources/js/", $fileName, $content );
         }
 
         $skinPath = $wgServer . "/mediawiki/skins/";
@@ -202,13 +193,11 @@ dd($html);
         
         $resourceModules = $wgResourceModules;
         
-
-        $tmpHtml = $doc->saveHtml();
         $requiredModules = array("skin" => array(), "ext" => array() );
         # lines encaptured by ", start with skin.loop or ext.loop and end with .js 
         # js modules are missing, so we fetch those.
-        preg_match_all('/"(([skins]{5}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["skin"]);
-        preg_match_all('/"(([ext]{3}\.loop.*\S*\.js))"/', $tmpHtml, $requiredModules["ext"]);
+        preg_match_all('/"(([skins]{5}\.loop.*\S*\.js))"/', $html, $requiredModules["skin"]);
+        preg_match_all('/"(([ext]{3}\.loop.*\S*\.js))"/', $html, $requiredModules["ext"]);
 
 
         
@@ -243,12 +232,8 @@ dd($html);
         foreach( $resources as $file => $data ) {
             $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
             
-            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] ) ) { # folder creation
-                mkdir( $this->exportDirectory.$data["targetpath"], 0775, true );
-            }
-            if ( ! file_exists( $this->exportDirectory.$data["targetpath"] . $file ) ) { # copy source file 
-                file_put_contents( $this->exportDirectory.$data["targetpath"] . $file, $tmpContent[$file]["content"] );
-            }
+            $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
+            
             if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
                     $tmpNode = $doc->createElement("link");
@@ -258,8 +243,8 @@ dd($html);
                     $tmpNode = $doc->createElement("script");
                     $tmpNode->setAttribute('src', $data["targetpath"] . $file );
                 }
-                foreach( $headElements as $head) {
-                    $head->appendChild( $tmpNode );
+                foreach( $headElements as $headElement) {
+                    $headElement->appendChild( $tmpNode );
                 }
             }
 
@@ -268,6 +253,60 @@ dd($html);
         $html = $doc->saveHtml();
         libxml_clear_errors();
 
+        return $html;
+    }
+
+    private function replaceTemplateLinks( $html ) {
+
+        $doc = new DOMDocument();
+        $doc->loadHtml($html);
+        
+        if ( !file_exists( $this->exportDirectory ) ) {
+            mkdir( $this->exportDirectory, 0775, true );
+        }
+
+        # replace TOC Sidebar links
+        $tocDiv = $doc->getElementById('toc-nav');
+        $tocLinks = $this->getElementsByClass( $tocDiv, "a", "aToc" );
+        $this->bulkReplaceHref( $tocLinks );
+
+        # replace top navigation links
+        $topNavigation = $doc->getElementById('top-nav');
+        $navElements = $topNavigation->childNodes;
+        $this->bulkReplaceHref( $navElements );
+        
+        # replace bottom navigation links
+        $bottomNavigation = $doc->getElementById('bottom-nav');
+        $navElements = $bottomNavigation->childNodes;
+        $this->bulkReplaceHref( $navElements );
+
+        # replace breadcrumb links
+        $breadcrumbSection = $doc->getElementById('breadcrumb-area');
+        //$breadcrumbElements = $breadcrumbSection->childNodes;
+        $breadcrumbElements = $this->getElementsByClass( $breadcrumbSection, "a", "breadcrumb-link" );
+        $this->bulkReplaceHref( $breadcrumbElements );
+
+        # replace Loop Title Link
+        $loopTitleLink = $doc->getElementById('loop-title');
+        $loopTitleHref = $loopTitleLink->getAttribute( 'href' );
+        $loopTitleLink->setAttribute( 'href', $this->makeLocalHref( $loopTitleHref ) );
+        
+        # replace Loop Logo Link
+        $loopLogoLink = $doc->getElementById('loop-logo');
+        $loopLogoHref = $loopLogoLink->getAttribute( 'href' );
+        $loopLogoLink->setAttribute( 'href', $this->makeLocalHref( $loopLogoHref ) );
+
+        # apply custom logo, if given
+        if ( !empty ($loopSettings->customLogo ) ) {
+            $loopLogo = $doc->getElementById('logo');
+            $logoUrl = $loopSettings->customLogoFilePath;
+            $logoFile = $this->requestContent( array($logoUrl) );
+            $fileName = $loopSettings->customLogoFileName; 
+            $this->writeFile( "images/", $fileName, $logoFile[$logoUrl] );
+            $loopLogo->setAttribute( 'style', 'background-image: url("images/'. $fileName.'");' );
+        }        
+
+        $html = $doc->saveHtml();
         return $html;
     }
 
@@ -298,5 +337,50 @@ dd($html);
         return md5($url).$suffix;
     }
 
+    private function getElementsByClass( &$parentNode, $tagName, $className ) {
 
+        $nodes = array();
+    
+        $childNodeList = $parentNode->getElementsByTagName( $tagName );
+        for ( $i = 0; $i < $childNodeList->length; $i++ ) {
+            $temp = $childNodeList->item( $i );
+            if ( stripos( $temp->getAttribute( 'class' ), $className ) !== false ) {
+                $nodes[] = $temp;
+            }
+        }
+    
+        return $nodes;
+    }
+
+    private function bulkReplaceHref ( $elements ) {
+
+        if ( $elements ) {
+            foreach ( $elements as $element ) {
+                $tmpHref = $element->getAttribute( 'href' );
+                $newHref = $this->makeLocalHref( $tmpHref );
+                $element->setAttribute( 'href', $newHref );
+            }
+        }
+        
+        return true;
+    }
+
+    private function makeLocalHref( $href ) {
+
+        if ( $href != '#' ) {
+            $href = preg_replace( '/(.*\/index.php\/)/', '', $href ) . ".html";
+        }
+        return $href;
+    }
+
+    private function writeFile( $pathAddendum, $fileName, $content ) {
+        
+        if ( ! file_exists( $this->exportDirectory.$pathAddendum ) ) { # folder creation
+            mkdir( $this->exportDirectory.$pathAddendum, 0775, true );
+        }
+        if ( ! file_exists( $this->exportDirectory.$fileName ) ) {
+            file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
+        }
+        return true;
+    }
 }
