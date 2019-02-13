@@ -25,7 +25,7 @@ class LoopHtml{
 
         if(is_array($loopStructureItems)) {
 
-            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgScriptPath;
+            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory;
 
             LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
 
@@ -49,7 +49,10 @@ class LoopHtml{
                     $wikiPage = WikiPage::factory( $title );
                     $revision = $wikiPage->getRevision();
                     $content = $revision->getContent( Revision::RAW );
-                    $text = ContentHandler::getContentText( $content );
+                    
+		            $localParser = new Parser();
+                    $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
+                    //$text = ContentHandler::getContent( $content );
                     $htmlFileName = LoopHtml::getInstance()->exportDirectory.$title->mUrlform.'.html';
 
 
@@ -66,9 +69,10 @@ class LoopHtml{
 
                     $html = LoopHtml::getInstance()->replaceResourceLoader($html);
                     $html = LoopHtml::getInstance()->replaceTemplateLinks($html);
+                    $html = LoopHtml::getInstance()->replaceContent($html);
                     file_put_contents($htmlFileName, $html);
                    
-                    dd($html);
+                    //dd($html);
                 }
 
             }
@@ -83,9 +87,6 @@ class LoopHtml{
         global $wgServer, $wgDefaultUserOptions, $wgResourceModules;
 
         $requestUrls = array();
-
-        $loopSettings = new LoopSettings();
-        $loopSettings->loadSettings();
 
         libxml_use_internal_errors(true);
         
@@ -150,6 +151,11 @@ class LoopHtml{
                 "srcpath" => $wgServer . "/mediawiki/resources/lib/jquery/jquery.js",
                 "targetpath" => "resources/js/",
                 "link" => "script"
+            ),
+            "shared.css" => array(
+                "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/shared.css",
+                "targetpath" => "resources/style/",
+                "link" => "style"
             ),
             "loopfont.eot" => array(
                 "srcpath" => $skinPath."Loop/resources/loopicons/fonts/loopfont.eot",
@@ -261,15 +267,19 @@ class LoopHtml{
         $doc = new DOMDocument();
         $doc->loadHtml($html);
         
+        $loopSettings = new LoopSettings();
+        $loopSettings->loadSettings();
+        
         if ( !file_exists( $this->exportDirectory ) ) {
             mkdir( $this->exportDirectory, 0775, true );
         }
 
         # replace TOC Sidebar links
-        $tocDiv = $doc->getElementById('toc-nav');
-        $tocLinks = $this->getElementsByClass( $tocDiv, "a", "aToc" );
-        $this->bulkReplaceHref( $tocLinks );
-
+        $body = $doc->getElementsByTagName('body');
+        $internalLinks = $this->getElementsByClass( $body[0], "a", "internal-link" );
+        $this->bulkReplaceHref( $internalLinks );
+        //dd($internalLinks);
+/*
         # replace top navigation links
         $topNavigation = $doc->getElementById('top-nav');
         $navElements = $topNavigation->childNodes;
@@ -295,15 +305,15 @@ class LoopHtml{
         $loopLogoLink = $doc->getElementById('loop-logo');
         $loopLogoHref = $loopLogoLink->getAttribute( 'href' );
         $loopLogoLink->setAttribute( 'href', $this->makeLocalHref( $loopLogoHref ) );
-
+*/
         # apply custom logo, if given
-        if ( !empty ($loopSettings->customLogo ) ) {
+        if ( !empty ( $loopSettings->customLogo ) ) {
             $loopLogo = $doc->getElementById('logo');
             $logoUrl = $loopSettings->customLogoFilePath;
             $logoFile = $this->requestContent( array($logoUrl) );
             $fileName = $loopSettings->customLogoFileName; 
-            $this->writeFile( "images/", $fileName, $logoFile[$logoUrl] );
-            $loopLogo->setAttribute( 'style', 'background-image: url("images/'. $fileName.'");' );
+            $this->writeFile( "resources/images/", $fileName, $logoFile[$logoUrl] );
+            $loopLogo->setAttribute( 'style', 'background-image: url("resources/images/'. $fileName.'");' );
         }        
 
         $html = $doc->saveHtml();
@@ -382,5 +392,45 @@ class LoopHtml{
             file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
         }
         return true;
+    }
+
+    private function replaceContent( $html ) {
+        global $wgServer;
+
+        $doc = new DOMDocument();
+        $doc->loadHtml($html);
+
+        # replace breadcrumb links
+        //$pageContent = $doc->getElementById('page-content');
+        $body = $doc->getElementsByTagName('body');
+
+        $imageElements = $this->getElementsByClass( $body[0], "img", "responsive-image" );
+        $imageUrls = array();
+        if ( $imageElements ) {
+            foreach ( $imageElements as $element ) {
+
+                $tmpSrc = $element->getAttribute( 'src' );
+                $imageData["content"][] = $wgServer . $tmpSrc;
+                preg_match('/(.*\/)(.*\.{1}.*)/', $tmpSrc, $tmpTitle);
+                $imageData["names"][$wgServer . $tmpSrc] = $tmpTitle[2];
+                $newSrc = "resources/images/" . $tmpTitle[2];
+                $element->setAttribute( 'src', $newSrc );
+            }
+        }
+        $imageData["content"] = $this->requestContent($imageData["content"]);
+        if ( $imageData["names"] ) {
+            foreach ( $imageData["names"] as $image => $data ) {
+                $fileName = $imageData["names"][$image];
+                $content = $imageData["content"][$image];
+                $this->writeFile( 'resources/images/', $fileName, $content );
+            }
+        }
+
+
+
+
+        $html = $doc->saveHtml();
+        return $html;
+
     }
 }
