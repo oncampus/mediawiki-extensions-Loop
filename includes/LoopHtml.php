@@ -27,7 +27,8 @@ class LoopHtml{
 
             global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory;
 
-            LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
+            LoopHtml::getInstance()->startDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
+            LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/files/';
 
             # prepare global config
             $renderModeBefore = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
@@ -39,38 +40,17 @@ class LoopHtml{
 
             $exportSkin = clone $context->getSkin();
 
+            
+            $mainPage = $loopStructure->mainPage;
+            LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
+
             foreach($loopStructureItems as $loopStructureItem) {
 
                 $articleId = $loopStructureItem->getArticle();
 
                 if( isset( $articleId ) && is_numeric( $articleId )) {
 
-                    $title = Title::newFromID( $articleId );
-                    $wikiPage = WikiPage::factory( $title );
-                    $revision = $wikiPage->getRevision();
-                    $content = $revision->getContent( Revision::RAW );
-                    
-		            $localParser = new Parser();
-                    $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
-                    //$text = ContentHandler::getContent( $content );
-                    $htmlFileName = LoopHtml::getInstance()->exportDirectory.$title->mUrlform.'.html';
-
-
-                    # prepare skin
-                    $exportSkin->getContext()->setTitle( $title );
-                    $exportSkin->getContext()->setWikiPage( $wikiPage );
-                    $exportSkin->getContext()->getOutput()->mBodytext = $text;
-
-                    # get html with skin object
-                    ob_start();
-                    $exportSkin->outputPage();
-                    $html = ob_get_contents();
-                    ob_end_clean();
-
-                    $html = LoopHtml::getInstance()->replaceResourceLoader($html);
-                    $html = LoopHtml::getInstance()->replaceTemplateLinks($html);
-                    $html = LoopHtml::getInstance()->replaceContent($html);
-                    file_put_contents($htmlFileName, $html);
+                    $html = LoopHtml::writeArticleToFile( $articleId, "", $exportSkin );
                    
                     //dd($html);
                 }
@@ -82,7 +62,45 @@ class LoopHtml{
 
     }
 
-    private function replaceResourceLoader($html) {
+    private static function writeArticleToFile( $articleId, $prependHref, $exportSkin ) {
+
+        $title = Title::newFromID( $articleId );
+        $wikiPage = WikiPage::factory( $title );
+        $revision = $wikiPage->getRevision();
+        $content = $revision->getContent( Revision::RAW );
+        
+        $localParser = new Parser();
+        $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
+        //$text = ContentHandler::getContent( $content );
+
+        # regular articles are in ZIP/files/ folder, start article in ZIP/
+        if ( $prependHref == "" ) {
+            $htmlFileName = LoopHtml::getInstance()->exportDirectory.$title->mUrlform.'.html';
+        } else {
+            $htmlFileName = LoopHtml::getInstance()->startDirectory.$title->mUrlform.'.html';
+        }
+
+
+        # prepare skin
+        $exportSkin->getContext()->setTitle( $title );
+        $exportSkin->getContext()->setWikiPage( $wikiPage );
+        $exportSkin->getContext()->getOutput()->mBodytext = $text;
+
+        # get html with skin object
+        ob_start();
+        $exportSkin->outputPage();
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        $html = LoopHtml::getInstance()->replaceResourceLoader($html, $prependHref);
+        $html = LoopHtml::getInstance()->replaceTemplateLinks($html, $prependHref);
+        $html = LoopHtml::getInstance()->replaceContent($html, $prependHref);
+        file_put_contents($htmlFileName, $html);
+        //dd($html);
+        return $html;
+    }
+
+    private function replaceResourceLoader($html, $prependHref = "") {
 
         global $wgServer, $wgDefaultUserOptions, $wgResourceModules;
 
@@ -106,7 +124,7 @@ class LoopHtml{
                 $tmpHref = $link->getAttribute( 'href' );
                 if(strpos($tmpHref, 'load.php') !== false) {
                     $requestUrls[] = $wgServer.$tmpHref;
-                    $link->setAttribute('href', "resources/styles/".md5($wgServer.$tmpHref).'.css');
+                    $link->setAttribute('href', $prependHref."resources/styles/".md5($wgServer.$tmpHref).'.css');
                 }
             }
         }
@@ -117,7 +135,7 @@ class LoopHtml{
             # Undoing MW's absolute paths in CSS files
             $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
-            $this->writeFile( "resources/styles/", $fileName, $content );
+            $this->writeFile( $prependHref."resources/styles/", $fileName, $content );
         }
 
         # reset container for <script> hrefs
@@ -129,7 +147,7 @@ class LoopHtml{
                 $tmpScript = $script->getAttribute( 'src' );
                 if(strpos($tmpScript, 'load.php') !== false) {
                     $requestUrls[] = $wgServer.$tmpScript;
-                    $script->setAttribute('src', "resources/js/".md5($wgServer.$tmpScript).'.js');
+                    $script->setAttribute('src', $prependHref."resources/js/".md5($wgServer.$tmpScript).'.js');
                 }
             }
         }
@@ -138,7 +156,7 @@ class LoopHtml{
         $requestUrls = $this->requestContent($requestUrls);
         foreach($requestUrls as $url => $content) {
             $fileName = $this->resolveUrl($url, '.js');
-            $this->writeFile( "resources/js/", $fileName, $content );
+            $this->writeFile( $prependHref."resources/js/", $fileName, $content );
         }
 
         $skinPath = $wgServer . "/mediawiki/skins/";
@@ -238,16 +256,16 @@ class LoopHtml{
         foreach( $resources as $file => $data ) {
             $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
             
-            $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
+            $this->writeFile( $prependHref.$data["targetpath"], $file, $tmpContent[$file]["content"] );
             
             if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
                     $tmpNode = $doc->createElement("link");
-                    $tmpNode->setAttribute('href', $data["targetpath"] . $file );
+                    $tmpNode->setAttribute('href', $prependHref.$data["targetpath"] . $file );
                     $tmpNode->setAttribute('rel', "stylesheet" );
                 } else if ( $data["link"] == "script" ) {
                     $tmpNode = $doc->createElement("script");
-                    $tmpNode->setAttribute('src', $data["targetpath"] . $file );
+                    $tmpNode->setAttribute('src', $prependHref.$data["targetpath"] . $file );
                 }
                 foreach( $headElements as $headElement) {
                     $headElement->appendChild( $tmpNode );
@@ -262,7 +280,7 @@ class LoopHtml{
         return $html;
     }
 
-    private function replaceTemplateLinks( $html ) {
+    private function replaceTemplateLinks( $html, $prependHref = "" ) {
 
         $doc = new DOMDocument();
         $doc->loadHtml($html);
@@ -277,7 +295,7 @@ class LoopHtml{
         # replace TOC Sidebar links
         $body = $doc->getElementsByTagName('body');
         $internalLinks = $this->getElementsByClass( $body[0], "a", "internal-link" );
-        $this->bulkReplaceHref( $internalLinks );
+        $this->bulkReplaceHref( $internalLinks, $prependHref );
         //dd($internalLinks);
 /*
         # replace top navigation links
@@ -313,7 +331,7 @@ class LoopHtml{
             $logoFile = $this->requestContent( array($logoUrl) );
             $fileName = $loopSettings->customLogoFileName; 
             $this->writeFile( "resources/images/", $fileName, $logoFile[$logoUrl] );
-            $loopLogo->setAttribute( 'style', 'background-image: url("resources/images/'. $fileName.'");' );
+            $loopLogo->setAttribute( 'style', 'background-image: url("'.$prependHref.'resources/images/'. $fileName.'");' );
         }        
 
         $html = $doc->saveHtml();
@@ -362,13 +380,13 @@ class LoopHtml{
         return $nodes;
     }
 
-    private function bulkReplaceHref ( $elements ) {
+    private function bulkReplaceHref ( $elements, $prependHref ) {
 
         if ( $elements ) {
             foreach ( $elements as $element ) {
                 $tmpHref = $element->getAttribute( 'href' );
                 $newHref = $this->makeLocalHref( $tmpHref );
-                $element->setAttribute( 'href', $newHref );
+                $element->setAttribute( 'href', $prependHref.$newHref );
             }
         }
         
@@ -394,7 +412,7 @@ class LoopHtml{
         return true;
     }
 
-    private function replaceContent( $html ) {
+    private function replaceContent( $html, $prependHref = "" ) {
         global $wgServer;
 
         $doc = new DOMDocument();
@@ -413,7 +431,7 @@ class LoopHtml{
                 $imageData["content"][] = $wgServer . $tmpSrc;
                 preg_match('/(.*\/)(.*\.{1}.*)/', $tmpSrc, $tmpTitle);
                 $imageData["names"][$wgServer . $tmpSrc] = $tmpTitle[2];
-                $newSrc = "resources/images/" . $tmpTitle[2];
+                $newSrc = $prependHref."resources/images/" . $tmpTitle[2];
                 $element->setAttribute( 'src', $newSrc );
             }
         }
@@ -422,12 +440,9 @@ class LoopHtml{
             foreach ( $imageData["names"] as $image => $data ) {
                 $fileName = $imageData["names"][$image];
                 $content = $imageData["content"][$image];
-                $this->writeFile( 'resources/images/', $fileName, $content );
+                $this->writeFile( $prependHref.'resources/images/', $fileName, $content );
             }
         }
-
-
-
 
         $html = $doc->saveHtml();
         return $html;
