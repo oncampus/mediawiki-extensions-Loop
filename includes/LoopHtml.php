@@ -25,8 +25,9 @@ class LoopHtml{
 
             global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath;
 
-            LoopHtml::getInstance()->startDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
-            LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/files/';
+            $exportHtmlDirectory = $wgUploadDirectory.$exportDirectory;
+            LoopHtml::getInstance()->startDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/';
+            LoopHtml::getInstance()->exportDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/files/';
 
             $articlePath = preg_replace('/(\/)/', '\/', $wgArticlePath);
             LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
@@ -57,13 +58,38 @@ class LoopHtml{
 
                     $html = LoopHtml::writeArticleToFile( $articleId, "", $exportSkin );
                    
-                    //dd($html);
                 }
 
             }
-            dd($html);
-           
-            return "test";
+            
+            $tmpZipPath = $exportHtmlDirectory.'/tmpfile.zip';
+            $tmpDirectoryToZip = $exportHtmlDirectory.'/'.$loopStructure->getId();
+
+            $zip = new ZipArchive();
+            $zip->open( $tmpZipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator( $tmpDirectoryToZip ),
+                RecursiveIteratorIterator::LEAVES_ONLY
+            );
+
+            foreach ( $files as $name => $file ) {
+                if ( ! $file->isDir() ) {
+                    $tmpFilePath = $file->getRealPath();
+                    $tmpRelativePath = substr($tmpFilePath, strlen($tmpDirectoryToZip) + 1);
+                    $zip->addFile( $tmpFilePath, $tmpRelativePath );
+                    $filesToDelete[] = $tmpFilePath;
+                }
+            }
+            $zip->close();
+            $zip = file_get_contents( $tmpZipPath );
+
+            foreach ($filesToDelete as $file) {
+                unlink($file);
+            }
+
+            unlink( $tmpZipPath );
+
+            return $zip;
 
         } else {
             return false;
@@ -495,7 +521,6 @@ class LoopHtml{
         }
         if ( ! file_exists( $this->exportDirectory.$pathAddendum.$fileName ) ) {
             file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
-            echo $fileName.'<br>';
         }
         return true;
     }
