@@ -25,8 +25,6 @@ class LoopHtml{
 
             global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath;
 
-            LoopHtml::getInstance()->loopStructure = $loopStructure;
-
             LoopHtml::getInstance()->startDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/';
             LoopHtml::getInstance()->exportDirectory = $wgUploadDirectory.$exportDirectory.'/'.$loopStructure->getId().'/files/';
 
@@ -65,7 +63,10 @@ class LoopHtml{
             }
             dd($html);
            
+            return "test";
 
+        } else {
+            return false;
         }
 
     }
@@ -83,7 +84,8 @@ class LoopHtml{
         $loopStructure->loadStructureItems();
 
         $text = $loopStructure->render();
-        $htmlFileName = LoopHtml::getInstance()->exportDirectory.wfMessage( strtolower($specialPage->mTextform) ).'.html';
+        $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
+        $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
     
         $exportSkin->getContext()->setTitle( $specialPage );
         $exportSkin->getContext()->getOutput()->mBodytext = $text;
@@ -120,16 +122,14 @@ class LoopHtml{
         
         $localParser = new Parser();
         $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
-            
-        //$text = ContentHandler::getContent( $content );
-
+        
         # regular articles are in ZIP/files/ folder, start article in ZIP/
         if ( $prependHref == "" ) {
-            $htmlFileName = LoopHtml::getInstance()->exportDirectory.$title->mUrlform.'.html';
+            $tmpFileName = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');
+            $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
         } else {
-            $htmlFileName = LoopHtml::getInstance()->startDirectory.$title->mUrlform.'.html';
+            $htmlFileName = LoopHtml::getInstance()->startDirectory.$title->mUrlform.'.html'; # TODO name start file
         } 
-
 
         # prepare skin
         $exportSkin->getContext()->setTitle( $title );
@@ -146,7 +146,7 @@ class LoopHtml{
         $html = LoopHtml::getInstance()->replaceInternalLinks($html, $prependHref);
         $html = LoopHtml::getInstance()->replaceContentHrefs($html, $prependHref);
         file_put_contents($htmlFileName, $html);
-        //dd($html);
+        
         return $html;
     }
 
@@ -192,7 +192,7 @@ class LoopHtml{
             # Undoing MW's absolute paths in CSS files
             $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
-            $this->writeFile( $prependHref."resources/styles/", $fileName, $content );
+            $this->writeFile( "resources/styles/", $fileName, $content );
         }
 
         # reset container for <script> hrefs
@@ -213,7 +213,7 @@ class LoopHtml{
         $requestUrls = $this->requestContent($requestUrls);
         foreach($requestUrls as $url => $content) {
             $fileName = $this->resolveUrl($url, '.js');
-            $this->writeFile( $prependHref."resources/js/", $fileName, $content );
+            $this->writeFile( "resources/js/", $fileName, $content );
         }
 
         $skinPath = $wgServer . "/mediawiki/skins/";
@@ -312,7 +312,7 @@ class LoopHtml{
         foreach( $resources as $file => $data ) {
             $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
             
-            $this->writeFile( $prependHref.$data["targetpath"], $file, $tmpContent[$file]["content"] );
+            $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
             
             if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
@@ -370,7 +370,8 @@ class LoopHtml{
                     $tmpTitle = preg_replace( '/('.$regEx.')/', '', $tmpHref );
                     $lsi = LoopStructureItem::newFromText( $tmpTitle );
                     if ( $lsi ) {
-                        $element->setAttribute( 'href', $prependHref.$tmpTitle.'.html' );
+                        $tmpFileName = $this->resolveUrl($tmpTitle, '.html');
+                        $element->setAttribute( 'href', $prependHref.$tmpFileName );
 
                     } else {
                         $element->setAttribute( 'href', $wgServer.$tmpHref );
@@ -381,17 +382,29 @@ class LoopHtml{
         
         $tocButton = $doc->getElementById('toc-button');
         $tmpHref = $tocButton->getAttribute( 'href' );
-        $tocButton->setAttribute( 'href', $prependHref.wfMessage( "loopstructure" ).'.html' );
+        $tmpFileName = $this->resolveUrl("LoopStructure", '.html');
+        
+        $tocButton->setAttribute( 'href', $prependHref.$tmpFileName );
 
         $imprintLink = $doc->getElementById('imprintlink');
         $tmpHref = $imprintLink->getAttribute( 'href' );
         if ( strpos($tmpHref, 'http' ) !== false ) {
             $imprintLink->setAttribute( 'href', $wgServer . $tmpHref );
         }
+        
         $privacyLink = $doc->getElementById('imprintlink');
         $tmpHref = $privacyLink->getAttribute( 'href' );
         if ( strpos($tmpHref, 'http' ) !== false ) {
             $privacyLink->setAttribute( 'href', $wgServer . $tmpHref );
+        }
+
+        # links to non-existing internal pages lose their href and look like normal text
+        $newLinks = $this->getElementsByClass( $body[0], "a", "new" );
+        if ( $newLinks ) {
+            foreach ( $newLinks as $element ) {
+                $element->removeAttribute( 'href' );
+                $element->removeAttribute( 'title' );
+            }
         }
 
         # apply custom logo, if given
@@ -399,7 +412,10 @@ class LoopHtml{
             $loopLogo = $doc->getElementById('logo');
             $logoUrl = $loopSettings->customLogoFilePath;
             $logoFile = $this->requestContent( array($logoUrl) );
-            $fileName = $loopSettings->customLogoFileName; 
+            
+            preg_match('/(.*)(\.{1})(.*)/', $loopSettings->customLogoFileName, $fileData);
+            $fileName = $this->resolveUrl($fileData[1], '.'.$fileData[3]); 
+
             $this->writeFile( "resources/images/", $fileName, $logoFile[$logoUrl] );
             $loopLogo->setAttribute( 'style', 'background-image: url("'.$prependHref.'resources/images/'. $fileName.'");' );
         }        
@@ -438,7 +454,6 @@ class LoopHtml{
      * @Return string
      */   
     private function resolveUrl($url, $suffix) {
-        global $wgServer;
         return md5($url).$suffix;
     }
 
@@ -478,8 +493,9 @@ class LoopHtml{
         if ( ! file_exists( $this->exportDirectory.$pathAddendum ) ) { # folder creation
             mkdir( $this->exportDirectory.$pathAddendum, 0775, true );
         }
-        if ( ! file_exists( $this->exportDirectory.$fileName ) ) {
+        if ( ! file_exists( $this->exportDirectory.$pathAddendum.$fileName ) ) {
             file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
+            echo $fileName.'<br>';
         }
         return true;
     }
@@ -509,19 +525,18 @@ class LoopHtml{
 
                 $tmpSrc = $element->getAttribute( 'src' );
                 $imageData["content"][] = $wgServer . $tmpSrc;
-                preg_match('/(.*\/)(.*\.{1}.*)/', $tmpSrc, $tmpTitle);
-                $imageData["names"][$wgServer . $tmpSrc] = $tmpTitle[2];
-                $newSrc = $prependHref."resources/images/" . $tmpTitle[2];
+                preg_match('/(.*\/)(.*)(\.{1})(.*)/', $tmpSrc, $tmpTitle);
+                $imageData["name"][$wgServer . $tmpSrc] = $tmpTitle[2];
+                $imageData["suffix"][$wgServer . $tmpSrc] = $tmpTitle[4];
+                $newSrc = $prependHref."resources/images/" . $this->resolveUrl($tmpTitle[2], '.'.$tmpTitle[4] );
                 $element->setAttribute( 'src', $newSrc );
-
-                
             }
-            if ( $imageData["names"] ) {
+            if ( $imageData["name"] && $imageData["suffix"] ) {
                 $imageData["content"] = $this->requestContent($imageData["content"]);
-                foreach ( $imageData["names"] as $image => $data ) {
-                    $fileName = $imageData["names"][$image];
+                foreach ( $imageData["name"] as $image => $data ) {
+                    $fileName = $this->resolveUrl($imageData["name"][$image], '.'.$imageData["suffix"][$image] );
                     $content = $imageData["content"][$image];
-                    $this->writeFile( $prependHref.'resources/images/', $fileName, $content );
+                    $this->writeFile( 'resources/images/', $fileName, $content );
                 }
             }
         }
