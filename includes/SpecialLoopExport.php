@@ -58,12 +58,14 @@ class SpecialLoopExport extends SpecialPage {
 				}
 				break;
 		}
+		
+		if ( $export != false ) {
 
-		if ($export != false) {
-
-			if ( TRUE || !$export->getExistingExportFile()) { # TODO remove TRUE!!!
+			if ( TRUE || ! $export->getExistingExportFile() && $export->exportDirectory !== "/export/html" ) { # TODO remove TRUE!!!
 				$export->generateExportContent();
-				$export->saveExportFile();
+				if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
+					$export->saveExportFile();
+				}
 			}
 
 			$this->getOutput()->disable();
