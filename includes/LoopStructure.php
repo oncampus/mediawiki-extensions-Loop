@@ -366,7 +366,7 @@ class LoopStructureItem {
 					'lsi_toc_level' => $this->tocLevel,
 					'lsi_sequence' => $this->sequence,
 					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => $this->tocText
+					'lsi_toc_text' => ucfirst($this->tocText) # MW saves pages with uppercase first letter. 
 				),
 				__METHOD__
 			);
@@ -401,6 +401,60 @@ class LoopStructureItem {
 			),
 			array(
 				'lsi_article' => $article
+			),
+			__METHOD__,
+			array(
+				'ORDER BY' => 'lsi_sequence ASC'
+			)
+		);
+
+		if( $row = $res->fetchObject() ) {
+
+			$loopStructureItem = new LoopStructureItem();
+			$loopStructureItem->id = $row->lsi_id;
+			$loopStructureItem->article = $row->lsi_article;
+			$loopStructureItem->previousArticle = $row->lsi_previous_article;
+			$loopStructureItem->nextArticle = $row->lsi_next_article;
+			$loopStructureItem->parentArticle = $row->lsi_parent_article;
+			$loopStructureItem->tocLevel = $row->lsi_toc_level;
+			$loopStructureItem->sequence = $row->lsi_sequence;
+			$loopStructureItem->tocNumber = $row->lsi_toc_number;
+			$loopStructureItem->tocText = $row->lsi_toc_text;
+
+			return $loopStructureItem;
+
+		} else {
+
+			return false;
+
+		}
+
+	}	
+	
+	/**
+	* Get item for given title and structure from database
+	*
+	* @param string $title
+	* @param int $structure
+	*/
+	public static function newFromText( $title ) {
+
+		$dbr = wfGetDB( DB_SLAVE );
+		$res = $dbr->select(
+			'loop_structure_items',
+			array(
+				'lsi_id',
+				'lsi_article',
+				'lsi_previous_article',
+				'lsi_next_article',
+				'lsi_parent_article',
+				'lsi_toc_level',
+				'lsi_sequence',
+				'lsi_toc_number',
+				'lsi_toc_text'
+			),
+			array(
+				'lsi_toc_text' => $title
 			),
 			__METHOD__,
 			array(
