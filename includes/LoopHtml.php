@@ -61,7 +61,7 @@ class LoopHtml{
                 }
 
             }
-            dd($html);
+            //dd($html);
             $tmpZipPath = $exportHtmlDirectory.'/tmpfile.zip';
             $tmpDirectoryToZip = $exportHtmlDirectory.'/'.$loopStructure->getId();
 
