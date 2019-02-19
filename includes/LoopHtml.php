@@ -29,8 +29,8 @@ class LoopHtml{
             LoopHtml::getInstance()->startDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/';
             LoopHtml::getInstance()->exportDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/files/';
 
-            $articlePath = preg_replace('/(\/)/', '\/', $wgArticlePath);
-            LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
+            //$articlePath = preg_replace('/(\/)/', '\/', $wgArticlePath);
+            //LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
 
             # prepare global config
             $renderModeBefore = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
@@ -61,7 +61,7 @@ class LoopHtml{
                 }
 
             }
-            
+            //dd($html);
             $tmpZipPath = $exportHtmlDirectory.'/tmpfile.zip';
             $tmpDirectoryToZip = $exportHtmlDirectory.'/'.$loopStructure->getId();
 
@@ -123,7 +123,7 @@ class LoopHtml{
         ob_end_clean();
 
         $html = LoopHtml::getInstance()->replaceResourceLoader($html, $prependHref);
-        $html = LoopHtml::getInstance()->replaceInternalLinks($html, $prependHref);
+        $html = LoopHtml::getInstance()->replaceManualLinks($html, $prependHref);
         $html = LoopHtml::getInstance()->replaceContentHrefs($html, $prependHref);
         file_put_contents($htmlFileName, $html);
 
@@ -169,7 +169,7 @@ class LoopHtml{
         ob_end_clean();
 
         $html = LoopHtml::getInstance()->replaceResourceLoader($html, $prependHref);
-        $html = LoopHtml::getInstance()->replaceInternalLinks($html, $prependHref);
+        $html = LoopHtml::getInstance()->replaceManualLinks($html, $prependHref);
         $html = LoopHtml::getInstance()->replaceContentHrefs($html, $prependHref);
         file_put_contents($htmlFileName, $html);
         
@@ -369,62 +369,45 @@ class LoopHtml{
      * 
      * @Return string html
      */   
-    private function replaceInternalLinks( $html, $prependHref = "" ) {
-
+    private function replaceManualLinks( $html, $prependHref = "" ) {
+        
         global $wgServer;
         $doc = new DOMDocument();
         $doc->loadHtml($html);
         
         $loopSettings = new LoopSettings();
         $loopSettings->loadSettings();
-        
-        if ( !file_exists( $this->exportDirectory ) ) {
-            mkdir( $this->exportDirectory, 0775, true );
-        }
 
-        # replace all internal links.
-        # if the destination is not in structure, link to online version
         $body = $doc->getElementsByTagName('body');
-        $internalLinks = $this->getElementsByClass( $body[0], "a", "internal-link" );
-        if ( $internalLinks ) {
-            foreach ( $internalLinks as $element ) {
-                $tmpHref = $element->getAttribute( 'href' );
-                $newHref = "";
 
-                if ( isset ( $tmpHref ) && $tmpHref != '#' ) {
-                    $regEx = $this->articlePathRegEx;
-                    $tmpTitle = preg_replace( '/('.$regEx.')/', '', $tmpHref );
-                    $lsi = LoopStructureItem::newFromText( $tmpTitle );
-                    if ( $lsi ) {
-                        $tmpFileName = $this->resolveUrl($tmpTitle, '.html');
-                        $element->setAttribute( 'href', $prependHref.$tmpFileName );
-
-                    } else {
-                        $element->setAttribute( 'href', $wgServer.$tmpHref );
+        if ( !empty( $prependHref ) ) { # ONLY for start file - add folder to path
+            $internalLinks = $this->getElementsByClass( $body[0], "a", "local-link" );
+            
+            if ( $internalLinks ) {
+                foreach ( $internalLinks as $element ) {
+                    $tmpHref = $element->getAttribute( 'href' );
+                    if ( isset ( $tmpHref ) && $tmpHref != '#' ) {
+                        $element->setAttribute( 'href', $prependHref.$tmpHref );
                     }
                 }
             }
         }
-        
-        $tocButton = $doc->getElementById('toc-button');
-        $tmpHref = $tocButton->getAttribute( 'href' );
-        $tmpFileName = $this->resolveUrl("LoopStructure", '.html');
-        
-        $tocButton->setAttribute( 'href', $prependHref.$tmpFileName );
 
-        $imprintLink = $doc->getElementById('imprintlink');
+        $imprintLink = $doc->getElementById('imprintlink'); #todo
         $tmpHref = $imprintLink->getAttribute( 'href' );
         if ( strpos($tmpHref, 'http' ) !== false ) {
             $imprintLink->setAttribute( 'href', $wgServer . $tmpHref );
         }
         
-        $privacyLink = $doc->getElementById('imprintlink');
+        $privacyLink = $doc->getElementById('privacylink'); #todo
         $tmpHref = $privacyLink->getAttribute( 'href' );
         if ( strpos($tmpHref, 'http' ) !== false ) {
             $privacyLink->setAttribute( 'href', $wgServer . $tmpHref );
         }
 
-        # links to non-existing internal pages lose their href and look like normal text
+        # links to non-existing internal pages lose their href and look like normal text 
+        # TODO make hook
+        
         $newLinks = $this->getElementsByClass( $body[0], "a", "new" );
         if ( $newLinks ) {
             foreach ( $newLinks as $element ) {
@@ -447,6 +430,7 @@ class LoopHtml{
         }        
 
         $html = $doc->saveHtml();
+        
         return $html;
     }
 
@@ -479,7 +463,7 @@ class LoopHtml{
      * 
      * @Return string
      */   
-    private function resolveUrl($url, $suffix) {
+    public function resolveUrl($url, $suffix) {
         return md5($url).$suffix;
     }
 
