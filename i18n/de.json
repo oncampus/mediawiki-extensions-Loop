@@ -53,7 +53,7 @@
 	"loopsettings-tab-general": "Allgemeines",
 	"loopsettings-tab-footer": "Footer",
 	"loopsettings-tab-appearance": "Aussehen",
-	"loopsettings-url-imprint-privacy-hint": "Bitte geben Sie eine gültige URL mit http:// an, oder einen lokalen Link in diesem LOOP, z.B. /loop/Impressum",
+	"loopsettings-url-imprint-privacy-hint": "Bitte geben Sie eine gültige URL mit http:// an, oder einen Seitennamen in diesem LOOP.",
 	"loopsettings-url-hint": "Bitte geben Sie eine gültige URL mit http:// an.",
 	"loopsettings-skin-style-label": "Skin-Stil",
 	"loopsettings-error": "Es ist ein Fehler beim Speichern dieser Einstellung aufgetreten",

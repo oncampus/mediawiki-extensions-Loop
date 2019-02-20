@@ -368,11 +368,11 @@
 			"description" : "Array of settings to configure social icons in footer area"
 		},
 		"ImprintLink": {
-			"value": "/loop/Impressum",
+			"value": "Impressum",
 			"description": "Link to imprint page; required"
 		},
 		"PrivacyLink": {
-			"value": "/loop/Datenschutz",
+			"value": "Datenschutz",
 			"description": "Link to privacy policy page; required"
 		},
 		"OncampusLink": {

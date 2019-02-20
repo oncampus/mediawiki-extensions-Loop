@@ -53,7 +53,7 @@
 	"loopsettings-tab-general": "Tab name on settings page, general",
 	"loopsettings-tab-footer": "Tab name on settings page, footer",
 	"loopsettings-tab-appearance": "Tab name on settings page, appearance",
-	"loopsettings-url-imprint-privacy-hint": "Hint for imprint and privacy input field. URL required or page in LOOP as /loop/page",
+	"loopsettings-url-imprint-privacy-hint": "Hint for imprint and privacy input field. URL required or page title in LOOP",
 	"loopsettings-skin-style-label": "Label for Skin-Style dropdown",
 	"loopsettings-error": "Error message after server-side validation failing",
 
