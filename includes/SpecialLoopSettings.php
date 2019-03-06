@@ -92,7 +92,7 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<div class="form-row">';
 
 					# input pattern for imprint and privacy: url with http(s):// OR a valid title
-					$inputPatternImprintPrivacy = '([h]{1}[t]{2}[p]{1}[s]{0,1}[:]{1}[/]{2}[-a-z0-9äöåæøüß%&?=_:./()\[\]]{1,})|(['.$wgLegalTitleChars.']{1,})i';
+					$inputPatternImprintPrivacy = '((http){1}[s]{0,1}(://){1}	['.$wgLegalTitleChars.'{1,})|(['.$wgLegalTitleChars.']{1,})i';
 					# imprint link
 					$html .= 
 					'<div class="col-12 col-sm-6">
@@ -196,7 +196,7 @@ class SpecialLoopSettings extends SpecialPage {
 						<div class="col-9 col-sm-6 pl-1">
 							<input type="checkbox" name="logo-use-custom" id="logo-use-custom" value="useCustomLogo" '. ( ! empty( $currentLoopSettings->customLogo ) ? 'checked' : '' ) .'>
 							<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>
-							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" pattern="[-a-zA-Z_\.()0-9äöüßÄÖÜ]{1,}[\.]{1}[a-zA-Z]{3,}" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
+							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" pattern="['.$wgLegalTitleChars.']{1,}[\.]{1}[a-zA-Z0-9]{2,4}" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-customlogo-hint' ) . '</div>
 							<input type="hidden" name="custom-logo-filepath" id="custom-logo-filepath" value="' . $currentLoopSettings->customLogoFilePath.'">
 						</div>
