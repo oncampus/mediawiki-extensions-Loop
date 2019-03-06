@@ -294,7 +294,7 @@ class LoopSettings {
             $this->customLogoFilePath = "";
         } else if ( $request->getText( 'logo-use-custom' ) == 'useCustomLogo' ) {
             $this->customLogo = 'useCustomLogo';
-            if ( preg_match( '/[-a-zA-Z_\.\(\)0-9äöüØåæÅÆßÄÖÜØ]{1,}[\.]{1}[a-zA-Z]{3,}/', $request->getText( 'custom-logo-filename' ) ) ) {
+            if ( preg_match( '/['.$wgLegalTitleChars.']{1,}[\.]{1}[a-zA-Z0-9]{2,4}/', $request->getText( 'custom-logo-filename' ) ) ) {
                 $this->customLogoFileName = $request->getText( 'custom-logo-filename' );
                 $tmpParsedResult = $this->parse( '{{filepath:' . $request->getText( 'custom-logo-filename' ) . '}}' );
                 preg_match( '/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);

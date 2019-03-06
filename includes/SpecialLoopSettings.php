@@ -91,8 +91,9 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-important-links' ) . '</h3>';
 					$html .= '<div class="form-row">';
 
+					$jsLegalTitleChars = "%\!$&()*,-.\/0-9:;=?@A-Z\^_`a-z~+";
 					# input pattern for imprint and privacy: url with http(s):// OR a valid title
-					$inputPatternImprintPrivacy = '((http){1}[s]{0,1}(://){1}	['.$wgLegalTitleChars.'{1,})|(['.$wgLegalTitleChars.']{1,})i';
+					$inputPatternImprintPrivacy = '/((http){1}[s]{0,1}(://){1}['.$jsLegalTitleChars.']{1,})|(['.$jsLegalTitleChars.']{1,})/i';
 					# imprint link
 					$html .= 
 					'<div class="col-12 col-sm-6">
