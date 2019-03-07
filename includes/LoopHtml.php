@@ -24,6 +24,9 @@ class LoopHtml{
         if(is_array($loopStructureItems)) {
 
             global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath;
+            
+            $loopSettings = new LoopSettings();
+            $loopSettings->loadSettings();
 
             $exportHtmlDirectory = $wgUploadDirectory.$exportDirectory;
             LoopHtml::getInstance()->startDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/';
@@ -68,6 +71,28 @@ class LoopHtml{
                 }
 
             }
+
+            if ( filter_var( htmlspecialchars_decode( $loopSettings->imprintLink ), FILTER_VALIDATE_URL ) == false ) {
+                $imprintTitle = Title::newFromText( $loopSettings->imprintLink );
+                if ( ! empty ( $imprintTitle->mTextform ) ) {
+                    $wikiPage = WikiPage::factory( $imprintTitle );
+                    $revision = $wikiPage->getRevision();
+                    if ( $revision != null ) {
+                        LoopHtml::writeArticleToFile( $imprintTitle, "", $exportSkin );
+                    }
+                }
+            }
+            if ( filter_var( htmlspecialchars_decode( $loopSettings->privacyLink ), FILTER_VALIDATE_URL ) == false ) {
+                $privacyTitle = Title::newFromText( $loopSettings->privacyLink );
+                if ( ! empty ( $privacyTitle->mTextform ) ) {
+                    $wikiPage = WikiPage::factory( $privacyTitle );
+                    $revision = $wikiPage->getRevision();
+                    if ( $revision != null ) {
+                        LoopHtml::writeArticleToFile( $privacyTitle, "", $exportSkin );
+                    }
+                }
+            }
+
             //dd($html);
             $tmpZipPath = $exportHtmlDirectory.'/tmpfile.zip';
             $tmpDirectoryToZip = $exportHtmlDirectory.'/'.$loopStructure->getId();
@@ -398,18 +423,6 @@ class LoopHtml{
                     }
                 }
             }
-        }
-
-        $imprintLink = $doc->getElementById('imprintlink'); #todo
-        $tmpHref = $imprintLink->getAttribute( 'href' );
-        if ( strpos($tmpHref, 'http' ) !== false ) {
-            $imprintLink->setAttribute( 'href', $wgServer . $tmpHref );
-        }
-        
-        $privacyLink = $doc->getElementById('privacylink'); #todo
-        $tmpHref = $privacyLink->getAttribute( 'href' );
-        if ( strpos($tmpHref, 'http' ) !== false ) {
-            $privacyLink->setAttribute( 'href', $wgServer . $tmpHref );
         }
 
         # links to non-existing internal pages lose their href and look like normal text 
