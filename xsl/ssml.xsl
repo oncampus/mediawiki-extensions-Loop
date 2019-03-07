@@ -45,7 +45,7 @@
 	
 	
 	<xsl:template name="contentpages">
-		<xsl:apply-templates select="articles/article"></xsl:apply-templates>
+		<xsl:apply-templates select="articles/article"/>
 	</xsl:template>	
 	
 
@@ -57,7 +57,7 @@
 			
 			<h1>Kapitel <xsl:value-of select="@tocnumber"></xsl:value-of><xsl:text> </xsl:text><xsl:value-of select="@toctext"></xsl:value-of></h1>
 		
-			<xsl:apply-templates></xsl:apply-templates>
+			<xsl:apply-templates/>
 			
 		</xsl:element>
 	
