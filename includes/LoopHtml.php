@@ -38,13 +38,19 @@ class LoopHtml{
             $wgOut->getUser()->setOption( 'LoopRenderMode', 'offline' );
             $wgResourceLoaderDebug = true;
 
-            # Todo $this->copyResources();
-
             $exportSkin = clone $context->getSkin();
 
             # Create start file
-            $mainPage = $loopStructure->mainPage;
-            LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
+            $mainPage = $context->getTitle()->newMainPage(); # Content of Mediawiki:Mainpage. Might not exist and cause error
+
+            $wikiPage = WikiPage::factory( $mainPage );
+            $revision = $wikiPage->getRevision();
+            if ( $revision != null ) {
+                LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
+            } else {
+                $mainPage = $loopStructure->mainPage; 
+                LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
+            }
 
             # Create toc file
             $tocPage = Title::newFromText( 'Special:LoopStructure' );
@@ -56,7 +62,8 @@ class LoopHtml{
 
                 if( isset( $articleId ) && is_numeric( $articleId )) {
 
-                    $html = LoopHtml::writeArticleToFile( $articleId, "", $exportSkin );
+                    $title = Title::newFromID( $articleId );
+                    $html = LoopHtml::writeArticleToFile( $title, "", $exportSkin );
                    
                 }
 
@@ -133,19 +140,18 @@ class LoopHtml{
 
      /**
      * Write article from structure to file, with all given resources
-     * @param int $articleId
+     * @param Title $title
      * @param string $prependHref for start file 
      * @param $exportSkin
      * 
      * @Return string html
      */   
-    private static function writeArticleToFile( $articleId, $prependHref, $exportSkin ) {
+    private static function writeArticleToFile( $title, $prependHref, $exportSkin ) {
 
-        $title = Title::newFromID( $articleId );
         $wikiPage = WikiPage::factory( $title );
         $revision = $wikiPage->getRevision();
         $content = $revision->getContent( Revision::RAW );
-        
+    
         $localParser = new Parser();
         $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
         
@@ -174,6 +180,7 @@ class LoopHtml{
         file_put_contents($htmlFileName, $html);
         
         return $html;
+        
     }
 
      /**
