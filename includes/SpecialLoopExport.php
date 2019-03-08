@@ -61,11 +61,9 @@ class SpecialLoopExport extends SpecialPage {
 		
 		if ( $export != false ) {
 
-			if ( TRUE || ! $export->getExistingExportFile() && $export->exportDirectory !== "/export/html" ) { # TODO remove TRUE!!!
-				$export->generateExportContent();
-				if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
-					$export->saveExportFile();
-				}
+			$export->generateExportContent();
+			if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
+				$export->saveExportFile();
 			}
 
 			$this->getOutput()->disable();
