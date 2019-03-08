@@ -1,4 +1,6 @@
-<?php 
+<?php
+
+use MediaWiki\MediaWikiServices;
 
 class SpecialLoopExport extends SpecialPage {
 	public function __construct() {
@@ -6,6 +8,8 @@ class SpecialLoopExport extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
+
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 
 		$user = $this->getUser();
 		$config = $this->getConfig();
@@ -21,9 +25,9 @@ class SpecialLoopExport extends SpecialPage {
 
 		$out->addHtml ($sub);
 
-		
+
 		$structure = new LoopStructure();
-		
+
 		$sub = mb_strtolower($sub);
 
 		$export = false;
@@ -45,7 +49,7 @@ class SpecialLoopExport extends SpecialPage {
 				break;
 			case 'html':
 				if ($user->isAllowed( 'loop-export-html' )) {
-					$export = new LoopExportHtml($structure);
+					$export = new LoopExportHtml($structure, $this->getContext());
 				}
 				break;
 			case 'epub':
@@ -54,33 +58,39 @@ class SpecialLoopExport extends SpecialPage {
 				}
 				break;
 		}
+		
+		if ( $export != false ) {
 
-		if ($export != false) {
-			if (!$export->getExistingExportFile()) {
-				$export->generateExportContent();
+			$export->generateExportContent();
+			if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
 				$export->saveExportFile();
 			}
-				
+
 			$this->getOutput()->disable();
 			wfResetOutputBuffers();
 			$export->sendExportHeader();
 			echo $export->getExportContent();
 		} else {
-			
+
 			$out->addHtml('<ul>');
-			
+
 			if ($user->isAllowed( 'loop-export-xml' )) {
-				$xmlExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/xml' ), wfMessage ( 'export-linktext-xml' )->inContentLanguage ()->text () ); 
+				$xmlExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/xml' ), new HtmlArmor(wfMessage ( 'export-linktext-xml' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$xmlExportLink.'</li>');
 			}
-			
+
 			if ($user->isAllowed( 'loop-export-pdf' )) {
-				$pdfExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () );
+				$pdfExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), new HtmlArmor(wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
-			
+
+			if ($user->isAllowed( 'loop-export-html' )) {
+				$htmlExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/html' ), new HtmlArmor(wfMessage ( 'export-linktext-html' )->inContentLanguage ()->text () ));
+				$out->addHtml ('<li>'.$htmlExportLink.'</li>');
+			}
+
 			$out->addHtml('</ul>');
-			
+
 		}
 	}
 

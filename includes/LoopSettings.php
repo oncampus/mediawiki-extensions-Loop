@@ -192,15 +192,11 @@ class LoopSettings {
 
     public function getLoopSettingsFromRequest ( $request ) {
         
-        global $wgSocialIcons, $wgSkinStyles, $wgAvailableLicenses, $wgSupportedLoopLanguages;
+        global $wgSocialIcons, $wgSkinStyles, $wgAvailableLicenses, $wgSupportedLoopLanguages, $wgLegalTitleChars;
+        $this->errors = array();
         
-        $errors = array();
-
-        if ( empty ( $request->getText( 'rights-text' ) ) || preg_match( "/([-a-zA-Z0-9äöüAÖÜß:_\/\(\)©åæÅÆç&!é\?,\.')]{0,})/", $request->getText( 'rights-text' ) ) ) {
-            $this->rightsText = $request->getText( 'rights-text' );
-        } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-rights-label' ) );
-        }
+        $this->rightsText = $request->getText( 'rights-text' ); # no validation required
+        
         $socialArray = array(
             'Facebook' => array(),
             'Twitter' => array(),
@@ -208,6 +204,7 @@ class LoopSettings {
             'Github' => array( ),
             'Instagram' => array()
         );
+
         foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
             
             if ( empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) ) || $request->getText( 'footer-' . $socialIcons . '-icon' ) == $socialIcons ) {
@@ -219,10 +216,10 @@ class LoopSettings {
                 $socialArray[$socialIcons]['link'] = '';
                 }
             } else {
-                array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . $socialIcons );
+                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . $socialIcons );
             }	
-            
         }
+
         $this->facebookIcon = $socialArray['Facebook']['icon'];
         $this->facebookLink = $socialArray['Facebook']['link'];
         $this->twitterIcon = $socialArray['Twitter']['icon'];
@@ -234,24 +231,24 @@ class LoopSettings {
         $this->instagramIcon = $socialArray['Instagram']['icon'];
         $this->instagramLink = $socialArray['Instagram']['link'];
         
-        $regExLoopLink = '/([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9äöüØåæÅÆøÄÖÜß_:.\/()\[\]]{1,})/';
+        $regExLoopLink = '/(['.$wgLegalTitleChars.']{1,})/';
         
         if ( filter_var( $request->getText( 'privacy-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'privacy-link' ) ) ) {
             $this->privacyLink = $request->getText( 'privacy-link' );
         } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-privacy-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-privacy-label' ) );
         }
         
         if ( filter_var( $request->getText( 'imprint-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'imprint-link' ) ) ) {
             $this->imprintLink = $request->getText( 'imprint-link' );
         } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-imprint-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-imprint-label' ) );
         }
         
         if ( empty ( $request->getText( 'oncampus-link' ) ) || $request->getText( 'oncampus-link' ) == 'showOncampusLink' ) {
             $this->oncampusLink = $request->getText( 'oncampus-link' );
         } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-oncampus-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-oncampus-label' ) );
         }
         
         if ( empty ( $request->getText( 'rights-type' ) ) || isset ( $wgAvailableLicenses[$request->getText( 'rights-type' )] ) ) {
@@ -259,19 +256,19 @@ class LoopSettings {
             $this->rightsIcon = $wgAvailableLicenses[$this->rightsType]['icon'];
             $this->rightsUrl = $wgAvailableLicenses[$this->rightsType]['url'];
         } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
         }
         
         if ( in_array( $request->getText( 'skin-style' ), $wgSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
         } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
         }
         
         if ( in_array( $request->getText( 'language-select' ), $wgSupportedLoopLanguages ) ) {
             $this->languageCode = $request->getText( 'language-select' );
         } else {
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-language-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-language-label' ) );
         }
         
         if ( empty ( $request->getText( 'extra-footer-active' ) ) || $request->getText( 'extra-footer-active' ) == 'useExtraFooter' ) {
@@ -285,7 +282,7 @@ class LoopSettings {
         } else {
             $this->extraFooterWikitext = "";
             $this->extraFooterParsed = "";
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-footer-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-footer-label' ) );
         }
         
         if ( empty( $request->getText( 'logo-use-custom' ) ) ) {
@@ -294,29 +291,22 @@ class LoopSettings {
             $this->customLogoFilePath = "";
         } else if ( $request->getText( 'logo-use-custom' ) == 'useCustomLogo' ) {
             $this->customLogo = 'useCustomLogo';
-            if ( preg_match( '/[-a-zA-Z_\.\(\)0-9äöüØåæÅÆßÄÖÜØ]{1,}[\.]{1}[a-zA-Z]{3,}/', $request->getText( 'custom-logo-filename' ) ) ) {
-                $this->customLogoFileName = $request->getText( 'custom-logo-filename' );
-                $tmpParsedResult = $this->parse( '{{filepath:' . $request->getText( 'custom-logo-filename' ) . '}}' );
-                preg_match( '/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
-                if ( isset ( $tmpOutputArray[1] ) ) {
-                    $this->customLogoFilePath = $tmpOutputArray[1];
-                } else {
-                    $this->customLogo = "";
-                    $this->customLogoFileName = "";
-                    $this->customLogoFilePath = "";
-                    array_push( $errors, wfMessage( 'loopsettings-error-customlogo-notfound' ) );
-                }
+            $this->customLogoFileName = $request->getText( 'custom-logo-filename' );
+            $tmpParsedResult = $this->parse( '{{filepath:' . $request->getText( 'custom-logo-filename' ) . '}}' );
+            preg_match( '/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
+            if ( isset ( $tmpOutputArray[1] ) ) {
+                $this->customLogoFilePath = $tmpOutputArray[1];
             } else {
                 $this->customLogo = "";
                 $this->customLogoFileName = "";
                 $this->customLogoFilePath = "";
-                array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
+                array_push( $this->errors, wfMessage( 'loopsettings-error-customlogo-notfound' ) );
             }
         } else {
             $this->customLogo = "";
             $this->customLogoFileName = "";
             $this->customLogoFilePath = "";
-            array_push( $errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
         }
             
         $this->addToDatabase();

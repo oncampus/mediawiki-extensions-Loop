@@ -23,19 +23,10 @@ class SpecialLoopSettings extends SpecialPage {
 			$this->setHeaders();
 			$out = $this->getOutput();
 			$request = $this->getRequest();
-			//var_dump( $request);
 			
  			$out->addModules( 'ext.loop-settings.js' );
 			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
 			
-			//$loopSettings = new LoopSettings;
-//$dbLoopSettings = new LoopSettings;
-			//$loopSettings->addToDatabase();
-			
-			//echo $loopSettings->imprintLink;
-			//var_dump($loopSettings);
-
-			$errors = array();	
 			$requestToken = $request->getText( 't' );
 			$uploadButton = $this->msg( 'loopsettings-upload-hint' ) . " " . 
 				$linkRenderer->makelink( 
@@ -49,18 +40,15 @@ class SpecialLoopSettings extends SpecialPage {
 
 				if( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
 				
-				//$currentLoopSettings = $newLoopSettings;
-				//$dbLoopSettings = ;
 				$currentLoopSettings->getLoopSettingsFromRequest( $request );
-				//echo " newsettings";
 				
-				if ( empty ( $errors ) ) {
+				if ( empty ( $currentLoopSettings->errors ) ) {
 					
 					$html .= '<div class="alert alert-success" role="alert">' . $this->msg( 'loopsettings-save-success' ) . '</div>';
 
 				} else {
 					$errorMsgs = '';
-					foreach( $errors as $error ) { 
+					foreach( $currentLoopSettings->errors as $error ) { 
 						
 						$errorMsgs .= $error . '<br>';
 						
@@ -102,21 +90,21 @@ class SpecialLoopSettings extends SpecialPage {
 					### LINK BLOCK ###
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-important-links' ) . '</h3>';
 					$html .= '<div class="form-row">';
-						$inputPatternImprintPrivacy = '([Hh]{1}[Tt]{2}[Pp]{1}[Ss]{0,1}[:]{1}[/]{2}[-a-zA-Z0-9äöØåæÅÆøüÄÖÜß%&?=_:./()\[\]]{1,})|([\/]{1}[Ll]{1}[Oo]{2}[Pp]{1}[\/]{1}[-a-zA-Z0-9ØåæÅÆøäöüÄÖÜß_:.\/()\[\]]{1,})';
-						# imprint link
-						$html .= 
-						'<div class="col-12 col-sm-6">
-							<label for="imprint-link">' . $this->msg( 'loopsettings-imprint-label' ) . '</label>
-							<input type="text" pattern="' . $inputPatternImprintPrivacy.'" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
-							<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
-						</div>';
-						# privacy link
-						$html .= 
-						'<div class="col-12 col-sm-6">
-							<label for="privacy-link">' . $this->msg( 'loopsettings-privacy-label' ) . '</label>
-							<input type="text" pattern="' . $inputPatternImprintPrivacy.'" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
-							<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
-						</div>';
+
+					# imprint link
+					$html .= 
+					'<div class="col-12 col-sm-6">
+						<label for="imprint-link">' . $this->msg( 'loopsettings-imprint-label' ) . '</label>
+						<input type="text" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
+						<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
+					</div>';
+					# privacy link
+					$html .= 
+					'<div class="col-12 col-sm-6">
+						<label for="privacy-link">' . $this->msg( 'loopsettings-privacy-label' ) . '</label>
+						<input type="text" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
+						<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
+					</div>';
 					
 					$html .= '</div><br>';
 					
@@ -152,7 +140,7 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= 
 						'<div class="col-12 col-sm-6">
 							<label for="rights-text">' . $this->msg( 'loopsettings-rights-label' ) . '</label>
-							<input type="text" pattern="([-a-zA-Z0-9äöüØøAÖÜß:_\/\(\)©æÅÆç&!é\?,\.'."'".')]{0,})"' . ' placeholder="'. $this->msg( 'loopsettings-rights-text-placeholder' ) .'" name="rights-text" id="rights-text" class="setting-input form-control" value=' . '"' . $currentLoopSettings->rightsText.'"' . '>
+							<input type="text"' . ' placeholder="'. $this->msg( 'loopsettings-rights-text-placeholder' ) .'" name="rights-text" id="rights-text" class="setting-input form-control" value=' . '"' . $currentLoopSettings->rightsText.'"' . '>
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-rights-text-hint' ) . " ©,:._-!?&/()'</div>" .
 						'</div>
 					</div><br>';
@@ -206,7 +194,7 @@ class SpecialLoopSettings extends SpecialPage {
 						<div class="col-9 col-sm-6 pl-1">
 							<input type="checkbox" name="logo-use-custom" id="logo-use-custom" value="useCustomLogo" '. ( ! empty( $currentLoopSettings->customLogo ) ? 'checked' : '' ) .'>
 							<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>
-							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" pattern="[-a-zA-Z_\.()0-9äöüßÄÖÜ]{1,}[\.]{1}[a-zA-Z]{3,}" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
+							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-customlogo-hint' ) . '</div>
 							<input type="hidden" name="custom-logo-filepath" id="custom-logo-filepath" value="' . $currentLoopSettings->customLogoFilePath.'">
 						</div>

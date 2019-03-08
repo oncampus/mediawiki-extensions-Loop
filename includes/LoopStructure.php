@@ -88,7 +88,12 @@ class LoopStructure {
 
 		$regex = "/(<a )(.*?)(>)(.*?)(<\\/a>)/";
 		preg_match($regex, $wikiText, $matches);
-		$rootTitleText = $matches[4];
+		if ( isset( $matches[4] ) ) {
+			$rootTitleText = $matches[4];
+		} else {
+			$rootTitleText = "";
+			dd();
+		}
 
 		# Title objects has to start with a letter else an error will occur.
 		if( ctype_alpha( $rootTitleText[0] )) {
@@ -252,6 +257,21 @@ class LoopStructure {
 	}
 
 	/**
+	 * Check for dublicate entries
+	 */
+	public function checkDublicates() {
+		$articlesInStructure = [];
+		foreach ( $this->structureItems as $structureItem ) {
+			$articlesInStructure[] = $structureItem->article;
+		}
+		if ( count ( array_unique( $articlesInStructure ) ) < count ( $articlesInStructure ) ) {
+			return false; # dublicate entry found
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Save items to database
 	 */
 	public function saveItems() {
@@ -354,7 +374,7 @@ class LoopStructureItem {
 
 			$dbw = wfGetDB( DB_MASTER );
 			$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
-
+			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase 
 			$dbw->insert(
 				'loop_structure_items',
 				array(
@@ -366,7 +386,7 @@ class LoopStructureItem {
 					'lsi_toc_level' => $this->tocLevel,
 					'lsi_sequence' => $this->sequence,
 					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => $this->tocText
+					'lsi_toc_text' => $tmpTocText->mTextform 
 				),
 				__METHOD__
 			);
@@ -401,6 +421,60 @@ class LoopStructureItem {
 			),
 			array(
 				'lsi_article' => $article
+			),
+			__METHOD__,
+			array(
+				'ORDER BY' => 'lsi_sequence ASC'
+			)
+		);
+
+		if( $row = $res->fetchObject() ) {
+
+			$loopStructureItem = new LoopStructureItem();
+			$loopStructureItem->id = $row->lsi_id;
+			$loopStructureItem->article = $row->lsi_article;
+			$loopStructureItem->previousArticle = $row->lsi_previous_article;
+			$loopStructureItem->nextArticle = $row->lsi_next_article;
+			$loopStructureItem->parentArticle = $row->lsi_parent_article;
+			$loopStructureItem->tocLevel = $row->lsi_toc_level;
+			$loopStructureItem->sequence = $row->lsi_sequence;
+			$loopStructureItem->tocNumber = $row->lsi_toc_number;
+			$loopStructureItem->tocText = $row->lsi_toc_text;
+
+			return $loopStructureItem;
+
+		} else {
+
+			return false;
+
+		}
+
+	}	
+	
+	/**
+	* Get item for given title and structure from database
+	*
+	* @param string $title
+	* @param int $structure
+	*/
+	public static function newFromText( $title ) {
+
+		$dbr = wfGetDB( DB_SLAVE );
+		$res = $dbr->select(
+			'loop_structure_items',
+			array(
+				'lsi_id',
+				'lsi_article',
+				'lsi_previous_article',
+				'lsi_next_article',
+				'lsi_parent_article',
+				'lsi_toc_level',
+				'lsi_sequence',
+				'lsi_toc_number',
+				'lsi_toc_text'
+			),
+			array(
+				'lsi_toc_text' => $title
 			),
 			__METHOD__,
 			array(

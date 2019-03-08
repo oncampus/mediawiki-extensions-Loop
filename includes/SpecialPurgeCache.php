@@ -41,7 +41,7 @@ class SpecialPurgeCache extends SpecialPage {
 	}
 
 	function makeForm() {
-		$self = $this->getTitle();
+		$self = Title::newFromText( 'Special:PurgeCache' ); 
 		$form  = Xml::openElement( 'form', array( 'method' => 'post', 'action' => $self->getLocalUrl() ) );
 		$form .= Xml::element( 'input', array( 'type' => 'submit', 'name' => 'purge', 'value' => $this->msg( 'purgecache-button' ) ) );
 		$form .= Xml::closeElement( 'form' );

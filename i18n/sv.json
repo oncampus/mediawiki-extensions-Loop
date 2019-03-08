@@ -10,18 +10,19 @@
 	"loop-tracking-category-error-desc": "Sidor med LOOP-specifiska fel.",
 	"specialpages-group-loop" : "LOOP",
 	"loopstructure-specialpage-title" : "Innehåll",
-	"loopstructure-edit-specialpage-title" : "Regidera innehåll",
+	"loopstructure-edit-specialpage-title" : "Regidera innehållsförteckning",
 	"loopstructure": "Innehåll",
-	"loopstructureedit": "Regidera innehåll",
+	"loopstructureedit": "Regidera innehållsförteckning",
 	"loop-token-error": "User Token är ogiltig.",
 	"loop-permission-error": "Du har inte behörighet för att göra det här.",
 	"loopstructure-save-equal-error": "Ingen ändring kunde upptäckas.",
 	"loopstructure-save-parsed-structure-error": "Ett fel uppstod under sparningen.",
-	"loopstructure-save-parse-error": "Innehållets format är ogiltig.",
-	"loopstructure-save-success": "Innehållet har uppdaterats",
+	"loopstructure-save-parse-error": "Innehållsförteckningens format är ogiltig.",
+	"loopstructure-save-dublicates-error": "Minst ett sidnamn har angivits flera gånger.",
+	"loopstructure-save-success": "Innehållsförteckningen har uppdaterats",
 	"submit": "Spara",
 	"loopstructure-default-newpage-content": "Den här är en ny sida.",
-	
+
 	"loopsettings": "LOOP-Inställningar",
 	"loopsettings-specialpage-title": "LOOP-Inställningar",
 	"loopsettings-no-permission": "Du har inte behörighet för att visa den här sidan.",
@@ -49,13 +50,13 @@
 	"loopsettings-tab-general": "Allmän",
 	"loopsettings-tab-footer": "Footer",
 	"loopsettings-tab-appearance": "Utseende",
-	"loopsettings-url-imprint-privacy-hint": "Ange ett URL (http:// ingår) eller länka till en LOOP sida som /loop/Dataskydd",
+	"loopsettings-url-imprint-privacy-hint": "Ange ett URL (http:// ingår) eller ett sidnamn från det här LOOP",
 	"loopsettings-skin-style-label": "Skin-Stil",
 	"loopsettings-error": "Det gick inte att spara den här inställningen",
-		
+
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
-	
+
 	"right-loop-toc-edit": "Regidera innehåll",
 	"right-loop-export-pdf": "Export LOOP som PDF",
 	"right-loop-export-xml": "Export LOOP som XML",
@@ -64,7 +65,7 @@
 	"right-loop-export-html": "Export LOOP som offline HTML",
 	"right-loop-export-scorm": "Export LOOP som Scorm paket",
 	"right-loop-settings-edit": "Ändra LOOP-Inställningar",
-	
+
 	"action-loop-toc-edit": "Regidera innehåll",
 	"action-loop-export-pdf": "Export LOOP som PDF",
 	"action-loop-export-xml": "Export LOOP som XML",
@@ -72,10 +73,12 @@
 	"action-loop-export-epub": "Export LOOP som ePub",
 	"action-loop-export-html": "Export LOOP som offline HTML",
 	"action-loop-export-scorm": "Export LOOP som Scorm paket",
-  
+
 	"export-linktext-xml": "Ladda ner som XML",
 	"export-linktext-pdf": "Ladda ner som PDF",
-	
+	"export-linktext-html": "Ladda ner som HTML",
+	"export-linktext-mp3": "Ladda ner som mp3",
+
 	"purgecache": "Rensa cachen",
 	"purgecache-warning": "Detta rensar cachetabellerna.",
 	"purgecache-purged": "Cachen har rensats.",

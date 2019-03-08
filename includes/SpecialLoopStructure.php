@@ -138,40 +138,48 @@ class SpecialLoopStructureEdit extends SpecialPage {
 
 							$tmpLoopStructure = new LoopStructure();
 							$parseResult = $tmpLoopStructure->setStructureItemsFromWikiText( $parsedStructure, $user );
+							$noDublicatesInStructure = $tmpLoopStructure->checkDublicates();
 
-							if( $parseResult !== false ) {
+							if ( ! $noDublicatesInStructure ) {
+								$error = $this->msg( 'loopstructure-save-dublicates-error' )->parse();
+								$feedbackMessageClass = 'danger';
+							} else {
 
-                                $newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();
+								if( $parseResult !== false ) {
 
-                                # if new parsed structure is different to the new one save it
-                                if( $currentStructureAsWikiText != $newStructureContentParsedWikiText ) {
-
-                                    $loopStructure->deleteItems();
-                                    $loopStructure->setStructureItemsFromWikiText( $parsedStructure, $user );
-                                    $loopStructure->saveItems();
-                                    $currentStructureAsWikiText = $loopStructure->renderAsWikiText();
-
-                                    # save success output
-                                    $out->addHtml(
-                                        Html::rawElement(
-                                            'div',
-                                            array(
-                                                'name' => 'loopstructure-content',
-                                                'class' => 'alert alert-'.$feedbackMessageClass
-                                            ),
-                                            $this->msg( 'loopstructure-save-success' )->parse()
-                                        )
-                                    );
-
-                                } else {
-                                    $error = $this->msg( 'loopstructure-save-equal-error' )->parse();
-                                    $feedbackMessageClass = 'warning';
-                                }
-
-                            } else {
-                                $error = $this->msg( 'loopstructure-save-parse-error' )->parse();
-                                $feedbackMessageClass = 'danger';
-                            }
+									$newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();
+	
+									# if new parsed structure is different to the new one save it
+									if( $currentStructureAsWikiText != $newStructureContentParsedWikiText ) {
+	
+										$loopStructure->deleteItems();
+										$loopStructure->setStructureItemsFromWikiText( $parsedStructure, $user );
+										//dd($loopStructure);
+										$loopStructure->saveItems();
+										$currentStructureAsWikiText = $loopStructure->renderAsWikiText();
+	
+										# save success output
+										$out->addHtml(
+											Html::rawElement(
+												'div',
+												array(
+													'name' => 'loopstructure-content',
+													'class' => 'alert alert-'.$feedbackMessageClass
+												),
+												$this->msg( 'loopstructure-save-success' )->parse()
+											)
+										);
+	
+									} else {
+										$error = $this->msg( 'loopstructure-save-equal-error' )->parse();
+										$feedbackMessageClass = 'warning';
+									}
+	
+								} else {
+									$error = $this->msg( 'loopstructure-save-parse-error' )->parse();
+									$feedbackMessageClass = 'danger';
+								}
+							}
 
 						} else {
 							$error = $this->msg( 'loopstructure-save-parsed-structure-error' )->parse();
