@@ -29,7 +29,7 @@ class LoopHooks {
 	 */
 	public static function onSetupAfterCache(  ) {
 
-		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions;
+		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgWhitelistRead;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -38,7 +38,16 @@ class LoopHooks {
 
 			$res = $dbr->select(
 				'loop_settings',
-				array( 'lset_id', 'lset_rightstext', 'lset_rightsurl', 'lset_rightsicon', 'lset_languagecode', 'lset_skinstyle' ),
+				array( 
+					'lset_id', 
+					'lset_rightstext', 
+					'lset_rightsurl', 
+					'lset_rightsicon', 
+					'lset_languagecode', 
+					'lset_skinstyle', 
+					'lset_imprintlink', 
+					'lset_privacylink' 
+				),
 				array(),
 				__METHOD__,
 				array( 'ORDER BY' => 'lset_id DESC LIMIT 1' )
@@ -51,9 +60,11 @@ class LoopHooks {
 				$wgRightsIcon = ( empty( $row->lset_rightsicon ) ? $wgRightsIcon : $row->lset_rightsicon  );
 				$wgLanguageCode = ( empty( $row->lset_languagecode ) ? $wgLanguageCode : $row->lset_languagecode );
 				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
+				$wgWhitelistRead[] = empty( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
+				$wgWhitelistRead[] = empty( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
+				
 			}
 		}
-
 		return true;
 	}
 
