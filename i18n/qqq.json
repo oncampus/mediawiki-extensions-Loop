@@ -20,6 +20,7 @@
 	"loopstructure-save-equal-error": "Error message when the user saves a unchanged structure",
 	"loopstructure-save-parsed-structure-error": "Error message occurs when the parsed structure content is empty",
 	"loopstructure-save-parse-error": "Parse error for the LOOP strucutre",
+	"loopstructure-save-dublicates-error": "Error message occurs when there are dublicate entries in structure.",
 	"loopstructure-save-success": "Saving succes of the LOOP structure",
 	"submit": "Replacement for submit button text",
 	"loopstructure-default-newpage-content": "Standard content for new pages",

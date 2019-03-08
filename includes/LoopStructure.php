@@ -88,7 +88,12 @@ class LoopStructure {
 
 		$regex = "/(<a )(.*?)(>)(.*?)(<\\/a>)/";
 		preg_match($regex, $wikiText, $matches);
-		$rootTitleText = $matches[4];
+		if ( isset( $matches[4] ) ) {
+			$rootTitleText = $matches[4];
+		} else {
+			$rootTitleText = "";
+			dd();
+		}
 
 		# Title objects has to start with a letter else an error will occur.
 		if( ctype_alpha( $rootTitleText[0] )) {
@@ -252,6 +257,21 @@ class LoopStructure {
 	}
 
 	/**
+	 * Check for dublicate entries
+	 */
+	public function checkDublicates() {
+		$articlesInStructure = [];
+		foreach ( $this->structureItems as $structureItem ) {
+			$articlesInStructure[] = $structureItem->article;
+		}
+		if ( count ( array_unique( $articlesInStructure ) ) < count ( $articlesInStructure ) ) {
+			return false; # dublicate entry found
+		} else {
+			return true;
+		}
+	}
+
+	/**
 	 * Save items to database
 	 */
 	public function saveItems() {
@@ -354,7 +374,7 @@ class LoopStructureItem {
 
 			$dbw = wfGetDB( DB_MASTER );
 			$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
-
+			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase 
 			$dbw->insert(
 				'loop_structure_items',
 				array(
@@ -366,7 +386,7 @@ class LoopStructureItem {
 					'lsi_toc_level' => $this->tocLevel,
 					'lsi_sequence' => $this->sequence,
 					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => ucfirst($this->tocText) # MW saves pages with uppercase first letter. 
+					'lsi_toc_text' => $tmpTocText->mTextform 
 				),
 				__METHOD__
 			);
