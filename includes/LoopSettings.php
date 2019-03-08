@@ -195,11 +195,8 @@ class LoopSettings {
         global $wgSocialIcons, $wgSkinStyles, $wgAvailableLicenses, $wgSupportedLoopLanguages, $wgLegalTitleChars;
         $this->errors = array();
         
-        if ( empty ( $request->getText( 'rights-text' ) ) || preg_match( "/([".$wgLegalTitleChars."]{0,})/", $request->getText( 'rights-text' ) ) ) {
-            $this->rightsText = $request->getText( 'rights-text' );
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-rights-label' ) );
-        }
+        $this->rightsText = $request->getText( 'rights-text' ); # no validation required
+        
         $socialArray = array(
             'Facebook' => array(),
             'Twitter' => array(),
@@ -294,23 +291,16 @@ class LoopSettings {
             $this->customLogoFilePath = "";
         } else if ( $request->getText( 'logo-use-custom' ) == 'useCustomLogo' ) {
             $this->customLogo = 'useCustomLogo';
-            if ( preg_match( '/['.$wgLegalTitleChars.']{1,}[\.]{1}[a-zA-Z0-9]{2,4}/', $request->getText( 'custom-logo-filename' ) ) ) {
-                $this->customLogoFileName = $request->getText( 'custom-logo-filename' );
-                $tmpParsedResult = $this->parse( '{{filepath:' . $request->getText( 'custom-logo-filename' ) . '}}' );
-                preg_match( '/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
-                if ( isset ( $tmpOutputArray[1] ) ) {
-                    $this->customLogoFilePath = $tmpOutputArray[1];
-                } else {
-                    $this->customLogo = "";
-                    $this->customLogoFileName = "";
-                    $this->customLogoFilePath = "";
-                    array_push( $this->errors, wfMessage( 'loopsettings-error-customlogo-notfound' ) );
-                }
+            $this->customLogoFileName = $request->getText( 'custom-logo-filename' );
+            $tmpParsedResult = $this->parse( '{{filepath:' . $request->getText( 'custom-logo-filename' ) . '}}' );
+            preg_match( '/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
+            if ( isset ( $tmpOutputArray[1] ) ) {
+                $this->customLogoFilePath = $tmpOutputArray[1];
             } else {
                 $this->customLogo = "";
                 $this->customLogoFileName = "";
                 $this->customLogoFilePath = "";
-                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
+                array_push( $this->errors, wfMessage( 'loopsettings-error-customlogo-notfound' ) );
             }
         } else {
             $this->customLogo = "";

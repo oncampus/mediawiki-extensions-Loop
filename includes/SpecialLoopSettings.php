@@ -18,7 +18,7 @@ class SpecialLoopSettings extends SpecialPage {
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
 			global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, 
-			$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages, $wgLegalTitleChars;
+			$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
 				
 			$this->setHeaders();
 			$out = $this->getOutput();
@@ -91,21 +91,18 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-important-links' ) . '</h3>';
 					$html .= '<div class="form-row">';
 
-					$jsLegalTitleChars = "%!$&()*,-./0-9:;=?@A-Z^_`a-z~+";
-					# input pattern for imprint and privacy: url with http(s):// OR a valid title
-					$inputPatternImprintPrivacy = '((http){1}[s]{0,1}(://){1}['.$jsLegalTitleChars.']{1,})|(['.$jsLegalTitleChars.']{1,})';
 					# imprint link
 					$html .= 
 					'<div class="col-12 col-sm-6">
 						<label for="imprint-link">' . $this->msg( 'loopsettings-imprint-label' ) . '</label>
-						<input type="text" pattern="' . $inputPatternImprintPrivacy.'" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
+						<input type="text" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
 						<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
 					</div>';
 					# privacy link
 					$html .= 
 					'<div class="col-12 col-sm-6">
 						<label for="privacy-link">' . $this->msg( 'loopsettings-privacy-label' ) . '</label>
-						<input type="text" pattern="' . $inputPatternImprintPrivacy.'" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
+						<input type="text" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
 						<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
 					</div>';
 					
@@ -143,7 +140,7 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= 
 						'<div class="col-12 col-sm-6">
 							<label for="rights-text">' . $this->msg( 'loopsettings-rights-label' ) . '</label>
-							<input type="text" pattern="([-a-zA-Z0-9äöüØøAÖÜß:_/()©æÅÆç&!é\?,.'."'".')]{0,})"' . ' placeholder="'. $this->msg( 'loopsettings-rights-text-placeholder' ) .'" name="rights-text" id="rights-text" class="setting-input form-control" value=' . '"' . $currentLoopSettings->rightsText.'"' . '>
+							<input type="text"' . ' placeholder="'. $this->msg( 'loopsettings-rights-text-placeholder' ) .'" name="rights-text" id="rights-text" class="setting-input form-control" value=' . '"' . $currentLoopSettings->rightsText.'"' . '>
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-rights-text-hint' ) . " ©,:._-!?&/()'</div>" .
 						'</div>
 					</div><br>';
@@ -197,7 +194,7 @@ class SpecialLoopSettings extends SpecialPage {
 						<div class="col-9 col-sm-6 pl-1">
 							<input type="checkbox" name="logo-use-custom" id="logo-use-custom" value="useCustomLogo" '. ( ! empty( $currentLoopSettings->customLogo ) ? 'checked' : '' ) .'>
 							<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>
-							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" pattern="['.$wgLegalTitleChars.']{1,}[\.]{1}[a-zA-Z0-9]{2,4}" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
+							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-customlogo-hint' ) . '</div>
 							<input type="hidden" name="custom-logo-filepath" id="custom-logo-filepath" value="' . $currentLoopSettings->customLogoFilePath.'">
 						</div>
