@@ -36,11 +36,9 @@ $( document ).ready( function () {
           event.stopPropagation();
         }
         form.classList.add('was-validated');
+				$id = $( ".invalid-feedback" ).parent().parent().parent(".tab-pane").attr("id")
+				$( "#" + $id + "-tab" ).tab('show')
 
-		$id = $( "input:invalid" ).parent(".tab-pane").attr("id")//.addClass("show").show()
-		$( "#" + $id + "-tab" ).tab('show')
-		$( "input:invalid" ).focus()
-		
       }, false);
     });
     
