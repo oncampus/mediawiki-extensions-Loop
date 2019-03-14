@@ -29,8 +29,8 @@ class LoopHooks {
 	 */
 	public static function onSetupAfterCache(  ) {
 
-		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions,
-		$wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
+		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
+		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview;
 
 		$dbr = wfGetDB( DB_REPLICA );
@@ -40,7 +40,16 @@ class LoopHooks {
 
 			$res = $dbr->select(
 				'loop_settings',
-				array( 'lset_id', 'lset_rightstext', 'lset_rightsurl', 'lset_rightsicon', 'lset_languagecode', 'lset_skinstyle' ),
+				array( 
+					'lset_id', 
+					'lset_rightstext', 
+					'lset_rightsurl', 
+					'lset_rightsicon', 
+					'lset_languagecode', 
+					'lset_skinstyle', 
+					'lset_imprintlink', 
+					'lset_privacylink' 
+				),
 				array(),
 				__METHOD__,
 				array( 'ORDER BY' => 'lset_id DESC LIMIT 1' )
@@ -53,6 +62,11 @@ class LoopHooks {
 				$wgRightsIcon = ( empty( $row->lset_rightsicon ) ? $wgRightsIcon : $row->lset_rightsicon  );
 				$wgLanguageCode = ( empty( $row->lset_languagecode ) ? $wgLanguageCode : $row->lset_languagecode );
 				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
+				$wgWhitelistRead[] = empty( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
+				$wgWhitelistRead[] = empty( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
+				$wgWhitelistRead[] = "MediaWiki:Common.css";
+				$wgWhitelistRead[] = "MediaWiki:Common.js";
+				
 			}
 		}
 		

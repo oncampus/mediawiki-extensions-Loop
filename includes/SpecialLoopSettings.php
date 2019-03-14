@@ -31,8 +31,8 @@ class SpecialLoopSettings extends SpecialPage {
 			$uploadButton = $this->msg( 'loopsettings-upload-hint' ) . " " . 
 				$linkRenderer->makelink( 
 					new TitleValue( NS_SPECIAL, 'ListFiles' ), 
-					new HtmlArmor( $this->getSkin()->msg ( 'listfiles' )  . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'upload' ) . '</button><br>' )
-				);
+					new HtmlArmor( $this->getSkin()->msg ( 'listfiles' ) )
+				) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'upload' ) . '</button><br>';
 			
 			$currentLoopSettings = new LoopSettings();
 			
