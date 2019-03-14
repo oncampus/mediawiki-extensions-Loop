@@ -29,7 +29,9 @@ class LoopHooks {
 	 */
 	public static function onSetupAfterCache(  ) {
 
-		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions;
+		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions,
+		$wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
+		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -53,6 +55,20 @@ class LoopHooks {
 				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
 			}
 		}
+		
+		# FlaggedRevs Settings
+		$wgFlaggedRevsLowProfile = false;
+		$wgFlaggedRevsExceptions = array();
+		$wgFlaggedRevsTags = array(
+			'official' => array( 'levels' => 1, 'quality' => 1, 'pristine' => 1 )
+		);
+		$wgFlaggedRevsTagsRestrictions = array(
+			'official' => array( 'review' => 1, 'autoreview' => 1 )
+		);
+		$wgFlaggedRevsAutopromote=false;
+		$wgShowRevisionBlock = false;
+		$wgSimpleFlaggedRevsUI = false;
+		$wgFlaggedRevsAutoReview = FR_AUTOREVIEW_CREATION_AND_CHANGES;
 
 		return true;
 	}
