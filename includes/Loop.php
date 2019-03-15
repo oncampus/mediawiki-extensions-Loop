@@ -15,7 +15,8 @@
 			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
 			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( "0", "1" ) ) ) ) {
 				$user->setOption( 'LoopEditMode', $loopeditmodeRequestValue );
-				$user->saveSettings();
+				//$user->saveSettings(); #optional todo: Wenn ein User im Editmode ausloggt und sich woanders neu einloggt, sollte er wieder im Editmode starten. 
+				// Verursacht Datenbankprobleme, wenn man zu schnell klickt! 
 			}
 		}
 		
@@ -23,10 +24,8 @@
 			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
 			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
 				$user->setOption( 'LoopRenderMode', $looprendermodeRequestValue );
-				$user->saveSettings();
 			} else {
 				$user->setOption( 'LoopRenderMode', 'default' );
-				$user->saveSettings();
 			}
 		}	
 			
