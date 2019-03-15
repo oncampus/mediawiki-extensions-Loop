@@ -221,12 +221,14 @@ class SpecialLoopSettings extends SpecialPage {
 					
 					# extra footer
 					$html .= '<input type="checkbox" name="extra-footer-active" id="extra-footer-active" value="useExtraFooter" ' . ( ! empty ( $currentLoopSettings->extraFooter ) ? 'checked' : '' ) .'>
-						<label for="extra-footer-active">' . $this->msg( 'loopsettings-extra-footer-label' ) . '</label><br>
-						<textarea rows="2" ' . ( empty( $currentLoopSettings->extraFooter ) ? 'disabled' : '' ) . ' name="extra-footer-wikitext" placeholder="' . $this->msg( 'loopsettings-extra-footer-placeholder' ) . '" id="extra-footer-wikitext" class="form-control mw-editfont-monospace setting-input">' . $currentLoopSettings->extraFooterWikitext.'</textarea><br>';
-					
-					# upload
-					$html .= $uploadButton;
-					
+						<label for="extra-footer-active">' . $this->msg( 'loopsettings-extra-footer-label' ) . '</label><br>';
+					$html .= $linkRenderer->makeLink(
+						Title::newFromText("MediaWiki:ExtraFooter"),
+						new HtmlArmor( $this->msg("loopsettings-extra-footer-linktext") ),
+						array("target" => "blank")
+					);
+					$html .= "<br><br>";
+
 					### LINK BLOCK ###
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-footer-links' ) . '</h3>';
 					
