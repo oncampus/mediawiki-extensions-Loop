@@ -20,10 +20,11 @@
 	"loopstructure-save-equal-error": "No change could be detected.",
 	"loopstructure-save-parsed-structure-error": "An error occurred during the save process.",
 	"loopstructure-save-parse-error": "The format of the table of contents is invalid.",
+	"loopstructure-save-dublicates-error": "At least one page has been added multiple times to the structure.",
 	"loopstructure-save-success": "The table of contents has been updated successfully.",
 	"submit": "Save",
-	"loopstructure-default-newpage-content": "This is a new page.",	
-	
+	"loopstructure-default-newpage-content": "This is a new page.",
+
 	"loopsettings" : "LOOP settings",
 	"loopsettings-specialpage-title" : "LOOP settings",
 	"loopsettings-no-permission": "You are not permitted to view this page.",
@@ -53,13 +54,13 @@
 	"loopsettings-tab-general": "General",
 	"loopsettings-tab-footer": "Footer",
 	"loopsettings-tab-appearance": "Appearance",
-	"loopsettings-url-imprint-privacy-hint": "Please enter a full URL, including http:// OR link to a page in LOOP, for example /loop/Imprint",
+	"loopsettings-url-imprint-privacy-hint": "Please enter a full URL, including http:// OR a page title from this LOOP.",
 	"loopsettings-skin-style-label": "Skin-Style",
 	"loopsettings-error": "An error occurred trying to save",
-	
+
 	"loopexport-specialpage-title" : "Export",
 	"loopexport": "Export",
-	
+
 	"right-loop-toc-edit": "Edit toc",
 	"right-loop-export-pdf": "Export LOOP as PDF",
 	"right-loop-export-xml": "Export LOOP as XML",
@@ -68,7 +69,7 @@
 	"right-loop-export-html": "Export LOOP as Offline HTML",
 	"right-loop-export-scorm": "Export LOOP as Scorm",
 	"right-loop-settings-edit": "Change LOOP settings",
-	
+
 	"action-loop-toc-edit": "Edit toc",
 	"action-loop-export-pdf": "Export LOOP as PDF",
 	"action-loop-export-xml": "Export LOOP as XML",
@@ -79,11 +80,13 @@
 
 	"export-linktext-xml": "Download as XML",
 	"export-linktext-pdf": "Download as PDF",
-	"export-linktext-mp3": "Download as MP3",
+	"export-linktext-html": "Download as HTML",
+	"export-linktext-mp3": "Download as mp3",
 
-	"purgecache": "Purge cache",
+	"purgecache"  : "Purge cache",
 	"purgecache-warning": "This will purge the cache tables.",
 	"purgecache-purged": "The cache has been purged.",
 	"purgecache-button": "Purge",
 	"right-purgecache": "Wipe the OBJECTCACHE table"
+
 }

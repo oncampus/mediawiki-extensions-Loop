@@ -1,52 +1,52 @@
-<?php 
+<?php
 
 
 abstract class LoopExport {
-	
+
 	public $structure;
 	public $exportContent;
 	public $exportDirectory;
 	public $fileExtension;
-	
+
 	abstract protected function generateExportContent();
 
-	
+
 	public function getExistingExportFile() {
 		global $wgUploadDirectory;
-		
+
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
 		if (!is_dir($export_dir)) {
 			@mkdir($export_dir, 0777, true);
-		}		
-		
+		}
+
 		$export_file = $export_dir.'/'.$this->structure->lastChanged().'.'.$this->fileExtension;
-		if (is_file($export_file)) {	
-			
+		if (is_file($export_file)) {
+
 			$fh = fopen($export_file, 'r');
 			$content = fread($fh, filesize($export_file));
 			$this->exportContent = $content;
-			fclose($fh);			
-			
+			fclose($fh);
+
 			return $export_file;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public function saveExportFile() {
 		global $wgUploadDirectory;
-		
+
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
 		var_dump( $export_dir );
 		if (!is_dir($export_dir)) {
 			@mkdir($export_dir, 0777, true);
 		}
-		$export_file = $export_dir.'/'.$this->structure->lastChanged().'.'.$this->fileExtension;		
-		
+		$export_file = $export_dir.'/'.$this->structure->lastChanged().'.'.$this->fileExtension;
+
 		$fh = fopen($export_file, 'w');
 		fwrite($fh, $this->exportContent);
 		fclose($fh);
-		
+
 		// delete old export file
 		if ($handle = opendir($export_dir)) {
 			while (false !== ($entry = readdir($handle))) {
@@ -56,29 +56,29 @@ abstract class LoopExport {
 							unlink($export_dir.'/'.$entry);
 						}
 					}
-						
+
 				}
 			}
-		}		
+		}
 	}
-	
+
 	public function getExportContent() {
 		return $this->exportContent;
 	}
-	
+
 	public function setExportContent($content) {
 		$this->exportContent = $content;
-	}	
-	
+	}
+
 	public function getExportFilename() {
 		global $wgSitename;
 		return urlencode( $wgSitename . '-' . wfTimestampNow() .'.'. $this->fileExtension );
 	}
-	
+
 }
-	
-	
-	
+
+
+
 class LoopExportXml extends LoopExport {
 
 	public function __construct($structure) {
@@ -92,15 +92,15 @@ class LoopExportXml extends LoopExport {
 	}
 
 	public function sendExportHeader() {
-		
+
 		$filename = $this->getExportFilename();
-		
+
 		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
 		header("Content-Type: application/xml; charset=utf-8");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 
 	}
-	
+
 	// for Development
 	public function getExistingExportFile() {
 		return false;
@@ -121,19 +121,19 @@ class LoopExportPdf extends LoopExport {
 	}
 
 	public function sendExportHeader() {
-		
+
 		$filename = $this->getExportFilename();
-		
+
 		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
 		header("Content-Type: application/pdf");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
 
 	}
-	
+
 	// for Development
 	public function getExistingExportFile() {
-		return false; 
+		return false;
 	}
 }
 
@@ -151,14 +151,14 @@ class LoopExportMp3 extends LoopExport {
 	}
 
 	public function sendExportHeader() {
-		
+
 		$filename = $this->getExportFilename();
-		
+
 		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
-		
+
 	}
 	
 	// for Development
@@ -188,32 +188,35 @@ class LoopExportEpub extends LoopExport {
 		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
 		header("Content-Type: application/epub+zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
-		header("Content-Length: ". strlen($this->exportContent));		
-		
+		header("Content-Length: ". strlen($this->exportContent));
+
 	}
 }
 
 
 class LoopExportHtml extends LoopExport {
 
-	public function __construct($structure) {
+	private $context;
+
+	public function __construct($structure, $context) {
 		$this->structure = $structure;
 		$this->exportDirectory = '/export/html';
 		$this->fileExtension = 'zip';
+		$this->context = $context;
 	}
 
 	public function generateExportContent() {
-		$this->exportContent = ''; // ToDo: LoopOffline
+		$this->exportContent = LoopHtml::structure2html($this->structure, $this->context, $this->exportDirectory);
 	}
 
 	public function sendExportHeader() {
 		$filename = $this->getExportFilename();
-		
+
 		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
-		
+
 	}
 
 }

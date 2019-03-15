@@ -12,7 +12,7 @@
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.31.0",
+		"MediaWiki": ">= 1.32.0",
 		"extensions": {
 			"WikiEditor": "*"
 		}
@@ -28,6 +28,7 @@
 		"LoopXml": "includes/LoopXml.php",
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
+		"LoopHtml": "includes/LoopHtml.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -36,6 +37,7 @@
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
 		"SpecialLoopExport": "includes/SpecialLoopExport.php",
+		"LoopSettings": "includes/LoopSettings.php",
 		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
 		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
 	},
@@ -48,27 +50,27 @@
 		],
 		"PageRenderingHash":[
 			"LoopHooks::onPageRenderingHash"
+		],
+		"SetupAfterCache": [
+			"LoopHooks::onSetupAfterCache"
 		]
 	},
-	"HiddenPrefs": [
-		"LoopRenderMode"
-	],	
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
 		"LoopStructureEdit": "SpecialLoopStructureEdit",
 		"LoopExport": "SpecialLoopExport",
 		"LoopSettings": "SpecialLoopSettings",
 		"PurgeCache": "SpecialPurgeCache"
-	},		
+	},
 	"ResourceFileModulePaths": {
-		"localBasePath": "resources",
-		"remoteExtPath": "Loop/resources"
+		"localBasePath": "",
+		"remoteExtPath": "Loop"
 	},
 	"ResourceModules": {
 		"ext.loop-settings.js": {
 			"position": "bottom",
 			"scripts": [
-				"js/SpecialLoopSettings.js"
+				"resources/js/SpecialLoopSettings.js"
 			],
 			"dependencies": [
 				"oojs-ui-core",
@@ -76,7 +78,7 @@
 				"mediawiki.Upload.Dialog"
 			]
 		}
-	},			
+	},
 	"TrackingCategories": [
 		"loop-tracking-category-error"
 	],
@@ -113,7 +115,7 @@
 			"loop-export-scorm": false,
 			"loop-settings-edit": false,
 			"createpage": true
-		},	
+		},
 		"sysop": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
@@ -155,8 +157,7 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"protect": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -185,8 +186,7 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"protect": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -194,7 +194,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false,
 			"unreviewedpages": true,
@@ -213,15 +213,14 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true,
-			"undelete": true
+			"protect": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false,
 			"purge": true
@@ -232,7 +231,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false,
 			"reupload": true,
@@ -248,7 +247,7 @@
 			"loop-export-xml": true,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
-			"loop-export-html": true,
+			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-settings-edit": false
 		}
@@ -335,7 +334,7 @@
 	},
 	"ExtensionMessagesFiles": {
 		"LoopAlias": "Loop.i18n.alias.php"
-	},		
+	},
 	"config": {
 		"Xmlfo2PdfServiceUrl": {
 			"value" : "",
@@ -371,11 +370,11 @@
 			"description" : "Array of settings to configure social icons in footer area"
 		},
 		"ImprintLink": {
-			"value": "/loop/Impressum",
+			"value": "Impressum",
 			"description": "Link to imprint page; required"
 		},
 		"PrivacyLink": {
-			"value": "/loop/Datenschutz",
+			"value": "Datenschutz",
 			"description": "Link to privacy policy page; required"
 		},
 		"OncampusLink": {
@@ -479,7 +478,7 @@
 			],
 			"description" : "Array of available languages to use"
 		}
-		
-	}, 	
+
+	},
 	"manifest_version": 2
 }
