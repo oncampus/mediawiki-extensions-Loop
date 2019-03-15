@@ -16,8 +16,6 @@ class LoopSettings {
     public $customLogoFilePath;
     public $languageCode;
     public $extraFooter;
-    public $extraFooterWikitext;
-    public $extraFooterParsed;
     public $skinStyle;
     public $facebookIcon;
     public $facebookLink;
@@ -53,8 +51,6 @@ class LoopSettings {
                 'lset_customlogofilepath' => $this->customLogoFilePath,
                 'lset_languagecode' => $this->languageCode,
                 'lset_extrafooter' => $this->extraFooter,
-                'lset_extrafooterwikitext' => $this->extraFooterWikitext,
-                'lset_extrafooterparsed' => $this->extraFooterParsed,
                 'lset_skinstyle' => $this->skinStyle,
                 'lset_facebookicon' => $this->facebookIcon,
                 'lset_facebooklink' => $this->facebookLink,
@@ -96,8 +92,6 @@ class LoopSettings {
                 'lset_customlogofilepath',
                 'lset_languagecode',
                 'lset_extrafooter',
-                'lset_extrafooterwikitext',
-                'lset_extrafooterparsed',
                 'lset_skinstyle',
                 'lset_facebookicon',
                 'lset_facebooklink',
@@ -135,8 +129,6 @@ class LoopSettings {
                 $this->customLogoFilePath = $row->lset_customlogofilepath;
                 $this->languageCode = $row->lset_languagecode;
                 $this->extraFooter = $row->lset_extrafooter;
-                $this->extraFooterWikitext = $row->lset_extrafooterwikitext;
-                $this->extraFooterParsed = $row->lset_extrafooterparsed;
                 $this->skinStyle = $row->lset_skinstyle;
                 $this->facebookIcon = $row->lset_facebookicon;
                 $this->facebookLink = $row->lset_facebooklink;
@@ -273,15 +265,7 @@ class LoopSettings {
         
         if ( empty ( $request->getText( 'extra-footer-active' ) ) || $request->getText( 'extra-footer-active' ) == 'useExtraFooter' ) {
                 $this->extraFooter = $request->getText( 'extra-footer-active' );
-                $this->extraFooterWikitext = "";
-                $this->extraFooterParsed = "";
-            if ( ! empty ( $request->getText( 'extra-footer-wikitext' ) ) ) {
-                $this->extraFooterWikitext = $request->getText( 'extra-footer-wikitext' );
-                $this->extraFooterParsed = $this->parse( $this->extraFooterWikitext );
-            } 
         } else {
-            $this->extraFooterWikitext = "";
-            $this->extraFooterParsed = "";
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-footer-label' ) );
         }
         
