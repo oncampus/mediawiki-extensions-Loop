@@ -64,11 +64,13 @@ class LoopHooks {
 				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
 				$wgWhitelistRead[] = empty( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
 				$wgWhitelistRead[] = empty( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
-				$wgWhitelistRead[] = "MediaWiki:Common.css";
-				$wgWhitelistRead[] = "MediaWiki:Common.js";
 				
 			}
 		}
+		
+		$wgWhitelistRead[] = "MediaWiki:Common.css";
+		$wgWhitelistRead[] = "MediaWiki:Common.js";
+		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
 		
 		# FlaggedRevs Settings
 		$wgFlaggedRevsLowProfile = false;
