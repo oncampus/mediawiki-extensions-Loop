@@ -39,7 +39,7 @@
 	"loopsettings-language-label": "Label for language selection",
 	"loopsettings-extra-footer-label": "Label for additional footer checkbox",
 	"loopsettings-extra-footer-linktext": "Link text for link to extra footer page",
-	"loopsettings-extra-footer-placeholder": "Placeholder text for automatically generated MediaWiki:ExtraFooter page. $1 is wgScriptPath",
+	"loopsettings-extra-footer-placeholder": "Placeholder text for automatically generated MediaWiki:ExtraFooter page. $1 is wgServer.wgArticlePath",
 	"loopsettings-link-icon-label": "Label for social icon input fields",
 	"loopsettings-upload-hint": "Hint for users to inform about the ability to use previously and newly uploaded files.",
 	"loopsettings-customlogo-label": "Label for custom logo checkbox",
