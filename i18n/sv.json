@@ -36,7 +36,7 @@
 	"loopsettings-oncampus-label": "Visa länk till oncampus webbsida",
 	"loopsettings-extra-footer-label": "Visa yttligare footer, t.ex. för '''sponsor logos'''.",
 	"loopsettings-extra-footer-linktext": "Editera yttligare footern",
-	"loopsettings-extra-footer-placeholder": "Det här är den yttligare footer som har aktiverats i [[Special:LoopSettings|LOOP-Inställningar]]. Du kan editera dennas innehåll [$1MediaWiki:ExtraFooter här].",
+	"extraFooter": "Det här är den yttligare footer som har aktiverats i [[Special:LoopSettings|LOOP-Inställningar]]. Du kan editera dennas innehåll [[MediaWiki:ExtraFooter|här]].",
 	"loopsettings-link-icon-label": "ikon visas och länkar till: ",
 	"loopsettings-upload-hint": "Du kan ange uppladdade filer eller ladda upp nya här.",
 	"loopsettings-customlogo-label": "Använd en annan logo i header",
