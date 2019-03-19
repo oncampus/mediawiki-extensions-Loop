@@ -15,7 +15,7 @@
 			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
 			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( "0", "1" ) ) ) ) {
 				$user->setOption( 'LoopEditMode', $loopeditmodeRequestValue );
-				$user->saveSettings();
+				$user->saveSettings(); 
 			}
 		}
 		
@@ -23,10 +23,8 @@
 			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
 			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
 				$user->setOption( 'LoopRenderMode', $looprendermodeRequestValue );
-				$user->saveSettings();
 			} else {
 				$user->setOption( 'LoopRenderMode', 'default' );
-				$user->saveSettings();
 			}
 		}	
 			

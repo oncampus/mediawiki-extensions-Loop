@@ -128,7 +128,9 @@
 			"createpage": true,
 			"loop-rendermode": true,
 			"purgecache": true,
-			"edit": true
+			"unreviewedpages": true,
+			"review": true,
+			"autoreview": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -383,11 +385,9 @@
 		},
 		"extraFooter": {
 			"value" : {
-				"useExtraFooter": "false",
-				"wikiText": "",
-				"parsedText": ""
+				"useExtraFooter": "false"
 			},
-			"description": "Array for adding an additional footer with custom content, pre-rendered as parsedText"
+			"description": "Whether extra footer with content from MediaWiki:ExtraFooter should be shown or not"
 		},
 		"AvailableLicenses": {
 			"value" : {
