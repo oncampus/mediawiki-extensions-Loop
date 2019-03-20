@@ -338,7 +338,7 @@
 		"LoopAlias": "Loop.i18n.alias.php"
 	},
 	"config": {
-		"TextToSpeechServiceUrl": {
+		"Text2SpeechServiceUrl": {
 			"value" : "",
 			"description" : "URL of the Service to convert text to speech"
 		},

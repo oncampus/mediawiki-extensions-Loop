@@ -57,15 +57,19 @@
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"></xsl:value-of>
 			</xsl:attribute>
-			<xsl:element name="voice">
+			<xsl:element name="speak">
 				<xsl:attribute name="id">
-					<xsl:text>2</xsl:text>
+					<xsl:text>3</xsl:text>
 				</xsl:attribute>
 			
 				<xsl:element name="p">
-					<xsl:text>Kapitel </xsl:text>
-					<xsl:value-of select="@tocnumber"></xsl:value-of>
-					
+					Kapitel <xsl:value-of select="@tocnumber"></xsl:value-of><xsl:text> </xsl:text><xsl:value-of select="@toctext"></xsl:value-of>
+				</xsl:element>
+						
+				<xsl:element name="break">
+					<xsl:attribute name="time">
+						<xsl:text>1200ms</xsl:text>
+					</xsl:attribute>
 				</xsl:element>
 		
 			</xsl:element>
@@ -78,7 +82,7 @@
 
 	<xsl:template match="heading">
 	
-		<xsl:element name="voice">
+		<xsl:element name="speak">
 			<xsl:attribute name="id">
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
@@ -86,11 +90,17 @@
 			<xsl:apply-templates/>
 		</xsl:element>
 		
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>1200ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		
 	</xsl:template>
 	
 	
 	<xsl:template match="paragraph">
-		<xsl:element name="voice">
+		<xsl:element name="speak">
 			<xsl:attribute name="id">
 				<xsl:text>1</xsl:text>
 			</xsl:attribute>
@@ -105,8 +115,8 @@
 	
 	<xsl:template match="space">
 		<xsl:element name="break">
-			<xsl:attribute name="strength">
-				<xsl:text>strong</xsl:text>
+			<xsl:attribute name="time">
+				<xsl:text>1200ms</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
 	</xsl:template>		

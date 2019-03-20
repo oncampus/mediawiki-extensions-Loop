@@ -69,7 +69,7 @@ class SpecialLoopExport extends SpecialPage {
 			$this->getOutput()->disable();
 			wfResetOutputBuffers();
 			$export->sendExportHeader();
-			echo $export->getExportContent();
+			//echo $export->getExportContent();
 		} else {
 
 			$out->addHtml('<ul>');
