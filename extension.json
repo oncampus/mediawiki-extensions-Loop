@@ -338,6 +338,14 @@
 		"LoopAlias": "Loop.i18n.alias.php"
 	},
 	"config": {
+		"TextToSpeechServiceUrl": {
+			"value" : "",
+			"description" : "URL of the Service to convert text to speech"
+		},
+		"Text2Speech": {
+			"value" : "false",
+			"description" : "Possibility to disable text to speech feature if it is chargeable"
+		},
 		"Xmlfo2PdfServiceUrl": {
 			"value" : "",
 			"description" : "URL of the Service to convert XMLFO to PDF"
