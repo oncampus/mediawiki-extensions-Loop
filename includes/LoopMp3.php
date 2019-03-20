@@ -1,8 +1,11 @@
 <?php 
 class LoopMp3 { 
 
+	public static function page2mp3(LoopStructure $loopStructure) {
+
+		exit;
+	}
 	public static function structure2mp3(LoopStructure $loopStructure) {
-		global $IP, $wgUploadDirectory;
 		
 		
 		/*
@@ -50,54 +53,33 @@ class LoopMp3 {
 		}
 		*/
 		
+		$loopStructureItems = $loopStructure->getStructureItems();		
 		
-		$wiki_xml = LoopXml::structure2xml($loopStructure);
-		
-		#var_dump($wiki_xml); exit;
-		
-		try {
-			$xml = new DOMDocument();
-			$xml->loadXML($wiki_xml);
-		} catch (Exception $e) {
-			var_dump($e);
+
+		foreach ( $loopStructureItems as $lsi ) {
+
+			$loopExportXml = new LoopExportXml($loopStructure, $lsi);
+			$loopExportXml->generatePageExportContent( );
+
+			$loopExportXmlPage = "<?xml version='1.0' encoding='UTF-8' ?>\n";
+			$loopExportXmlPage.= "<loop ";
+			$loopExportXmlPage.= "xmlns:xhtml=\"http://www.w3.org/1999/xhtml\" ";
+			$loopExportXmlPage.= ">";
+
+			$loopExportXmlPage .= $loopExportXml->exportContent;
+			$loopExportXmlPage.= "</loop>";
+			//dd( $loopExportXmlPage);
+			$loopExportSsml = LoopMp3::transformToSsml( $loopExportXmlPage );
+			//$loopExportXml->saveExportFile();
+			var_dump($loopExportXmlPage, $loopExportSsml);
 		}
+
+		//$loopExportXml = new LoopExportXml($loopStructure);
+		//$wiki_xml = $loopExportXml->generateExportContent();
 		
-		try {
-			$xsl = new DOMDocument;
-			$xsl->load($IP.'/extensions/Loop/xsl/ssml.xsl');
-		} catch (Exception $e) {
-			var_dump($e);
-		}
+	//var_dump($wiki_xml); exit;
 		
-		try {
-			$proc = new XSLTProcessor;
-			$proc->registerPHPFunctions();
-			$proc->importStyleSheet($xsl);
-			$ssml = $proc->transformToXML($xml);
-		} catch (Exception $e) {
-			var_dump($e);
-		}
-		
-		if ( isset( $ssml ) ) {
-			
-		//echo $ssml; 
-			//var_dump(explode('<mark name="start_article2"/>',$ssml ));
-					
-		$dom = new DOMDocument;
-		$dom->loadXML($ssml);
-		$marks = $dom->getElementsByTagName('article');
-		foreach ($marks as $mark) {
-			$article_data = array (
-				"id" => $mark,
-				"content" => $dom->saveXML($mark)
-				);
-   		 	var_dump( $article_data);
-}
-		// (<article id="article)(\d*)(">)(.*)(</article>)
-		
-//var_dump($marks); 
-			exit;
-		}
+
 		
 
 		//
@@ -141,10 +123,59 @@ class LoopMp3 {
 		
 		
 		 */
-		
 		return true;
 		
 		
+	}
+	public static function transformToSsml ( $wiki_xml ) {
+		global $IP, $wgUploadDirectory;
+		//dd($wiki_xml );
+		try {
+			
+			$xml = new DOMDocument();
+			$xml->loadXML($wiki_xml);
+		} catch (Exception $e) {
+			echo "exeption 1";
+			return $e;
+		}
+		
+		try {
+			$xsl = new DOMDocument;
+			$xsl->load($IP.'/extensions/Loop/xsl/ssml.xsl');
+		} catch (Exception $e) {
+			echo "exeption 2";
+			return $e;
+		}
+		
+		try {
+			$proc = new XSLTProcessor;
+			$proc->registerPHPFunctions();
+			$proc->importStyleSheet($xsl);
+			$ssml = $proc->transformToXML($xml);
+		} catch (Exception $e) {
+			echo "exeption 3";
+			return $e;
+		}
+		
+		if ( isset( $ssml ) ) {
+			
+		//dd( $ssml); 
+			//var_dump(explode('<mark name="start_article2"/>',$ssml ));
+		/*			
+		$dom = new DOMDocument;
+		$dom->loadXML($ssml);
+		$marks = $dom->getElementsByTagName('article');
+		foreach ($marks as $mark) {
+			$article_data = array (
+				"id" => $mark,
+				"content" => $dom->saveXML($mark)
+				);
+		} */
+
+			return $ssml;
+		} else {
+			return false;
+		}
 	}
 	
 }

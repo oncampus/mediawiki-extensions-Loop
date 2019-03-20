@@ -2,6 +2,10 @@
 <terms>
 	<msg name="word_state" lang="en">state</msg>
 	<msg name="word_state" lang="de">Stand</msg>
+
 	<msg name="word_content" lang="en">Content</msg>
 	<msg name="word_content" lang="de">Inhalt</msg>	
+	
+	<msg name="word_chapter" lang="en">Chapter</msg>
+	<msg name="word_chapter" lang="de">Kapitel</msg>	
 </terms>

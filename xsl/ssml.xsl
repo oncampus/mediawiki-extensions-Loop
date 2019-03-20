@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	xmlns="http://www.w3.org/2001/10/synthesis" 
+	-->
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-	xmlns="http://www.w3.org/2001/10/synthesis" 
+	
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd" 
 	 xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:func="http://exslt.org/functions" extension-element-prefixes="func" xmlns:functx="http://www.functx.com">
@@ -15,13 +18,13 @@
 	</xsl:variable>	
 
 	<xsl:template match="loop">
-		<speak version="1.1">
-				<xsl:call-template name="introduction"></xsl:call-template>
+		<!--<speak version="1.1">
+				<xsl:call-template name="introduction"></xsl:call-template>-->
 				<xsl:call-template name="contentpages"></xsl:call-template>
-		</speak>
+		<!--</speak>-->
 	</xsl:template>
 	
-	
+	<!--
 	<xsl:template name="introduction">
 		<xsl:element name="mark">
 			<xsl:attribute name="name">
@@ -36,16 +39,16 @@
 			<break strength="strong"/>
 			Datum: <say-as interpret-as="date" format="dmy"><xsl:value-of select="/loop/meta/date_generated"></xsl:value-of></say-as>
 			<break strength="strong"/></p>
-		</xsl:element>
+		</xsl:element> 
 		
 	
 		
 		
-	</xsl:template>
+	</xsl:template>-->
 	
 	
 	<xsl:template name="contentpages">
-		<xsl:apply-templates select="articles/article"/>
+		<xsl:apply-templates select="article"/>
 	</xsl:template>	
 	
 
@@ -54,10 +57,19 @@
 			<xsl:attribute name="id">
 				<xsl:value-of select="@id"></xsl:value-of>
 			</xsl:attribute>
+			<xsl:element name="voice">
+				<xsl:attribute name="id">
+					<xsl:text>2</xsl:text>
+				</xsl:attribute>
 			
-			<h1>Kapitel <xsl:value-of select="@tocnumber"></xsl:value-of><xsl:text> </xsl:text><xsl:value-of select="@toctext"></xsl:value-of></h1>
+				<xsl:element name="p">
+					<xsl:text>Kapitel </xsl:text>
+					<xsl:value-of select="@tocnumber"></xsl:value-of>
+					
+				</xsl:element>
 		
-			<xsl:apply-templates/>
+			</xsl:element>
+				<xsl:apply-templates/>
 			
 		</xsl:element>
 	
@@ -65,21 +77,25 @@
 
 
 	<xsl:template match="heading">
-	<br/>
+	
 		<xsl:element name="voice">
 			<xsl:attribute name="id">
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
 			
 			<xsl:apply-templates/>
-			<break strength="strong"/>
 		</xsl:element>
 		
 	</xsl:template>
 	
 	
 	<xsl:template match="paragraph">
+		<xsl:element name="voice">
+			<xsl:attribute name="id">
+				<xsl:text>1</xsl:text>
+			</xsl:attribute>
 		<p><xsl:apply-templates/></p>
+		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="preblock">
@@ -88,19 +104,13 @@
 
 	
 	<xsl:template match="space">
-		<xsl:text> </xsl:text>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
 	</xsl:template>		
 	
-	<xsl:template match="br">
-		<xsl:choose>
-			<xsl:when test="preceding::node()[1][name()='br']">
-				<!-- <break/> -->	
-			</xsl:when>
-			<xsl:otherwise>
-				<break/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
 
 

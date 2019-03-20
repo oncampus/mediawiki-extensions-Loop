@@ -37,11 +37,22 @@ abstract class LoopExport {
 		global $wgUploadDirectory;
 
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
-		var_dump( $export_dir );
+		if ( $this->lsi != null ) {
+			$export_dir .= '/'. $this->lsi->article;
+		
+		}
+		//var_dump( $export_dir );
 		if (!is_dir($export_dir)) {
 			@mkdir($export_dir, 0777, true);
 		}
-		$export_file = $export_dir.'/'.$this->structure->lastChanged().'.'.$this->fileExtension;
+		if ( $this->lsi != null ) {
+			if (!is_dir($export_dir)) {
+				@mkdir($export_dir, 0777, true);
+			}
+			$export_file = $export_dir.'/'.$this->lsi->article.'_'.$this->lsi->lastChanged().'.'.$this->fileExtension; #todo on article delete from structure
+		} else {
+			$export_file = $export_dir.'/'.$this->structure->lastChanged().'.'.$this->fileExtension;
+		}
 
 		$fh = fopen($export_file, 'w');
 		fwrite($fh, $this->exportContent);
@@ -81,14 +92,19 @@ abstract class LoopExport {
 
 class LoopExportXml extends LoopExport {
 
-	public function __construct($structure) {
+	public function __construct($structure, $loopStructureItem = null) {
 		$this->structure = $structure;
+		$this->lsi = $loopStructureItem;
 		$this->exportDirectory = '/export/xml';
 		$this->fileExtension = 'xml';
 	}
 
 	public function generateExportContent() {
 		$this->exportContent = LoopXml::structure2xml($this->structure);
+	}
+
+	public function generatePageExportContent() {
+		$this->exportContent = LoopXml::structureItem2xml($this->lsi);
 	}
 
 	public function sendExportHeader() {
@@ -140,8 +156,9 @@ class LoopExportPdf extends LoopExport {
 
 class LoopExportMp3 extends LoopExport {
 
-	public function __construct($structure) {
+	public function __construct($structure, $loopStructureItem = null) {
 		$this->structure = $structure;
+		$this->lsi = $loopStructureItem;
 		$this->exportDirectory = '/export/mp3';
 		$this->fileExtension = 'zip';
 	}
@@ -149,15 +166,20 @@ class LoopExportMp3 extends LoopExport {
 	public function generateExportContent() {
 		$this->exportContent = LoopMp3::structure2mp3($this->structure);
 	}
+	
+	public function generatePageExportContent() {
+		$this->exportContent = LoopMp3::structureItem2xml($this->lsi);
+	}
 
 	public function sendExportHeader() {
-
+		//dd();
 		$filename = $this->getExportFilename();
-
+/*
 		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		*/
 
 	}
 	

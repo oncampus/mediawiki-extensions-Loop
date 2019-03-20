@@ -10,7 +10,8 @@
 		<func:result select="document($terms_file)/terms/msg[(@name=$term_name_key) and (@lang=$lang)]"/>
 	</func:function>
 
-	<xsl:variable name="word_state"  select="functx:get_term_name('word_state')" />
-	<xsl:variable name="word_content"  select="functx:get_term_name('word_content')" />
+	<xsl:variable name="word_state" select="functx:get_term_name('word_state')" />
+	<xsl:variable name="word_content" select="functx:get_term_name('word_content')" />
+	<xsl:variable name="word_chapter" select="functx:get_term_name('word_chapter')" />
 
 </xsl:stylesheet>

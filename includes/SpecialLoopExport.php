@@ -62,7 +62,7 @@ class SpecialLoopExport extends SpecialPage {
 		if ( $export != false ) {
 
 			$export->generateExportContent();
-			if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
+			if ( $export->exportDirectory != "/export/html" && $export->exportDirectory != "/export/mp3" ) { # don't cache html exports
 				$export->saveExportFile();
 			}
 
@@ -79,13 +79,13 @@ class SpecialLoopExport extends SpecialPage {
 				$out->addHtml ('<li>'.$xmlExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-pdf' )) {
+			if ($user->isAllowed( 'loop-export-pdf' ) && ! empty( $wgXmlfo2PdfServiceUrl ) && ! empty( $wgXmlfo2PdfServiceToken ) ) {
 				$pdfExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), new HtmlArmor(wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-mp3' )) {
-				$mp3ExportLink = Linker::link( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () );
+			if ($user->isAllowed( 'loop-export-mp3' )) { #todo service token mp3
+				$mp3ExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), new HtmlArmor(wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$mp3ExportLink.'</li>');
 			}			
 			
