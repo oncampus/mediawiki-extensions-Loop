@@ -92,9 +92,8 @@ abstract class LoopExport {
 
 class LoopExportXml extends LoopExport {
 
-	public function __construct($structure, $loopStructureItem = null) {
+	public function __construct($structure) {
 		$this->structure = $structure;
-		$this->lsi = $loopStructureItem;
 		$this->exportDirectory = '/export/xml';
 		$this->fileExtension = 'xml';
 	}
@@ -103,8 +102,8 @@ class LoopExportXml extends LoopExport {
 		$this->exportContent = LoopXml::structure2xml($this->structure);
 	}
 
-	public function generatePageExportContent() {
-		$this->exportContent = LoopXml::structureItem2xml($this->lsi);
+	public function generatePageExportContent( $article_id ) {
+		$this->exportContent = LoopXml::articleFromId2xml( $article_id );
 	}
 
 	public function sendExportHeader() {
@@ -156,30 +155,44 @@ class LoopExportPdf extends LoopExport {
 
 class LoopExportMp3 extends LoopExport {
 
-	public function __construct($structure, $loopStructureItem = null) {
+	public function __construct($structure, $request = null) {
 		$this->structure = $structure;
-		$this->lsi = $loopStructureItem;
+		$this->request = $request;
 		$this->exportDirectory = '/export/mp3';
 		$this->fileExtension = 'zip';
+		
 	}
-
 	public function generateExportContent() {
-		$this->exportContent = LoopMp3::structure2mp3($this->structure);
+		$query = $this->request->getQueryValues();
+		if ( isset( $query['articleId'] ) ) {
+			$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'] );
+		} else {
+			$this->exportContent = LoopMp3::structure2mp3($this->structure);
+		}
 	}
-	
+	/*
 	public function generatePageExportContent() {
 		$this->exportContent = LoopMp3::structureItem2xml($this->lsi);
 	}
-
+*/
 	public function sendExportHeader() {
 		//dd();
 		$filename = $this->getExportFilename();
-/*
-		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
-		header("Content-Type: application/zip");
-		header('Content-Disposition: attachment; filename="' . $filename . '";' );
-		header("Content-Length: ". strlen($this->exportContent));
-		*/
+		$query = $this->request->getQueryValues();
+		
+		if ( isset( $query['articleId'] ) ) {
+				
+			
+			echo $this->exportContent;
+
+		} else {
+
+			header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+			header("Content-Type: application/zip");
+			header('Content-Disposition: attachment; filename="' . $filename . '";' );
+			header("Content-Length: ". strlen($this->exportContent));
+
+		}
 
 	}
 	

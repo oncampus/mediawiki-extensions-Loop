@@ -14,7 +14,7 @@ class SpecialLoopExport extends SpecialPage {
 		$user = $this->getUser();
 		$config = $this->getConfig();
 		$request = $this->getRequest();
-
+		$context = $this->getContext();
 		$out = $this->getOutput();
 
 		$out->setPageTitle( $this->msg( 'loopexport-specialpage-title' ) );
@@ -24,7 +24,7 @@ class SpecialLoopExport extends SpecialPage {
 		$out->addHtml ('</h1>');
 
 		$out->addHtml ($sub);
-
+		//dd($sub, $request);
 
 		$structure = new LoopStructure();
 
@@ -44,12 +44,12 @@ class SpecialLoopExport extends SpecialPage {
 				break;
 			case 'mp3':
 				if ($user->isAllowed( 'loop-export-mp3' )) {
-					$export = new LoopExportMp3($structure);
+					$export = new LoopExportMp3($structure, $request);
 				}
 				break;
 			case 'html':
 				if ($user->isAllowed( 'loop-export-html' )) {
-					$export = new LoopExportHtml($structure, $this->getContext());
+					$export = new LoopExportHtml($structure, $context);
 				}
 				break;
 			case 'epub':
@@ -62,7 +62,7 @@ class SpecialLoopExport extends SpecialPage {
 		if ( $export != false ) {
 
 			$export->generateExportContent();
-			if ( $export->exportDirectory != "/export/html" && $export->exportDirectory != "/export/mp3" ) { # don't cache html exports
+			if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
 				$export->saveExportFile();
 			}
 
