@@ -61,6 +61,7 @@
 
 	"loopexport-specialpage-title" : "Export",
 	"loopexport": "Export",
+	"loopexport-audio-chapter": "Ch.",
 
 	"right-loop-toc-edit": "Edit toc",
 	"right-loop-export-pdf": "Export LOOP as PDF",
