@@ -54,6 +54,21 @@ class LoopXml {
 		$xml .= "\n</article>\n";
 		return $xml;
 	}
+
+	public static function articleFromId2xml( $articleId ) {
+
+		$content = WikiPage::newFromID ( $articleId )->getContent ()->getNativeData ();
+		
+		$content = html_entity_decode($content);
+		
+		$wiki2xml = new wiki2xml ();
+		$xml = "<article ";
+		$xml .= "id=\"article" . $articleId . "\" ";
+		$xml .= ">\n";
+		$xml .= $wiki2xml->parse ( $content );
+		$xml .= "\n</article>\n";
+		return $xml;
+	}
 	
 	
 	private static function structureItemToc(LoopStructureItem $structureItem) {
