@@ -58,6 +58,10 @@
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
 	"loopexport-audio-chapter": "Kap.",
+	"loopexport-audio-intro": "Introduktion",
+	"loopexport-audio-intro-title": "Detta är Ljudboken från Loop: $1",
+	"loopexport-audio-intro-url": "Detta Loop finns online på $1. ",
+	"loopexport-audio-intro-date": "Nivå: $1",
 
 	"right-loop-toc-edit": "Regidera innehåll",
 	"right-loop-export-pdf": "Export LOOP som PDF",

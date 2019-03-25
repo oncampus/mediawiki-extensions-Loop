@@ -62,6 +62,10 @@
 	"loopexport-specialpage-title" : "Export",
 	"loopexport": "Export",
 	"loopexport-audio-chapter": "Ch.",
+	"loopexport-audio-intro": "Introduction",
+	"loopexport-audio-intro-title": "This is the audiobook of: $1",
+	"loopexport-audio-intro-url": "You can find the loop online at $1. ",
+	"loopexport-audio-intro-date": "It is at the level of $1",
 
 	"right-loop-toc-edit": "Edit toc",
 	"right-loop-export-pdf": "Export LOOP as PDF",

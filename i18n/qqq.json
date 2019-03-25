@@ -62,6 +62,10 @@
 	"loopexport-specialpage-title" : "Page title for Loop Export special page",
 	"loopexport": "Name of Specialpage Export in List of Specialpages",
 	"loopexport-audio-chapter": "Word before chapter number in audio file titles and filenames for export",
+	"loopexport-audio-intro": "Audiobook introduction word for Introduction",
+	"loopexport-audio-intro-title": "Audiobook introduction, $1 is the loop title",
+	"loopexport-audio-intro-url": "Audiobook introduction about where to find loop, $1 is url to loop ",
+	"loopexport-audio-intro-date": "Audiobook introduction about it's state, $1 is the last-changed date of downloaded files",
 
 	"right-loop-toc-edit": "Right to edit toc",
 	"right-loop-export-pdf": "Right to export LOOP as PDF",
