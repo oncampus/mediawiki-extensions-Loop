@@ -110,7 +110,7 @@ class LoopExportXml extends LoopExport {
 
 		$filename = $this->getExportFilename();
 
-		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/xml; charset=utf-8");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 
@@ -139,7 +139,7 @@ class LoopExportPdf extends LoopExport {
 
 		$filename = $this->getExportFilename();
 
-		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/pdf");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
@@ -186,8 +186,7 @@ class LoopExportMp3 extends LoopExport {
 			echo $this->exportContent;
 
 		} else {
-
-			header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+			header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 			header("Content-Type: application/zip");
 			header('Content-Disposition: attachment; filename="' . $filename . '";' );
 			header("Content-Length: ". strlen($this->exportContent));
@@ -220,7 +219,7 @@ class LoopExportEpub extends LoopExport {
 	public function sendExportHeader() {
 		$filename = $this->getExportFilename();
 
-		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/epub+zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
@@ -247,7 +246,7 @@ class LoopExportHtml extends LoopExport {
 	public function sendExportHeader() {
 		$filename = $this->getExportFilename();
 
-		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
@@ -271,7 +270,7 @@ class LoopExportScorm extends LoopExport {
 	public function sendExportHeader() {
 		$filename = $this->getExportFilename();
 
-		header("Last-Modified: " . date("D, d M Y H:i:s T", $this->structure->lastChanged()));
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));

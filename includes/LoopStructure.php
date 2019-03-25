@@ -304,19 +304,19 @@ class LoopStructure {
 	public function lastChanged() {
 		$dbr = wfGetDB( DB_SLAVE );
 		$last_touched  =  $dbr->selectField(
-				array(
-						'loop_structure_items',
-						'page'
-				),
-				'max( page_touched )',
-				array(
-						0 => "page_id = lsi_article",
-						1 => "lsi_structure = '".$this->getId()."'"
-				),
-				__METHOD__
-				);
-		if ($last_touched) {
-			return (int)$last_touched;
+			array(
+					'loop_structure_items',
+					'page'
+			),
+			'max( page_touched )',
+			array(
+					0 => "page_id = lsi_article",
+					1 => "lsi_structure = '".$this->getId()."'"
+			),
+			__METHOD__
+			);
+		if( ! empty( $last_touched )) {
+			return $last_touched;
 		} else {
 			return false;
 		}
@@ -401,7 +401,6 @@ class LoopStructureItem {
 	 * Get item for given article and structure from database
 	 *
 	 * @param int $articleId
-	 * @param int $structure
 	 */
 	public static function newFromIds( $article ) {
 
@@ -455,7 +454,6 @@ class LoopStructureItem {
 	* Get item for given title and structure from database
 	*
 	* @param string $title
-	* @param int $structure
 	*/
 	public static function newFromText( $title ) {
 
