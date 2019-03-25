@@ -91,6 +91,7 @@
 			"loop-export-epub": false,
 			"loop-export-html": false,
 			"loop-export-scorm": false,
+			"loop-pageaudio": false,
 			"createtalk": false,
 			"createpage": false,
 			"writeapi": false
@@ -103,6 +104,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": false,
+			"loop-pageaudio": false,
 			"loop-settings-edit": false
 		},
 		"bot": {
@@ -114,6 +116,7 @@
 			"loop-export-html": false,
 			"loop-export-scorm": false,
 			"loop-settings-edit": false,
+			"loop-pageaudio": false,
 			"createpage": true
 		},
 		"sysop": {
@@ -124,6 +127,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": true,
 			"createpage": true,
 			"loop-rendermode": true,
@@ -140,6 +144,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": true,
 			"unreviewedpages": true,
 			"upload": true,
@@ -169,6 +174,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": true,
 			"unreviewedpages": true,
 			"upload": true,
@@ -198,6 +204,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": false,
 			"unreviewedpages": true,
 			"upload": true,
@@ -224,6 +231,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": false,
 			"purge": true
 		},
@@ -235,6 +243,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": false,
 			"reupload": true,
 			"upload": true,
@@ -251,6 +260,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
+			"loop-pageaudio": false,
 			"loop-settings-edit": false
 		}
 	},
