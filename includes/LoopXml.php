@@ -57,14 +57,21 @@ class LoopXml {
 
 	public static function articleFromId2xml( $articleId ) {
 
+		global $wgLanguageCode;
+		$langParts = mb_split("-", $wgLanguageCode);
+
 		$content = WikiPage::newFromID ( $articleId )->getContent ()->getNativeData ();
-		
 		$content = html_entity_decode($content);
 		
 		$wiki2xml = new wiki2xml ();
 		$xml = "<article ";
 		$xml .= "id=\"article" . $articleId . "\" ";
 		$xml .= ">\n";
+		
+		$xml .= "<meta>\n";
+		$xml .= "\t<lang>".$langParts[0]."</lang>\n";
+		$xml .= "</meta>\n";
+
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
 		return $xml;
