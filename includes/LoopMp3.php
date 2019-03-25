@@ -1,6 +1,8 @@
 <?php 
 class LoopMp3 { 
 	public static function getMp3FromRequest( $loopStructure, $articleId ) {
+		
+		global $wgUploadPath;
 
 		$lsi = LoopStructureItem::newFromIds($articleId); 
 
@@ -11,7 +13,7 @@ class LoopMp3 {
 			$loopExportXml = new LoopExportXml($loopStructure);
 			$loopExportXml->generateExportContent( );
 			$structureXml = $loopExportXml->exportContent;
-			$domStructure = new domDocument;
+			$domStructure = new domDocument('1.0', 'utf-8');
 			$domStructure->loadXML($structureXml);
 
 			$articleNodes = $domStructure->getElementsByTagName("article");
@@ -20,19 +22,21 @@ class LoopMp3 {
 
 				$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
 				if ( $tmpData["articleId"] == $articleId ) {
-					$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
+					$mp3File = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
+					$mp3FilePath = $wgUploadPath."/export/mp3/".$loopStructure->getId()."/$articleId/$articleId"."_".$tmpData["lastChanged"].".mp3";
 					
 					return $mp3FilePath;
 				}
 			}
 
 		} else {
-
+			
 			$wikiPage = WikiPage::factory( Title::newFromId( $articleId ));
 			$articleXml = LoopXml::articleFromId2xml( $articleId );
 			$lastChanged = $wikiPage->getTouched();
 
-			$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $articleXml, $articleId, $lastChanged );
+			$mp3File = LoopMp3::page2Mp3( $loopStructure, $articleXml, $articleId, $lastChanged );
+			$mp3FilePath = $wgUploadPath."/export/mp3/ns/$articleId/$articleId"."_"."$lastChanged.mp3";
 
 			return $mp3FilePath;
 		}
@@ -45,7 +49,7 @@ class LoopMp3 {
 
 		$loopExportMp3 = new LoopExportMp3($loopStructure);
 		$loopExportSsml = LoopMp3::transformToSsml( $loopStructureXml );
-		$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
+		
 		$lsi = LoopStructureItem::newFromIds($articleId); 
 
 		if ( $lsi ) {
@@ -62,6 +66,8 @@ class LoopMp3 {
 
 		if ( $fileToUse == "create" || $fileToUse == "update" ) {
 			global $IP, $wgSitename;
+			
+			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
 
 			$mp3File = fopen( $filePathName , 'w') or die("can't write mp3 file");
 			fwrite($mp3File, $responseData);
@@ -152,20 +158,16 @@ class LoopMp3 {
 		$loopExportXml = new LoopExportXml($loopStructure);
 		$loopExportXml->generateExportContent( );
 		$structureXml = $loopExportXml->exportContent;
-		$domStructure = new domDocument;
+		$domStructure = new domDocument('1.0', 'utf-8');
 		$domStructure->loadXML($structureXml);
-
 		$articleNodes = $domStructure->getElementsByTagName("article");
 
 		$mp3Files = array();
 
-		//var_dump($tmpDom2->saveHTML());
 		foreach ( $articleNodes as $node ) {
 
 			$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
-
 			$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
-			
 			$mp3Files[] = $mp3FilePath;
 
 		}
@@ -178,7 +180,7 @@ class LoopMp3 {
 
 		$data["articleId"] = str_replace("article", "", $node->getAttribute("id"));
 
-		$tmpDom = new domDocument;
+		$tmpDom = new domDocument('1.0', 'utf-8');
 		$tmpNode = $tmpDom->importNode($node, true);
 		$tmpDom->appendChild( $tmpNode );
 
@@ -193,10 +195,10 @@ class LoopMp3 {
 
 	public static function transformToSsml ( $wiki_xml ) {
 		global $IP, $wgUploadDirectory;
-		//dd($wiki_xml );
+		
 		try {
 			
-			$xml = new DOMDocument();
+			$xml = new DOMDocument('1.0', 'utf-8');
 			$xml->loadXML($wiki_xml);
 		} catch (Exception $e) {
 			echo "exeption 1";
@@ -204,7 +206,7 @@ class LoopMp3 {
 		}
 		
 		try {
-			$xsl = new DOMDocument;
+			$xsl = new DOMDocument('1.0', 'utf-8');
 			$xsl->load($IP.'/extensions/Loop/xsl/ssml.xsl');
 		} catch (Exception $e) {
 			echo "exeption 2";
@@ -231,29 +233,22 @@ class LoopMp3 {
 	private static function requestArticleAsMp3( $content, $language, $type ) {
 
 		global $wgText2SpeechServiceUrl;
-		//dd($content);
+
 		$params = "srctext=".urlencode ($content)."&language=".$language."&type=".$type;
-//dd($params);
 		$mp3Response = LoopMp3::httpRequest( $wgText2SpeechServiceUrl, $params );
 
-		//echo ":)";
-		
 		return $mp3Response ;
 
 	}
 
 	public static function httpRequest( $url, $params ) {
 		
-		//$cookie = '/tmp/'.uniqid().'cookies.tmp';
-		//global $cookie;
 		$ch = curl_init();
 		curl_setopt ( $ch, CURLOPT_USERAGENT, 'LOOP2');
 		curl_setopt ( $ch, CURLOPT_POST, true );
 		curl_setopt ( $ch, CURLOPT_URL, ( $url ) );
 		curl_setopt ( $ch, CURLOPT_ENCODING, "UTF-8" );
 		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
-		//curl_setopt ( $ch, CURLOPT_COOKIEFILE, $cookie );
-		//curl_setopt ( $ch, CURLOPT_COOKIEJAR, $cookie );
 		if ( ! empty( $params ) ) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		$return = curl_exec( $ch );
 		if ( empty( $return ) ) {
