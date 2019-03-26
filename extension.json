@@ -96,17 +96,6 @@
 			"createpage": false,
 			"writeapi": false
 		},
-		"autoconfirmed": {
-			"loop-toc-edit": false,
-			"loop-export-pdf": true,
-			"loop-export-xml": true,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": false,
-			"loop-settings-edit": false
-		},
 		"bot": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
@@ -116,7 +105,7 @@
 			"loop-export-html": false,
 			"loop-export-scorm": false,
 			"loop-settings-edit": false,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"createpage": true
 		},
 		"sysop": {
@@ -127,7 +116,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": true,
 			"createpage": true,
 			"loop-rendermode": true,
@@ -144,7 +133,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": true,
 			"unreviewedpages": true,
 			"upload": true,
@@ -174,7 +163,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": true,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": true,
 			"unreviewedpages": true,
 			"upload": true,
@@ -204,7 +193,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"unreviewedpages": true,
 			"upload": true,
@@ -231,7 +220,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"purge": true
 		},
@@ -243,7 +232,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"reupload": true,
 			"upload": true,
@@ -260,7 +249,7 @@
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
-			"loop-pageaudio": false,
+			"loop-pageaudio": true,
 			"loop-settings-edit": false
 		}
 	},
