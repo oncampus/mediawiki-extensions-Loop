@@ -1,5 +1,13 @@
 <?php 
 class LoopMp3 { 
+
+	
+	/**
+	 * Get page by id downloaded as mp3
+	 *
+	 * @param LoopStructure $loopStructure
+	 * @param int $articleId
+	 */
 	public static function getMp3FromRequest( $loopStructure, $articleId ) {
 		
 		global $wgUploadPath;
@@ -43,6 +51,14 @@ class LoopMp3 {
 
 	}
 
+	/**
+	 * Downloads given XML or SSML as mp3 from service
+	 *
+	 * @param LoopStructure $loopStructure
+	 * @param string $articleXml
+	 * @param int $articleId
+	 * @param string $lastChanged
+	 */
 	public static function page2mp3( $loopStructure, $articleXml, $articleId, $lastChanged ) { 
 
 		global $wgLanguageCode, $wgUploadDirectory;
@@ -72,7 +88,7 @@ class LoopMp3 {
 				$loopExportSsml = LoopMp3::transformToSsml( $articleXml );
 			}
 
-			//dd($loopExportSsml,$articleXml); # show ssml before sent to service
+			//dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
 			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
 
 			$mp3File = fopen( $filePathName , 'w') or die("can't write mp3 file");
@@ -115,10 +131,8 @@ class LoopMp3 {
 				$tagData['title'] = array( wfMessage("loopexport-audio-intro")->text() ." ". $wgSitename );
 				$tagData['track'] = array( $id3tag_track );
 			} else {
-
 				$title = Title::newFromId($articleId);
 				$tagData['title'] = array( $title->mTextform );
-
 			}
 			
 			$tagwriter->tag_data = $tagData;
@@ -133,6 +147,13 @@ class LoopMp3 {
 		}
 	}
 
+	/**
+	 * Checks if a given existing file is up to date compared with given lastChanged date
+	 *
+	 * @param LoopStructure $loopStructure
+	 * @param string $lastChanged
+	 * @param string $fileExtension
+	 */
 	private static function existingFileUpToDate( $filePath, $lastChanged, $fileExtension ) {
 
 		if ( !file_exists ( $filePath ) ) { // create directory if non-existent
@@ -160,6 +181,11 @@ class LoopMp3 {
 	}
 
 
+	/**
+	 * Downloads a whole LoopStructure as mp3 and delivers it as ZIP.
+	 *
+	 * @param LoopStructure $loopStructure
+	 */
 	public static function structure2mp3( LoopStructure $loopStructure ) {
 
 		global $wgUploadDirectory;
@@ -174,7 +200,7 @@ class LoopMp3 {
 		$articleNodes = $domStructure->getElementsByTagName("article");
 
 		$introSsml = LoopMp3::createIntroductionSsml ( $loopStructure );
-		//dd($introSsml);
+		//dd($introSsml); # exit at intro ssml
 		$introMp3FilePath = LoopMp3::page2Mp3( $loopStructure, $introSsml, "intro", $loopStructure->lastChanged() );
 
 		$mp3Files = array( 
@@ -187,6 +213,7 @@ class LoopMp3 {
 		foreach ( $articleNodes as $node ) {
 
 			$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
+			//dd($introSsml); # exit at first article xml
 			$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
 			if ( empty ($tmpData["tocnumber"] )) {
 				$tmpData["tocnumber"] = "0";
@@ -199,31 +226,24 @@ class LoopMp3 {
 		}
 
 		$loopExportMp3 = new LoopExportMp3($loopStructure);
-
 		$exportDirectory = $wgUploadDirectory . $loopExportMp3->exportDirectory;
 		
-
 		$tmpZipPath = $exportDirectory.'/'.$loopStructure->getId().'/tmp/tmpfile.zip';
 		$tmpDirectoryToZip = $exportDirectory.'/'.$loopStructure->getId().'/tmp';
-		if ( !file_exists ( $tmpDirectoryToZip ) ) { // create directory if non-existent
+		if ( !file_exists ( $tmpDirectoryToZip ) ) { 
 			mkdir( $tmpDirectoryToZip, 0775, true );
-			#return false; # file not created yet
 		}
-		#dd($tmpDirectoryToZip);
 		
 		foreach ( $mp3Files as $file ) {
 			$oldPath = $file["path"];
-			$storedFile = fopen($oldPath, 'r');#or die("can't write mp3file");
+			$storedFile = fopen($oldPath, 'r');
 			$storedFileContent = fread($storedFile, filesize($oldPath));
 			fclose($storedFile);
 
-
 			$newPath = $tmpDirectoryToZip ."/". $file["fileName"].".mp3";
-			#dd($newPath);
 			$tmpfile = fopen($newPath, 'w') or die("can't write mp3file");
 			fwrite($tmpfile, $storedFileContent);
 			fclose($tmpfile);
-
 		}
 
 		$zip = new ZipArchive();
@@ -246,7 +266,6 @@ class LoopMp3 {
 		$zip->close();
 		$zip = file_get_contents( $tmpZipPath );
 
-		
 		foreach ($filesToDelete as $file) {
 			unlink($file);
 		}
@@ -258,6 +277,11 @@ class LoopMp3 {
 	
 	}
 
+	/**
+	 * Outputs XML of a single article from a whole structure xml
+	 *
+	 * @param DomNode $node
+	 */
 	private static function getArticleXmlFromStructureXml( $node ) {
 		
 		global $wgLanguageCode;
@@ -289,6 +313,11 @@ class LoopMp3 {
 
 	}
 
+	/**
+	 * Transforms XML to SSML
+	 *
+	 * @param string $wiki_xml
+	 */
 	private static function transformToSsml ( $wiki_xml ) {
 		global $IP, $wgUploadDirectory;
 		
@@ -323,6 +352,13 @@ class LoopMp3 {
 		}
 	}
 
+	/**
+	 * Requests the mp3 data from service
+	 *
+	 * @param string $content
+	 * @param string $language
+	 * @param string $type
+	 */
 	private static function requestArticleAsMp3( $content, $language, $type ) {
 
 		global $wgText2SpeechServiceUrl;
@@ -334,6 +370,12 @@ class LoopMp3 {
 
 	}
 
+	/**
+	 * Makes http request
+	 *
+	 * @param string $url
+	 * @param string $params
+	 */
 	private static function httpRequest( $url, $params ) {
 		
 		$ch = curl_init();
@@ -345,7 +387,6 @@ class LoopMp3 {
 		if ( ! empty( $params ) ) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		$return = curl_exec( $ch );
 		if ( empty( $return ) ) {
-			//return "error";
 			throw new Exception( "Error getting data from server ($url): " . curl_error( $ch ) );
 		}
 		curl_close( $ch );
@@ -353,6 +394,11 @@ class LoopMp3 {
 
 	}
 
+	/**
+	 * Generates introduction as SSML
+	 *
+	 * @param LoopStructure $loopStructure
+	 */
 	private static function createIntroductionSsml ( $loopStructure ) {
 		global $wgLanguageCode, $wgCanonicalServer;
 		
