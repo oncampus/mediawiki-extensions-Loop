@@ -252,11 +252,12 @@ class LoopMp3 {
 		}
 
 		unlink( $tmpZipPath );
+		rmdir ( $tmpDirectoryToZip );
 
 		return $zip;
 	
 	}
-	
+
 	private static function getArticleXmlFromStructureXml( $node ) {
 		
 		global $wgLanguageCode;
