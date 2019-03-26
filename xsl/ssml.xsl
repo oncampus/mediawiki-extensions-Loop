@@ -14,7 +14,7 @@
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"	indent="yes"></xsl:output>
 	
 	<xsl:variable name="lang">
-		<xsl:value-of select="/loop/meta/lang"></xsl:value-of>
+		<xsl:value-of select="/article/meta/lang"></xsl:value-of>
 	</xsl:variable>	
 
 	<xsl:template match="loop">
@@ -23,29 +23,6 @@
 				<xsl:call-template name="contentpages"></xsl:call-template>
 		<!--</speak>-->
 	</xsl:template>
-	
-	<!--
-	<xsl:template name="introduction">
-		<xsl:element name="mark">
-			<xsl:attribute name="name">
-				<xsl:text>introduction</xsl:text>
-			</xsl:attribute>
-			<xsl:attribute name="data-voice">
-				<xsl:text>2</xsl:text>
-			</xsl:attribute>
-				<p>Titel: <xsl:value-of select="/loop/meta/title"></xsl:value-of>
-			<break strength="strong"/>
-			URL: <xsl:value-of select="/loop/meta/url"></xsl:value-of>
-			<break strength="strong"/>
-			Datum: <say-as interpret-as="date" format="dmy"><xsl:value-of select="/loop/meta/date_generated"></xsl:value-of></say-as>
-			<break strength="strong"/></p>
-		</xsl:element> 
-		
-	
-		
-		
-	</xsl:template>-->
-	
 	
 	<xsl:template name="contentpages">
 		<xsl:apply-templates select="article"/>
@@ -58,22 +35,35 @@
 				<xsl:value-of select="@id"></xsl:value-of>
 			</xsl:attribute>
 			<xsl:element name="speak">
-				<xsl:attribute name="id">
-					<xsl:text>3</xsl:text>
+				<xsl:attribute name="voice">
+					<xsl:text>2</xsl:text>
 				</xsl:attribute>
 			
 				<xsl:element name="p">
-					Kapitel <xsl:value-of select="@tocnumber"></xsl:value-of><xsl:text> </xsl:text><xsl:value-of select="@toctext"></xsl:value-of>
+				
+					<xsl:value-of select="$word_chapter"/>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@tocnumber"></xsl:value-of>
+					
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>medium</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+
+					<xsl:value-of select="@toctext"></xsl:value-of>
+					
+					<xsl:element name="break">
+						<xsl:attribute name="time">
+							<xsl:text>700ms</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+
 				</xsl:element>
 						
-				<xsl:element name="break">
-					<xsl:attribute name="time">
-						<xsl:text>1200ms</xsl:text>
-					</xsl:attribute>
-				</xsl:element>
-		
 			</xsl:element>
-				<xsl:apply-templates/>
+
+			<xsl:apply-templates/>
 			
 		</xsl:element>
 	
@@ -83,7 +73,7 @@
 	<xsl:template match="heading">
 	
 		<xsl:element name="speak">
-			<xsl:attribute name="id">
+			<xsl:attribute name="voice">
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
 			
@@ -101,7 +91,7 @@
 	
 	<xsl:template match="paragraph">
 		<xsl:element name="speak">
-			<xsl:attribute name="id">
+			<xsl:attribute name="voice">
 				<xsl:text>1</xsl:text>
 			</xsl:attribute>
 		<p><xsl:apply-templates/></p>
@@ -120,8 +110,9 @@
 			</xsl:attribute>
 		</xsl:element>
 	</xsl:template>		
+
+	<xsl:template match="meta">
+
+	</xsl:template>		
 	
-
-
-
 </xsl:stylesheet>
