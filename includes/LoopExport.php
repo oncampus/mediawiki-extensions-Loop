@@ -182,10 +182,10 @@ class LoopExportMp3 extends LoopExport {
 		
 		if ( isset( $query['articleId'] ) ) {
 				
-			
 			echo $this->exportContent;
 
 		} else {
+			
 			header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 			header("Content-Type: application/zip");
 			header('Content-Disposition: attachment; filename="' . $filename . '";' );
@@ -196,9 +196,9 @@ class LoopExportMp3 extends LoopExport {
 	}
 	
 	// for Development
-	public function getExistingExportFile() {
-		return false;
-	}	
+	#public function getExistingExportFile() {
+		#return false;
+	#}	
 	
 }
 

@@ -61,15 +61,22 @@ class SpecialLoopExport extends SpecialPage {
 		
 		if ( $export != false ) {
 
-			$export->generateExportContent();
-			if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
-				$export->saveExportFile();
+			#dd($existingFile);
+			if ( $export->getExistingExportFile() ) {
+				$export->getExistingExportFile();
+				#$export->exportContent;
+			} else {
+				$export->generateExportContent();
+				
+				if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
+					$export->saveExportFile();
+				}
 			}
-
+			
 			$this->getOutput()->disable();
 			wfResetOutputBuffers();
 			$export->sendExportHeader();
-			//echo $export->getExportContent();
+			//dd( $export->getExportContent());
 		} else {
 
 			$out->addHtml('<ul>');

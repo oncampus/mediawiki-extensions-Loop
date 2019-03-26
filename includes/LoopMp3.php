@@ -43,16 +43,14 @@ class LoopMp3 {
 
 	}
 
-	public static function page2mp3( $loopStructure, $loopStructureXml, $articleId, $lastChanged ) { #TODO nicht nur structure items!
+	public static function page2mp3( $loopStructure, $articleXml, $articleId, $lastChanged ) { 
 
 		global $wgLanguageCode, $wgUploadDirectory;
 
 		$loopExportMp3 = new LoopExportMp3($loopStructure);
-		$loopExportSsml = LoopMp3::transformToSsml( $loopStructureXml );
-		
 		$lsi = LoopStructureItem::newFromIds($articleId); 
 
-		if ( $lsi ) {
+		if ( $lsi || $articleId == "intro" ) {
 			$structureFolder = $loopStructure->getId();
 		} else {
 			$structureFolder = "ns";
@@ -62,11 +60,19 @@ class LoopMp3 {
 		$fileName = $articleId . "_" . $lastChanged . ".mp3";
 		$filePathName = $filePath . $fileName;
 		
-		$fileToUse = LoopMp3::checkForExistingFile( $filePath, $lastChanged );
+		$fileUpToDate = LoopMp3::existingFileUpToDate( $filePath, $lastChanged, "mp3" );
 
-		if ( $fileToUse == "create" || $fileToUse == "update" ) {
+		if ( ! $fileUpToDate ) {
 			global $IP, $wgSitename;
 			
+			if ( $articleId == "intro" ) {
+				$loopExportSsml = $articleXml;
+				$id3tag_track = "0";
+			} else {
+				$loopExportSsml = LoopMp3::transformToSsml( $articleXml );
+			}
+
+			//dd($loopExportSsml,$articleXml); # show ssml before sent to service
 			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
 
 			$mp3File = fopen( $filePathName , 'w') or die("can't write mp3 file");
@@ -99,12 +105,15 @@ class LoopMp3 {
 				$pad_length = strlen(strval($totalArticles));
 				$id3tag_track = str_pad(($lsi->sequence + 1), $pad_length, "0", STR_PAD_LEFT).'/'.str_pad($totalArticles, $pad_length, "0", STR_PAD_LEFT);
 				
-				$id3tag_title = wfMessage( "loopexport-audio-chapter" ) . " " . $lsi->tocNumber .' - '. $lsi->tocText;
+				$id3tag_title = wfMessage( "loopexport-audio-chapter" )->text() . " " . $lsi->tocNumber .' - '. $lsi->tocText;
 				
 				$tagData['title'] = array( $id3tag_title );
 				$tagData['track'] = array( $id3tag_track );
 				# Autoren-url mit Link zur Seite?
 				# Copyright?
+			} elseif ( $articleId == "intro" ) {
+				$tagData['title'] = array( wfMessage("loopexport-audio-intro")->text() ." ". $wgSitename );
+				$tagData['track'] = array( $id3tag_track );
 			} else {
 
 				$title = Title::newFromId($articleId);
@@ -117,22 +126,22 @@ class LoopMp3 {
 
 			return $filePathName;
 			
-		} elseif ( $fileToUse == "reuse" ) {
+		} elseif ( $fileUpToDate ) {
 			return $filePathName;
 		} else {
 			return false;
 		}
 	}
 
-	public static function checkForExistingFile( $filePath, $lastChanged ) {
+	private static function existingFileUpToDate( $filePath, $lastChanged, $fileExtension ) {
 
 		if ( !file_exists ( $filePath ) ) { // create directory if non-existent
 			mkdir( $filePath, 0775, true );
-			return "create";
+			return false; # file not created yet
 		} else {
 
-			$fileList = preg_grep('/([\d]{1,}[_]{1}[\d]{1,})(.mp3)/i', scandir($filePath)); // list of all audio files in directory like 2_20190319093656.mp3
-			#todo evtl auch für structureid_structurelastchanged.zip benutzen?
+			$fileList = preg_grep('/([\d]{1,}[_]{1}[\d]{1,})(.'.$fileExtension.')/i', scandir($filePath)); // list of all audio files in directory like 2_20190319093656.mp3
+			
 			if ( ! empty( $fileList ) ) { 
 				$fileName = $fileList[2];
 				$fileDate = explode( "_", $fileName );
@@ -140,18 +149,20 @@ class LoopMp3 {
 
 				if ( $fileLastChangedDate[0] != $lastChanged ) {
 					unlink($filePath.$fileName);
-					return "update"; # there have been changes made on page
+					return false; # there have been changes made on page
 				} else {
-					return "reuse";
+					return true; # file still up to date
 				}
 			} else {
-				return "create";
+				return false;
 			}
 		}
 	}
 
 
-	public static function structure2mp3(LoopStructure $loopStructure) {
+	public static function structure2mp3( LoopStructure $loopStructure ) {
+
+		global $wgUploadDirectory;
 		
 		$loopStructureItems = $loopStructure->getStructureItems();		
 
@@ -162,28 +173,112 @@ class LoopMp3 {
 		$domStructure->loadXML($structureXml);
 		$articleNodes = $domStructure->getElementsByTagName("article");
 
-		$mp3Files = array();
+		$introSsml = LoopMp3::createIntroductionSsml ( $loopStructure );
+		//dd($introSsml);
+		$introMp3FilePath = LoopMp3::page2Mp3( $loopStructure, $introSsml, "intro", $loopStructure->lastChanged() );
+
+		$mp3Files = array( 
+			array( 
+				"path" => $introMp3FilePath,
+				"fileName" => "0 - " . wfMessage("loopexport-audio-intro")->text() ." ". $loopStructure->getTitle()
+			)
+		);
 
 		foreach ( $articleNodes as $node ) {
 
 			$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
 			$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
-			$mp3Files[] = $mp3FilePath;
+			if ( empty ($tmpData["tocnumber"] )) {
+				$tmpData["tocnumber"] = "0";
+			}
+			$mp3Files[] = array( 
+				"path" => $mp3FilePath,
+				"fileName" => wfMessage("loopexport-audio-chapter")->text() . " ".$tmpData["tocnumber"]." - " . $loopStructure->getTitle()
+			);
 
 		}
-		#todo zip!
 
-		return true;
+		$loopExportMp3 = new LoopExportMp3($loopStructure);
+
+		$exportDirectory = $wgUploadDirectory . $loopExportMp3->exportDirectory;
+		
+
+		$tmpZipPath = $exportDirectory.'/'.$loopStructure->getId().'/tmp/tmpfile.zip';
+		$tmpDirectoryToZip = $exportDirectory.'/'.$loopStructure->getId().'/tmp';
+		if ( !file_exists ( $tmpDirectoryToZip ) ) { // create directory if non-existent
+			mkdir( $tmpDirectoryToZip, 0775, true );
+			#return false; # file not created yet
+		}
+		#dd($tmpDirectoryToZip);
+		
+		foreach ( $mp3Files as $file ) {
+			$oldPath = $file["path"];
+			$storedFile = fopen($oldPath, 'r');#or die("can't write mp3file");
+			$storedFileContent = fread($storedFile, filesize($oldPath));
+			fclose($storedFile);
+
+
+			$newPath = $tmpDirectoryToZip ."/". $file["fileName"].".mp3";
+			#dd($newPath);
+			$tmpfile = fopen($newPath, 'w') or die("can't write mp3file");
+			fwrite($tmpfile, $storedFileContent);
+			fclose($tmpfile);
+
+		}
+
+		$zip = new ZipArchive();
+		$zip->open( $tmpZipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+		$files = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator( $tmpDirectoryToZip ),
+			RecursiveIteratorIterator::LEAVES_ONLY
+		);
+
+		foreach ( $files as $name => $file ) {
+			if ( ! $file->isDir() ) {
+				$tmpFilePath = $file->getRealPath();
+				$tmpRelativePath = substr($tmpFilePath, strlen($tmpDirectoryToZip) + 1);
+				$zip->addFile( $tmpFilePath, $tmpRelativePath );
+				$filesToDelete[] = $tmpFilePath;
+			}
+		}
+
+		$zip->close();
+		$zip = file_get_contents( $tmpZipPath );
+
+		
+		foreach ($filesToDelete as $file) {
+			unlink($file);
+		}
+
+		unlink( $tmpZipPath );
+
+		return $zip;
 	
 	}
+	
 	private static function getArticleXmlFromStructureXml( $node ) {
+		
+		global $wgLanguageCode;
+		$langParts = mb_split("-", $wgLanguageCode);
 
 		$data["articleId"] = str_replace("article", "", $node->getAttribute("id"));
 
 		$tmpDom = new domDocument('1.0', 'utf-8');
 		$tmpNode = $tmpDom->importNode($node, true);
+		
+		# create meta tag for languages
+		$metaNode = $tmpDom->createElement("meta"); 
+		$langContent = $tmpDom->createTextNode($langParts[0]);
+		$langNode = $tmpDom->createElement("lang");
+		$langNode->appendChild($langContent);
+		$metaNode->appendChild($langNode);
+		$tmpNode->appendChild( $metaNode );
+
 		$tmpDom->appendChild( $tmpNode );
 
+		$data["toctext"] = $tmpNode->getAttribute("toctext");
+		$data["tocnumber"] = $tmpNode->getAttribute("tocnumber");
 		$data["articleXml"] = $tmpDom->saveXml(); 
 
 		$structureItem = LoopStructureItem::newFromIds($data["articleId"]);
@@ -193,7 +288,7 @@ class LoopMp3 {
 
 	}
 
-	public static function transformToSsml ( $wiki_xml ) {
+	private static function transformToSsml ( $wiki_xml ) {
 		global $IP, $wgUploadDirectory;
 		
 		try {
@@ -201,7 +296,6 @@ class LoopMp3 {
 			$xml = new DOMDocument('1.0', 'utf-8');
 			$xml->loadXML($wiki_xml);
 		} catch (Exception $e) {
-			echo "exeption 1";
 			return $e;
 		}
 		
@@ -209,7 +303,6 @@ class LoopMp3 {
 			$xsl = new DOMDocument('1.0', 'utf-8');
 			$xsl->load($IP.'/extensions/Loop/xsl/ssml.xsl');
 		} catch (Exception $e) {
-			echo "exeption 2";
 			return $e;
 		}
 		
@@ -219,7 +312,6 @@ class LoopMp3 {
 			$proc->importStyleSheet($xsl);
 			$ssml = $proc->transformToXML($xml);
 		} catch (Exception $e) {
-			echo "exeption 3";
 			return $e;
 		}
 		
@@ -241,7 +333,7 @@ class LoopMp3 {
 
 	}
 
-	public static function httpRequest( $url, $params ) {
+	private static function httpRequest( $url, $params ) {
 		
 		$ch = curl_init();
 		curl_setopt ( $ch, CURLOPT_USERAGENT, 'LOOP2');
@@ -252,12 +344,41 @@ class LoopMp3 {
 		if ( ! empty( $params ) ) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		$return = curl_exec( $ch );
 		if ( empty( $return ) ) {
-			return "error";
-			//throw new Exception( "Error getting data from server ($url): " . curl_error( $ch ) );
+			//return "error";
+			throw new Exception( "Error getting data from server ($url): " . curl_error( $ch ) );
 		}
 		curl_close( $ch );
 		return $return;
 
+	}
+
+	private static function createIntroductionSsml ( $loopStructure ) {
+		global $wgLanguageCode, $wgCanonicalServer;
+		
+		$langParts = mb_split("-", $wgLanguageCode);
+
+		$intro = '<?xml version="1.0" encoding="UTF-8"?>';
+		$intro .= '<article id="intro">';
+		$intro .= '<speak voice="1">';
+		$intro .= '<p>Dies ist das Hörbuch des Loops:<break strength="strong"/>'.$loopStructure->getTitle().'.</p>';
+		$intro .= '</speak>';
+
+		$dateFormat = array("dmy", "d-m-Y");
+		if ( $langParts[0] == "en" ) {
+			$dateFormat = array("mdy", "m-d-Y");
+		}
+		$spokenUrl = str_replace("http://", "", $wgCanonicalServer);
+		$spokenUrl = str_replace("https://", "", $spokenUrl);
+
+		$intro .= '<speak voice="2">';
+		$intro .= '<p>'. wfMessage("loopexport-audio-intro-url", $spokenUrl )->text() .'</p>';
+
+		$date = '<say-as interpret-as="date" format="'.$dateFormat[0].'">'.date($dateFormat[1],strtotime($loopStructure->lastChanged())).'</say-as>';
+		$intro .= '<p>'. wfMessage("loopexport-audio-intro-date", $date )->text() .'</p>';
+		$intro .= '</speak>';
+		$intro .= '</article>';
+
+		return $intro;
 	}
 	
 }
