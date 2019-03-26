@@ -9,6 +9,8 @@ class SpecialLoopExport extends SpecialPage {
 
 	public function execute( $sub ) {
 
+		global $wgText2SpeechServiceUrl, $wgText2Speech, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
+
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 
 		$user = $this->getUser();
@@ -97,7 +99,7 @@ class SpecialLoopExport extends SpecialPage {
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-mp3' )) { #todo service token mp3
+			if ($user->isAllowed( 'loop-export-mp3' ) && $wgText2Speech && ! empty( $wgText2SpeechServiceUrl ) ) { 
 				$mp3ExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), new HtmlArmor(wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$mp3ExportLink.'</li>');
 			}			
