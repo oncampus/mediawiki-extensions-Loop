@@ -62,6 +62,7 @@
 	"loopexport-specialpage-title" : "Export",
 	"loopexport": "Export",
 	"loopexport-audio-chapter": "Ch.",
+	"loopexport-audio-audiobook": "Audiobook",
 	"loopexport-audio-intro": "Introduction",
 	"loopexport-audio-intro-title": "This is the audiobook of: $1",
 	"loopexport-audio-intro-url": "You can find the loop online at $1. ",
