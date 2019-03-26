@@ -6,7 +6,6 @@ $( document ).ready( function () {
 		"footer-Github-icon": "footer-Github-url",
 		"footer-Instagram-icon": "footer-Instagram-url",
 		"license-use-cc": "rights-type",
-		"extra-footer-active": "extra-footer-wikitext",
 		"logo-use-custom": "custom-logo-filename"
 	};
 	

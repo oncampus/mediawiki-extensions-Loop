@@ -13,8 +13,6 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_settings (
   `lset_customlogofilepath` varbinary(255) NOT NULL,
   `lset_languagecode` varbinary(255) NOT NULL,
 	`lset_extrafooter` varbinary(255) NOT NULL,
-	`lset_extrafooterwikitext` varbinary(255) NOT NULL,
-	`lset_extrafooterparsed` varbinary(255) NOT NULL,
   `lset_facebookicon` varbinary(255) NOT NULL,
   `lset_facebooklink` varbinary(255) NOT NULL,
   `lset_twittericon` varbinary(255) NOT NULL,
