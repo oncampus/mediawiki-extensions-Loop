@@ -407,7 +407,7 @@ class LoopMp3 {
 		$intro = '<?xml version="1.0" encoding="UTF-8"?>';
 		$intro .= '<article id="intro">';
 		$intro .= '<speak voice="1">';
-		$intro .= '<p>Dies ist das Hörbuch des Loops:<break strength="strong"/>'.$loopStructure->getTitle().'.</p>';
+		$intro .= '<p>'. wfMessage("loopexport-audio-intro-title", ':<break strength="strong"/>'.$loopStructure->getTitle() )->text() .'.</p>';
 		$intro .= '</speak>';
 
 		$dateFormat = array("dmy", "d-m-Y");
