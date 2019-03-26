@@ -7,7 +7,6 @@ class SpecialLoopSettings extends SpecialPage {
 	function __construct() {
 		parent::__construct( 'LoopSettings' );
 	}
-
 	function execute( $sub ) {
 		
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
@@ -45,7 +44,6 @@ class SpecialLoopSettings extends SpecialPage {
 				if ( empty ( $currentLoopSettings->errors ) ) {
 					
 					$html .= '<div class="alert alert-success" role="alert">' . $this->msg( 'loopsettings-save-success' ) . '</div>';
-
 				} else {
 					$errorMsgs = '';
 					foreach( $currentLoopSettings->errors as $error ) { 

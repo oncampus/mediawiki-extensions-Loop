@@ -57,6 +57,12 @@
 
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
+	"loopexport-audio-chapter": "Kap.",
+	"loopexport-audio-audiobook": "Ljudbok",
+	"loopexport-audio-intro": "Introduktion",
+	"loopexport-audio-intro-title": "Detta är Ljudboken från Loop: $1",
+	"loopexport-audio-intro-url": "Detta Loop finns online på $1. ",
+	"loopexport-audio-intro-date": "Nivå: $1",
 
 	"right-loop-toc-edit": "Regidera innehåll",
 	"right-loop-export-pdf": "Export LOOP som PDF",
@@ -70,7 +76,7 @@
 	"action-loop-toc-edit": "Regidera innehåll",
 	"action-loop-export-pdf": "Export LOOP som PDF",
 	"action-loop-export-xml": "Export LOOP som XML",
-	"action-loop-export-mp3": "Export LOOP som MP3",
+	"action-loop-export-mp3": "Export LOOP som Ljudbok",
 	"action-loop-export-epub": "Export LOOP som ePub",
 	"action-loop-export-html": "Export LOOP som offline HTML",
 	"action-loop-export-scorm": "Export LOOP som Scorm paket",
@@ -78,7 +84,7 @@
 	"export-linktext-xml": "Ladda ner som XML",
 	"export-linktext-pdf": "Ladda ner som PDF",
 	"export-linktext-html": "Ladda ner som HTML",
-	"export-linktext-mp3": "Ladda ner som mp3",
+	"export-linktext-mp3": "Ladda ner som Ljudbok",
 
 	"purgecache": "Rensa cachen",
 	"purgecache-warning": "Detta rensar cachetabellerna.",

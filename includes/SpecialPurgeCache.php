@@ -20,7 +20,7 @@ class SpecialPurgeCache extends SpecialPage {
 	}
 
 	function execute( $par ) {
-		global $wgRequest, $wgOut;
+		global $wgRequest, $wgOut, $wgUploadDirectory;
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -31,12 +31,29 @@ class SpecialPurgeCache extends SpecialPage {
 				$dbw = wfGetDB( DB_MASTER );
 				$dbw->delete( 'objectcache', '*', __METHOD__ );
 				$out->addWikiMsg( 'purgecache-purged' );
+						
+				$exportPath = $wgUploadDirectory . "/export/";
+				SpecialPurgeCache::deleteAll($exportPath);
+
 			} else {
 				$out->addWikiMsg( 'purgecache-warning' );
 				$out->addHTML( $this->makeForm() );
 			}
 		} else {
 			$out->permissionRequired( 'purgecache' );
+		}
+	}
+
+	public static function deleteAll( $str ) {
+		if (is_file($str)) {
+			return unlink($str);
+		}
+		elseif (is_dir($str)) {
+			$scan = glob(rtrim($str,'/').'/*');
+			foreach($scan as $index=>$path) {
+				SpecialPurgeCache::deleteAll($path);
+			}
+			return @rmdir($str);
 		}
 	}
 

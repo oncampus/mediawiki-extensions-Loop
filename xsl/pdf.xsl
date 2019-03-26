@@ -10,7 +10,7 @@
 	extension-element-prefixes="func php str" xmlns:functx="http://www.functx.com" exclude-result-prefixes="xhtml">
 
 	<xsl:import href="pdf_params.xsl"></xsl:import>
-	<xsl:import href="pdf_terms.xsl"></xsl:import>	
+	<xsl:import href="terms.xsl"></xsl:import>	
 		
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"
 		indent="yes"></xsl:output>

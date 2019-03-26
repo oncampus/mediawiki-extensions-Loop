@@ -54,6 +54,28 @@ class LoopXml {
 		$xml .= "\n</article>\n";
 		return $xml;
 	}
+
+	public static function articleFromId2xml( $articleId ) {
+
+		global $wgLanguageCode;
+		$langParts = mb_split("-", $wgLanguageCode);
+
+		$content = WikiPage::newFromID ( $articleId )->getContent ()->getNativeData ();
+		$content = html_entity_decode($content);
+		
+		$wiki2xml = new wiki2xml ();
+		$xml = "<article ";
+		$xml .= "id=\"article" . $articleId . "\" ";
+		$xml .= ">\n";
+		
+		$xml .= "<meta>\n";
+		$xml .= "\t<lang>".$langParts[0]."</lang>\n";
+		$xml .= "</meta>\n";
+
+		$xml .= $wiki2xml->parse ( $content );
+		$xml .= "\n</article>\n";
+		return $xml;
+	}
 	
 	
 	private static function structureItemToc(LoopStructureItem $structureItem) {
@@ -545,9 +567,10 @@ class wiki2xml
 			if ( !isset ( $variables[$vcount] ) ) $variables[$vcount] = $vv ;
 			$vcount++ ;
 		}
-
-		$target = array_pop ( @explode ( ">" , $target , 2 ) ) ;
-		$target = array_shift ( @explode ( "<" , $target , 2 ) ) ;
+		$explode_target_bigger = @explode ( ">" , $target , 2 );
+		$explode_target_smaller = @explode ( "<" , $target , 2 );
+		$target = array_pop ( $explode_target_bigger ) ;
+		$target = array_shift ( $explode_target_smaller ) ;
 		if ( $this->auto_fill_templates == 'all' ) $replace_template = true ;
 		else if ( $this->auto_fill_templates == 'none' ) $replace_template = false ;
 		else {

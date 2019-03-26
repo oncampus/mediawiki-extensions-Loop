@@ -62,11 +62,17 @@
 
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
+	"loopexport-audio-chapter": "Kap.",
+	"loopexport-audio-audiobook": "Hörbuch",
+	"loopexport-audio-intro": "Einleitung",
+	"loopexport-audio-intro-title": "Dies ist das Hörbuch des Loops: $1",
+	"loopexport-audio-intro-url": "Das Loop ist online unter $1 zu finden. ",
+	"loopexport-audio-intro-date": "Es ist auf dem Stand von $1.",
 
 	"right-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"right-loop-export-pdf": "Export LOOP als PDF",
 	"right-loop-export-xml": "Export LOOP als XML",
-	"right-loop-export-mp3": "Export LOOP als MP3",
+	"right-loop-export-mp3": "Export LOOP als Hörbuch",
 	"right-loop-export-epub": "Export LOOP als ePub",
 	"right-loop-export-html": "Export LOOP als Offline HTML",
 	"right-loop-export-scorm": "Export LOOP als Scorm Paket",
@@ -75,7 +81,7 @@
 	"action-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"action-loop-export-pdf": "Export LOOP als PDF",
 	"action-loop-export-xml": "Export LOOP als XML",
-	"action-loop-export-mp3": "Export LOOP als MP3",
+	"action-loop-export-mp3": "Export LOOP als Hörbuch",
 	"action-loop-export-epub": "Export LOOP als ePub",
 	"action-loop-export-html": "Export LOOP als Offline HTML",
 	"action-loop-export-scorm": "Export LOOP als Scorm Paket",
@@ -83,12 +89,11 @@
 	"export-linktext-xml": "Als XML herunterladen",
 	"export-linktext-pdf": "Als PDF herunterladen",
 	"export-linktext-html": "Als HTML herunterladen",
-	"export-linktext-mp3": "Als mp3 herunterladen",
+	"export-linktext-mp3": "Als Hörbuch herunterladen",
 
 	"purgecache": "Cache löschen",
 	"purgecache-warning": "Dies löscht den Cache.",
 	"purgecache-purged": "Der Cache wurde gelöscht.",
 	"purgecache-button": "Löschen",
 	"right-purgecache": "OBJECTCACHE-Tabelle löschen"
-
 }

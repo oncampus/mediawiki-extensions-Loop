@@ -9,12 +9,14 @@ class SpecialLoopExport extends SpecialPage {
 
 	public function execute( $sub ) {
 
+		global $wgText2SpeechServiceUrl, $wgText2Speech, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
+
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 
 		$user = $this->getUser();
 		$config = $this->getConfig();
 		$request = $this->getRequest();
-
+		$context = $this->getContext();
 		$out = $this->getOutput();
 
 		$out->setPageTitle( $this->msg( 'loopexport-specialpage-title' ) );
@@ -24,7 +26,7 @@ class SpecialLoopExport extends SpecialPage {
 		$out->addHtml ('</h1>');
 
 		$out->addHtml ($sub);
-
+		//dd($sub, $request);
 
 		$structure = new LoopStructure();
 
@@ -44,12 +46,12 @@ class SpecialLoopExport extends SpecialPage {
 				break;
 			case 'mp3':
 				if ($user->isAllowed( 'loop-export-mp3' )) {
-					$export = new LoopExportMp3($structure);
+					$export = new LoopExportMp3($structure, $request);
 				}
 				break;
 			case 'html':
 				if ($user->isAllowed( 'loop-export-html' )) {
-					$export = new LoopExportHtml($structure, $this->getContext());
+					$export = new LoopExportHtml($structure, $context);
 				}
 				break;
 			case 'epub':
@@ -61,15 +63,28 @@ class SpecialLoopExport extends SpecialPage {
 		
 		if ( $export != false ) {
 
-			$export->generateExportContent();
-			if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
-				$export->saveExportFile();
+			$query = $request->getQueryValues();
+			if ( isset( $query['articleId'] ) ) {
+				$export->generateExportContent();
+				$this->getOutput()->disable();
+				wfResetOutputBuffers();
+				$export->sendExportHeader();
+			} else {
+				if ( $export->getExistingExportFile() ) {
+					$export->getExistingExportFile();
+				} else {
+					$export->generateExportContent();
+					
+					if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
+						$export->saveExportFile();
+					}
+				}
+				
+				$this->getOutput()->disable();
+				wfResetOutputBuffers();
+				$export->sendExportHeader();
+				echo $export->getExportContent();
 			}
-
-			$this->getOutput()->disable();
-			wfResetOutputBuffers();
-			$export->sendExportHeader();
-			echo $export->getExportContent();
 		} else {
 
 			$out->addHtml('<ul>');
@@ -79,11 +94,16 @@ class SpecialLoopExport extends SpecialPage {
 				$out->addHtml ('<li>'.$xmlExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-pdf' )) {
+			if ($user->isAllowed( 'loop-export-pdf' ) && ! empty( $wgXmlfo2PdfServiceUrl ) && ! empty( $wgXmlfo2PdfServiceToken ) ) {
 				$pdfExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), new HtmlArmor(wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
 
+			if ($user->isAllowed( 'loop-export-mp3' ) && $wgText2Speech && ! empty( $wgText2SpeechServiceUrl ) ) { 
+				$mp3ExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), new HtmlArmor(wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () ));
+				$out->addHtml ('<li>'.$mp3ExportLink.'</li>');
+			}			
+			
 			if ($user->isAllowed( 'loop-export-html' )) {
 				$htmlExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/html' ), new HtmlArmor(wfMessage ( 'export-linktext-html' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$htmlExportLink.'</li>');
