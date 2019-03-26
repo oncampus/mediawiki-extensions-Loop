@@ -9,7 +9,7 @@
 	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd" 
 	 xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:func="http://exslt.org/functions" extension-element-prefixes="func" xmlns:functx="http://www.functx.com">
 	
-	<xsl:import href="ssml_terms.xsl"></xsl:import>	
+	<xsl:import href="terms.xsl"></xsl:import>	
 	
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"	indent="yes"></xsl:output>
 	
@@ -18,10 +18,7 @@
 	</xsl:variable>	
 
 	<xsl:template match="loop">
-		<!--<speak version="1.1">
-				<xsl:call-template name="introduction"></xsl:call-template>-->
-				<xsl:call-template name="contentpages"></xsl:call-template>
-		<!--</speak>-->
+		<xsl:call-template name="contentpages"></xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template name="contentpages">
