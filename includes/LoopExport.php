@@ -160,6 +160,7 @@ class LoopExportMp3 extends LoopExport {
 		$this->request = $request;
 		$this->exportDirectory = '/export/mp3';
 		$this->fileExtension = 'zip';
+		$this->lsi = null;
 		
 	}
 	public function generateExportContent() {
@@ -170,14 +171,11 @@ class LoopExportMp3 extends LoopExport {
 			$this->exportContent = LoopMp3::structure2mp3($this->structure);
 		}
 	}
-	/*
-	public function generatePageExportContent() {
-		$this->exportContent = LoopMp3::structureItem2xml($this->lsi);
-	}
-*/
 	public function sendExportHeader() {
-		//dd();
-		$filename = $this->getExportFilename();
+
+		global $wgSitename;
+		$filename = wfMessage("loopexport-audio-audiobook")->text() ."_". str_replace(" ", "_", $wgSitename ) . ".zip";
+		
 		$query = $this->request->getQueryValues();
 		
 		if ( isset( $query['articleId'] ) ) {
@@ -195,14 +193,7 @@ class LoopExportMp3 extends LoopExport {
 
 	}
 	
-	// for Development
-	#public function getExistingExportFile() {
-		#return false;
-	#}	
-	
 }
-
-
 
 class LoopExportEpub extends LoopExport {
 
