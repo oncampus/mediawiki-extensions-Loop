@@ -95,5 +95,6 @@
 	"purgecache-warning": "Dies löscht den Cache.",
 	"purgecache-purged": "Der Cache wurde gelöscht.",
 	"purgecache-button": "Löschen",
-	"right-purgecache": "OBJECTCACHE-Tabelle löschen"
+	"right-purgecache": "OBJECTCACHE-Tabelle löschen",
+	"purgecache-no-permission": "Sie haben nicht die Berechtigung, den Inhalt dieser Seite zu sehen."
 }

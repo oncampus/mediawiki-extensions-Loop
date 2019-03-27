@@ -90,6 +90,7 @@
 	"purgecache-warning": "Detta rensar cachetabellerna.",
 	"purgecache-purged": "Cachen har rensats.",
 	"purgecache-button": "Rensa",
-	"right-purgecache": "Rensa OBJECTCACHE-tabellen"
+	"right-purgecache": "Rensa OBJECTCACHE-tabellen",
+	"purgecache-no-permission": "Du har inte behörighet för att visa den här sidan."
 
 }

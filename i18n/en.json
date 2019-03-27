@@ -94,6 +94,7 @@
 	"purgecache-warning": "This will purge the cache tables.",
 	"purgecache-purged": "The cache has been purged.",
 	"purgecache-button": "Purge",
-	"right-purgecache": "Wipe the OBJECTCACHE table"
+	"right-purgecache": "Wipe the OBJECTCACHE table",
+	"purgecache-no-permission": "You do not have permission to view this page."
 
 }
