@@ -173,8 +173,17 @@ class LoopExportMp3 extends LoopExport {
 	}
 	public function sendExportHeader() {
 
-		global $wgSitename;
-		$filename = wfMessage("loopexport-audio-audiobook")->text() ."_". str_replace(" ", "_", $wgSitename ) . ".zip";
+		global $wgCanonicalServer, $wgSitename;
+
+		$urlparts = mb_split("\.", $wgCanonicalServer);
+		if (isset($urlparts[0])) {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $urlparts[0]);
+		} else {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $wgCanonicalServer);;
+		}
+
+		
+		$filename = wfMessage("loopexport-audio-audiobook")->text() ."_". $hashtag . ".zip";
 		
 		$query = $this->request->getQueryValues();
 		

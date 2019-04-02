@@ -188,7 +188,7 @@ class LoopMp3 {
 	 */
 	public static function structure2mp3( LoopStructure $loopStructure ) {
 
-		global $wgUploadDirectory;
+		global $wgUploadDirectory, $wgCanonicalServer;
 		
 		$loopStructureItems = $loopStructure->getStructureItems();		
 
@@ -203,10 +203,24 @@ class LoopMp3 {
 		//dd($introSsml); # exit at intro ssml
 		$introMp3FilePath = LoopMp3::page2Mp3( $loopStructure, $introSsml, "intro", $loopStructure->lastChanged() );
 
+		$urlparts = mb_split("\.", $wgCanonicalServer);
+		if (isset($urlparts[0])) {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $urlparts[0]);
+		} else {
+			$hashtag = "";
+		}
+
+		$getID3 = new getID3;
+
+		$fileName = "000";
+		if (!empty($hashtag)) {
+			$fileName .= "_-_" . strtoupper($hashtag);
+		}
+
 		$mp3Files = array( 
 			array( 
 				"path" => $introMp3FilePath,
-				"fileName" => "0 - " . wfMessage("loopexport-audio-intro")->text() ." ". $loopStructure->getTitle()
+				"fileName" => $fileName
 			)
 		);
 
@@ -215,15 +229,20 @@ class LoopMp3 {
 			$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
 			//dd($introSsml); # exit at first article xml
 			$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
-			if ( empty ($tmpData["tocnumber"] )) {
-				$tmpData["tocnumber"] = "0";
+			$tmpTrack = $getID3->analyze($mp3FilePath)["id3v2"]["TRCK"][0]["data"];
+			$tmpTrack = sprintf('%03d',$tmpTrack);
+			
+			$fileName = $tmpTrack;
+			if (!empty($hashtag)) {
+				$fileName .= "_-_" . strtoupper($hashtag);
 			}
 			$mp3Files[] = array( 
 				"path" => $mp3FilePath,
-				"fileName" => wfMessage("loopexport-audio-chapter")->text() . " ".$tmpData["tocnumber"]." - " . $loopStructure->getTitle()
+				"fileName" => $fileName
 			);
 
 		}
+		#dd($mp3Files);
 
 		$loopExportMp3 = new LoopExportMp3($loopStructure);
 		$exportDirectory = $wgUploadDirectory . $loopExportMp3->exportDirectory;
