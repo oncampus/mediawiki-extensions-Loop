@@ -52,6 +52,7 @@ class LoopXml {
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
+		#dd( $xml ); # dump and exit at first page xml
 		return $xml;
 	}
 
@@ -104,7 +105,6 @@ class LoopXml {
 		if ($structureItem->getTocLevel() == 0) {
 			$toc_xml = "<chapter>\n<page id=\"article".$structureItem->getArticle()."\" toclevel=\"".$structureItem->getTocLevel()."\" tocnumber=\"".$structureItem->getTocNumber()."\" toctext=\"".htmlspecialchars($structureItem->getTocText())."\" >".$toc_xml."</page></chapter>";
 		}
-	
 	
 		return $toc_xml;
 	}	
