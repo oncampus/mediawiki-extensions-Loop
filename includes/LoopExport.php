@@ -92,14 +92,22 @@ abstract class LoopExport {
 
 class LoopExportXml extends LoopExport {
 
-	public function __construct($structure) {
+	public function __construct($structure, $request = null) {
 		$this->structure = $structure;
 		$this->exportDirectory = '/export/xml';
 		$this->fileExtension = 'xml';
+		$this->request = $request;
 	}
 
 	public function generateExportContent() {
-		$this->exportContent = LoopXml::structure2xml($this->structure);
+		$query = $this->request->getQueryValues();
+		
+		if ( isset( $query['articleId'] ) ) {
+			$this->exportContent = LoopXml::articleFromId2xml( $query['articleId'] );
+			dd($this->exportContent); //debug output of page
+		} else {
+			$this->exportContent = LoopXml::structure2xml($this->structure);
+		}
 	}
 
 	public function generatePageExportContent( $article_id ) {

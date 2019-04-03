@@ -36,7 +36,7 @@ class SpecialLoopExport extends SpecialPage {
 		switch ($sub) {
 			case 'xml':
 				if ($user->isAllowed( 'loop-export-xml' )) {
-					$export = new LoopExportXml($structure);
+					$export = new LoopExportXml($structure, $request);
 				}
 				break;
 			case 'pdf':
