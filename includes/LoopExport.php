@@ -100,11 +100,13 @@ class LoopExportXml extends LoopExport {
 	}
 
 	public function generateExportContent() {
-		$query = $this->request->getQueryValues();
-		
+		$query = array();
+		if ( isset( $this->request ) ) {
+			$query = $this->request->getQueryValues();
+		}
 		if ( isset( $query['articleId'] ) ) {
 			$this->exportContent = LoopXml::articleFromId2xml( $query['articleId'] );
-			dd($this->exportContent); //debug output of page
+			var_dump($this->exportContent); exit; //debug output of page
 		} else {
 			$this->exportContent = LoopXml::structure2xml($this->structure);
 		}
@@ -172,7 +174,10 @@ class LoopExportMp3 extends LoopExport {
 		
 	}
 	public function generateExportContent() {
-		$query = $this->request->getQueryValues();
+		$query = array();
+		if ( isset( $this->request ) ) {
+			$query = $this->request->getQueryValues();
+		}
 		if ( isset( $query['articleId'] ) ) {
 			$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'] );
 		} else {
