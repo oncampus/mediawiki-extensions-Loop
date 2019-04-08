@@ -214,7 +214,7 @@ class LoopMp3 {
 
 		$fileName = "000";
 		if (!empty($hashtag)) {
-			$fileName .= "_-_" . strtoupper($hashtag);
+			$fileName .= "_" . $hashtag;
 		}
 
 		$mp3Files = array( 
@@ -234,7 +234,7 @@ class LoopMp3 {
 			
 			$fileName = $tmpTrack;
 			if (!empty($hashtag)) {
-				$fileName .= "_-_" . strtoupper($hashtag);
+				$fileName .= "_" . $hashtag;
 			}
 			$mp3Files[] = array( 
 				"path" => $mp3FilePath,
