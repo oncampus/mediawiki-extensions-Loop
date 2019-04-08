@@ -307,13 +307,9 @@ class LoopHtml{
                 "srcpath" => $skinPath."Loop/resources/loopicons/fonts/loopfont.woff",
                 "targetpath" => "resources/loopicons/fonts/",
             ),
-            "32px.png" => array(
-                "srcpath" => $skinPath."Loop/resources/js/jstree/dist/themes/default/32px.png",
-                "targetpath" => "resources/js/jstree/dist/themes/default/",
-            ),
-            "throbber.gif" => array(
-                "srcpath" => $skinPath."Loop/resources/js/jstree/dist/themes/default/throbber.gif",
-                "targetpath" => "resources/js/jstree/dist/themes/default/",
+            "tree.png" => array(
+                "srcpath" => $skinPath."Loop/resources/img/tree.png",
+                "targetpath" => "resources/img/",
             )
         );
 

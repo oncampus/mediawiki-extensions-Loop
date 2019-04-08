@@ -23,11 +23,16 @@ abstract class LoopExport {
 		if (is_file($export_file)) {
 
 			$fh = fopen($export_file, 'r');
-			$content = fread($fh, filesize($export_file));
-			$this->exportContent = $content;
-			fclose($fh);
+			if ( filesize($export_file) > 0 )	{
+				$content = fread($fh, filesize($export_file));
+				$this->exportContent = $content;
+				fclose($fh);
+				return $export_file;
+			} else {
+				fclose($fh);
+				return false;
+			}
 
-			return $export_file;
 		} else {
 			return false;
 		}
@@ -82,8 +87,24 @@ abstract class LoopExport {
 	}
 
 	public function getExportFilename() {
-		global $wgSitename;
-		return urlencode( $wgSitename . '-' . wfTimestampNow() .'.'. $this->fileExtension );
+		
+		global $wgCanonicalServer;
+
+		$urlparts = mb_split("\.", $wgCanonicalServer);
+		if (isset($urlparts[0])) {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $urlparts[0]);
+		} else {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $wgCanonicalServer);;
+		}
+		
+		$zipFileAddendum = "";
+		if ( $this->exportDirectory == "/export/mp3" ) {
+			$zipFileAddendum = "_" . wfMessage("loopexport-audio-filename")->text();
+		} elseif ( $this->exportDirectory == "/export/html" ) {
+			$zipFileAddendum = "_" . wfMessage("loopexport-offline-filename")->text();
+		} 
+		
+		return strtoupper($hashtag) . $zipFileAddendum .'.'. $this->fileExtension;
 	}
 
 }
@@ -92,14 +113,24 @@ abstract class LoopExport {
 
 class LoopExportXml extends LoopExport {
 
-	public function __construct($structure) {
+	public function __construct($structure, $request = null) {
 		$this->structure = $structure;
 		$this->exportDirectory = '/export/xml';
 		$this->fileExtension = 'xml';
+		$this->request = $request;
 	}
 
 	public function generateExportContent() {
-		$this->exportContent = LoopXml::structure2xml($this->structure);
+		$query = array();
+		if ( isset( $this->request ) ) {
+			$query = $this->request->getQueryValues();
+		}
+		if ( isset( $query['articleId'] ) ) {
+			$this->exportContent = LoopXml::articleFromId2xml( $query['articleId'] );
+			var_dump($this->exportContent); exit; //debug output of page
+		} else {
+			$this->exportContent = LoopXml::structure2xml($this->structure);
+		}
 	}
 
 	public function generatePageExportContent( $article_id ) {
@@ -164,32 +195,45 @@ class LoopExportMp3 extends LoopExport {
 		
 	}
 	public function generateExportContent() {
+		
+		$this->exportContent = LoopMp3::structure2mp3($this->structure);
+		
+	}
+	public function sendExportHeader() {
+
+		$filename = $this->getExportFilename();
+			
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
+		header("Content-Type: application/zip");
+		header('Content-Disposition: attachment; filename="' . $filename . '";' );
+		header("Content-Length: ". strlen($this->exportContent));
+
+	}
+	
+}
+class LoopExportPageMp3 extends LoopExport {
+
+	public function __construct($structure, $request) {
+		$this->structure = $structure;
+		$this->request = $request;
+		$this->exportDirectory = '/export/mp3';
+		$this->fileExtension = 'mp3';
+		$this->lsi = null;
+		
+	}
+	public function generateExportContent() {
 		$query = $this->request->getQueryValues();
 		if ( isset( $query['articleId'] ) ) {
 			$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'] );
 		} else {
-			$this->exportContent = LoopMp3::structure2mp3($this->structure);
+			$this->exportContent = null;
 		}
 	}
 	public function sendExportHeader() {
-
-		global $wgSitename;
-		$filename = wfMessage("loopexport-audio-audiobook")->text() ."_". str_replace(" ", "_", $wgSitename ) . ".zip";
-		
-		$query = $this->request->getQueryValues();
-		
-		if ( isset( $query['articleId'] ) ) {
-				
-			echo $this->exportContent;
-
-		} else {
 			
-			header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
-			header("Content-Type: application/zip");
-			header('Content-Disposition: attachment; filename="' . $filename . '";' );
-			header("Content-Length: ". strlen($this->exportContent));
-
-		}
+		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
+		header("Content-Type: text/html");
+		header("Content-Length: ". strlen($this->exportContent));
 
 	}
 	

@@ -33,6 +33,7 @@
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
 		"LoopExportMp3": "includes/LoopExport.php",
+		"LoopExportPageMp3": "includes/LoopExport.php",
 		"LoopExportEpub": "includes/LoopExport.php",
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",

@@ -58,7 +58,8 @@
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
 	"loopexport-audio-chapter": "Kap.",
-	"loopexport-audio-audiobook": "Ljudbok",
+	"loopexport-audio-filename": "Ljudbok",
+	"loopexport-offline-filename": "offline_version",
 	"loopexport-audio-intro": "Introduktion",
 	"loopexport-audio-intro-title": "Detta är Ljudboken från Loop: $1",
 	"loopexport-audio-intro-url": "Detta Loop finns online på $1. ",
@@ -90,6 +91,7 @@
 	"purgecache-warning": "Detta rensar cachetabellerna.",
 	"purgecache-purged": "Cachen har rensats.",
 	"purgecache-button": "Rensa",
-	"right-purgecache": "Rensa OBJECTCACHE-tabellen"
+	"right-purgecache": "Rensa OBJECTCACHE-tabellen",
+	"purgecache-no-permission": "Du har inte behörighet för att visa den här sidan."
 
 }
