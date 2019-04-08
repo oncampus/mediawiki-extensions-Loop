@@ -82,8 +82,24 @@ abstract class LoopExport {
 	}
 
 	public function getExportFilename() {
-		global $wgSitename;
-		return urlencode( $wgSitename . '-' . wfTimestampNow() .'.'. $this->fileExtension );
+		
+		global $wgCanonicalServer;
+
+		$urlparts = mb_split("\.", $wgCanonicalServer);
+		if (isset($urlparts[0])) {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $urlparts[0]);
+		} else {
+			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $wgCanonicalServer);;
+		}
+		
+		$zipFileAddendum = "";
+		if ( $this->exportDirectory == "/export/mp3" ) {
+			$zipFileAddendum = "_" . wfMessage("loopexport-audio-filename")->text();
+		} elseif ( $this->exportDirectory == "/export/html" ) {
+			$zipFileAddendum = "_" . wfMessage("loopexport-offline-filename")->text();
+		} 
+		
+		return strtoupper($hashtag) . $zipFileAddendum .'.'. $this->fileExtension;
 	}
 
 }
@@ -186,18 +202,8 @@ class LoopExportMp3 extends LoopExport {
 	}
 	public function sendExportHeader() {
 
-		global $wgCanonicalServer, $wgSitename;
-
-		$urlparts = mb_split("\.", $wgCanonicalServer);
-		if (isset($urlparts[0])) {
-			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $urlparts[0]);
-		} else {
-			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $wgCanonicalServer);;
-		}
-
-		
-		$filename = wfMessage("loopexport-audio-audiobook")->text() ."_". $hashtag . ".zip";
-		
+		$filename = $this->getExportFilename();
+	
 		$query = $this->request->getQueryValues();
 		
 		if ( isset( $query['articleId'] ) ) {
