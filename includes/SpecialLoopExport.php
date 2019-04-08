@@ -46,45 +46,44 @@ class SpecialLoopExport extends SpecialPage {
 				break;
 			case 'mp3':
 				if ($user->isAllowed( 'loop-export-mp3' )) {
-					$export = new LoopExportMp3($structure, $request);
+					$export = new LoopExportMp3($structure);
 				}
 				break;
 			case 'html':
 				if ($user->isAllowed( 'loop-export-html' )) {
 					$export = new LoopExportHtml($structure, $context);
 				}
-				break;
+			break;
 			case 'epub':
 				if ($user->isAllowed( 'loop-export-epub' )) {
 					$export = new LoopExportEpub($structure);
+				}
+			break;
+			case 'pageaudio':
+				if ($user->isAllowed( 'loop-pageaudio' )) {
+					$export = new LoopExportPageMp3($structure, $request);
 				}
 				break;
 		}
 		
 		if ( $export != false ) {
 
-			$query = $request->getQueryValues();
-			if ( isset( $query['articleId'] ) ) {
-				$export->generateExportContent();
-				$this->getOutput()->disable();
-				wfResetOutputBuffers();
-				$export->sendExportHeader();
-			} else {
-				if ( $export->getExistingExportFile() ) {
+			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
 					$export->getExistingExportFile();
-				} else {
-					$export->generateExportContent();
+			} else {
+				$export->generateExportContent();
 					
-					if ( $export->exportDirectory != "/export/html" ) { # don't cache html exports
-						$export->saveExportFile();
-					}
+				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" ) { # don't cache html exports
+					$export->saveExportFile();
 				}
-				
+			}
+			if ($export->getExportContent() != null ) {
 				$this->getOutput()->disable();
 				wfResetOutputBuffers();
 				$export->sendExportHeader();
 				echo $export->getExportContent();
 			}
+			
 		} else {
 
 			$out->addHtml('<ul>');
