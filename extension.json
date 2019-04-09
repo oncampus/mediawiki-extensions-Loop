@@ -93,6 +93,7 @@
 			"loop-export-html": false,
 			"loop-export-scorm": false,
 			"loop-pageaudio": false,
+			"loop-view-export-log": false,
 			"createtalk": false,
 			"createpage": false,
 			"writeapi": false
@@ -119,6 +120,7 @@
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": true,
+			"loop-view-export-log": true,
 			"createpage": true,
 			"loop-rendermode": true,
 			"purgecache": true,
@@ -136,6 +138,7 @@
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": true,
+			"loop-view-export-log": true,
 			"unreviewedpages": true,
 			"upload": true,
 			"autoreview": true,
@@ -166,6 +169,7 @@
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": true,
+			"loop-view-export-log": true,
 			"unreviewedpages": true,
 			"upload": true,
 			"autoreview": true,
@@ -327,7 +331,8 @@
 		"loop-export-html",
 		"loop-export-scorm",
 		"loop-rendermode",
-		"loop-settings-edit"
+		"loop-settings-edit",
+		"loop-view-export-log"
 	],
 	"MessagesDirs": {
 		"Loop": [
@@ -488,5 +493,15 @@
 		}
 
 	},
+	"LogTypes": [ "loopexport" ],
+    "LogNames": {
+        "loopexport": "log-name-loopexport"
+    },
+    "LogHeaders": {
+        "loopexport": "log-name-loopexport"
+    },
+    "LogActionsHandlers": {
+        "loopexport/*": "LogFormatter"
+    },
 	"manifest_version": 2
 }

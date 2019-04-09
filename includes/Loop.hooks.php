@@ -31,7 +31,8 @@ class LoopHooks {
 
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
-		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview;
+		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgLogRestrictions,
+		$wgFileExtensions;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -85,6 +86,15 @@ class LoopHooks {
 		$wgShowRevisionBlock = false;
 		$wgSimpleFlaggedRevsUI = false;
 		$wgFlaggedRevsAutoReview = FR_AUTOREVIEW_CREATION_AND_CHANGES;
+
+		# Log viewing rights
+		$wgLogRestrictions["loopexport"] = "loop-view-export-log";
+		$wgLogRestrictions["block"] = "loop-view-export-log"; #Benutzersperr-Logbuch
+		$wgLogRestrictions["newusers"] = "loop-view-export-log"; #Neu angemeldete User-Logbuch
+		$wgLogRestrictions["rights"] = "loop-view-export-log"; #Benutzerrechte-Logbuch
+
+		# Uploadable file extensions
+		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg','eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr'));
 
 		return true;
 	}

@@ -137,16 +137,35 @@ class LoopMp3 {
 			
 			$tagwriter->tag_data = $tagData;
 			$tagwriter->WriteTags();
+			
+			LoopMp3::writeLog( wfMessage("log-export-generated")->text(), $articleId );
 
 			return $filePathName;
 			
 		} elseif ( $fileUpToDate ) {
+			LoopMp3::writeLog( wfMessage("log-export-reused")->text(), $articleId );
 			return $filePathName;
 		} else {
 			return false;
 		}
 	}
+	/**
+	 * Adds a log entry for page audio export.
+	 *
+	 * @param string $msg
+	 * @param string $articleId
+	 */
+	private static function writeLog( $msg, $articleId ) {
+		
+		$logEntry = new ManualLogEntry( 'loopexport', 'pageaudio');
+		$logEntry->setTarget( Title::newFromId($articleId) );
+		$logEntry->setPerformer( User::newFromId(0) ); 
+		$logEntry->setParameters( [ '4::paramname' => $msg ] );
+		$logid = $logEntry->insert();
 
+		return true;
+
+	}
 	/**
 	 * Checks if a given existing file is up to date compared with given lastChanged date
 	 *

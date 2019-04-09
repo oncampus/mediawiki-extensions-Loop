@@ -92,6 +92,16 @@
 	"purgecache-purged": "Cachen har rensats.",
 	"purgecache-button": "Rensa",
 	"right-purgecache": "Rensa OBJECTCACHE-tabellen",
-	"purgecache-no-permission": "Du har inte behörighet för att visa den här sidan."
+	"purgecache-no-permission": "Du har inte behörighet för att visa den här sidan.",
 
+	"log-export-generated": "genererats",
+	"log-export-reused": "återanvänts",
+	"log-name-loopexport": "LOOP-Export loggningar",
+	"log-description-loopexport": "Loggning för LOOP-Export",
+	"logentry-loopexport-pdf": "PDF har exporterats ($4)",
+	"logentry-loopexport-xml": "XML har exporterats ($4)",
+	"logentry-loopexport-mp3": "Ljudbok har exporterats ($4)",
+	"logentry-loopexport-html": "Offline version har exporterats",
+	"logentry-loopexport-epub": "ePub har exporterats ($4)",
+	"logentry-loopexport-pageaudio": "$3 lyssnades på ($4)"
 }

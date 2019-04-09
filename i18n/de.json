@@ -97,5 +97,16 @@
 	"purgecache-purged": "Der Cache wurde gelöscht.",
 	"purgecache-button": "Löschen",
 	"right-purgecache": "OBJECTCACHE-Tabelle löschen",
-	"purgecache-no-permission": "Sie haben nicht die Berechtigung, den Inhalt dieser Seite zu sehen."
+	"purgecache-no-permission": "Sie haben nicht die Berechtigung, den Inhalt dieser Seite zu sehen.",
+	
+	"log-export-generated": "neu generiert",
+	"log-export-reused": "wiederverwendet",
+	"log-name-loopexport": "LOOP-Export Logs",
+	"log-description-loopexport": "Log-Einträge für jeden LOOP-Export",
+	"logentry-loopexport-pdf": "PDF wurde exportiert ($4)",
+	"logentry-loopexport-xml": "XML wurde exportiert ($4)",
+	"logentry-loopexport-mp3": "Hörbuch wurde exportiert ($4)",
+	"logentry-loopexport-html": "Offlineversion wurde exportiert",
+	"logentry-loopexport-epub": "ePub wurde exportiert ($4)",
+	"logentry-loopexport-pageaudio": "$3 wurde angehört ($4)"
 }
