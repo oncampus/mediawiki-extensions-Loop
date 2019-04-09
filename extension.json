@@ -93,6 +93,7 @@
 			"loop-export-html": false,
 			"loop-export-scorm": false,
 			"loop-pageaudio": false,
+			"loop-view-export-log": false,
 			"createtalk": false,
 			"createpage": false,
 			"writeapi": false
