@@ -95,5 +95,16 @@
 	"purgecache-warning": "Warning before execution of PurgeCache",
 	"purgecache-purged": "Message after purging",
 	"purgecache-button": "Button label for purging",
-	"right-purgecache": "Right for PurgeCache"
+	"right-purgecache": "Right for PurgeCache",
+	
+	"log-export-generated": "Log entry message for export files that have been generated at request",
+	"log-export-reused": "Log entry message for export files that have been reused",
+	"log-name-loopexport": "Name for logs of LOOP-Exports",
+	"log-description-loopexport": "Description for LOOP-Export logs",
+	"logentry-loopexport-pdf": "Log message for PDF export ($4 is used for generated/reused state)",
+	"logentry-loopexport-xml": "Log message for XML export ($4 is used for generated/reused state)",
+	"logentry-loopexport-mp3": "Log message for MP3 export ($4 is used for generated/reused state)",
+	"logentry-loopexport-html": "Log message for HTML export",
+	"logentry-loopexport-epub": "Log message for EPUB ($4 is used for generated/reused state)",
+	"logentry-loopexport-pageaudio": "Log message for page audio export ($4 is used for generated/reused state)"
 }

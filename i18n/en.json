@@ -96,6 +96,16 @@
 	"purgecache-purged": "The cache has been purged.",
 	"purgecache-button": "Purge",
 	"right-purgecache": "Wipe the OBJECTCACHE table",
-	"purgecache-no-permission": "You do not have permission to view this page."
+	"purgecache-no-permission": "You do not have permission to view this page.",
 
+	"log-export-generated": "generated",
+	"log-export-reused": "reused",
+	"log-name-loopexport": "LOOP-Export logs",
+	"log-description-loopexport": "Log-entries for each LOOP export",
+	"logentry-loopexport-pdf": "PDF has been exported ($4)",
+	"logentry-loopexport-xml": "XML has been exported ($4)",
+	"logentry-loopexport-mp3": "Audiobook has been exported ($4)",
+	"logentry-loopexport-html": "Offline version has been exported",
+	"logentry-loopexport-epub": "ePub has been exported ($4)",
+	"logentry-loopexport-pageaudio": "$3 was listened to ($4)"
 }
