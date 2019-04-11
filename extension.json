@@ -14,7 +14,8 @@
 	"requires": {
 		"MediaWiki": ">= 1.32.0",
 		"extensions": {
-			"WikiEditor": "*"
+			"WikiEditor": "*",
+			"Math": "*"
 		}
 	},
 	"AutoloadClasses": {
@@ -40,7 +41,12 @@
 		"SpecialLoopExport": "includes/SpecialLoopExport.php",
 		"LoopSettings": "includes/LoopSettings.php",
 		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
-		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
+		"SpecialPurgeCache": "includes/SpecialPurgeCache.php",
+		"LoopException": "includes/LoopException.php",
+		"LoopIndex": "includes/LoopIndex.php",
+		"LoopObject": "includes/LoopObject.php",
+		"LoopFigure": "includes/LoopFigure.php",
+		"SpecialLoopFigure": "includes/LoopFigure.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -54,6 +60,12 @@
 		],
 		"SetupAfterCache": [
 			"LoopHooks::onSetupAfterCache"
+		],
+		"ParserFirstCallInit": [
+			"LoopObject::onParserSetup"
+		],
+		"ParserAfterTidy": [
+			
 		]
 	},
 	"SpecialPages": {
@@ -490,6 +502,61 @@
 				"sv"
 			],
 			"description" : "Array of available languages to use"
+		},
+		
+		"LoopFigureDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		"LoopTableDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		"LoopMediaDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		"LoopFormulaDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		"LoopListingDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		"LoopTaskDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		
+		"LoopFigureNumbering": {
+			"value": true,
+			"description" : ""
+		},
+		"LoopTableNumbering": {
+			"value": true,
+			"description" : ""
+		},
+		"LoopMediaNumbering": {
+			"value": true,
+			"description" : ""
+		},
+		"LoopFormulaNumbering": {
+			"value": true,
+			"description" : ""
+		},
+		"LoopListingNumbering": {
+			"value": true,
+			"description" : ""
+		},
+		"LoopTaskNumbering": {
+			"value": true,
+			"description" : ""
+		},
+		
+		"LoopMediaDefaultType": {
+			"value": "media",
+			"description" : ""
 		}
 
 	},
