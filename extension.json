@@ -64,8 +64,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup"
 		],
-		"ParserAfterTidy": [
-			
+		"PageContentSaveComplete": [
+			"LoopObject::onPageContentSaveComplete"
 		]
 	},
 	"SpecialPages": {
@@ -143,7 +143,7 @@
 		"author": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": true,
@@ -174,7 +174,7 @@
 		"teacher_approve": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": true,
@@ -205,7 +205,7 @@
 		"teacher_edit": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
@@ -232,7 +232,7 @@
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
@@ -244,7 +244,7 @@
 		"student_edit": {
 			"edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
@@ -261,7 +261,7 @@
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,

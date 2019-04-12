@@ -27,6 +27,7 @@ class LoopSettings {
     public $githubLink;
     public $instagramIcon;
     public $instagramLink;
+    public $numberingFigures;
 
     /**
      * Add settings to the database
@@ -61,7 +62,8 @@ class LoopSettings {
                 'lset_githubicon' => $this->githubIcon,
                 'lset_githublink' => $this->githubLink,
                 'lset_instagramicon' => $this->instagramIcon,
-                'lset_instagramlink' => $this->instagramLink
+                'lset_instagramlink' => $this->instagramLink,
+                'lset_numberingfigures' => $this->numberingFigures
             )
         );
         
@@ -102,7 +104,8 @@ class LoopSettings {
                 'lset_githubicon',
                 'lset_githublink',
                 'lset_instagramicon',
-                'lset_instagramlink'
+                'lset_instagramlink',
+                'lset_numberingfigures'
             ),
             array(),
             __METHOD__,
@@ -140,6 +143,7 @@ class LoopSettings {
                 $this->githubLink = $row->lset_githublink;
                 $this->instagramIcon = $row->lset_instagramicon;
                 $this->instagramLink = $row->lset_instagramlink;
+                $this->numberingFigures = $row->lset_numberingfigures;
                 
                 return true;
             } else {
@@ -148,13 +152,14 @@ class LoopSettings {
                     
             }
         } else { // fetch data from global variables
-            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink;
+            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopFigureNumbering;
 
             $this->oncampusLink = $wgOncampusLink;
             $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
             $this->imprintLink = $wgImprintLink;
             $this->privacyLink = $wgPrivacyLink;
-
+            $this->numberingFigures = $wgLoopFigureNumbering;
+            
             return true;
         }
 
@@ -291,6 +296,14 @@ class LoopSettings {
             $this->customLogoFileName = "";
             $this->customLogoFilePath = "";
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
+        }
+        
+        if ( $request->getText( 'extra-footer-active' ) == 'numberingFigures' ) { # TODO ganzes loop neu parsen?
+            $this->numberingFigures = true;
+        } elseif ( empty ( $request->getText( 'numbering-figures' ) ) ) {
+            $this->numberingFigures = false;
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-figures-label' ) );
         }
             
         $this->addToDatabase();

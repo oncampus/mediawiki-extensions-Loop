@@ -73,7 +73,6 @@ class LoopObject {
 		return true;
 	}	
 	
-	
 	/**
 	 * Dummy render for loop_title
 	 * Real rendering is done in the respective object
@@ -115,11 +114,7 @@ class LoopObject {
 	public static function renderLoopCopyright($input, array $args, $parser, $frame) {
 		return '';
 	}	
-	
-	
-	
-	
-	
+
 	/**
 	 * Get the tag name
 	 */
@@ -186,7 +181,7 @@ class LoopObject {
 				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
 			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<span class="loop_object_number">&nbsp;'.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid ()  . LOOPOBJECTNUMBER_MARKER_SUFFIX . '</span>';
+				$html .= '<span class="loop_object_number">&nbsp; .LOOPOBJECTNUMBER_MARKER_PREFIX '. $this->getTag() . uniqid ()  . 'LOOPOBJECTNUMBER_MARKER_SUFFIX . </span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
 				$html .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
@@ -210,7 +205,6 @@ class LoopObject {
 	
 		return $html;
 	}	
-	
 	
 	/**
 	 * Render loop object for list of objects
@@ -250,9 +244,6 @@ class LoopObject {
 		return $html;
 	}	
 	
-	
-	
-	
 	/**
 	 * Init loop object
 	 * @param string $input
@@ -279,7 +270,6 @@ class LoopObject {
 		$this->setParser($parser);
 		$this->setFrame($frame);
 	}
-	
 	
 	/**
 	 * Set the input from a tag
@@ -417,7 +407,6 @@ class LoopObject {
 		$this->mContent = $content;
 	}	
 	
-	
 	/**
 	 * Get the input from a tag
 	 * @return string
@@ -461,7 +450,6 @@ class LoopObject {
 	public function GetFrame() {
 		return $this->mFrame;
 	}
-	
 	
 	/**
 	 * Get ID
@@ -510,7 +498,6 @@ class LoopObject {
 	public function getShowCopyright() {
 		return $this->mShowCopyright;
 	}	
-	
 	
 	/**
 	 * Get the fully parsed title
@@ -568,7 +555,6 @@ class LoopObject {
 		return $this->mContent;
 	}	
 	
-	
 	/**
 	 * Fully parse wikitext with extra parser instance
 	 * @param string $wikiText
@@ -581,7 +567,6 @@ class LoopObject {
 		$result = $myParser->parse ( $wikiText, $wgTitle, $myParserOptions );
 		return $myParser->stripOuterParagraph($result->getText ());	
 	}
-
 	
 	/**
 	 * Parse the given Parameters and subtags
@@ -615,7 +600,7 @@ class LoopObject {
 		}
 
 		if ( ! in_array ( $this->getRenderOption(), self::$mRenderOptions ) ) {
-			throw new LoopException( wfMessage( 'loopobject-error-unknown-renderoption', $this->getRenderOption(), implode( ', ',self::$mRenderOptions ) ) );
+			throw new LoopException( wfMessage( 'loopobject-error-unknown-renderoption', $this->getRenderOption(), implode( ', ', self::$mRenderOptions ) ) );
 		}
 		
 		
@@ -626,7 +611,7 @@ class LoopObject {
 		}		
 		
 		if ( ! in_array ( $this->getAlignment(), self::$mAlignmentOptions ) ) {
-			throw new LoopException( wfMessage( 'loopobject-error-unknown-alignmentoption', $this->getAlignment(), implode( ', ',self::$mAlignmentOptions ) ) );
+			throw new LoopException( wfMessage( 'loopobject-error-unknown-alignmentoption', $this->getAlignment(), implode( ', ', self::$mAlignmentOptions ) ) );
 		}		
 		
 		
@@ -663,8 +648,6 @@ class LoopObject {
 			$this->setCopyrightFullyParsed(htmlspecialchars($copyright));
 		}
 		
-		
-		
 		// strip other objects in the text to prevent mismatch for title, descrition and copyright
 		$otherObjectTypes = array();
 		foreach (self::$mObjectTypes as $objectType) {
@@ -675,8 +658,6 @@ class LoopObject {
 		$otherObjectMatches = array();
 		$text = $this->getParser()->extractTagsAndParams ( $otherObjectTypes, $this->getInput(), $otherObjectMatches );
 		$striped_text = $this->getParser()->killMarkers ( $text );
-		
-		
 		
 		$matches = array ();
 		$subtags = array (
@@ -711,64 +692,62 @@ class LoopObject {
 					break;
 			}
 		}
-		
 		#$striped_text = $this->getParser()->killMarkers ( $text );
 	}
 	
+	public static function onPageContentSaveComplete ( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
+# bei jedem speichern datenbankeinträge über die medien
+
+
+
+#global $wgLoopCurrentStructure;
+
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
+
+		$title = $wikiPage->getTitle();
 	
+		#Loop::handleLoopRequest ();
 	
+		#$parser->getOptions ()->optionUsed ( 'loopstructure' );
 	
-	/**
-	 * Replace object number marker with the correct numbering according to loop structure
-	 * @param Parser $parser
-	 * @param string $text
-	 */
-	
-public static function onParserAfterTidy(&$parser, &$text) {
-		global $wgLoopCurrentStructure;
-	
-		Loop::handleLoopRequest ();
-	
-		$parser->getOptions ()->optionUsed ( 'loopstructure' );
-	
-		if ($parser->getTitle ()->getNamespace () == NS_MAIN) {
-			if ((! $parser->getOptions ()->getIsSectionPreview ()) && (! $parser->getOptions ()->getIsPreview ())) {
-	
+		if ( $title->getNamespace() == NS_MAIN ) {
+			#if ((! $parser->getOptions ()->getIsSectionPreview ()) && (! $parser->getOptions ()->getIsPreview ())) {
 				
 				// check if loop_object in page content
+				$contentText = ContentHandler::getContentText( $content );
+				#dd(ContentHandler::getContentText( $content ));
+
 				$has_object = false;
 				foreach (self::$mObjectTypes as $objectType) {
-					if ((substr_count ( $text, $objectType ) >= 1)) {
+					if ((substr_count ( $contentText, $objectType ) >= 1)) {
 						$has_object = true;
+						break;
 					}
 				}
-				
-				
-				
-				if ($has_object) {
-					$count = array();
+				#dd($has_object);
+				if ( $has_object ) {
+					$objects = array();
 					foreach (self::$mObjectTypes as $objectType) {
-						$count[$objectType] = 0;
+						$objects[$objectType] = 0;
 					}
+					# 
 
-					$structure_item = LoopStructureItem::newFromIds ( $parser->getTitle ()->getArticleID (), $wgLoopCurrentStructure );
-						
-					if ($structure_item) {
-						while ( $previous_item = $structure_item->getPreviousItem () ) {
+					$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
+					
+					if ( $lsi ) {
+						/*
+						while ( $previous_item = $lsi->getPreviousItem () ) {
 							$article_id = $previous_item->getArticle ();
 							$title = Title::newFromID ( $article_id );
 							$rev = Revision::newFromTitle ( $title );
 							$content = $rev->getContent ();
-								
+							
 
 							$object_tags = array ();
 							$wikitext = $content->getWikitextForTransclusion ();
-							
 							$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
-
 							$marked_objects_text = $parser->extractTagsAndParams ( $extractTags, $wikitext, $object_tags );
-							
-							
 							
 							foreach ( $object_tags as $object_tag ) {
 								foreach (self::$mObjectTypes as $objectType) {
@@ -778,9 +757,9 @@ public static function onParserAfterTidy(&$parser, &$text) {
 								}
 
 							}
-							$structure_item = $previous_item;
+							$lsi = $previous_item;
 						}
-	
+						*/
 						// Reset Cache for following pages in every LoopStructure
 						$dbr = wfGetDB ( DB_SLAVE );
 						$article_ids = array ();
@@ -790,7 +769,7 @@ public static function onParserAfterTidy(&$parser, &$text) {
 								'lsi_structure',
 								'lsi_sequence'
 						), array (
-								"lsi_article=" . $parser->getTitle ()->getArticleID ()
+								"lsi_article=" . $title->getArticleID ()
 						), __METHOD__ );
 						foreach ( $structuresResult as $structureRow ) {
 							$lsi_structure = $structureRow->lsi_structure;
@@ -809,7 +788,9 @@ public static function onParserAfterTidy(&$parser, &$text) {
 							}
 						}
 	
-						if ($article_ids) {
+
+						// Update page_touched 
+						if ( $article_ids ) {
 							$article_ids = array_unique ( $article_ids );
 							$dbw = wfGetDB ( DB_MASTER );
 								
@@ -819,10 +800,11 @@ public static function onParserAfterTidy(&$parser, &$text) {
 									0 => 'page_id in (' . implode ( ',', $article_ids ) . ')'
 							), __METHOD__ );
 						}
-
-						foreach (self::$mObjectTypes as $objectType) {
+						
+						/* 
+						foreach ( self::$mObjectTypes as $objectType ) {
 							$matches = array ();
-							preg_match_all ( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
+							preg_match_all ( "/(" . $LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . $LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 							
 							$i = $count[$objectType] + 1;
 							foreach ( $matches [0] as $objectmarker ) {
@@ -830,18 +812,31 @@ public static function onParserAfterTidy(&$parser, &$text) {
 							}							
 							
 						}
+						*/
 
 					}
 				}
-			}
+			#}
 		}
+
+
+		return true;
+		
+	}
+
+	/**
+	 * Replace object number marker with the correct numbering according to loop structure
+	 * @param Parser $parser
+	 * @param string $text
+	 */
+	
+public static function onParserAfterTidy(&$parser, &$text) {
+#bei jedem parsen numerierungen abrufen
+
+	
+	
+		
 		return true;
 	}
-	
-	
-
 }
-
-
-
 ?>

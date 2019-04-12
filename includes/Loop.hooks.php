@@ -32,7 +32,7 @@ class LoopHooks {
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgLogRestrictions,
-		$wgFileExtensions;
+		$wgFileExtensions, $wgLoopFigureNumbering;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -65,6 +65,7 @@ class LoopHooks {
 				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
 				$wgWhitelistRead[] = empty( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
 				$wgWhitelistRead[] = empty( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
+				$wgLoopFigureNumbering = ( empty( $row->lset_numberingFigures ) ? $wgLoopFigureNumbering : $row->lset_numberingFigures );
 				
 			}
 		}

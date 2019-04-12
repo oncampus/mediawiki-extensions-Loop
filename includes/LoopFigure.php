@@ -114,8 +114,11 @@ class LoopFigure extends LoopObject{
 			$tmp_src_array = explode ( '/', $tmp_src );
 			if (isset ( $tmp_src_array [7] )) {
 				$filename = $tmp_src_array [7];
-			} else {
+			} elseif (isset ( $tmp_src_array [6] )) { 
 				$filename = $tmp_src_array [6];
+			} else {
+				$filename = "";
+				# TODO loop exception
 			}
 			$filename = urldecode ( $filename );
 			$this->setFile($filename);
