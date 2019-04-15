@@ -40,7 +40,7 @@ class LoopIndex {
 
     }
     
-    public function removeAllPageItemsFromDb ( $article ) {
+    public static function removeAllPageItemsFromDb ( $article ) {
 
 		$dbr = wfGetDB( DB_SLAVE );
 		$dbr->delete(

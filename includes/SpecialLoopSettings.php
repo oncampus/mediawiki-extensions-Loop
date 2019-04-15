@@ -269,7 +269,18 @@ class SpecialLoopSettings extends SpecialPage {
 
 					$html .= '<input type="checkbox" name="numbering-figures" id="numbering-figures" value="numberingFigures" ' . ( $currentLoopSettings->numberingFigures === true ? 'checked' : '' ) .'>
 					<label for="numbering-figures">' . $this->msg( 'loopsettings-numbering-figures-label' ) . '</label><br>';
+					$html .= '<input type="checkbox" name="numbering-formulas" id="numbering-formulas" value="numberingFormulas" ' . ( $currentLoopSettings->numberingFormulas === true ? 'checked' : '' ) .'>
+					<label for="numbering-formulas">' . $this->msg( 'loopsettings-numbering-formulas-label' ) . '</label><br>';
+					$html .= '<input type="checkbox" name="numbering-listings" id="numbering-listings" value="numberingListings" ' . ( $currentLoopSettings->numberingListings === true ? 'checked' : '' ) .'>
+					<label for="numbering-listings">' . $this->msg( 'loopsettings-numbering-listings-label' ) . '</label><br>';
+					$html .= '<input type="checkbox" name="numbering-media" id="numbering-media" value="numberingMedia" ' . ( $currentLoopSettings->numberingMedia === true ? 'checked' : '' ) .'>
+					<label for="numbering-media">' . $this->msg( 'loopsettings-numbering-media-label' ) . '</label><br>';
+					$html .= '<input type="checkbox" name="numbering-tables" id="numbering-tables" value="numberingTables" ' . ( $currentLoopSettings->numberingTables === true ? 'checked' : '' ) .'>
+					<label for="numbering-tables">' . $this->msg( 'loopsettings-numbering-tables-label' ) . '</label><br>';
+					$html .= '<input type="checkbox" name="numbering-tasks" id="numbering-tasks" value="numberingTasks" ' . ( $currentLoopSettings->numberingTasks === true ? 'checked' : '' ) .'>
+					<label for="numbering-tasks">' . $this->msg( 'loopsettings-numbering-tasks-label' ) . '</label><br>';
 			
+
 				$html .= '</div>'; // end of content-tab
 				
 			$html .= '</div>'; // end of tab-content

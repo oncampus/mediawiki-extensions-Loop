@@ -32,7 +32,8 @@ class LoopHooks {
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgLogRestrictions,
-		$wgFileExtensions, $wgLoopFigureNumbering;
+		$wgFileExtensions, $wgLoopFigureNumbering, $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, 
+		$wgLoopTableNumbering, $wgLoopTaskNumbering;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -49,7 +50,13 @@ class LoopHooks {
 					'lset_languagecode', 
 					'lset_skinstyle', 
 					'lset_imprintlink', 
-					'lset_privacylink' 
+					'lset_privacylink', 
+					'lset_numberingfigures', 
+					'lset_numberingformulas', 
+					'lset_numberinglistings', 
+					'lset_numberingmedia', 
+					'lset_numberingtables', 
+					'lset_numberingtasks'
 				),
 				array(),
 				__METHOD__,
@@ -65,7 +72,12 @@ class LoopHooks {
 				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
 				$wgWhitelistRead[] = empty( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
 				$wgWhitelistRead[] = empty( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
-				$wgLoopFigureNumbering = ( empty( $row->lset_numberingFigures ) ? $wgLoopFigureNumbering : $row->lset_numberingFigures );
+				$wgLoopFigureNumbering = ( empty( $row->lset_numberingfigures ) ? $wgLoopFigureNumbering : $row->lset_numberingfigures );
+				$wgLoopFormulaNumbering = ( empty( $row->lset_numberingformulas ) ? $wgLoopFormulaNumbering : $row->lset_numberingformulas );
+				$wgLoopListingNumbering = ( empty( $row->lset_numberinglistings ) ? $wgLoopListingNumbering : $row->lset_numberinglistings );
+				$wgLoopMediaNumbering = ( empty( $row->lset_numberingmedia ) ? $wgLoopMediaNumbering : $row->lset_numberingmedia );
+				$wgLoopTableNumbering = ( empty( $row->lset_numberingtables ) ? $wgLoopTableNumbering : $row->lset_numberingtables );
+				$wgLoopTaskNumbering = ( empty( $row->lset_numberingtasks ) ? $wgLoopTaskNumbering : $row->lset_numberingtasks );
 				
 			}
 		}

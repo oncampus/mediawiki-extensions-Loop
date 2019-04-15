@@ -56,11 +56,11 @@ class LoopObject {
 	 */
 	public static function onParserSetup(Parser $parser) {
 		$parser->setHook ( 'loop_figure', 'LoopFigure::renderLoopFigure' );
-	#	$parser->setHook ( 'loop_table', 'LoopTable::renderLoopTable' );
-	#	$parser->setHook ( 'loop_media', 'LoopMedia::renderLoopMedia' );
-	#	$parser->setHook ( 'loop_formula', 'LoopFormula::renderLoopFormula' ); # todo
-	#	$parser->setHook ( 'loop_task', 'LoopTask::renderLoopTask' );
-	#	$parser->setHook ( 'loop_listing', 'LoopListing::renderLoopListing' );
+		$parser->setHook ( 'loop_table', 'LoopTable::renderLoopTable' );
+		$parser->setHook ( 'loop_media', 'LoopMedia::renderLoopMedia' );
+		$parser->setHook ( 'loop_formula', 'LoopFormula::renderLoopFormula' ); # todo
+		$parser->setHook ( 'loop_task', 'LoopTask::renderLoopTask' );
+		$parser->setHook ( 'loop_listing', 'LoopListing::renderLoopListing' );
 		
 		$parser->setHook ( 'loop_title', 'LoopObject::renderLoopTitle' );
 		$parser->setHook ( 'loop_description', 'LoopObject::renderLoopDescription' );
@@ -176,7 +176,7 @@ class LoopObject {
 				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
 			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<span class="loop_object_number">&nbsp; '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+				$html .= '<span class="loop_object_number">'.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
 				$html .= '</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
@@ -767,83 +767,8 @@ class LoopObject {
 					$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
 					
 					if ( $lsi ) {
-						/*
-						while ( $previous_item = $lsi->getPreviousItem () ) {
-							$article_id = $previous_item->getArticle ();
-							$title = Title::newFromID ( $article_id );
-							$rev = Revision::newFromTitle ( $title );
-							$content = $rev->getContent ();
-							
 
-							$object_tags = array ();
-							$wikitext = $content->getWikitextForTransclusion ();
-							$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
-							$marked_objects_text = $parser->extractTagsAndParams ( $extractTags, $wikitext, $object_tags );
-							
-							foreach ( $object_tags as $object_tag ) {
-								foreach (self::$mObjectTypes as $objectType) {
-									if ($object_tag[0] == $objectType) {
-										$count[$objectType]++;
-									}
-								}
-
-							}
-							$lsi = $previous_item;
-						}
-						*/
-						// Reset Cache for following pages in every LoopStructure
-						$dbr = wfGetDB ( DB_SLAVE );
-						$article_ids = array ();
-						$structuresResult = $dbr->select ( array (
-								'loop_structure_items'
-						), array (
-								'lsi_structure',
-								'lsi_sequence'
-						), array (
-								"lsi_article=" . $title->getArticleID ()
-						), __METHOD__ );
-						foreach ( $structuresResult as $structureRow ) {
-							$lsi_structure = $structureRow->lsi_structure;
-							$lsi_sequence = $structureRow->lsi_sequence;
-								
-							$pagesResult = $dbr->select ( array (
-									'loop_structure_items'
-							), array (
-									'lsi_article'
-							), array (
-									0 => "lsi_structure=" . $lsi_structure,
-									1 => "lsi_sequence >= " . $lsi_sequence
-							), __METHOD__ );
-							foreach ( $pagesResult as $pageRow ) {
-								$article_ids [] = $pageRow->lsi_article;
-							}
-						}
-	
-
-						// Update page_touched 
-						if ( $article_ids ) {
-							$article_ids = array_unique ( $article_ids );
-							$dbw = wfGetDB ( DB_MASTER );
-								
-							$dbPageTouchedResult = $dbw->update ( 'page', array (
-									'page_touched' => $dbw->timestamp ()
-							), array (
-									0 => 'page_id in (' . implode ( ',', $article_ids ) . ')'
-							), __METHOD__ );
-						}
-						
-						/* 
-						foreach ( self::$mObjectTypes as $objectType ) {
-							$matches = array ();
-							preg_match_all ( "/(" . $LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . $LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
-							
-							$i = $count[$objectType] + 1;
-							foreach ( $matches [0] as $objectmarker ) {
-								$text = preg_replace ( "/" . $objectmarker . "/", $i++, $text );
-							}							
-							
-						}
-						*/
+						self::removeStructureCache($title);
 
 					}
 				}
@@ -855,6 +780,56 @@ class LoopObject {
 		
 	}
 
+	public static function removeStructureCache($title = null) {
+		// Reset Cache for following pages in every LoopStructure
+		$cond = "";
+		// if a title is given, each page after given one is updated
+		if ( isset($title) ) {
+			$cond = "lsi_article=" . $title->getArticleID();
+		} 
+
+		$dbr = wfGetDB ( DB_SLAVE );
+		$article_ids = array ();
+		$structuresResult = $dbr->select ( array (
+				'loop_structure_items'
+		), array (
+				'lsi_structure',
+				'lsi_sequence'
+		),  $cond,
+		 __METHOD__ 
+		);
+
+		foreach ( $structuresResult as $structureRow ) {
+			$lsi_structure = $structureRow->lsi_structure;
+			$lsi_sequence = $structureRow->lsi_sequence;
+				
+			$pagesResult = $dbr->select ( array (
+					'loop_structure_items'
+			), array (
+					'lsi_article'
+			), array (
+					0 => "lsi_structure=" . $lsi_structure,
+					1 => "lsi_sequence >= " . $lsi_sequence
+			), __METHOD__ );
+			foreach ( $pagesResult as $pageRow ) {
+				$article_ids [] = $pageRow->lsi_article;
+			}
+		}
+
+		// Update page_touched 
+		if ( $article_ids ) {
+			$article_ids = array_unique ( $article_ids );
+			$dbw = wfGetDB ( DB_MASTER );
+				
+			$dbPageTouchedResult = $dbw->update ( 'page', array (
+					'page_touched' => $dbw->timestamp()
+			), array (
+					0 => 'page_id in (' . implode ( ',', $article_ids ) . ')'
+			), __METHOD__ );
+		}
+		return true;
+	}
+
 	/**
 	 * Replace object number marker with the correct numbering according to loop structure
 	 * @param Parser $parser
@@ -862,34 +837,43 @@ class LoopObject {
 	 */
 	
 	public static function onParserAfterTidy(&$parser, &$text) {
-		#bei jedem parsen numerierungen abrufen
+		
+		global $wgLoopFigureNumbering;
+
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
-		#dd($title);
+		
+		$count = array();
+		foreach (self::$mObjectTypes as $objectType) {
+			$count[$objectType] = 0; 
+		}
+
 		$lsi = LoopStructureItem::newFromIds ( $article );
-							
+		
 		if ( $lsi ) {
 			
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
 			
-			$numberingStarts = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			
+		}
 
-			$count = array();
-			foreach (self::$mObjectTypes as $objectType) {
-				$count[$objectType] = 0; 
-			}
-
-			foreach ( self::$mObjectTypes as $objectType ) {
-				$matches = array();
-				preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
-				
-				$i = $numberingStarts[$objectType] + $count[$objectType] + 1;
+		foreach ( self::$mObjectTypes as $objectType ) {
+			$matches = array();
+			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
+			
+			if ( $lsi && $wgLoopFigureNumbering == 1 ) {
+				$i = $previousObjects[$objectType] + $count[$objectType] + 1;
 				foreach ( $matches[0] as $objectmarker ) {
 					$text = preg_replace ( "/" . $objectmarker . "/", $i++, $text );
-				}							
-				
-			}
+				}
+			} else {
+				foreach ( $matches[0] as $objectmarker ) {
+					$text = preg_replace ( "/" . $objectmarker . "/", "", $text );
+				}
+			}	
+			
 		}
 
 	

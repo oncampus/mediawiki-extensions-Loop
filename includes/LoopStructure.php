@@ -278,12 +278,16 @@ class LoopStructure {
 		foreach( $this->structureItems as $structureItem ) {
 			$structureItem->addToDatabase();
 		}
+		
+		LoopObject::removeStructureCache();
 	}
 
 	/**
 	 * Delete all items from database
 	 */
 	public function deleteItems() {
+
+		LoopObject::removeStructureCache(); # update page_touched on structure pages. 
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(

@@ -25,5 +25,10 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_settings (
   `lset_instagramlink` varbinary(255) NOT NULL,
   `lset_skinstyle` varbinary(255) NOT NULL,
   `lset_numberingfigures` varbinary(255),
+  `lset_numberingtasks` varbinary(255),
+  `lset_numberingtables` varbinary(255),
+  `lset_numberingmedia` varbinary(255),
+  `lset_numberingformulas` varbinary(255),
+  `lset_numberinglistings` varbinary(255),
   PRIMARY KEY (lset_id)
 ) /*$wgDBTableOptions*/;
