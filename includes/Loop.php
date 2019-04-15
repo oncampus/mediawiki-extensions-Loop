@@ -29,5 +29,11 @@
 		}	
 			
 	}
+
+		
+	public static function onExtensionLoad() {
+		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
+		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
+	}
 	
 }

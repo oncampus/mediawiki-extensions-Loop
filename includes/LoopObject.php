@@ -1,13 +1,8 @@
 <?php 
 class LoopObject {
 
-	#const LOOPOBJECTNUMBER_MARKER_SUFFIX = "-QINU\x7f";
-	#const LOOPOBJECTNUMBER_MARKER_PREFIX = "\x7fUNIQ--loopobjectnumber-";	
-	# const now in extension callback
-	
 	public static $mTag;
 	public static $mIcon;
-	
 	
 	public $mInput;
 	public $mArgs;
@@ -33,11 +28,11 @@ class LoopObject {
 
 	public static $mObjectTypes = array (
 			'loop_figure',
-	#		'loop_table',
-	#		'loop_media',
-	#		'loop_listing',
-	#		'loop_formula',
-	#		'loop_task'
+			'loop_table',
+			'loop_media',
+			'loop_listing',
+			'loop_formula',
+			'loop_task'
 		);
 	
 	public static $mRenderOptions=array(
@@ -181,7 +176,8 @@ class LoopObject {
 				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
 			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<span class="loop_object_number">&nbsp; .LOOPOBJECTNUMBER_MARKER_PREFIX '. $this->getTag() . uniqid ()  . 'LOOPOBJECTNUMBER_MARKER_SUFFIX . </span>';
+				$html .= '<span class="loop_object_number">&nbsp; '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+				$html .= '</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
 				$html .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
@@ -696,28 +692,20 @@ class LoopObject {
 	}
 	
 	public static function onPageContentSaveComplete ( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
-# bei jedem speichern datenbankeinträge über die medien
-
-
-
-#global $wgLoopCurrentStructure;
-
-		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
+		# TODO bei jedem speichern datenbankeinträge über die medien
 
 		$title = $wikiPage->getTitle();
-	
-		#Loop::handleLoopRequest ();
-	
-		#$parser->getOptions ()->optionUsed ( 'loopstructure' );
-	
+
 		if ( $title->getNamespace() == NS_MAIN ) {
 			#if ((! $parser->getOptions ()->getIsSectionPreview ()) && (! $parser->getOptions ()->getIsPreview ())) {
 				
-				// check if loop_object in page content
+				
+				#$loopStructure = new LoopStructure();
+				#$loopStructure->loadStructureItems();
 				$contentText = ContentHandler::getContentText( $content );
-				#dd(ContentHandler::getContentText( $content ));
+				$parser = new Parser();
 
+				// check if loop_object in page content
 				$has_object = false;
 				foreach (self::$mObjectTypes as $objectType) {
 					if ((substr_count ( $contentText, $objectType ) >= 1)) {
@@ -729,9 +717,52 @@ class LoopObject {
 				if ( $has_object ) {
 					$objects = array();
 					foreach (self::$mObjectTypes as $objectType) {
-						$objects[$objectType] = 0;
+						$objects[$objectType] = 0; #count
 					}
 					# 
+
+					$tmpTitle = Title::newFromText( 'NO TITLE' );
+					#$parserOutput = $parser->parse( $contentText, $tmpTitle, new ParserOptions() );
+
+					$object_tags = array ();
+					$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
+					$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
+
+					$loopIndex = new LoopIndex();
+
+					
+					LoopIndex::removeAllPageItemsFromDb($title->getArticleID());
+
+					foreach ( $object_tags as $object ) {
+						$objects[$object[0]]++;
+						
+						$loopIndex->index = $object[0];
+						$loopIndex->nthItem = $objects[$object[0]];
+						#dd($title->getArticleID());
+						$loopIndex->pageId = $title->getArticleID();
+
+						if ( $object[0] == "loop_figure" ) {
+							$loopIndex->itemThumb = $object[1];
+						}
+						if ( $object[0] == "loop_media" ) {
+							$loopIndex->itemType = $object[2]["type"];
+						}
+						if ( isset( $object[2]["title"] ) ) {
+							$loopIndex->itemTitle = $object[2]["title"];
+						}
+						if ( isset( $object[2]["description"] ) ) {
+							$loopIndex->itemDescription = $object[2]["description"];
+						}
+						if ( isset( $object[2]["id"] ) ) {
+							$loopIndex->refId = $object[2]["id"];
+						} else {
+							$loopIndex->refId = uniqid(); # notieren in wikitext
+						}
+						$loopIndex->addToDatabase();
+
+					}
+					#dd($loopIndex);
+
 
 					$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
 					
@@ -830,10 +861,37 @@ class LoopObject {
 	 * @param string $text
 	 */
 	
-public static function onParserAfterTidy(&$parser, &$text) {
-#bei jedem parsen numerierungen abrufen
+	public static function onParserAfterTidy(&$parser, &$text) {
+		#bei jedem parsen numerierungen abrufen
+		$title = $parser->getTitle();
+		$article = $title->getArticleID();
+		#dd($title);
+		$lsi = LoopStructureItem::newFromIds ( $article );
+							
+		if ( $lsi ) {
+			
+			$loopStructure = new LoopStructure();
+			$loopStructure->loadStructureItems();
+			
+			$numberingStarts = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 
-	
+			$count = array();
+			foreach (self::$mObjectTypes as $objectType) {
+				$count[$objectType] = 0; 
+			}
+
+			foreach ( self::$mObjectTypes as $objectType ) {
+				$matches = array();
+				preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
+				
+				$i = $numberingStarts[$objectType] + $count[$objectType] + 1;
+				foreach ( $matches[0] as $objectmarker ) {
+					$text = preg_replace ( "/" . $objectmarker . "/", $i++, $text );
+				}							
+				
+			}
+		}
+
 	
 		
 		return true;

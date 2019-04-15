@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS /*_*/loop_index (
   `li_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `li_pageid` TIMESTAMP NOT NULL,
+  `li_pageid` varbinary(255) NOT NULL,
   `li_refid` varbinary(255) NOT NULL,
   `li_nthoftype` varbinary(255) NOT NULL,
   `li_index` varbinary(255) NOT NULL,

@@ -18,6 +18,7 @@
 			"Math": "*"
 		}
 	},
+	"callback": "Loop::onExtensionLoad",
 	"AutoloadClasses": {
 		"Loop": "includes/Loop.php",
 		"LoopHooks": "includes/Loop.hooks.php",
@@ -66,6 +67,9 @@
 		],
 		"PageContentSaveComplete": [
 			"LoopObject::onPageContentSaveComplete"
+		],
+		"ParserAfterTidy": [
+			"LoopObject::onParserAfterTidy"
 		]
 	},
 	"SpecialPages": {
