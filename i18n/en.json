@@ -107,5 +107,31 @@
 	"logentry-loopexport-mp3": "Audiobook has been exported ($4)",
 	"logentry-loopexport-html": "Offline version has been exported",
 	"logentry-loopexport-epub": "ePub has been exported ($4)",
-	"logentry-loopexport-pageaudio": "$3 was listened to ($4)"
+	"logentry-loopexport-pageaudio": "$3 was listened to ($4)",
+
+	"loop_figure-name": "Figure",
+	"loop_figure-name-short": "Fig.",
+	"loop_table-name": "Table",
+	"loop_table-name-short": "Tab.",
+	"loop_media-name": "Media",
+	"loop_media-name-short": "Med.",
+	"loop_listing-name": "Listing",
+	"loop_listing-name-short": "List.",
+	"loop_formula-name": "Formula",
+	"loop_formula-name-short": "Form.",
+	"loop_task-name": "Task",
+	"loop_task-name-short": "Task",
+	
+	"loopfigures-specialpage-title": "List of figures",
+	"looptables-specialpage-title": "List of tables",
+	"loopmedia-specialpage-title": "List of media",
+	"looplistings-specialpage-title": "List of listings",
+	"loopformulas-specialpage-title": "List of formulas",
+	"looptasks-specialpage-title": "List of tasks",
+	"loopfigures": "List of figures",
+	"looptables": "List of tables",
+	"loopmedia": "List of media",
+	"looplistings": "List of listings",
+	"loopformulas": "List of tasks",
+	"looptasks": "List of tasks"
 }

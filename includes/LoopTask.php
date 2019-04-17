@@ -68,7 +68,7 @@ class SpecialLoopTasks extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf, $wgParser, $wgUser;
+		global $wgParserConf;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();

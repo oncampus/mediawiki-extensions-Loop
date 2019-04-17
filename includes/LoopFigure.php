@@ -1,4 +1,7 @@
 <?php
+
+use MediaWiki\MediaWikiServices;
+
 /**
  * A parser extension that adds the tag <loop_figure> to mark content as figure and provide a table of figures
  *
@@ -105,7 +108,6 @@ class LoopFigure extends LoopObject{
 		$striped_text = $this->getParser()->killMarkers ( $text );
 		$this->setInput($striped_text);
 		
-		
 		$pattern = '@src="(.*?)"@';
 		$this->setContent($this->getParser()->recursiveTagParse ( $this->getInput()) );
 		$file_found = preg_match ( $pattern, $this->getContent(), $matches );
@@ -139,46 +141,52 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgUser;
+		global $wgLoopFigureNumbering;
 
-		//$structure = LoopStructures::getCurrentLoopStructure ( $wgUser );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$html = '<div class="row mb-2 ml-2">';
 		
-		$html = '';
-		$html .= '<tr>';
-		$html .= '<td>';
-		if ($this->mFile) {
-			$file = wfLocalFile ( $this->mFile );
-			$thumb = $file->transform ( array (
-					'width' => 100,
+		if ( $this->mFile ) {
+
+			$file = wfLocalFile( $this->mFile );
+			$thumb = $file->transform( array (
+					'width' => 120,
 					'height' => 100 
 			) );
-			$html .= $thumb->toHtml ( array (
-					'desc-link' => true 
+			$html .= $thumb->toHtml( array (
+					'desc-link' => false
 			) );
 		} else {
-			$html .= '<br/><span class="ic ic-'.$this->getIcon().'" aria-hidden="true"></span><br/>';
+			
+			$html .= '<div class="thumb_placeholder" style="width:120px; height: 50px;"></div>';
 		}
-		$html .= '</td>';
-		$html .= '<td>';
 		
+		$number = '';
+		if ( $wgLoopFigureNumbering != 'false' ) {
+			$number = ' ' . $this->getNumber();
+		}
 		
-		$html .= wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . ' ' . $this->getNumber() . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '<br/>';
+		$html .= '<div class="loop_object_footer ml-1">';
+		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
+		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $number . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
+		
 		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
 		}
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
-		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId (), $structure->getId () ); // $wgLoopCurrentStructure
+		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
 		if ($lsi) {
-			$linktext = $lsi->getTocNumber () . ' ' . $lsi->getTocText ();
+			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
 			
-			$html .= Linker::link ( $linkTitle, $linktext ) . '<br/>';
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$html .= $linkRenderer->makeLink( 
+				$linkTitle, 
+				new HtmlArmor( $linktext ),
+				array()
+				) . '<br/>';
 		}
-		$html .= '</td>';
-		$html .= '</tr>';
+		$html .= '</div></div>';
 		return $html;
 	}
 	
@@ -198,7 +206,7 @@ class SpecialLoopFigures extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf, $wgParser, $wgUser;
+		global $wgParserConf;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -218,52 +226,45 @@ class SpecialLoopFigures extends SpecialPage {
 		$out->addWikiMsg ( 'loopfigures-specialpage-title' );
 		$out->addHtml ( '</h1>' );
 		
-		Loop::handleLoopRequest ();
-		
-		//$structure = LoopStructures::getCurrentLoopStructure ( $this->getUser () );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 	
 		$parser = new Parser ( $wgParserConf );
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		$out->addHtml ( '<table>' );
 		$figures = array ();
-		$items = $structure->getItems ();
+		$items = $loopStructure->getStructureItems();
 		$figure_number = 1;
+		
+		$figure_tags = LoopIndex::getObjectsOfType ( 'loop_figure' );
+
 		foreach ( $items as $item ) {
 			
-			$article_id = $item->getArticle ();
+			$article_id = $item->article;
 			$title = Title::newFromID ( $article_id );
-			$rev = Revision::newFromTitle ( $title );
-			$content = $rev->getContent ();
-			$figure_tags = array ();
-			
-			$parser->clearState();
-			$parser->setTitle ( $title );
-			
-			
-			$marked_figures_text = $parser->extractTagsAndParams ( array (
-					'loop_figure',
-					'nowiki' 
-			), $content->getWikitextForTransclusion (), $figure_tags );
-			
-			foreach ( $figure_tags as $figure_tag ) {
-				if ($figure_tag [0] == 'loop_figure') {
-					$figure = new LoopFigure();
-					$figure->init($figure_tag [1], $figure_tag [2]);
+
+			if ( isset( $figure_tags[$article_id] ) ) {
+
+				foreach ( $figure_tags[$article_id] as $figure_tag ) {
 					
-					$figure->parse(true);
-					$figure->setNumber ( $figure_number );
-					$figure->setArticleId ( $article_id );
-					
-					$out->addHtml ( $figure->renderForSpecialpage () );
-					$figure_number ++;
+						$figure = new LoopFigure();
+						$figure->init($figure_tag["thumb"], $figure_tag["args"]);
+						
+						$figure->parse(true);
+						$figure->setNumber ( $figure_number );
+						$figure->setArticleId ( $article_id );
+
+						preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
+						if (isset($thumbFile[1])) {
+							$figure->setFile($thumbFile[1]);
+						}
+
+						$out->addHtml ( $figure->renderForSpecialpage () );
+						$figure_number ++;
 				}
 			}
 		}
-		$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

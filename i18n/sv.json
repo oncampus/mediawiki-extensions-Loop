@@ -103,5 +103,31 @@
 	"logentry-loopexport-mp3": "Ljudbok har exporterats ($4)",
 	"logentry-loopexport-html": "Offline version har exporterats",
 	"logentry-loopexport-epub": "ePub har exporterats ($4)",
-	"logentry-loopexport-pageaudio": "$3 lyssnades på ($4)"
+	"logentry-loopexport-pageaudio": "$3 lyssnades på ($4)",
+
+	"loop_figure-name": "Bild",
+	"loop_figure-name-short": "Bild",
+	"loop_table-name": "Bord",
+	"loop_table-name-short": "Bord",
+	"loop_media-name": "Medieelement",
+	"loop_media-name-short": "Med.",
+	"loop_listing-name": "Listning",
+	"loop_listing-name-short": "List.",
+	"loop_formula-name": "Formel",
+	"loop_formula-name-short": "Form.",
+	"loop_task-name": "Uppgift",
+	"loop_task-name-short": "Uppg.",
+	
+	"loopfigures-specialpage-title": "Bild katalog",
+	"looptables-specialpage-title": "Bord katalog",
+	"loopmedia-specialpage-title": "Media katalog",
+	"looplistings-specialpage-title": "Listning katalog",
+	"loopformulas-specialpage-title": "Formel katalog",
+	"looptasks-specialpage-title": "Uppgift katalog",
+	"loopfigures": "Bild katalog",
+	"looptables": "Bord katalog",
+	"loopmedia": "Media katalog",
+	"looplistings": "Listing katalog",
+	"loopformulas": "Formel katalog",
+	"looptasks": "Uppgift katalog"
 }

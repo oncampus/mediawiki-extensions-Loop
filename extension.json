@@ -47,17 +47,17 @@
 		"LoopIndex": "includes/LoopIndex.php",
 		"LoopObject": "includes/LoopObject.php",
 		"LoopFigure": "includes/LoopFigure.php",
-		"SpecialLoopFigure": "includes/LoopFigure.php",
-		"LoopTable": "includes/LoopTable.php",
-		"SpecialLoopFormula": "includes/LoopFormula.php",
-		"LoopListing": "includes/LoopListing.php",
-		"SpecialLoopListing": "includes/LoopListing.php",
-		"LoopMedia": "includes/LoopMedia.php",
-		"SpecialLoopMedia": "includes/LoopMedia.php",
-		"SpecialLoopTable": "includes/LoopTable.php",
+		"SpecialLoopFigures": "includes/LoopFigure.php",
 		"LoopFormula": "includes/LoopFormula.php",
+		"SpecialLoopFormulas": "includes/LoopFormula.php",
+		"LoopListing": "includes/LoopListing.php",
+		"SpecialLoopListings": "includes/LoopListing.php",
+		"LoopMedia": "includes/LoopMedia.php",
+		"SpecialLoopMedias": "includes/LoopMedia.php",
+		"LoopTable": "includes/LoopTable.php",
+		"SpecialLoopTables": "includes/LoopTable.php",
 		"LoopTask": "includes/LoopTask.php",
-		"SpecialLoopTask": "includes/LoopTask.php"
+		"SpecialLoopTasks": "includes/LoopTask.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -68,9 +68,6 @@
 		],
 		"PageRenderingHash":[
 			"LoopHooks::onPageRenderingHash"
-		],
-		"SetupAfterCache": [
-			"LoopHooks::onSetupAfterCache"
 		],
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup"
@@ -87,7 +84,8 @@
 		"LoopStructureEdit": "SpecialLoopStructureEdit",
 		"LoopExport": "SpecialLoopExport",
 		"LoopSettings": "SpecialLoopSettings",
-		"PurgeCache": "SpecialPurgeCache"
+		"PurgeCache": "SpecialPurgeCache",
+		"LoopFigures": "SpecialLoopFigures"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

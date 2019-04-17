@@ -64,7 +64,7 @@ class LoopObject {
 		
 		$parser->setHook ( 'loop_title', 'LoopObject::renderLoopTitle' );
 		$parser->setHook ( 'loop_description', 'LoopObject::renderLoopDescription' );
-		$parser->setHook ( 'loop_copyrightt', 'LoopObject::renderLoopCopyright' );
+		$parser->setHook ( 'loop_copyright', 'LoopObject::renderLoopCopyright' );
 		return true;
 	}	
 	
@@ -208,35 +208,35 @@ class LoopObject {
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgUser;
+		global $wgLoopFigureNumbering;
 	
-		//$structure = LoopStructures::getCurrentLoopStructure ( $wgUser );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$number = '';
+		if ( $wgLoopFigureNumbering != 'false' ) {
+			$number = ' ' . $this->getNumber();
+		}
+
+		$html .= '<div class="loop_object_footer ml-1">';
+		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
+		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $number . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
 		
-		$html = '';
-		$html .= '<tr>';
-		$html .= '<td>';
-		$html .= '<br/><span class="ic ic-'.$this->getIcon().'" aria-hidden="true"></span><br/>';
-		$html .= '</td>';
-		$html .= '<td>';
-	
-	
-		$html .= wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . ' ' . $this->getNumber() . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '<br/>';
-		if ($this->getDescription()) {
+		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
 		}
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
-	
-		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId (), $structure->getId () );
+		
+		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
 		if ($lsi) {
-			$linktext = $lsi->getTocNumber () . ' ' . $lsi->getTocText ();
-				
-			$html .= Linker::link ( $linkTitle, $linktext ) . '<br/>';
+			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
+			
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$html .= $linkRenderer->makeLink( 
+				$linkTitle, 
+				new HtmlArmor( $linktext ),
+				array()
+				) . '<br/>';
 		}
-		$html .= '</td>';
-		$html .= '</tr>';
+		$html .= '</div></div>';
 		return $html;
 	}	
 	
@@ -248,14 +248,17 @@ class LoopObject {
 	 * @param PPFrame $frame
 	 */
 	public function init($input, array $args, $parser = false, $frame = false) {
-		global $wgUser, $wgParserConf;
 		
+		global $wgOut, $wgParserConf;
+
+		$user = $wgOut->getUser();
+
 		$this->setInput($input);
 		$this->setArgs($args);
 				
 		if ($parser == false) {
 			$parser = new Parser ( $wgParserConf );
-			$parserOptions = ParserOptions::newFromUser ( $wgUser );
+			$parserOptions = ParserOptions::newFromUser ( $user );
 			$parser->Options ( $parserOptions );
 			$t = Title::newFromText ( 'NO TITLE' );
 			$parser->setTitle ( $t );
@@ -743,6 +746,7 @@ class LoopObject {
 
 						if ( $object[0] == "loop_figure" ) {
 							$loopIndex->itemThumb = $object[1];
+							$loopIndex->itemSrc = $object[2]["src"];
 						}
 						if ( $object[0] == "loop_media" ) {
 							$loopIndex->itemType = $object[2]["type"];

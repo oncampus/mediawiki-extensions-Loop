@@ -17,13 +17,11 @@ class LoopIndex {
 	 */
 	public function addToDatabase() {
 
-		#dd($this);
         $dbw = wfGetDB( DB_MASTER );
         
         $dbw->insert(
             'loop_index',
             array(
-                #'li_id' => $this->id,
                 'li_pageid' => $this->pageId,
                 'li_refid' => $this->refId,
                 'li_index' => $this->index,
@@ -31,7 +29,7 @@ class LoopIndex {
                 'li_itemtype' => $this->itemType,
                 'li_itemtitle' => $this->itemTitle,
                 'li_itemdesc' => $this->itemDescription,
-                'li_thumb' => $this->itemThumb
+                'li_itemthumb' => $this->itemThumb
             ),
             __METHOD__
         );
@@ -39,7 +37,8 @@ class LoopIndex {
         return true;
 
     }
-    
+	
+	// deletes all objects of a page
     public static function removeAllPageItemsFromDb ( $article ) {
 
 		$dbr = wfGetDB( DB_SLAVE );
@@ -52,7 +51,45 @@ class LoopIndex {
         return true;
     }
 
-    public static function getObjectNumberingsForPage ( $lsi, $loopStructure ) {
+	// returns ALL objects of a type in the wiki.
+    public static function getObjectsOfType ( $type ) {
+
+		$dbr = wfGetDB( DB_SLAVE );
+
+		$res = $dbr->select(
+			'loop_index',
+			array(
+                'li_pageid',
+                'li_refid',
+				'li_index',
+                'li_nthoftype',
+                'li_itemtype',
+                'li_itemtitle',
+                'li_itemdesc',
+                'li_itemthumb'
+			),
+			array(
+				'li_index = "' . $type .'"'
+			),
+			__METHOD__
+		);
+		
+		$objects = array(  );
+		foreach( $res as $row ) {
+			$objects[$row->li_pageid][$row->li_nthoftype] = array(
+				"args" => array("id" => $row->li_refid,
+					"title" => $row->li_itemtitle,
+					"description" => $row->li_itemdesc,
+					"type" => $row->li_itemtype
+			),
+				"thumb" => $row->li_itemthumb
+			);
+		}
+		return $objects;
+	}
+
+	// returns number of objects in structure before the given structureItem
+    public static function getObjectNumberingsForPage ( LoopStructureItem $lsi, LoopStructure $loopStructure ) {
 
 		$objects = array();
 		foreach (LoopObject::$mObjectTypes as $objectType) {
@@ -70,10 +107,7 @@ class LoopIndex {
                 'li_index'
 			),
 			"*",
-			__METHOD__,
-			#array(
-			#	'ORDER BY' => 'li_pageid ASC'
-			#)
+			__METHOD__
 		);
 		foreach( $res as $row ) {
 			$objects[$row->li_index][$row->li_pageid][] = $row->li_refid;
@@ -82,20 +116,15 @@ class LoopIndex {
 		$structureItems = $loopStructure->getStructureItems();
 		foreach ( $structureItems as $item ) {
 			$tmpId = $item->article;
-			#dd($tmpId);
 			if (  $item->sequence < $lsi->sequence  ) {
 				foreach( $objects as $objectType => $page ) {
-					#dd($objectType, $page[$tmpId]);
 					if ( isset( $page[$tmpId] ) ) {
 						$return[$objectType] += sizeof($page[$tmpId]);
-						#dd($objectType[$tmpId]);
 					}
-					#$objects[$row->li_index][$row->li_pageid][] = $row->li_refid;
 				}
 			}
 			
 		}
-#dd($objects, $structureItems, $return, $lsi );
 
         return $return;
 	}

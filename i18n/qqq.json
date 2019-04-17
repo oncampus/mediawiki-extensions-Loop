@@ -106,5 +106,31 @@
 	"logentry-loopexport-mp3": "Log message for MP3 export ($4 is used for generated/reused state)",
 	"logentry-loopexport-html": "Log message for HTML export",
 	"logentry-loopexport-epub": "Log message for EPUB ($4 is used for generated/reused state)",
-	"logentry-loopexport-pageaudio": "Log message for page audio export ($4 is used for generated/reused state)"
+	"logentry-loopexport-pageaudio": "Log message for page audio export ($4 is used for generated/reused state)",
+
+	"loop_figure-name": "Prepend title of loop_figure",
+	"loop_figure-name-short": "Prepend title of loop_figure (short)",
+	"loop_table-name": "Prepend title of loop_table",
+	"loop_table-name-short": "Prepend title of loop_table (short)",
+	"loop_media-name": "Prepend title of loop_media",
+	"loop_media-name-short": "Prepend title of loop_media (short)",
+	"loop_listing-name": "Prepend title of loop_listing",
+	"loop_listing-name-short": "Prepend title of loop_listing (short)",
+	"loop_formula-name": "Prepend title of loop_formula",
+	"loop_formula-name-short": "Prepend title of loop_formula (short)",
+	"loop_task-name": "Prepend title of loop_task",
+	"loop_task-name-short": "Prepend title of loop_task (short)",
+	
+	"loopfigures-specialpage-title": "Page title for Loop figures special page",
+	"looptables-specialpage-title": "Page title for Loop tables special page",
+	"loopmedia-specialpage-title": "Page title for Loop media special page",
+	"looplistings-specialpage-title": "Page title for Loop listings special page",
+	"loopformulas-specialpage-title": "Page title for Loop formulas special page",
+	"looptasks-specialpage-title": "Page title for Loop tasks special page",
+	"loopfigures": "Loop figures",
+	"looptables": "Loop tables",
+	"loopmedia": "Loop media",
+	"looplistings": "Loop listings",
+	"loopformulas": "Loop formulas",
+	"looptasks": "Loop tasks"
 }

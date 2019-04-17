@@ -8,7 +8,7 @@
 class LoopMedia extends LoopObject{
 
 	public static $mTag = 'loop_media';
-	public static $mIcon = 'desktop';
+	public static $mIcon = 'media';
 	
 	public $mMediaType;
 	
@@ -124,29 +124,29 @@ class LoopMedia extends LoopObject{
 }
 
 /**
- * Display list of medias for current structure
+ * Display list of media for current structure
  * 
  * @author vorreitm
  *        
  */
-class SpecialLoopMedias extends SpecialPage {
+class SpecialLoopMedia extends SpecialPage {
 	
 	public function __construct() {
-		parent::__construct ( 'LoopMedias' );
+		parent::__construct ( 'LoopMedia' );
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf, $wgParser, $wgUser;
+		global $wgParserConf;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
 		
 		$out = $this->getOutput ();
 		
-		$out->setPageTitle ( $this->msg ( 'loopmedias-specialpage-title' ) );
+		$out->setPageTitle ( $this->msg ( 'loopmedia-specialpage-title' ) );
 		
 		$out->addHtml ( '<h1>' );
-		$out->addWikiMsg ( 'loopmedias-specialpage-title' );
+		$out->addWikiMsg ( 'loopmedia-specialpage-title' );
 		$out->addHtml ( '</h1>' );
 		
 		Loop::handleLoopRequest ();
