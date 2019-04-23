@@ -60,8 +60,8 @@
 	"loopsettings-skin-style-label": "Skin-Stil",
 	"loopsettings-error": "Es ist ein Fehler beim Speichern dieser Einstellung aufgetreten",
 	"loopsettings-tab-content": "Inhaltseinstellungen",
-	"loopsettings-numbering": "Automatische Numerierung",
-	"loopsettings-numbering-figures-label": "Numerierung von '''Abbildungen''' aktivieren",
+	"loopsettings-numbering": "Automatische Nummerierung",
+	"loopsettings-numbering-figures-label": "Nummerierung von '''Abbildungen''' aktivieren",
 
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",

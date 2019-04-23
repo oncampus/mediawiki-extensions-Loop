@@ -58,7 +58,7 @@ class LoopFormula extends LoopObject{
 /**
  * Display list of formulas for current structure
  * 
- * @author vorreitm
+ * @author vorreitm, krohnden
  *        
  */
 class SpecialLoopFormulas extends SpecialPage {
@@ -81,19 +81,16 @@ class SpecialLoopFormulas extends SpecialPage {
 		$out->addWikiMsg ( 'loopformulas-specialpage-title' );
 		$out->addHtml ( '</h1>' );
 		
-		Loop::handleLoopRequest ();
-		
-		//$structure = LoopStructures::getCurrentLoopStructure ( $this->getUser () );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 		
 		$parser = new Parser ( $wgParserConf );
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		$out->addHtml ( '<table>' );
+		#$out->addHtml ( '<table>' );
 		$formulas = array ();
-		$items = $structure->getItems ();
+		$items = $loopStructure->getStructureItems();
 		$formula_number = 1;
 		foreach ( $items as $item ) {
 			
@@ -126,7 +123,7 @@ class SpecialLoopFormulas extends SpecialPage {
 				}
 			}
 		}
-		$out->addHtml ( '</table>' );
+		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

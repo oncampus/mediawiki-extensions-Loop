@@ -1,4 +1,7 @@
 <?php 
+
+use MediaWiki\MediaWikiServices;
+
 class LoopObject {
 
 	public static $mTag;
@@ -176,7 +179,7 @@ class LoopObject {
 				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
 			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<span class="loop_object_number">'.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
 				$html .= '</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
@@ -215,7 +218,7 @@ class LoopObject {
 			$number = ' ' . $this->getNumber();
 		}
 
-		$html .= '<div class="loop_object_footer ml-1">';
+		$html = '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $number . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
 		
@@ -236,7 +239,7 @@ class LoopObject {
 				array()
 				) . '<br/>';
 		}
-		$html .= '</div></div>';
+		$html .= '</div>';
 		return $html;
 	}	
 	
@@ -248,7 +251,7 @@ class LoopObject {
 	 * @param PPFrame $frame
 	 */
 	public function init($input, array $args, $parser = false, $frame = false) {
-		
+
 		global $wgOut, $wgParserConf;
 
 		$user = $wgOut->getUser();
@@ -560,9 +563,10 @@ class LoopObject {
 	 * @return string
 	 */
 	public function extraParse($wikiText) {
-		global $wgTitle, $wgUser;
+		global $wgTitle, $wgOut;
+		$user= $wgOut->getUser();
 		$myParser = new Parser ();
-		$myParserOptions = ParserOptions::newFromUser ( $wgUser );
+		$myParserOptions = ParserOptions::newFromUser ( $user );
 		$result = $myParser->parse ( $wikiText, $wgTitle, $myParserOptions );
 		return $myParser->stripOuterParagraph($result->getText ());	
 	}
@@ -693,8 +697,8 @@ class LoopObject {
 		}
 		#$striped_text = $this->getParser()->killMarkers ( $text );
 	}
-	
-	public static function onPageContentSaveComplete ( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
+	public static function onPageContentSave ( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $status ) {
+	#public static function onPageContentSaveComplete 	( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
 		# TODO bei jedem speichern datenbankeinträge über die medien
 
 		$title = $wikiPage->getTitle();
@@ -707,7 +711,7 @@ class LoopObject {
 				#$loopStructure->loadStructureItems();
 				$contentText = ContentHandler::getContentText( $content );
 				$parser = new Parser();
-
+				#dd($contentText);
 				// check if loop_object in page content
 				$has_object = false;
 				foreach (self::$mObjectTypes as $objectType) {
@@ -716,16 +720,12 @@ class LoopObject {
 						break;
 					}
 				}
-				#dd($has_object);
+
 				if ( $has_object ) {
 					$objects = array();
 					foreach (self::$mObjectTypes as $objectType) {
-						$objects[$objectType] = 0; #count
+						$objects[$objectType] = 0;
 					}
-					# 
-
-					$tmpTitle = Title::newFromText( 'NO TITLE' );
-					#$parserOutput = $parser->parse( $contentText, $tmpTitle, new ParserOptions() );
 
 					$object_tags = array ();
 					$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
@@ -736,17 +736,18 @@ class LoopObject {
 					
 					LoopIndex::removeAllPageItemsFromDb($title->getArticleID());
 
+					$newContentText = $contentText;
+
 					foreach ( $object_tags as $object ) {
 						$objects[$object[0]]++;
 						
 						$loopIndex->index = $object[0];
 						$loopIndex->nthItem = $objects[$object[0]];
-						#dd($title->getArticleID());
+						
 						$loopIndex->pageId = $title->getArticleID();
 
 						if ( $object[0] == "loop_figure" ) {
 							$loopIndex->itemThumb = $object[1];
-							$loopIndex->itemSrc = $object[2]["src"];
 						}
 						if ( $object[0] == "loop_media" ) {
 							$loopIndex->itemType = $object[2]["type"];
@@ -758,15 +759,25 @@ class LoopObject {
 							$loopIndex->itemDescription = $object[2]["description"];
 						}
 						if ( isset( $object[2]["id"] ) ) {
-							$loopIndex->refId = $object[2]["id"];
+							
+							if ( $loopIndex->checkDublicates( $object[2]["id"] ) ) {
+								$loopIndex->refId = $object[2]["id"];
+							} else {
+								#dd(self::setReferenceIds($contentText));
+								$newRef = uniqid();
+								$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+								#dd("hi", $newContentText, $newContentText2);
+								$loopIndex->refId = $newRef ; # TODO notieren in wikitext (loopreference)
+							}
 						} else {
-							$loopIndex->refId = uniqid(); # notieren in wikitext
+							
+							$newContentText = self::setReferenceIds( $newContentText ); 
+							$loopIndex->refId = uniqid(); 
 						}
 						$loopIndex->addToDatabase();
 
 					}
-					#dd($loopIndex);
-
+					#dd("ho", $newContentText);
 
 					$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
 					
@@ -775,14 +786,110 @@ class LoopObject {
 						self::removeStructureCache($title);
 
 					}
+					if ( $contentText !== $newContentText ) {
+						#dd($content, $contentText, $newContentText, $content->getContentHandler()->unserializeContent( $newContentText ));
+						$content = $content->getContentHandler()->unserializeContent( $newContentText );
+
+						/*
+						LoopReference::refreshReferences( $newContentText );
+				
+						// refresh id's in the latest revision too.
+						$latestRevision = Revision::newFromTitle( $title );
+						
+						if ($latestRevision){
+							try{
+								
+								// TODO wirft fehler wenn keine revision vorhanden?
+								$revisionContent = $latestRevision->getContent( Revision::RAW );
+								$revisionText = ContentHandler::getContentText( $revisionContent );
+								
+							} catch (Exception $e) {
+								
+								// TODO wfMessage
+								echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
+							}
+							
+							LoopReference::refreshReferences( $revisionText );
+							
+						}*/
+					}
 				}
 			#}
 		}
 
-
+		#dd($content);
 		return true;
 		
 	}
+
+	public static function replaceReferenceIds( $text ) {
+
+	}
+public static function onPageContentSaveComplete 	( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
+	#dd($content);
+return true;
+}
+	/*public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,	$isMinor, $isWatch, $section, &$flags, &$status ) {
+		
+		$title = $wikiPage->getTitle();
+		$text = $content->getContentHandler()->serializeContent( $content );
+	
+		// set ID's in <loop media>'s if not exists
+		#$newText = self::setReferenceIds( $text ); 
+		#dd($newText);
+		// if at least one ID was auto generated save new text
+		#if ( $newText !== false ) {
+
+			#$content = $content->getContentHandler()->unserializeContent( $newText );
+			
+		#}
+
+		return true;
+	}*/
+
+	public static function setReferenceIds( $text ) {
+	
+		$changedText = false;
+	
+		$text = '<div>'.$text.'</div>';
+		
+		$dom = new DOMDocument;
+		@$dom->loadHTML( $text, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		
+		$xpath = new DOMXPath( $dom );
+		
+
+		$autoIdTags = array();
+		foreach (self::$mObjectTypes as $autoIdTag) {
+			$autoIdTags[] = '//'.$autoIdTag;
+		}
+		$query = implode(' | ', $autoIdTags);
+		
+		#var_dump($query);exit;
+		
+		$nodes = $xpath->query( $query );
+		
+		#var_dump($nodes);exit;
+		
+		$changed = false;
+		foreach ( $nodes as $node ) {
+			$existingId = $node->getAttribute( 'id' );
+			if( ! $existingId ) {
+				$node->setAttribute('id', uniqid() );
+				$changed = true;
+			}
+		}
+		
+		if ($changed) {
+			$changedText = mb_substr($dom->saveHTML(),5,-7);
+		}
+		#dd($changedText);
+		return $changedText;
+		
+
+		
+	}
+
 
 	public static function removeStructureCache($title = null) {
 		// Reset Cache for following pages in every LoopStructure
@@ -842,7 +949,7 @@ class LoopObject {
 	
 	public static function onParserAfterTidy(&$parser, &$text) {
 		
-		global $wgLoopFigureNumbering;
+		global $wgLoopFigureNumbering, $wgLoopNumberingType;
 
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
@@ -868,9 +975,21 @@ class LoopObject {
 			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 			
 			if ( $lsi && $wgLoopFigureNumbering == 1 ) {
-				$i = $previousObjects[$objectType] + $count[$objectType] + 1;
-				foreach ( $matches[0] as $objectmarker ) {
-					$text = preg_replace ( "/" . $objectmarker . "/", $i++, $text );
+				if ( $wgLoopNumberingType == "chapter" ) {
+					
+					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
+					$tocChapter = $tocChapter[1];
+					
+					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
+					foreach ( $matches[0] as $objectmarker ) {
+						$text = preg_replace ( "/" . $objectmarker . "/", $tocChapter . "-" . $i++, $text );
+					}
+
+				} else {
+					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
+					foreach ( $matches[0] as $objectmarker ) {
+						$text = preg_replace ( "/" . $objectmarker . "/", $i++, $text );
+					}
 				}
 			} else {
 				foreach ( $matches[0] as $objectmarker ) {

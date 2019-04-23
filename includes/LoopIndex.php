@@ -91,6 +91,12 @@ class LoopIndex {
 	// returns number of objects in structure before the given structureItem
     public static function getObjectNumberingsForPage ( LoopStructureItem $lsi, LoopStructure $loopStructure ) {
 
+		global $wgLoopNumberingType;
+		
+		$lsiTocNumberArray = array();
+		preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $lsiTocNumberArray);
+		$lsiTocNumber = $lsiTocNumberArray[1];
+
 		$objects = array();
 		foreach (LoopObject::$mObjectTypes as $objectType) {
 			$objects[$objectType] = array(); 
@@ -114,19 +120,59 @@ class LoopIndex {
 		}
 
 		$structureItems = $loopStructure->getStructureItems();
-		foreach ( $structureItems as $item ) {
-			$tmpId = $item->article;
-			if (  $item->sequence < $lsi->sequence  ) {
-				foreach( $objects as $objectType => $page ) {
-					if ( isset( $page[$tmpId] ) ) {
-						$return[$objectType] += sizeof($page[$tmpId]);
+		if ( $wgLoopNumberingType == "ongoing" ) {
+			foreach ( $structureItems as $item ) {
+				$tmpId = $item->article;
+				if (  $item->sequence < $lsi->sequence  ) {
+					foreach( $objects as $objectType => $page ) {
+						if ( isset( $page[$tmpId] ) ) {
+							$return[$objectType] += sizeof($page[$tmpId]);
+						}
 					}
 				}
 			}
-			
+		} else {
+			#
+			foreach ( $structureItems as $item ) {
+				$tmpId = $item->article;
+				$tocNumber = preg_match('/(\d+)\.{0,1}/', $item->tocNumber, $tocNumber);
+				if ( isset( $tocNumber[1] ) && $tocNumber[1] == $lsiTocNumber ) {
+					if (  $item->sequence < $lsi->sequence  ) {
+						foreach( $objects as $objectType => $page ) {
+							if ( isset( $page[$tmpId] ) ) {
+								$return[$objectType] += sizeof($page[$tmpId]);
+							}
+						}
+					}
+				}
+			}
 		}
+		#dd($return);
 
         return $return;
+	}
+
+	public function checkDublicates( $refId ) {
+		
+		$dbr = wfGetDB( DB_SLAVE );
+		$res = $dbr->select(
+			'loop_index',
+			array(
+                'li_refid'
+			),
+			array(
+				'li_refid = "' . $refId .'"'
+			),
+			__METHOD__
+		);
+		
+		foreach( $res as $row ) {
+			# given refId is already in use
+			return false;
+
+		}
+		# id is unique in index
+		return true;
 	}
 
 }

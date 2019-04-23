@@ -349,6 +349,19 @@ class LoopStructure {
 		return $lsTitle;
 	}
 
+	public function hasObjects( $type ) {
+		$objects = LoopIndex::getObjectsOfType ( $type );
+		$structureItems = $this->getStructureItems();
+
+		foreach ( $structureItems as $item ) {
+			if ( isset ( $objects[$item->article] ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 
 }
 

@@ -196,7 +196,7 @@ class LoopFigure extends LoopObject{
 /**
  * Display list of figures for current structure
  * 
- * @author vorreitm
+ * @author vorreitm, krohnden
  *        
  */
 class SpecialLoopFigures extends SpecialPage {

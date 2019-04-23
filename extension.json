@@ -53,11 +53,12 @@
 		"LoopListing": "includes/LoopListing.php",
 		"SpecialLoopListings": "includes/LoopListing.php",
 		"LoopMedia": "includes/LoopMedia.php",
-		"SpecialLoopMedias": "includes/LoopMedia.php",
+		"SpecialLoopMedia": "includes/LoopMedia.php",
 		"LoopTable": "includes/LoopTable.php",
 		"SpecialLoopTables": "includes/LoopTable.php",
 		"LoopTask": "includes/LoopTask.php",
-		"SpecialLoopTasks": "includes/LoopTask.php"
+		"SpecialLoopTasks": "includes/LoopTask.php",
+		"LoopReference": "includes/LoopReference.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -72,6 +73,9 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup"
 		],
+		"PageContentSave": [
+			"LoopObject::onPageContentSave"
+		],
 		"PageContentSaveComplete": [
 			"LoopObject::onPageContentSaveComplete"
 		],
@@ -85,7 +89,13 @@
 		"LoopExport": "SpecialLoopExport",
 		"LoopSettings": "SpecialLoopSettings",
 		"PurgeCache": "SpecialPurgeCache",
-		"LoopFigures": "SpecialLoopFigures"
+		"LoopFigures": "SpecialLoopFigures",
+		"LoopFormulas": "SpecialLoopFormulas",
+		"LoopListings": "SpecialLoopListings",
+		"LoopMedia": "SpecialLoopMedia",
+		"LoopTables": "SpecialLoopTables",
+		"LoopTasks": "SpecialLoopTasks",
+		"LoopReference": "LoopReference"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -564,6 +574,10 @@
 		"LoopTaskNumbering": {
 			"value": true,
 			"description" : ""
+		},
+		"LoopNumberingType": {
+			"value": "chapter",
+			"description" : "Setting type for numbering of objects [ongoing|chapter]"
 		},
 		
 		"LoopMediaDefaultType": {

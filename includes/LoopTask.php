@@ -8,7 +8,7 @@
 class LoopTask extends LoopObject{
 	
 	public static $mTag = 'loop_task';
-	public static $mIcon = 'list';
+	public static $mIcon = 'task';
 
 	/**
 	 * {@inheritDoc}
@@ -58,7 +58,7 @@ class LoopTask extends LoopObject{
 /**
  * Display list of tasks for current structure
  * 
- * @author vorreitm
+ * @author vorreitm, krohnden
  *        
  */
 class SpecialLoopTasks extends SpecialPage {
@@ -81,19 +81,16 @@ class SpecialLoopTasks extends SpecialPage {
 		$out->addWikiMsg ( 'looptasks-specialpage-title' );
 		$out->addHtml ( '</h1>' );
 		
-		Loop::handleLoopRequest ();
-		
-		//$structure = LoopStructures::getCurrentLoopStructure ( $this->getUser () );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 		
 		$parser = new Parser ( $wgParserConf );
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		$out->addHtml ( '<table>' );
+		#$out->addHtml ( '<table>' );
 		$tasks = array ();
-		$items = $structure->getItems ();
+		$items = $loopStructure->getStructureItems();
 		$task_number = 1;
 		foreach ( $items as $item ) {
 			
@@ -126,7 +123,7 @@ class SpecialLoopTasks extends SpecialPage {
 				}
 			}
 		}
-		$out->addHtml ( '</table>' );
+		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

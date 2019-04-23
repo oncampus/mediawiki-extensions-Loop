@@ -57,7 +57,7 @@ class LoopTable extends LoopObject{
 /**
  * Display list of tables for current structure
  * 
- * @author vorreitm
+ * @author vorreitm, krohnden
  *        
  */
 class SpecialLoopTables extends SpecialPage {
@@ -80,19 +80,16 @@ class SpecialLoopTables extends SpecialPage {
 		$out->addWikiMsg ( 'looptables-specialpage-title' );
 		$out->addHtml ( '</h1>' );
 		
-		Loop::handleLoopRequest ();
-		
-		//$structure = LoopStructures::getCurrentLoopStructure ( $this->getUser () );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 		
 		$parser = new Parser ( $wgParserConf );
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		$out->addHtml ( '<table>' );
+		#$out->addHtml ( '<table>' );
 		$tables = array ();
-		$items = $structure->getItems ();
+		$items = $loopStructure->getStructureItems();
 		$table_number = 1;
 		foreach ( $items as $item ) {
 			
@@ -125,7 +122,7 @@ class SpecialLoopTables extends SpecialPage {
 				}
 			}
 		}
-		$out->addHtml ( '</table>' );
+		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

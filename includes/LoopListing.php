@@ -8,7 +8,7 @@
 class LoopListing extends LoopObject{
 	
 	public static $mTag = 'loop_listing';
-	public static $mIcon = 'code';
+	public static $mIcon = 'we-list';
 
 	/**
 	 * {@inheritDoc}
@@ -57,7 +57,7 @@ class LoopListing extends LoopObject{
 /**
  * Display list of listings for current structure
  * 
- * @author vorreitm
+ * @author vorreitm, krohnden
  *        
  */
 class SpecialLoopListings extends SpecialPage {
@@ -80,19 +80,16 @@ class SpecialLoopListings extends SpecialPage {
 		$out->addWikiMsg ( 'looplistings-specialpage-title' );
 		$out->addHtml ( '</h1>' );
 		
-		Loop::handleLoopRequest ();
-		
-		//$structure = LoopStructures::getCurrentLoopStructure ( $this->getUser () );
-		$structure = new LoopStructure;
-		$structure->getId ();
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 		
 		$parser = new Parser ( $wgParserConf );
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		$out->addHtml ( '<table>' );
+		#$out->addHtml ( '<table>' );
 		$listings = array ();
-		$items = $structure->getItems ();
+		$items = $loopStructure->getStructureItems();
 		$listing_number = 1;
 		foreach ( $items as $item ) {
 			
@@ -125,7 +122,7 @@ class SpecialLoopListings extends SpecialPage {
 				}
 			}
 		}
-		$out->addHtml ( '</table>' );
+		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';
