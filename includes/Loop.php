@@ -32,6 +32,8 @@
 
 		
 	public static function onExtensionLoad() {
+
+		# Loop Object constants
 		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
 		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
 
@@ -39,7 +41,7 @@
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgLogRestrictions,
 		$wgFileExtensions, $wgLoopFigureNumbering, $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, 
-		$wgLoopTableNumbering, $wgLoopTaskNumbering;
+		$wgLoopTableNumbering, $wgLoopTaskNumbering, $wgLoopNumberingType;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -62,7 +64,8 @@
 					'lset_numberinglistings', 
 					'lset_numberingmedia', 
 					'lset_numberingtables', 
-					'lset_numberingtasks'
+					'lset_numberingtasks', 
+					'lset_numberingtype'
 				),
 				array(),
 				__METHOD__,
@@ -84,6 +87,7 @@
 				$wgLoopMediaNumbering = ( empty( $row->lset_numberingmedia ) ? $wgLoopMediaNumbering : $row->lset_numberingmedia );
 				$wgLoopTableNumbering = ( empty( $row->lset_numberingtables ) ? $wgLoopTableNumbering : $row->lset_numberingtables );
 				$wgLoopTaskNumbering = ( empty( $row->lset_numberingtasks ) ? $wgLoopTaskNumbering : $row->lset_numberingtasks );
+				$wgLoopNumberingType = ( empty( $row->lset_numberingtype ) ? $wgLoopNumberingType : $row->lset_numberingtype );
 				
 			}
 		}
@@ -101,7 +105,7 @@
 		$wgFlaggedRevsTagsRestrictions = array(
 			'official' => array( 'review' => 1, 'autoreview' => 1 )
 		);
-		$wgFlaggedRevsAutopromote=false;
+		$wgFlaggedRevsAutopromote = false;
 		$wgShowRevisionBlock = false;
 		$wgSimpleFlaggedRevsUI = false;
 		$wgFlaggedRevsAutoReview = FR_AUTOREVIEW_CREATION_AND_CHANGES;
@@ -113,115 +117,10 @@
 		$wgLogRestrictions["rights"] = "loop-view-export-log"; #Benutzerrechte-Logbuch
 
 		# Uploadable file extensions
-		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg','eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr'));
+		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg',
+			'eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr'));
 
-	}
-
-	static function disableSomeSpecialPages(&$list) {
-		global $wgOut;
-		$user = $wgOut->getUser();
-		if (!$user->isAllowed("autoconfirmed")) {
-		  
-			//remove some
-			#unset($list['Version']);
-			
-			//remove exhaust list
-			foreach(array(
-				
-				'Recentchangeslinked',
-				'Recentchanges',
-				'Listredirects',
-				/*
-				'Mostlinkedcategories',
-				'Export',
-				'Uncategorizedtemplates',
-				'DoubleRedirects',
-				'DeletedContributions',
-				'Mostcategories',
-				'Search',
-				'Block',
-				'Movepage',
-				'Mostrevisions',
-				'Unusedimages',
-				'Log',
-				'Mostlinkedtemplates',
-				'Deadendpages',
-				'JavaScriptTest',
-				'Userrights',
-				'Import',
-				'Ancientpages',
-				'Uncategorizedcategories',
-				'Activeusers',
-				'MergeHistory',
-				'Randompage',
-				'Protectedpages',
-				'Wantedfiles',
-				'Listgrouprights',
-				'EditWatchlist',
-				'Blockme',
-				'FileDuplicateSearch',
-				'Withoutinterwiki',
-				'Randomredirect',
-				'BlockList',
-				'Popularpages',
-				'Emailuser',
-				'Booksources',
-				'Upload',
-				'Confirmemail',
-				'Watchlist',
-				'MIMEsearch',
-				'Allpages',
-				'Fewestrevisions',
-				'Unblock',
-				'ComparePages',
-				'Uncategorizedimages',
-				'Mostinterwikis',
-				'Preferences',
-				'Categories',
-				'Statistics',
-				'Version',
-				'UploadStash',
-				'Undelete',
-				'Whatlinkshere',
-				'Lockdb',
-				'Lonelypages',
-				'Mostimages',
-				'Unwatchedpages',
-				'Shortpages',
-				'Protectedtitles',
-				'Revisiondelete',
-				'Newpages',
-				'Unusedtemplates',
-				'Allmessages',
-				'CachedPage',
-				'Filepath',
-				'ChangePassword',
-				'Wantedpages',
-				'LinkSearch',
-				'Prefixindex',
-				'BrokenRedirects',
-				'Mostlinked',
-				'Tags',
-				'ChangeEmail',
-				'Longpages',
-				'Uncategorizedpages',
-				'Newimages',
-				'Blankpage',
-				'Disambiguations',
-				'Unusedcategories',
-				'Wantedcategories',
-				'PasswordReset',
-				'Unlockdb',
-				'PagesWithProp',
-				'Specialpages',
-				'Listfiles',
-				'Contributions',
-				'Listusers',
-				'Wantedtemplates'
-	*/
-				)as $i){unset($list[$i]);}
-		}
 		return true;
 	}
-	
+
 }

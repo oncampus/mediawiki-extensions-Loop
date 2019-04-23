@@ -81,6 +81,9 @@
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
+		],
+		"SpecialPage_initList": [
+			"LoopHooks::onSpecialPageinitList"
 		]
 	},
 	"SpecialPages": {
@@ -130,7 +133,8 @@
 			"loop-view-export-log": false,
 			"createtalk": false,
 			"createpage": false,
-			"writeapi": false
+			"writeapi": false,
+			"loop-view-special-pages": false
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -142,7 +146,8 @@
 			"loop-export-scorm": false,
 			"loop-settings-edit": false,
 			"loop-pageaudio": true,
-			"createpage": true
+			"createpage": true,
+			"loop-view-special-pages": true
 		},
 		"sysop": {
 			"loop-toc-edit": true,
@@ -160,7 +165,8 @@
 			"purgecache": true,
 			"unreviewedpages": true,
 			"review": true,
-			"autoreview": true
+			"autoreview": true,
+			"loop-view-special-pages": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -191,7 +197,8 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"loop-view-special-pages": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -222,7 +229,8 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"loop-view-special-pages": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -250,7 +258,8 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"loop-view-special-pages": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -261,7 +270,8 @@
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
-			"purge": true
+			"purge": true,
+			"loop-view-special-pages": true
 		},
 		"student_edit": {
 			"edit": true,
@@ -279,7 +289,8 @@
 			"createpage": true,
 			"deletedtext": true,
 			"deletedhistory": true,
-			"browsearchive": true
+			"browsearchive": true,
+			"loop-view-special-pages": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -366,7 +377,8 @@
 		"loop-export-scorm",
 		"loop-rendermode",
 		"loop-settings-edit",
-		"loop-view-export-log"
+		"loop-view-export-log",
+		"loop-view-special-pages"
 	],
 	"MessagesDirs": {
 		"Loop": [
