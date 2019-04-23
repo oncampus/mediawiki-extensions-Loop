@@ -136,7 +136,7 @@ class SpecialLoopMedia extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf;
+		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -171,26 +171,26 @@ class SpecialLoopMedia extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
-			$marked_medias_text = $parser->extractTagsAndParams ( array (
-					'loop_media',
-					'nowiki' 
-			), $content->getWikitextForTransclusion (), $media_tags );
+			$media_tags = LoopIndex::getObjectsOfType ( 'loop_media' );
 			
-			foreach ( $media_tags as $media_tag ) {
-				if ($media_tag [0] == 'loop_media') {
-					$media = new LoopMedia();
-					$media->init($media_tag [1], $media_tag [2]);
-					
-					$media->parse(true);
+			if ( isset( $media_tags[$article_id] ) ) {
+			foreach ( $media_tags[$article_id] as $media_tag ) {
+				$media = new LoopMedia();
+				$media->init($media_tag ["thumb"], $media_tag ["args"]);
+				
+				$media->parse(true);
+				if ( $wgLoopNumberingType == "chapter" ) {
+					$media->setNumber ( $media_tag["nthoftype"] );
+				} elseif ( $wgLoopNumberingType == "ongoing" ) {
 					$media->setNumber ( $media_number );
-					$media->setArticleId ( $article_id );
-					
-					$out->addHtml ( $media->renderForSpecialpage () );
 					$media_number ++;
+				}
+				$media->setArticleId ( $article_id );
+				
+				$out->addHtml ( $media->renderForSpecialpage () );
 				}
 			}
 		}
-		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

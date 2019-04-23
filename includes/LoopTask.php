@@ -68,7 +68,7 @@ class SpecialLoopTasks extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf;
+		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -103,28 +103,29 @@ class SpecialLoopTasks extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
+			$task_tags = LoopIndex::getObjectsOfType ( 'loop_task' );
 			
-			$marked_tasks_text = $parser->extractTagsAndParams ( array (
-					'loop_task',
-					'nowiki' 
-			), $content->getWikitextForTransclusion (), $task_tags );
-			
-			foreach ( $task_tags as $task_tag ) {
-				if ($task_tag [0] == 'loop_task') {
+			if ( isset( $task_tags[$article_id] ) ) {
+				foreach ( $task_tags[$article_id] as $task_tag ) {
+
 					$task = new LoopTask();
-					$task->init($task_tag [1], $task_tag [2]);
+					$task->init($task_tag["thumb"], $task_tag["args"]);
 					
 					$task->parse(true);
-					$task->setNumber ( $task_number );
+					if ( $wgLoopNumberingType == "chapter" ) {
+						$task->setNumber ( $task_tag["nthoftype"] );
+					} elseif ( $wgLoopNumberingType == "ongoing" ) {
+						$task->setNumber ( $task_number );
+						$task_number ++;
+					}
 					$task->setArticleId ( $article_id );
 					
 					$out->addHtml ( $task->renderForSpecialpage () );
-					$task_number ++;
 				}
 			}
 		}
-		#$out->addHtml ( '</table>' );
 	}
+
 	protected function getGroupName() {
 		return 'loop';
 	}

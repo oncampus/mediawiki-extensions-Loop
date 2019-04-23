@@ -141,7 +141,7 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgLoopFigureNumbering;
+		global $wgLoopFigureNumbering, $wgLoopNumberingType;
 
 		$html = '<div class="row mb-2 ml-2">';
 		
@@ -159,15 +159,37 @@ class LoopFigure extends LoopObject{
 			
 			$html .= '<div class="thumb_placeholder" style="width:120px; height: 50px;"></div>';
 		}
-		
-		$number = '';
+
+		$numberText = '';
 		if ( $wgLoopFigureNumbering != 'false' ) {
-			$number = ' ' . $this->getNumber();
+			if ( $wgLoopNumberingType == 'chapter' ) {
+		
+				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
+				$tocChapter = '';
+				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
+
+				if (isset($tocChapterArray)) {
+					$tocChapter = $tocChapterArray[1];
+				}
+				
+				if ( $lsi ) {
+					
+					$loopStructure = new LoopStructure();
+					$loopStructure->loadStructureItems();
+					
+					$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+					$number = $previousObjects['loop_figure'] + $this->getNumber();
+					$numberText = ' ' . $tocChapter . '-' . $number;
+				}
+
+			} else {
+				$numberText = ' ' . $this->getNumber();
+			}
 		}
 		
 		$html .= '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
-		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $number . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
+		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
 		
 		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
@@ -206,7 +228,7 @@ class SpecialLoopFigures extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf;
+		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -252,7 +274,13 @@ class SpecialLoopFigures extends SpecialPage {
 						$figure->init($figure_tag["thumb"], $figure_tag["args"]);
 						
 						$figure->parse(true);
-						$figure->setNumber ( $figure_number );
+
+						if ( $wgLoopNumberingType == "chapter" ) {
+							$figure->setNumber ( $figure_tag["nthoftype"] );
+						} elseif ( $wgLoopNumberingType == "ongoing" ) {
+							$figure->setNumber ( $figure_number );
+							$figure_number ++;
+						}
 						$figure->setArticleId ( $article_id );
 
 						preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
@@ -261,7 +289,6 @@ class SpecialLoopFigures extends SpecialPage {
 						}
 
 						$out->addHtml ( $figure->renderForSpecialpage () );
-						$figure_number ++;
 				}
 			}
 		}

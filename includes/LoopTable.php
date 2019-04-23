@@ -67,7 +67,7 @@ class SpecialLoopTables extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf;
+		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -103,26 +103,27 @@ class SpecialLoopTables extends SpecialPage {
 			$parser->setTitle ( $title );
 			
 			
-			$marked_tables_text = $parser->extractTagsAndParams ( array (
-					'loop_table',
-					'nowiki' 
-			), $content->getWikitextForTransclusion (), $table_tags );
+			$table_tags = LoopIndex::getObjectsOfType ( 'loop_table' );
 			
-			foreach ( $table_tags as $table_tag ) {
-				if ($table_tag [0] == 'loop_table') {
+			if ( isset( $table_tags[$article_id] ) ) {
+				foreach ( $table_tags[$article_id] as $table_tag ) {
+				
 					$table = new LoopTable();
-					$table->init($table_tag [1], $table_tag [2]);
+					$table->init($table_tag["thumb"], $table_tag["args"]);
 					
 					$table->parse(true);
-					$table->setNumber ( $table_number );
+					if ( $wgLoopNumberingType == "chapter" ) {
+						$table->setNumber ( $table_tag["nthoftype"] );
+					} elseif ( $wgLoopNumberingType == "ongoing" ) {
+						$table->setNumber ( $table_number );
+						$table_number ++;
+					}
 					$table->setArticleId ( $article_id );
 					
 					$out->addHtml ( $table->renderForSpecialpage () );
-					$table_number ++;
 				}
 			}
 		}
-		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

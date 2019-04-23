@@ -67,7 +67,7 @@ class SpecialLoopListings extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf;
+		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -102,27 +102,26 @@ class SpecialLoopListings extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
+			$listing_tags = LoopIndex::getObjectsOfType ( 'loop_listing' );
 			
-			$marked_listings_text = $parser->extractTagsAndParams ( array (
-					'loop_listing',
-					'nowiki' 
-			), $content->getWikitextForTransclusion (), $listing_tags );
-			
-			foreach ( $listing_tags as $listing_tag ) {
-				if ($listing_tag [0] == 'loop_listing') {
+			if ( isset( $listing_tags[$article_id] ) ) {
+				foreach ( $listing_tags[$article_id] as $listing_tag ) {
 					$listing = new LoopListing();
-					$listing->init($listing_tag [1], $listing_tag [2]);
+					$listing->init($listing_tag["thumb"], $listing_tag["args"]);
 					
 					$listing->parse(true);
-					$listing->setNumber ( $listing_number );
+					if ( $wgLoopNumberingType == "chapter" ) {
+						$listing->setNumber ( $listing_tag["nthoftype"] );
+					} elseif ( $wgLoopNumberingType == "ongoing" ) {
+						$listing->setNumber ( $listing_number );
+						$listing_number ++;
+					}
 					$listing->setArticleId ( $article_id );
 					
 					$out->addHtml ( $listing->renderForSpecialpage () );
-					$listing_number ++;
 				}
 			}
 		}
-		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

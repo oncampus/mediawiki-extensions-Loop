@@ -211,16 +211,59 @@ class LoopObject {
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgLoopFigureNumbering;
-	
-		$number = '';
-		if ( $wgLoopFigureNumbering != 'false' ) {
-			$number = ' ' . $this->getNumber();
+		global $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
+		$wgLoopTaskNumbering, $wgLoopNumberingType;
+		$objectClass = get_class( $this );
+		switch ( $objectClass ) {
+			case "LoopFormula":
+				$numbering = $wgLoopFormulaNumbering;
+				$type = 'loop_formula';
+				break;
+			case "LoopListing":
+				$numbering = $wgLoopListingNumbering;
+				$type = 'loop_listing';
+				break;
+			case "LoopMedia":
+				$numbering = $wgLoopMediaNumbering;
+				$type = 'loop_media';
+				break;
+			case "LoopTable":
+				$numbering = $wgLoopTableNumbering;
+				$type = 'loop_table';
+				break;
+			case "LoopTask":
+				$numbering = $wgLoopTaskNumbering;
+				$type = 'loop_task';
+				break;
+		}
+
+		$numberText = '';
+		if ( $numbering != 'false' ) {
+			if ( $wgLoopNumberingType == 'chapter' ) {
+		
+				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
+				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
+				$tocChapter = $tocChapter[1];
+				
+				if ( $lsi ) {
+					
+					$loopStructure = new LoopStructure();
+					$loopStructure->loadStructureItems();
+					
+					$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+					#dd($previousObjects[$type]+$this->getNumber() );
+					$number = $previousObjects[$type] + $this->getNumber();
+					$numberText = ' ' . $tocChapter . '-' . $number;
+				}
+
+			} else {
+				$numberText = ' ' . $this->getNumber();
+			}
 		}
 
 		$html = '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
-		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $number . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
+		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
 		
 		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
@@ -706,7 +749,9 @@ class LoopObject {
 		if ( $title->getNamespace() == NS_MAIN ) {
 			#if ((! $parser->getOptions ()->getIsSectionPreview ()) && (! $parser->getOptions ()->getIsPreview ())) {
 				
-				
+				$loopIndex = new LoopIndex();
+				$loopIndex->removeAllPageItemsFromDb($title->getArticleID());
+
 				#$loopStructure = new LoopStructure();
 				#$loopStructure->loadStructureItems();
 				$contentText = ContentHandler::getContentText( $content );
@@ -731,11 +776,7 @@ class LoopObject {
 					$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
 					$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 
-					$loopIndex = new LoopIndex();
-
 					
-					LoopIndex::removeAllPageItemsFromDb($title->getArticleID());
-
 					$newContentText = $contentText;
 
 					foreach ( $object_tags as $object ) {
@@ -968,6 +1009,7 @@ return true;
 			
 			$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 			
+
 		}
 
 		foreach ( self::$mObjectTypes as $objectType ) {
@@ -978,7 +1020,9 @@ return true;
 				if ( $wgLoopNumberingType == "chapter" ) {
 					
 					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
-					$tocChapter = $tocChapter[1];
+					if (isset($tocChapter[1])) {
+						$tocChapter = $tocChapter[1];
+					}
 					
 					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
 					foreach ( $matches[0] as $objectmarker ) {

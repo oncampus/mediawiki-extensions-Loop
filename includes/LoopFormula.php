@@ -68,7 +68,7 @@ class SpecialLoopFormulas extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf;
+		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -103,27 +103,26 @@ class SpecialLoopFormulas extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
+			$formula_tags = LoopIndex::getObjectsOfType ( 'loop_formula' );
 			
-			$marked_formulas_text = $parser->extractTagsAndParams ( array (
-					'loop_formula',
-					'nowiki' 
-			), $content->getWikitextForTransclusion (), $formula_tags );
-			
-			foreach ( $formula_tags as $formula_tag ) {
-				if ($formula_tag [0] == 'loop_formula') {
+			if ( isset( $formula_tags[$article_id] ) ) {
+				foreach ( $formula_tags[$article_id] as $formula_tag ) {
 					$formula = new LoopFormula();
-					$formula->init($formula_tag [1], $formula_tag [2]);
+					$formula->init($formula_tag ["thumb"], $formula_tag ["args"]);
 					
 					$formula->parse(true);
-					$formula->setNumber ( $formula_number );
+					if ( $wgLoopNumberingType == "chapter" ) {
+						$formula->setNumber ( $formula_tag["nthoftype"] );
+					} elseif ( $wgLoopNumberingType == "ongoing" ) {
+						$formula->setNumber ( $formula_number );
+						$formula_number ++;
+					}
 					$formula->setArticleId ( $article_id );
 					
 					$out->addHtml ( $formula->renderForSpecialpage () );
-					$formula_number ++;
 				}
 			}
 		}
-		#$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

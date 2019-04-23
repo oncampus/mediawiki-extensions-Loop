@@ -33,6 +33,7 @@ class LoopSettings {
     public $numberingMedia;
     public $numberingTables;
     public $numberingTasks;
+    public $numberingType;
 
     /**
      * Add settings to the database
@@ -73,7 +74,8 @@ class LoopSettings {
                 'lset_numberinglistings' => $this->numberingListings,
                 'lset_numberingmedia' => $this->numberingMedia,
                 'lset_numberingtables' => $this->numberingTables,
-                'lset_numberingtasks' => $this->numberingTasks
+                'lset_numberingtasks' => $this->numberingTasks,
+                'lset_numberingtype' => $this->numberingType
             )
         );
         
@@ -120,7 +122,8 @@ class LoopSettings {
                 'lset_numberinglistings',
                 'lset_numberingmedia',
                 'lset_numberingtables',
-                'lset_numberingtasks'
+                'lset_numberingtasks',
+                'lset_numberingtype'
             ),
             array(),
             __METHOD__,
@@ -164,6 +167,7 @@ class LoopSettings {
                 $this->numberingMedia = $row->lset_numberingmedia;
                 $this->numberingTables = $row->lset_numberingtables;
                 $this->numberingTasks = $row->lset_numberingtasks;
+                $this->numberingType = $row->lset_numberingtype;
                 
                 return true;
             } else {
@@ -173,7 +177,8 @@ class LoopSettings {
             }
         } else { // fetch data from global variables
             global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopFigureNumbering,
-                $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, $wgLoopTaskNumbering;
+                $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
+                $wgLoopTaskNumbering, $wgLoopNumberingType;
 
             $this->oncampusLink = $wgOncampusLink;
             $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
@@ -185,6 +190,7 @@ class LoopSettings {
             $this->numberingMedia = $wgLoopMediaNumbering;
             $this->numberingTables = $wgLoopTableNumbering;
             $this->numberingTasks = $wgLoopTaskNumbering;
+            $this->numberingType = $wgLoopNumberingType;
             
             return true;
         }
@@ -388,6 +394,17 @@ class LoopSettings {
             LoopObject::removeStructureCache();
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-tasks-label' ) );
+        }
+
+        # Numbering type
+        if ( ! empty ( $request->getText( 'numbering-type' ) ) ) { 
+            $this->numberingType = true;
+            LoopObject::removeStructureCache();
+        } elseif ( empty ( $request->getText( 'numbering-type' ) ) ) {
+            $this->numberingType = "false";
+            LoopObject::removeStructureCache();
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
         }
 
         $this->addToDatabase();

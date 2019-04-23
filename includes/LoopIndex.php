@@ -39,7 +39,7 @@ class LoopIndex {
     }
 	
 	// deletes all objects of a page
-    public static function removeAllPageItemsFromDb ( $article ) {
+    public function removeAllPageItemsFromDb ( $article ) {
 
 		$dbr = wfGetDB( DB_SLAVE );
 		$dbr->delete(
@@ -80,9 +80,11 @@ class LoopIndex {
 				"args" => array("id" => $row->li_refid,
 					"title" => $row->li_itemtitle,
 					"description" => $row->li_itemdesc,
-					"type" => $row->li_itemtype
+					"type" => $row->li_itemtype,
+					"id" => $row->li_refid
 			),
-				"thumb" => $row->li_itemthumb
+				"thumb" => $row->li_itemthumb,
+				"nthoftype" => $row->li_nthoftype
 			);
 		}
 		return $objects;
@@ -92,10 +94,18 @@ class LoopIndex {
     public static function getObjectNumberingsForPage ( LoopStructureItem $lsi, LoopStructure $loopStructure ) {
 
 		global $wgLoopNumberingType;
-		
-		$lsiTocNumberArray = array();
-		preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $lsiTocNumberArray);
-		$lsiTocNumber = $lsiTocNumberArray[1];
+
+		if ( $wgLoopNumberingType == "chapter" ) {
+			
+			$lsiTocNumberArray = array();
+			$lsiTocNumber = '';
+			preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $lsiTocNumberArray);
+			
+			if (isset($lsiTocNumberArray[1])) {
+				#dd($lsiTocNumber);
+				$lsiTocNumber = $lsiTocNumberArray[1];
+			}
+		}
 
 		$objects = array();
 		foreach (LoopObject::$mObjectTypes as $objectType) {
@@ -131,24 +141,30 @@ class LoopIndex {
 					}
 				}
 			}
-		} else {
-			#
+		} elseif ( $wgLoopNumberingType == "chapter" ) {
 			foreach ( $structureItems as $item ) {
+				#dd($item);
 				$tmpId = $item->article;
-				$tocNumber = preg_match('/(\d+)\.{0,1}/', $item->tocNumber, $tocNumber);
+				$tocNumber = array();
+				preg_match('/(\d+)\.{0,1}/', $item->tocNumber, $tocNumber);
+				
+				if ($item->tocNumber == "2.1" && $lsiTocNumber == "2") {
+					
+					#dd($tocNumber[1], $lsiTocNumber );
+				}
 				if ( isset( $tocNumber[1] ) && $tocNumber[1] == $lsiTocNumber ) {
+					#dd();
 					if (  $item->sequence < $lsi->sequence  ) {
 						foreach( $objects as $objectType => $page ) {
 							if ( isset( $page[$tmpId] ) ) {
 								$return[$objectType] += sizeof($page[$tmpId]);
+								#var_dump($return[$objectType]);
 							}
 						}
 					}
 				}
 			}
 		}
-		#dd($return);
-
         return $return;
 	}
 
