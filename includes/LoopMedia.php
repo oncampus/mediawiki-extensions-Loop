@@ -156,7 +156,6 @@ class SpecialLoopMedia extends SpecialPage {
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		#$out->addHtml ( '<table>' );
 		$medias = array ();
 		$items = $loopStructure->getStructureItems();
 		$media_number = 1;

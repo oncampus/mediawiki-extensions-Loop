@@ -87,7 +87,6 @@ class SpecialLoopTables extends SpecialPage {
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		#$out->addHtml ( '<table>' );
 		$tables = array ();
 		$items = $loopStructure->getStructureItems();
 		$table_number = 1;

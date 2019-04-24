@@ -88,7 +88,6 @@ class SpecialLoopTasks extends SpecialPage {
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		#$out->addHtml ( '<table>' );
 		$tasks = array ();
 		$items = $loopStructure->getStructureItems();
 		$task_number = 1;

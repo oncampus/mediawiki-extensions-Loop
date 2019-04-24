@@ -740,158 +740,113 @@ class LoopObject {
 		}
 		#$striped_text = $this->getParser()->killMarkers ( $text );
 	}
-	public static function onPageContentSave ( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $status ) {
-	#public static function onPageContentSaveComplete 	( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
-		# TODO bei jedem speichern datenbankeinträge über die medien
 
+	/**
+	 * Adds objects to db after edit
+	 */
+	public static function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) {
+		
 		$title = $wikiPage->getTitle();
 
 		if ( $title->getNamespace() == NS_MAIN ) {
-			#if ((! $parser->getOptions ()->getIsSectionPreview ()) && (! $parser->getOptions ()->getIsPreview ())) {
 				
-				$loopIndex = new LoopIndex();
-				$loopIndex->removeAllPageItemsFromDb($title->getArticleID());
+			# on edit, delete all objects of that page from db. 
+			$loopIndex = new LoopIndex();
+			$loopIndex->removeAllPageItemsFromDb($title->getArticleID());
 
-				#$loopStructure = new LoopStructure();
-				#$loopStructure->loadStructureItems();
-				$contentText = ContentHandler::getContentText( $content );
-				$parser = new Parser();
-				#dd($contentText);
-				// check if loop_object in page content
-				$has_object = false;
-				foreach (self::$mObjectTypes as $objectType) {
-					if ((substr_count ( $contentText, $objectType ) >= 1)) {
-						$has_object = true;
-						break;
-					}
-				}
-
-				if ( $has_object ) {
-					$objects = array();
-					foreach (self::$mObjectTypes as $objectType) {
-						$objects[$objectType] = 0;
-					}
-
-					$object_tags = array ();
-					$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
-					$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
-
-					
-					$newContentText = $contentText;
-
-					foreach ( $object_tags as $object ) {
-						$objects[$object[0]]++;
-						
-						$loopIndex->index = $object[0];
-						$loopIndex->nthItem = $objects[$object[0]];
-						
-						$loopIndex->pageId = $title->getArticleID();
-
-						if ( $object[0] == "loop_figure" ) {
-							$loopIndex->itemThumb = $object[1];
-						}
-						if ( $object[0] == "loop_media" ) {
-							$loopIndex->itemType = $object[2]["type"];
-						}
-						if ( isset( $object[2]["title"] ) ) {
-							$loopIndex->itemTitle = $object[2]["title"];
-						}
-						if ( isset( $object[2]["description"] ) ) {
-							$loopIndex->itemDescription = $object[2]["description"];
-						}
-						if ( isset( $object[2]["id"] ) ) {
-							
-							if ( $loopIndex->checkDublicates( $object[2]["id"] ) ) {
-								$loopIndex->refId = $object[2]["id"];
-							} else {
-								#dd(self::setReferenceIds($contentText));
-								$newRef = uniqid();
-								$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
-								#dd("hi", $newContentText, $newContentText2);
-								$loopIndex->refId = $newRef ; # TODO notieren in wikitext (loopreference)
-							}
-						} else {
-							
-							$newContentText = self::setReferenceIds( $newContentText ); 
-							$loopIndex->refId = uniqid(); 
-						}
-						$loopIndex->addToDatabase();
-
-					}
-					#dd("ho", $newContentText);
-
-					$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
-					
-					if ( $lsi ) {
-
-						self::removeStructureCache($title);
-
-					}
-					if ( $contentText !== $newContentText ) {
-						#dd($content, $contentText, $newContentText, $content->getContentHandler()->unserializeContent( $newContentText ));
-						$content = $content->getContentHandler()->unserializeContent( $newContentText );
-
-						/*
-						LoopReference::refreshReferences( $newContentText );
-				
-						// refresh id's in the latest revision too.
-						$latestRevision = Revision::newFromTitle( $title );
-						
-						if ($latestRevision){
-							try{
-								
-								// TODO wirft fehler wenn keine revision vorhanden?
-								$revisionContent = $latestRevision->getContent( Revision::RAW );
-								$revisionText = ContentHandler::getContentText( $revisionContent );
-								
-							} catch (Exception $e) {
-								
-								// TODO wfMessage
-								echo 'Exception abgefangen: ',  $e->getMessage(), "\n";
-							}
-							
-							LoopReference::refreshReferences( $revisionText );
-							
-						}*/
-					}
-				}
-			#}
-		}
-
-		#dd($content);
-		return true;
-		
-	}
-
-	public static function replaceReferenceIds( $text ) {
-
-	}
-public static function onPageContentSaveComplete 	( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) { 
-	#dd($content);
-return true;
-}
-	/*public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,	$isMinor, $isWatch, $section, &$flags, &$status ) {
-		
-		$title = $wikiPage->getTitle();
-		$text = $content->getContentHandler()->serializeContent( $content );
-	
-		// set ID's in <loop media>'s if not exists
-		#$newText = self::setReferenceIds( $text ); 
-		#dd($newText);
-		// if at least one ID was auto generated save new text
-		#if ( $newText !== false ) {
-
-			#$content = $content->getContentHandler()->unserializeContent( $newText );
+			$contentText = ContentHandler::getContentText( $content );
+			$parser = new Parser();
 			
-		#}
+			# check if loop_object in page content
+			$has_object = false;
+			foreach (self::$mObjectTypes as $objectType) {
+				if ((substr_count ( $contentText, $objectType ) >= 1)) {
+					$has_object = true;
+					break;
+				}
+			}
 
-		return true;
-	}*/
+			if ( $has_object ) {
+				$objects = array();
+				foreach (self::$mObjectTypes as $objectType) {
+					$objects[$objectType] = 0;
+				}
 
-	public static function setReferenceIds( $text ) {
+				$object_tags = array ();
+				$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
+				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
+
+				$newContentText = $contentText;
+
+				foreach ( $object_tags as $object ) {
+					$objects[$object[0]]++;
+					
+					$loopIndex->index = $object[0];
+					$loopIndex->nthItem = $objects[$object[0]];
+					
+					$loopIndex->pageId = $title->getArticleID();
+
+					if ( $object[0] == "loop_figure" ) {
+						$loopIndex->itemThumb = $object[1];
+					}
+					if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
+						$loopIndex->itemType = $object[2]["type"];
+					}
+					if ( isset( $object[2]["title"] ) ) {
+						$loopIndex->itemTitle = $object[2]["title"];
+					}
+					if ( isset( $object[2]["description"] ) ) {
+						$loopIndex->itemDescription = $object[2]["description"];
+					}
+					if ( isset( $object[2]["id"] ) ) {
+						
+						if ( $loopIndex->checkDublicates( $object[2]["id"] ) ) {
+							$loopIndex->refId = $object[2]["id"];
+						} else {
+							# dublicate id must be replaced
+							$newRef = uniqid();
+							$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+							$loopIndex->refId = $newRef; 
+						}
+					} else {
+						# create new id
+						$newRef = uniqid();
+						$newContentText = self::setReferenceId( $newContentText, $newRef ); 
+						$loopIndex->refId = $newRef; 
+
+					}
+
+					$loopIndex->addToDatabase();
+
+				}
+
+				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
+				
+				if ( $lsi ) {
+
+					self::removeStructureCache( $title );
+
+				}
+				if ( $contentText !== $newContentText ) {
+				
+					$content = $content->getContentHandler()->unserializeContent( $newContentText );
+					$content = $content->updateRedirect	( $title );
+					$wikiPage->doEditContent ( $content, $summary, $flags, false, $user );
+
+				}
+			}
+		}
+		
+	}
+
+	/**
+	 * Adds id to object tags if there is none
+	 * @param string $text
+	 * @param string $id
+	 */
+	public static function setReferenceId( $text, $id ) {
 	
 		$changedText = false;
-	
 		$text = '<div>'.$text.'</div>';
 		
 		$dom = new DOMDocument;
@@ -899,39 +854,31 @@ return true;
 		
 		$xpath = new DOMXPath( $dom );
 		
-
-		$autoIdTags = array();
-		foreach (self::$mObjectTypes as $autoIdTag) {
-			$autoIdTags[] = '//'.$autoIdTag;
+		$objectTags = array();
+		foreach (self::$mObjectTypes as $objectTag) {
+			$objectTags[] = '//'.$objectTag;
 		}
-		$query = implode(' | ', $autoIdTags);
-		
-		#var_dump($query);exit;
+		$query = implode(' | ', $objectTags);
 		
 		$nodes = $xpath->query( $query );
-		
-		#var_dump($nodes);exit;
 		
 		$changed = false;
 		foreach ( $nodes as $node ) {
 			$existingId = $node->getAttribute( 'id' );
 			if( ! $existingId ) {
-				$node->setAttribute('id', uniqid() );
+				$node->setAttribute('id', $id );
 				$changed = true;
+				$changedText = mb_substr($dom->saveHTML(),5,-7);
+				return $changedText;
+				break;
 			}
 		}
-		
-		if ($changed) {
-			$changedText = mb_substr($dom->saveHTML(),5,-7);
-		}
-		#dd($changedText);
-		return $changedText;
-		
-
-		
 	}
 
-
+	/**
+	 * Updates pagetouched data for all pages after given title, or all if there is no title
+	 * @param Title $title
+	 */
 	public static function removeStructureCache($title = null) {
 		// Reset Cache for following pages in every LoopStructure
 		$cond = "";
@@ -1006,10 +953,8 @@ return true;
 			
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
-			
 			$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 			
-
 		}
 
 		foreach ( self::$mObjectTypes as $objectType ) {
@@ -1040,10 +985,7 @@ return true;
 					$text = preg_replace ( "/" . $objectmarker . "/", "", $text );
 				}
 			}	
-			
 		}
-
-	
 		
 		return true;
 	}

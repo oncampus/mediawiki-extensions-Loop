@@ -88,7 +88,6 @@ class SpecialLoopFormulas extends SpecialPage {
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		#$out->addHtml ( '<table>' );
 		$formulas = array ();
 		$items = $loopStructure->getStructureItems();
 		$formula_number = 1;

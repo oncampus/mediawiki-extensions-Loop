@@ -87,7 +87,6 @@ class SpecialLoopListings extends SpecialPage {
 		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
 		$parser->Options ( $parserOptions );		
 		
-		#$out->addHtml ( '<table>' );
 		$listings = array ();
 		$items = $loopStructure->getStructureItems();
 		$listing_number = 1;

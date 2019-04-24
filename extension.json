@@ -73,9 +73,6 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup"
 		],
-		"PageContentSave": [
-			"LoopObject::onPageContentSave"
-		],
 		"PageContentSaveComplete": [
 			"LoopObject::onPageContentSaveComplete"
 		],
