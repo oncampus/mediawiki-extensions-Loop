@@ -97,6 +97,8 @@
 		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
 		
 		# FlaggedRevs Settings
+		#global $IP; // move here? kann bei mw-einrichtung nicht automatisch angegeben werden und wirft wegen folgender zeilen fehler.
+		#require_once "$IP/extensions/FlaggedRevs/FlaggedRevs.php";
 		$wgFlaggedRevsLowProfile = false;
 		$wgFlaggedRevsExceptions = array();
 		$wgFlaggedRevsTags = array(
@@ -119,6 +121,16 @@
 		# Uploadable file extensions
 		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg',
 			'eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr'));
+
+		# Disable Talk Namespaces
+		$wgNamespaceProtection[NS_TALK] = ['*'];
+		$wgNamespaceProtection[NS_USER_TALK] = ['*'];
+		$wgNamespaceProtection[NS_PROJECT_TALK] = ['*'];
+		$wgNamespaceProtection[NS_FILE_TALK] = ['*'];
+		$wgNamespaceProtection[NS_MEDIAWIKI_TALK] = ['*'];
+		$wgNamespaceProtection[NS_TEMPLATE_TALK] = ['*'];
+		$wgNamespaceProtection[NS_HELP_TALK] = ['*'];
+		$wgNamespaceProtection[NS_CATEGORY_TALK] = ['*'];
 
 		return true;
 	}
