@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_index (
   `li_itemtype` varbinary(255),
   `li_itemtitle` varbinary(255),
   `li_itemdesc` varbinary(255),
-  `li_thumb` varbinary(255),
+  `li_itemthumb` varbinary(255),
   PRIMARY KEY (li_id)
 ) /*$wgDBTableOptions*/;

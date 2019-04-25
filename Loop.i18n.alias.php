@@ -14,12 +14,12 @@ $specialPageAliases['en'] = array(
 	'LoopSettings' => array( 'LoopSettings' ),
 	'PurgeCache' => array( 'PurgeCache' ),
 	'LoopExport' => array( 'LoopExport' ),
-	'LoopFigures' => array( wfMessage('loopfigures')->text() ),
-	'LoopFormulas' => array( wfMessage('loopformulas')->text() ),
-	'LoopListings' => array( wfMessage('looplistings')->text() ),
-	'LoopMedia' => array( wfMessage('loopmedia')->text() ),
-	'LoopTables' => array( wfMessage('looptables')->text() ),
-	'LoopTasks' => array( wfMessage('looptasks')->text() )
+	'LoopFigures' => array( 'List of figures' ),
+	'LoopFormulas' => array( 'List of formulas' ),
+	'LoopListings' => array( 'List of listings' ),
+	'LoopMedia' => array( 'List of media' ),
+	'LoopTables' => array( 'List of tables' ),
+	'LoopTasks' => array( 'List of tasks' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -28,12 +28,12 @@ $specialPageAliases['de'] = array(
 	'LoopSettings' => array( 'Loop Einstellungen' ),
 	'PurgeCache' => array( 'Cache Leeren' ),
 	'LoopExport' => array( 'LoopExport' ),
-	'LoopFigures' => array( wfMessage('loopfigures')->text() ),
-	'LoopFormulas' => array( wfMessage('loopformulas')->text() ),
-	'LoopListings' => array( wfMessage('looplistings')->text() ),
-	'LoopMedia' => array( wfMessage('loopmedia')->text() ),
-	'LoopTables' => array( wfMessage('looptables')->text() ),
-	'LoopTasks' => array( wfMessage('looptasks')->text() )
+	'LoopFigures' => array( 'Abbildungsverzeichnis' ),
+	'LoopFormulas' => array( 'Formelverzeichnis' ),
+	'LoopListings' => array( 'Listingverzeichnis' ),
+	'LoopMedia' => array( 'Medienverzeichnis' ),
+	'LoopTables' => array( 'Tabellenverzeichnis' ),
+	'LoopTasks' => array( 'Aufgabenverzeichnis' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -42,12 +42,12 @@ $specialPageAliases['sv'] = array(
 	'LoopSettings' => array( 'Loop inställningar' ),
 	'PurgeCache' => array( 'Rensa cache' ),
 	'LoopExport' => array( 'LoopExport' ),
-	'LoopFigures' => array( wfMessage('loopfigures')->text() ),
-	'LoopFormulas' => array( wfMessage('loopformulas')->text() ),
-	'LoopListings' => array( wfMessage('looplistings')->text() ),
-	'LoopMedia' => array( wfMessage('loopmedia')->text() ),
-	'LoopTables' => array( wfMessage('looptables')->text() ),
-	'LoopTasks' => array( wfMessage('looptasks')->text() )
+	'LoopFigures' => array( 'Bild katalog' ),
+	'LoopFormulas' => array( 'Formel katalog' ),
+	'LoopListings' => array( 'Listning katalog' ),
+	'LoopMedia' => array( 'Media katalog' ),
+	'LoopTables' => array( 'Bord katalog' ),
+	'LoopTasks' => array( 'Uppgift katalog' )
 	);
 
 

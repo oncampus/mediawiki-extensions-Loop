@@ -585,8 +585,8 @@
 			"description" : ""
 		},
 		"LoopNumberingType": {
-			"value": "chapter",
-			"description" : "Setting type for numbering of objects [ongoing|chapter]"
+			"value": "ongoing",
+			"description" : "Setting default type for numbering of objects [ongoing|chapter]"
 		},
 		
 		"LoopMediaDefaultType": {

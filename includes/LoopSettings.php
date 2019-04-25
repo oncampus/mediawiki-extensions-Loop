@@ -398,11 +398,15 @@ class LoopSettings {
 
         # Numbering type
         if ( ! empty ( $request->getText( 'numbering-type' ) ) ) { 
-            $this->numberingType = true;
-            LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-type' ) ) ) {
-            $this->numberingType = "false";
-            LoopObject::removeStructureCache();
+            if ( $request->getText( 'numbering-type' ) == "ongoing" ) { 
+                $this->numberingType = "ongoing";
+                LoopObject::removeStructureCache();
+            } elseif ( $request->getText( 'numbering-type' ) == "chapter" ) { 
+                $this->numberingType = "chapter";
+                LoopObject::removeStructureCache();
+            } else {
+                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
+            }
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
         }

@@ -278,7 +278,13 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<input type="checkbox" name="numbering-tables" id="numbering-tables" value="numberingTables" ' . ( $currentLoopSettings->numberingTables === true ? 'checked' : '' ) .'>
 					<label for="numbering-tables">' . $this->msg( 'loopsettings-numbering-tables-label' ) . '</label><br>';
 					$html .= '<input type="checkbox" name="numbering-tasks" id="numbering-tasks" value="numberingTasks" ' . ( $currentLoopSettings->numberingTasks === true ? 'checked' : '' ) .'>
-					<label for="numbering-tasks">' . $this->msg( 'loopsettings-numbering-tasks-label' ) . '</label><br>';
+					<label for="numbering-tasks">' . $this->msg( 'loopsettings-numbering-tasks-label' ) . '</label><br><br>';
+			#dd($currentLoopSettings->numberingType);
+					$html .= '<input type="radio" name="numbering-type" id="ongoing" value="ongoing" ' . ( $currentLoopSettings->numberingType == "ongoing" ? 'checked' : '' ) .'>
+					<label for="ongoing">' . $this->msg( 'loopsettings-numbering-type-ongoing-label' ) . '</label><br>';
+
+					$html .= '<input type="radio" name="numbering-type" id="chapter" value="chapter" ' . ( $currentLoopSettings->numberingType == "chapter" ? 'checked' : '' ) .'>
+					<label for="chapter">' . $this->msg( 'loopsettings-numbering-type-chapter-label' ) . '</label><br>';
 			
 
 				$html .= '</div>'; // end of content-tab
