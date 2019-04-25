@@ -68,7 +68,6 @@ class SpecialLoopTables extends SpecialPage {
 	
 	public function execute($sub) {
 		global $wgParserConf, $wgLoopNumberingType;
-		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
 		

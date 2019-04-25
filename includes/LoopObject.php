@@ -213,6 +213,7 @@ class LoopObject {
 	public function renderForSpecialpage() {
 		global $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
 		$wgLoopTaskNumbering, $wgLoopNumberingType;
+		#dd($wgLoopTableNumbering, $wgLoopNumberingType);
 		$objectClass = get_class( $this );
 		switch ( $objectClass ) {
 			case "LoopFormula":
@@ -236,7 +237,7 @@ class LoopObject {
 				$type = 'loop_task';
 				break;
 		}
-
+		#dd($numbering, $type);
 		$numberText = '';
 		if ( $numbering != 'false' ) {
 			if ( $wgLoopNumberingType == 'chapter' ) {
@@ -937,7 +938,10 @@ class LoopObject {
 	
 	public static function onParserAfterTidy(&$parser, &$text) {
 		
-		global $wgLoopFigureNumbering, $wgLoopNumberingType;
+		global $wgLoopNumberingType, $wgLoopFigureNumbering, $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
+		$wgLoopTaskNumbering, $wgLoopNumberingType;;
+
+
 
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
@@ -958,10 +962,31 @@ class LoopObject {
 		}
 
 		foreach ( self::$mObjectTypes as $objectType ) {
+			
+			switch ( $objectType ) {
+				case "loop_figure":
+					$numbering = $wgLoopFigureNumbering;
+					break;
+				case "loop_formula":
+					$numbering = $wgLoopFormulaNumbering;
+					break;
+				case "loop_listing":
+					$numbering = $wgLoopListingNumbering;
+					break;
+				case "loop_media":
+					$numbering = $wgLoopMediaNumbering;
+					break;
+				case "loop_table":
+					$numbering = $wgLoopTableNumbering;
+					break;
+				case "loop_task":
+					$numbering = $wgLoopTaskNumbering;
+					break;
+			}
 			$matches = array();
 			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 			
-			if ( $lsi && $wgLoopFigureNumbering == 1 ) {
+			if ( $lsi && $numbering == 1 ) {
 				if ( $wgLoopNumberingType == "chapter" ) {
 					
 					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
