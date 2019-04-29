@@ -102,7 +102,7 @@ class SpecialLoopFormulas extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
-			$formula_tags = LoopIndex::getObjectsOfType ( 'loop_formula' );
+			$formula_tags = LoopObjectIndex::getObjectsOfType ( 'loop_formula' );
 			
 			if ( isset( $formula_tags[$article_id] ) ) {
 				foreach ( $formula_tags[$article_id] as $formula_tag ) {

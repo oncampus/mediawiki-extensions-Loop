@@ -1,5 +1,5 @@
 <?php
-class LoopIndex {
+class LoopObjectIndex {
 
     public $id; // id of the indexed item
 	public $pageId; // article id of the page the item is on
@@ -20,16 +20,16 @@ class LoopIndex {
         $dbw = wfGetDB( DB_MASTER );
         
         $dbw->insert(
-            'loop_index',
+            'loop_object_index',
             array(
-                'li_pageid' => $this->pageId,
-                'li_refid' => $this->refId,
-                'li_index' => $this->index,
-                'li_nthoftype' => $this->nthItem,
-                'li_itemtype' => $this->itemType,
-                'li_itemtitle' => $this->itemTitle,
-                'li_itemdesc' => $this->itemDescription,
-                'li_itemthumb' => $this->itemThumb
+                'loi_pageid' => $this->pageId,
+                'loi_refid' => $this->refId,
+                'loi_index' => $this->index,
+                'loi_nthoftype' => $this->nthItem,
+                'loi_itemtype' => $this->itemType,
+                'loi_itemtitle' => $this->itemTitle,
+                'loi_itemdesc' => $this->itemDescription,
+                'loi_itemthumb' => $this->itemThumb
             ),
             __METHOD__
         );
@@ -43,8 +43,8 @@ class LoopIndex {
 
 		$dbr = wfGetDB( DB_SLAVE );
 		$dbr->delete(
-			'loop_index',
-			'li_pageid = ' . $article,
+			'loop_object_index',
+			'loi_pageid = ' . $article,
 			__METHOD__
 		);
 
@@ -57,34 +57,34 @@ class LoopIndex {
 		$dbr = wfGetDB( DB_SLAVE );
 
 		$res = $dbr->select(
-			'loop_index',
+			'loop_object_index',
 			array(
-                'li_pageid',
-                'li_refid',
-				'li_index',
-                'li_nthoftype',
-                'li_itemtype',
-                'li_itemtitle',
-                'li_itemdesc',
-                'li_itemthumb'
+                'loi_pageid',
+                'loi_refid',
+				'loi_index',
+                'loi_nthoftype',
+                'loi_itemtype',
+                'loi_itemtitle',
+                'loi_itemdesc',
+                'loi_itemthumb'
 			),
 			array(
-				'li_index = "' . $type .'"'
+				'loi_index = "' . $type .'"'
 			),
 			__METHOD__
 		);
 		
 		$objects = array(  );
 		foreach( $res as $row ) {
-			$objects[$row->li_pageid][$row->li_nthoftype] = array(
-				"args" => array("id" => $row->li_refid,
-					"title" => $row->li_itemtitle,
-					"description" => $row->li_itemdesc,
-					"type" => $row->li_itemtype,
-					"id" => $row->li_refid
+			$objects[$row->loi_pageid][$row->loi_nthoftype] = array(
+				"args" => array("id" => $row->loi_refid,
+					"title" => $row->loi_itemtitle,
+					"description" => $row->loi_itemdesc,
+					"type" => $row->loi_itemtype,
+					"id" => $row->loi_refid
 			),
-				"thumb" => $row->li_itemthumb,
-				"nthoftype" => $row->li_nthoftype
+				"thumb" => $row->loi_itemthumb,
+				"nthoftype" => $row->loi_nthoftype
 			);
 		}
 		return $objects;
@@ -116,17 +116,17 @@ class LoopIndex {
 		$dbr = wfGetDB( DB_SLAVE );
 
 		$res = $dbr->select(
-			'loop_index',
+			'loop_object_index',
 			array(
-                'li_pageid',
-                'li_refid',
-                'li_index'
+                'loi_pageid',
+                'loi_refid',
+                'loi_index'
 			),
 			"*",
 			__METHOD__
 		);
 		foreach( $res as $row ) {
-			$objects[$row->li_index][$row->li_pageid][] = $row->li_refid;
+			$objects[$row->loi_index][$row->loi_pageid][] = $row->loi_refid;
 		}
 
 		$structureItems = $loopStructure->getStructureItems();
@@ -172,12 +172,12 @@ class LoopIndex {
 		
 		$dbr = wfGetDB( DB_SLAVE );
 		$res = $dbr->select(
-			'loop_index',
+			'loop_object_index',
 			array(
-                'li_refid'
+                'loi_refid'
 			),
 			array(
-				'li_refid = "' . $refId .'"'
+				'loi_refid = "' . $refId .'"'
 			),
 			__METHOD__
 		);

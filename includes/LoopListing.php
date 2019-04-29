@@ -101,7 +101,7 @@ class SpecialLoopListings extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
-			$listing_tags = LoopIndex::getObjectsOfType ( 'loop_listing' );
+			$listing_tags = LoopObjectIndex::getObjectsOfType ( 'loop_listing' );
 			
 			if ( isset( $listing_tags[$article_id] ) ) {
 				foreach ( $listing_tags[$article_id] as $listing_tag ) {

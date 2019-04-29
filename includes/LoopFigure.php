@@ -177,7 +177,7 @@ class LoopFigure extends LoopObject{
 					$loopStructure = new LoopStructure();
 					$loopStructure->loadStructureItems();
 					
-					$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+					$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 					$number = $previousObjects['loop_figure'] + $this->getNumber();
 					$numberText = ' ' . $tocChapter . '-' . $number;
 				}
@@ -259,7 +259,7 @@ class SpecialLoopFigures extends SpecialPage {
 		$items = $loopStructure->getStructureItems();
 		$figure_number = 1;
 		
-		$figure_tags = LoopIndex::getObjectsOfType ( 'loop_figure' );
+		$figure_tags = LoopObjectIndex::getObjectsOfType ( 'loop_figure' );
 
 		foreach ( $items as $item ) {
 			

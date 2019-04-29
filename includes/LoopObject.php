@@ -251,7 +251,7 @@ class LoopObject {
 					$loopStructure = new LoopStructure();
 					$loopStructure->loadStructureItems();
 					
-					$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+					$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 					#dd($previousObjects[$type]+$this->getNumber() );
 					$number = $previousObjects[$type] + $this->getNumber();
 					$numberText = ' ' . $tocChapter . '-' . $number;
@@ -752,8 +752,8 @@ class LoopObject {
 		if ( $title->getNamespace() == NS_MAIN ) {
 				
 			# on edit, delete all objects of that page from db. 
-			$loopIndex = new LoopIndex();
-			$loopIndex->removeAllPageItemsFromDb($title->getArticleID());
+			$loopObjectIndex = new LoopObjectIndex();
+			$loopObjectIndex->removeAllPageItemsFromDb($title->getArticleID());
 
 			$contentText = ContentHandler::getContentText( $content );
 			$parser = new Parser();
@@ -782,42 +782,42 @@ class LoopObject {
 				foreach ( $object_tags as $object ) {
 					$objects[$object[0]]++;
 					
-					$loopIndex->index = $object[0];
-					$loopIndex->nthItem = $objects[$object[0]];
+					$loopObjectIndex->index = $object[0];
+					$loopObjectIndex->nthItem = $objects[$object[0]];
 					
-					$loopIndex->pageId = $title->getArticleID();
+					$loopObjectIndex->pageId = $title->getArticleID();
 
 					if ( $object[0] == "loop_figure" ) {
-						$loopIndex->itemThumb = $object[1];
+						$loopObjectIndex->itemThumb = $object[1];
 					}
 					if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
-						$loopIndex->itemType = $object[2]["type"];
+						$loopObjectIndex->itemType = $object[2]["type"];
 					}
 					if ( isset( $object[2]["title"] ) ) {
-						$loopIndex->itemTitle = $object[2]["title"];
+						$loopObjectIndex->itemTitle = $object[2]["title"];
 					}
 					if ( isset( $object[2]["description"] ) ) {
-						$loopIndex->itemDescription = $object[2]["description"];
+						$loopObjectIndex->itemDescription = $object[2]["description"];
 					}
 					if ( isset( $object[2]["id"] ) ) {
 						
-						if ( $loopIndex->checkDublicates( $object[2]["id"] ) ) {
-							$loopIndex->refId = $object[2]["id"];
+						if ( $loopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
+							$loopObjectIndex->refId = $object[2]["id"];
 						} else {
 							# dublicate id must be replaced
 							$newRef = uniqid();
 							$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
-							$loopIndex->refId = $newRef; 
+							$loopObjectIndex->refId = $newRef; 
 						}
 					} else {
 						# create new id
 						$newRef = uniqid();
 						$newContentText = self::setReferenceId( $newContentText, $newRef ); 
-						$loopIndex->refId = $newRef; 
+						$loopObjectIndex->refId = $newRef; 
 
 					}
 
-					$loopIndex->addToDatabase();
+					$loopObjectIndex->addToDatabase();
 
 				}
 
@@ -957,7 +957,7 @@ class LoopObject {
 			
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
-			$previousObjects = LoopIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 			
 		}
 

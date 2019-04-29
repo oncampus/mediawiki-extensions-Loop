@@ -101,7 +101,7 @@ class SpecialLoopTables extends SpecialPage {
 			$parser->setTitle ( $title );
 			
 			
-			$table_tags = LoopIndex::getObjectsOfType ( 'loop_table' );
+			$table_tags = LoopObjectIndex::getObjectsOfType ( 'loop_table' );
 			
 			if ( isset( $table_tags[$article_id] ) ) {
 				foreach ( $table_tags[$article_id] as $table_tag ) {

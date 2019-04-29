@@ -350,7 +350,7 @@ class LoopStructure {
 	}
 
 	public function hasObjects( $type ) {
-		$objects = LoopIndex::getObjectsOfType ( $type );
+		$objects = LoopObjectIndex::getObjectsOfType ( $type );
 		$structureItems = $this->getStructureItems();
 
 		foreach ( $structureItems as $item ) {

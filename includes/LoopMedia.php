@@ -170,7 +170,7 @@ class SpecialLoopMedia extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
-			$media_tags = LoopIndex::getObjectsOfType ( 'loop_media' );
+			$media_tags = LoopObjectIndex::getObjectsOfType ( 'loop_media' );
 			
 			if ( isset( $media_tags[$article_id] ) ) {
 			foreach ( $media_tags[$article_id] as $media_tag ) {

@@ -44,7 +44,7 @@
 		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
 		"SpecialPurgeCache": "includes/SpecialPurgeCache.php",
 		"LoopException": "includes/LoopException.php",
-		"LoopIndex": "includes/LoopIndex.php",
+		"LoopObjectIndex": "includes/LoopObjectIndex.php",
 		"LoopObject": "includes/LoopObject.php",
 		"LoopFigure": "includes/LoopFigure.php",
 		"SpecialLoopFigures": "includes/LoopFigure.php",
@@ -57,8 +57,7 @@
 		"LoopTable": "includes/LoopTable.php",
 		"SpecialLoopTables": "includes/LoopTable.php",
 		"LoopTask": "includes/LoopTask.php",
-		"SpecialLoopTasks": "includes/LoopTask.php",
-		"LoopReference": "includes/LoopReference.php"
+		"SpecialLoopTasks": "includes/LoopTask.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -94,8 +93,7 @@
 		"LoopListings": "SpecialLoopListings",
 		"LoopMedia": "SpecialLoopMedia",
 		"LoopTables": "SpecialLoopTables",
-		"LoopTasks": "SpecialLoopTasks",
-		"LoopReference": "LoopReference"
+		"LoopTasks": "SpecialLoopTasks"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

@@ -102,7 +102,7 @@ class SpecialLoopTasks extends SpecialPage {
 			$parser->clearState();
 			$parser->setTitle ( $title );
 			
-			$task_tags = LoopIndex::getObjectsOfType ( 'loop_task' );
+			$task_tags = LoopObjectIndex::getObjectsOfType ( 'loop_task' );
 			
 			if ( isset( $task_tags[$article_id] ) ) {
 				foreach ( $task_tags[$article_id] as $task_tag ) {
