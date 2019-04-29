@@ -86,9 +86,10 @@ class LoopMp3 {
 				$id3tag_track = "0";
 			} else {
 				$loopExportSsml = LoopMp3::transformToSsml( $articleXml );
+				dd($loopExportSsml,$articleXml);
 			}
 
-			//dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
+			#dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
 			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
 
 			$mp3File = fopen( $filePathName , 'w') or die("can't write mp3 file");
@@ -156,13 +157,13 @@ class LoopMp3 {
 	 * @param string $articleId
 	 */
 	private static function writeLog( $msg, $articleId ) {
-		
-		$logEntry = new ManualLogEntry( 'loopexport', 'pageaudio');
-		$logEntry->setTarget( Title::newFromId($articleId) );
-		$logEntry->setPerformer( User::newFromId(0) ); 
-		$logEntry->setParameters( [ '4::paramname' => $msg ] );
-		$logid = $logEntry->insert();
-
+		if ($articleId != "intro" ) {
+			$logEntry = new ManualLogEntry( 'loopexport', 'pageaudio');
+			$logEntry->setTarget( Title::newFromId($articleId) );
+			$logEntry->setPerformer( User::newFromId(0) ); 
+			$logEntry->setParameters( [ '4::paramname' => $msg ] );
+			$logid = $logEntry->insert();
+		}
 		return true;
 
 	}

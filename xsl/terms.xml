@@ -11,4 +11,9 @@
 	<msg name="word_content" lang="en">Content</msg>
 	<msg name="word_content" lang="de">Inhalt</msg>	
 	<msg name="word_content" lang="sv">Innehåll</msg>	
+
+	<msg name="phrase_loop_figure" lang="en">At this point is a figure.</msg>
+	<msg name="phrase_loop_figure" lang="de">Hier befindet sich eine Abbildung.</msg>	
+	<msg name="phrase_loop_figure" lang="sv">Här är en bild.</msg>	
+	
 </terms>

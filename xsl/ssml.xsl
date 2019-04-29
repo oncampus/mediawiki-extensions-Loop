@@ -67,6 +67,64 @@
 	</xsl:template>	
 
 
+	<xsl:template match="extension">
+	
+		<xsl:if test="@extension_name='loop_figure'">
+			<xsl:element name="speak">
+				<xsl:attribute name="voice">
+					<xsl:text>3</xsl:text>
+				</xsl:attribute>
+				
+				<xsl:value-of select="$phrase_loop_figure"/>
+
+				<xsl:text> </xsl:text>
+
+				<xsl:if test="@title">
+					<xsl:value-of select="@title"></xsl:value-of>
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>medium</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+				</xsl:if>	
+				<xsl:if test="@description">
+					<xsl:value-of select="@description"></xsl:value-of>
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>medium</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+				</xsl:if>	
+				<xsl:if test="@copyright">
+					<xsl:value-of select="@copyright"></xsl:value-of>
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>medium</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+				</xsl:if>	
+				
+				<xsl:apply-templates/>
+
+			</xsl:element>		
+		</xsl:if>	
+
+		<xsl:element name="speak">
+			<xsl:attribute name="voice">
+				<xsl:text>2</xsl:text>
+			</xsl:attribute>
+			
+			<xsl:apply-templates/>
+		</xsl:element>
+		
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>1200ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		
+	</xsl:template>
+
 	<xsl:template match="heading">
 	
 		<xsl:element name="speak">
@@ -87,12 +145,19 @@
 	
 	
 	<xsl:template match="paragraph">
-		<xsl:element name="speak">
+		<!-- <xsl:element name="speak"> 
 			<xsl:attribute name="voice">
 				<xsl:text>1</xsl:text>
 			</xsl:attribute>
-		<p><xsl:apply-templates/></p>
-		</xsl:element>
+		</xsl:element>-->
+		<!-- <xsl:element name="speak"> 
+			<xsl:attribute name="voice">
+				<xsl:text>2</xsl:text>
+			</xsl:attribute>
+			<p>
+			</p>
+		</xsl:element>-->
+				<xsl:apply-templates/>
 	</xsl:template>
 	
 	<xsl:template match="preblock">

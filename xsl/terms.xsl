@@ -14,4 +14,6 @@
 	<xsl:variable name="word_state"  select="functx:get_term_name('word_state')" />
 	<xsl:variable name="word_content"  select="functx:get_term_name('word_content')" />
 
+	<xsl:variable name="phrase_loop_figure"  select="functx:get_term_name('phrase_loop_figure')" />
+
 </xsl:stylesheet>
