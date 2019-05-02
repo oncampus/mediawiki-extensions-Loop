@@ -168,8 +168,10 @@ class LoopFigure extends LoopObject{
 				$tocChapter = '';
 				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
 
-				if (isset($tocChapterArray)) {
+				if (isset($tocChapterArray[1])) {
 					$tocChapter = $tocChapterArray[1];
+				} else {
+					$tocChapter = 0;
 				}
 				
 				if ( $lsi ) {
@@ -179,7 +181,7 @@ class LoopFigure extends LoopObject{
 					
 					$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 					$number = $previousObjects['loop_figure'] + $this->getNumber();
-					$numberText = ' ' . $tocChapter . '-' . $number;
+					$numberText = ' ' . $tocChapter . '.' . $number;
 				}
 
 			} else {

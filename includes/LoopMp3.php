@@ -19,7 +19,8 @@ class LoopMp3 {
 			$loopStructureItems = $loopStructure->getStructureItems();		
 			
 			$loopExportXml = new LoopExportXml($loopStructure);
-			$loopExportXml->generateExportContent( );
+			$modifiers = array( "mp3" => true );
+			$loopExportXml->generateExportContent( $modifiers );
 			$structureXml = $loopExportXml->exportContent;
 			$domStructure = new domDocument('1.0', 'utf-8');
 			$domStructure->loadXML($structureXml);
@@ -49,6 +50,20 @@ class LoopMp3 {
 			return $mp3FilePath;
 		}
 
+	}
+
+	/**
+	 * Checks for nested tags created in ssml and replaces them with speak tags
+	 *
+	 * @param string $ssml
+	 */
+	public static function checkNestedTags( $ssml ) {
+
+		$returnSsml1 = preg_replace('/(<replace_speak_next)( voice="\d")(\/>)/', '<speak$2>', $ssml);
+		$returnSsml2 = preg_replace('/(<replace_speak)/', '</speak><speak', $returnSsml1);
+		$returnSsml = preg_replace('/(<\/replace_speak>)/', '</speak>', $returnSsml2);
+		#dd($ssml, $returnSsml1, $returnSsml2, $returnSsml);
+		return $returnSsml;
 	}
 
 	/**
@@ -86,8 +101,8 @@ class LoopMp3 {
 				$id3tag_track = "0";
 			} else {
 				$loopExportSsml = LoopMp3::transformToSsml( $articleXml );
-				dd($loopExportSsml,$articleXml);
 			}
+			$loopExportSsml = self::checkNestedTags($loopExportSsml);
 
 			#dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
 			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
@@ -213,7 +228,8 @@ class LoopMp3 {
 		$loopStructureItems = $loopStructure->getStructureItems();		
 
 		$loopExportXml = new LoopExportXml($loopStructure);
-		$loopExportXml->generateExportContent( );
+		$modifiers = array( "mp3" => true );
+		$loopExportXml->generateExportContent( $modifiers );
 		$structureXml = $loopExportXml->exportContent;
 		$domStructure = new domDocument('1.0', 'utf-8');
 		$domStructure->loadXML($structureXml);
@@ -401,7 +417,7 @@ class LoopMp3 {
 	private static function requestArticleAsMp3( $content, $language, $type ) {
 
 		global $wgText2SpeechServiceUrl;
-
+		#dd($content);
 		$params = "srctext=".urlencode ($content)."&language=".$language."&type=".$type;
 		$mp3Response = LoopMp3::httpRequest( $wgText2SpeechServiceUrl, $params );
 

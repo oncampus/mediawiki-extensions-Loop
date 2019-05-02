@@ -1,6 +1,6 @@
 <?php
 class LoopXml {
-	public static function structure2xml(LoopStructure $loopStructure) {
+	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
 		global $wgCanonicalServer, $wgLanguageCode;
 		
 		$loopStructureItems = $loopStructure->getStructureItems();		
@@ -29,7 +29,7 @@ class LoopXml {
 		
 		$xml .= "<articles>";
 		foreach ( $loopStructureItems as $loopStructureItem ) {
-			$xml .= self::structureItem2xml ( $loopStructureItem );
+			$xml .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
 		$xml .= "</articles>\n";
 		
@@ -37,11 +37,20 @@ class LoopXml {
 		
 		return $xml;
 	}
-	public static function structureItem2xml(LoopStructureItem $structureItem) {
+	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
 		$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ()->getNativeData ();
 		
 		$content = html_entity_decode($content);
+		$objectTypes = LoopObject::$mObjectTypes;
 		
+		# modify content for mp3 export
+		if ( $modifiers["mp3"] ) {
+			foreach( $objectTypes as $type ) {
+				$content = preg_replace('/(<'.$type.')/', "\n<".$type, $content);
+				$content = preg_replace('/(<\/'.$type.'>)/', "</".$type.">\n", $content);
+			}
+		}
+
 		$wiki2xml = new wiki2xml ();
 		$xml = "<article ";
 		$xml .= "id=\"article" . $structureItem->getArticle() . "\" ";
@@ -53,6 +62,7 @@ class LoopXml {
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
 		#dd( $xml ); # dump and exit at first page xml
+		
 		return $xml;
 	}
 

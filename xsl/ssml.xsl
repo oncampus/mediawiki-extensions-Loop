@@ -69,11 +69,18 @@
 
 	<xsl:template match="extension">
 	
+		<xsl:if test="@extension_name='loop_title'">
+			<xsl:apply-templates/>
+		</xsl:if>	
+		<xsl:if test="@extension_name='loop_description'">
+			<xsl:apply-templates/>
+		</xsl:if>	
+		<xsl:if test="@extension_name='loop_copyright'">
+				<xsl:apply-templates/>
+		</xsl:if>	
+
+
 		<xsl:if test="@extension_name='loop_figure'">
-			<xsl:element name="speak">
-				<xsl:attribute name="voice">
-					<xsl:text>3</xsl:text>
-				</xsl:attribute>
 				
 				<xsl:value-of select="$phrase_loop_figure"/>
 
@@ -106,16 +113,15 @@
 				
 				<xsl:apply-templates/>
 
-			</xsl:element>		
 		</xsl:if>	
 
-		<xsl:element name="speak">
+		<!--<xsl:element name="speak">
 			<xsl:attribute name="voice">
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
 			
 			<xsl:apply-templates/>
-		</xsl:element>
+		</xsl:element>-->
 		
 		<xsl:element name="break">
 			<xsl:attribute name="time">
@@ -145,32 +151,58 @@
 	
 	
 	<xsl:template match="paragraph">
-		<!-- <xsl:element name="speak"> 
-			<xsl:attribute name="voice">
-				<xsl:text>1</xsl:text>
-			</xsl:attribute>
-		</xsl:element>-->
-		<!-- <xsl:element name="speak"> 
-			<xsl:attribute name="voice">
-				<xsl:text>2</xsl:text>
-			</xsl:attribute>
-			<p>
-			</p>
-		</xsl:element>-->
-				<xsl:apply-templates/>
+		<xsl:choose>
+			<xsl:when test="ancestor::paragraph">
+				<xsl:element name="replace_speak">
+					<xsl:attribute name="voice">
+						<xsl:value-of select="functx:select_voice()"/>
+					</xsl:attribute>
+					<xsl:apply-templates/>
+				</xsl:element>
+				<xsl:element name="replace_speak_next">
+					<xsl:attribute name="voice">
+						<xsl:value-of select="functx:select_voice()"/>
+					</xsl:attribute>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="speak">
+					<xsl:attribute name="voice">
+						<xsl:value-of select="functx:select_voice()"/>
+					</xsl:attribute>
+					<xsl:apply-templates/>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+
+	<func:function name="functx:select_voice">
 	
+		<xsl:choose>
+			<xsl:when test="extension[@extension_name='loop_figure']">
+        		<func:result>2</func:result>
+			</xsl:when>
+
+			<xsl:otherwise>
+        		<func:result>1</func:result>
+			</xsl:otherwise>
+
+		</xsl:choose>
+		
+
+	</func:function>
+		
 	<xsl:template match="preblock">
 		
 	</xsl:template>
 
 	
 	<xsl:template match="space">
-		<xsl:element name="break">
+		<!--<xsl:element name="break">
 			<xsl:attribute name="time">
 				<xsl:text>1200ms</xsl:text>
 			</xsl:attribute>
-		</xsl:element>
+		</xsl:element>-->
 	</xsl:template>		
 
 	<xsl:template match="meta">

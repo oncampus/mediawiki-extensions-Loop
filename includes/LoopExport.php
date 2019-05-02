@@ -120,7 +120,7 @@ class LoopExportXml extends LoopExport {
 		$this->request = $request;
 	}
 
-	public function generateExportContent() {
+	public function generateExportContent( Array $modifiers = null ) {
 		$query = array();
 		if ( isset( $this->request ) ) {
 			$query = $this->request->getQueryValues();
@@ -129,7 +129,7 @@ class LoopExportXml extends LoopExport {
 			$this->exportContent = LoopXml::articleFromId2xml( $query['articleId'] );
 			var_dump($this->exportContent); exit; //debug output of page
 		} else {
-			$this->exportContent = LoopXml::structure2xml($this->structure);
+			$this->exportContent = LoopXml::structure2xml($this->structure, $modifiers);
 		}
 	}
 

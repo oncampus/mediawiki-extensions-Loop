@@ -244,7 +244,12 @@ class LoopObject {
 		
 				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
 				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
-				$tocChapter = $tocChapter[1];
+
+				if (isset($tocChapter[1])) {
+					$tocChapter = $tocChapter[1];
+				} else {
+					$tocChapter = 0;
+				}
 				
 				if ( $lsi ) {
 					
@@ -254,7 +259,7 @@ class LoopObject {
 					$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 					#dd($previousObjects[$type]+$this->getNumber() );
 					$number = $previousObjects[$type] + $this->getNumber();
-					$numberText = ' ' . $tocChapter . '-' . $number;
+					$numberText = ' ' . $tocChapter . '.' . $number;
 				}
 
 			} else {
@@ -650,7 +655,6 @@ class LoopObject {
 			throw new LoopException( wfMessage( 'loopobject-error-unknown-renderoption', $this->getRenderOption(), implode( ', ', self::$mRenderOptions ) ) );
 		}
 		
-		
 		if ($alignment = $this->GetArg('align')) {
 			$this->setAlignment(htmlspecialchars($alignment));
 		} else {
@@ -661,7 +665,6 @@ class LoopObject {
 			throw new LoopException( wfMessage( 'loopobject-error-unknown-alignmentoption', $this->getAlignment(), implode( ', ', self::$mAlignmentOptions ) ) );
 		}		
 		
-		
 		if ($title = $this->GetArg('title')) {
 			$this->setTitle(htmlspecialchars($title));
 			$this->setTitleFullyParsed(htmlspecialchars($title));
@@ -671,8 +674,7 @@ class LoopObject {
 			$this->setDescription(htmlspecialchars($description));
 			$this->setDescriptionFullyParsed(htmlspecialchars($description));
 		}
-		
-		
+
 		if ($this->GetArg('show_copyright')) {
 			$showcopyright = htmlspecialchars($this->GetArg('show_copyright'));
 		} else {
@@ -837,7 +839,6 @@ class LoopObject {
 				}
 			}
 		}
-		
 	}
 
 	/**
@@ -941,8 +942,6 @@ class LoopObject {
 		global $wgLoopNumberingType, $wgLoopFigureNumbering, $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
 		$wgLoopTaskNumbering, $wgLoopNumberingType;;
 
-
-
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
 		
@@ -996,8 +995,11 @@ class LoopObject {
 					
 					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
 					foreach ( $matches[0] as $objectmarker ) {
-						$text = preg_replace ( "/" . $objectmarker . "/", $tocChapter . "-" . $i++, $text );
-					}
+						if ( empty( $tocChapter ) ) {
+							$tocChapter = 0;
+						}
+						$text = preg_replace ( "/" . $objectmarker . "/", $tocChapter . "." . $i++, $text );
+					} 
 
 				} else {
 					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
