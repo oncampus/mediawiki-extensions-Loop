@@ -10,7 +10,7 @@ class LoopPdf {
 		$unique = uniqid();
 	
 		$wiki_xml = LoopXml::structure2xml($structure);
-	
+		#var_dump($wiki_xml);exit;
 		try {
 			$xml = new DOMDocument();
 			$xml->loadXML($wiki_xml);

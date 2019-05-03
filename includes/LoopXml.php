@@ -29,14 +29,41 @@ class LoopXml {
 		
 		$xml .= "<articles>";
 		foreach ( $loopStructureItems as $loopStructureItem ) {
-			$xml .= self::structureItem2xml ( $loopStructureItem, $modifiers );
+		    $xml .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
 		$xml .= "</articles>\n";
 		
-		$xml .= "</loop>";
+		$xml .= "<loop_objects>\n";
 		
+		$xml .= self::objectsTable2xml ( $loopStructureItems, $loopStructure );
+		
+		$xml .= "</loop_objects>\n";
+		
+		$xml .= "</loop>";
+		#dd($xml);
 		return $xml;
 	}
+	
+	public static function objectsTable2xml ( $loopStructureItems, $loopStructure ) {
+	    
+	    $xml = '';
+	      
+	    $objects = LoopObjectIndex::getAllObjects( $loopStructure );
+	    
+	    foreach ( $objects as $object ) {
+	        
+	        $xml .= "<loop_object object_type='".$object["index"]."' articleid='".$object["pageid"]."' refid='".$object["id"]."'>\n";
+	        if ( ! empty($object["objectnumber"]) ) {   $xml .= "<object_number>".$object["objectnumber"]."</object_number>\n"; }
+	        if ( ! empty($object["type"]) ) {   $xml .= "<object_media_type>".$object["type"]."</object_media_type>\n"; }
+	       
+	        $xml .= "<object_title>".$object["title"]."</object_title>\n";
+	        $xml .= "<object_description>".$object["title"]."</object_description>\n";
+	        $xml .= "</loop_object>\n";
+	    }
+	    #dd($xml);
+	    return $xml;
+	}
+	
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
 		$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ()->getNativeData ();
 		

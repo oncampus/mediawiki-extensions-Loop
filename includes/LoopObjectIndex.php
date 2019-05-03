@@ -50,45 +50,145 @@ class LoopObjectIndex {
 
         return true;
     }
-
-	// returns ALL objects of a type in the wiki.
+    
+    // returns ALL objects of a type in the wiki.
     public static function getObjectsOfType ( $type ) {
-
-		$dbr = wfGetDB( DB_SLAVE );
-
-		$res = $dbr->select(
-			'loop_object_index',
-			array(
+        
+        $dbr = wfGetDB( DB_SLAVE );
+        
+        $res = $dbr->select(
+            'loop_object_index',
+            array(
                 'loi_pageid',
                 'loi_refid',
-				'loi_index',
+                'loi_index',
                 'loi_nthoftype',
                 'loi_itemtype',
                 'loi_itemtitle',
                 'loi_itemdesc',
                 'loi_itemthumb'
-			),
-			array(
-				'loi_index = "' . $type .'"'
-			),
-			__METHOD__
-		);
-		
-		$objects = array(  );
-		foreach( $res as $row ) {
-			$objects[$row->loi_pageid][$row->loi_nthoftype] = array(
-				"args" => array("id" => $row->loi_refid,
-					"title" => $row->loi_itemtitle,
-					"description" => $row->loi_itemdesc,
-					"type" => $row->loi_itemtype,
-					"id" => $row->loi_refid
-			),
-				"thumb" => $row->loi_itemthumb,
-				"nthoftype" => $row->loi_nthoftype
-			);
-		}
-		return $objects;
-	}
+            ),
+            array(
+                'loi_index = "' . $type .'"'
+            ),
+            __METHOD__
+            );
+        
+        $objects = array(  );
+        foreach( $res as $row ) {
+            $objects[$row->loi_pageid][$row->loi_nthoftype] = array(
+                "args" => array("id" => $row->loi_refid,
+                    "title" => $row->loi_itemtitle,
+                    "description" => $row->loi_itemdesc,
+                    "type" => $row->loi_itemtype,
+                    "id" => $row->loi_refid
+                ),
+                "thumb" => $row->loi_itemthumb,
+                "nthoftype" => $row->loi_nthoftype
+            );
+        }
+        return $objects;
+    }
+    
+    // returns structure objects with numberings in the table
+    public static function getAllObjects ( $loopStructure ) {
+        
+        global $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering,
+        $wgLoopTaskNumbering, $wgLoopNumberingType, $wgLoopFigureNumbering;
+        
+        $dbr = wfGetDB( DB_SLAVE );
+        
+        $res = $dbr->select(
+            'loop_object_index',
+            array(
+                'loi_pageid',
+                'loi_refid',
+                'loi_index',
+                'loi_nthoftype',
+                'loi_itemtype',
+                'loi_itemtitle',
+                'loi_itemdesc',
+                'loi_itemthumb'
+            ),
+            array(
+            ),
+            __METHOD__
+            );
+        
+        $objects = array(  );
+        
+        
+        $loopStructureItems = $loopStructure->getStructureItems();
+        
+        foreach ( $loopStructureItems as $loopStructureItem ) {
+            $previousObjects[$loopStructureItem->article] = self::getObjectNumberingsForPage($loopStructureItem, $loopStructure);
+        }
+        #dd($previousObjects);
+        foreach( $res as $row ) {
+            $lsi = LoopStructureItem::newFromIds($row->loi_pageid);
+            
+            if ( $lsi ) {
+                $numberText = '';
+                
+                switch ( $row->loi_index ) {
+                    case "loop_figure":
+                        $numbering = $wgLoopFigureNumbering;
+                        break;
+                    case "loop_formula":
+                        $numbering = $wgLoopFormulaNumbering;
+                        break;
+                    case "loop_listing":
+                        $numbering = $wgLoopListingNumbering;
+                        break;
+                    case "loop_media":
+                        $numbering = $wgLoopMediaNumbering;
+                        break;
+                    case "loop_table":
+                        $numbering = $wgLoopTableNumbering;
+                        break;
+                    case "loop_task":
+                        $numbering = $wgLoopTaskNumbering;
+                        break;
+                }
+                
+                if ( $numbering != 'false' ) {
+                    if ( $wgLoopNumberingType == 'chapter' ) {
+                        
+                        $tocChapter = '';
+                        preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
+                        
+                        if (isset($tocChapterArray[1])) {
+                            $tocChapter = $tocChapterArray[1];
+                        } else {
+                            $tocChapter = 0;
+                        }
+                        
+                        $number = $previousObjects[$row->loi_pageid][$row->loi_index] + $row->loi_nthoftype;
+                        $numberText = $tocChapter . '.' . $number;
+                        
+                    } else {
+                        $numberText = $row->loi_nthoftype + $previousObjects[$row->loi_pageid][$row->loi_index];
+                    }
+               }
+            
+            
+               $objects[] = array(
+                   "pageid" => $row->loi_pageid,
+                   "id" => $row->loi_refid,
+                   "title" => $row->loi_itemtitle,
+                   "description" => $row->loi_itemdesc,
+                   "index" => $row->loi_index,
+                   "type" => $row->loi_itemtype,
+                   "id" => $row->loi_refid,
+                   #"thumb" => $row->loi_itemthumb,
+                   #"nthoftype" => $row->loi_nthoftype,
+                   "objectnumber" => $numberText
+                );
+            }
+        }
+        #dd($objects);
+        return $objects;
+    }
 
 	// returns number of objects in structure before the given structureItem
     public static function getObjectNumberingsForPage ( LoopStructureItem $lsi, LoopStructure $loopStructure ) {
@@ -148,10 +248,6 @@ class LoopObjectIndex {
 				$tocNumber = array();
 				preg_match('/(\d+)\.{0,1}/', $item->tocNumber, $tocNumber);
 				
-				if ($item->tocNumber == "2.1" && $lsiTocNumber == "2") {
-					
-					#dd($tocNumber[1], $lsiTocNumber );
-				}
 				if ( isset( $tocNumber[1] ) && $tocNumber[1] == $lsiTocNumber ) {
 					#dd();
 					if (  $item->sequence < $lsi->sequence  ) {
@@ -159,6 +255,7 @@ class LoopObjectIndex {
 							if ( isset( $page[$tmpId] ) ) {
 								$return[$objectType] += sizeof($page[$tmpId]);
 								#var_dump($return[$objectType]);
+								#dd($return);
 							}
 						}
 					}
