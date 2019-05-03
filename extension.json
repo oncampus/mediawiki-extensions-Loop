@@ -29,6 +29,7 @@
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
+		"LoopArea": "includes/LoopArea.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -43,6 +44,9 @@
 		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
 	},
 	"Hooks": {
+		"ParserFirstCallInit" : [
+			"LoopArea::onParserInit"
+		],
 		"LoadExtensionSchemaUpdates":[
 			"LoopUpdater::onLoadExtensionSchemaUpdates"
 		],
