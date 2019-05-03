@@ -4,12 +4,12 @@ class LoopArea {
 
 	static function onParserInit( Parser $parser ) {
 		//global $wgOut;
-		$parser->setHook( 'loop_area', 'LoopArea::LoopAreaRender' ); 
+		$parser->setHook( 'loop_area', 'LoopArea::renderLoopArea' ); 
 		//$wgOut->addModules( 'ext.looparea' );
 		return true;
 	}
 	
-	static function LoopAreaRender( $input, array $args, Parser $parser, PPFrame $frame ) {
+	static function renderLoopArea( $input, array $args, Parser $parser, PPFrame $frame ) {
 		
 		//default
 		$argtype = 'area';
@@ -52,7 +52,7 @@ class LoopArea {
 		$ownicon = '';
 		if( array_key_exists( 'icon', $args ) ) { // array_key_exists() because code convention forbids isset()
 			$cssicon = 'ownicon';
-			$owniconurl = 'http://localhost/index.php/Special:FilePath/' . $args['icon']; // Wegen XAMPP erstmal absol. URL
+			$owniconurl = wfLocalFile( $args['icon'] )->getCanonicalURL();
 			$ownicon = 'style="background-image: url(' . $owniconurl . ')"'; 
 		}
 
@@ -62,7 +62,7 @@ class LoopArea {
 		$ret .= '<span class="' . $cssicon . '" ' . $ownicon . '></span>';
 		$ret .= '<span class="looparea-left-type">' . $icontext . '</span>';
 		$ret .= '</div>';
-		$ret .= '<div class="looparea-right">' . $parser->recursiveTagParseFully($input) . '</div>';
+		$ret .= '<div class="looparea-right">' . $parser->recursiveTagParseFully( $input ) . '</div>';
 		$ret .= '</div>';
 		$ret .= '</div>';
 		return $ret;
