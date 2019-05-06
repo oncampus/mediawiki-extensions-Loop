@@ -42,6 +42,15 @@ class LoopFormula extends LoopObject{
 			$formula = new LoopFormula();
 			$formula->init($input, $args, $parser, $frame);
 			$formula->parse();
+			if ( isset( $args["index"] ) ) {
+				if ( $args["index"] == "false" ) {
+					$formula->indexing = false;
+				} else {
+					$formula->indexing = true;
+				}
+			} else {
+				$formula->indexing = true;
+			}
 			$html = $formula->render();
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );

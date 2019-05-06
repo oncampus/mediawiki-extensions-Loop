@@ -94,6 +94,15 @@ class LoopMedia extends LoopObject{
 			$media = new LoopMedia();
 			$media->init($input, $args, $parser, $frame);
 			$media->parse();
+			if ( isset( $args["index"] ) ) {
+				if ( $args["index"] == "false" ) {
+					$media->indexing = false;
+				} else {
+					$media->indexing = true;
+				}
+			} else {
+				$media->indexing = true;
+			}
 			$html = $media->render();
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );

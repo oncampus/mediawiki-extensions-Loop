@@ -42,6 +42,15 @@ class LoopTask extends LoopObject{
 			$task = new LoopTask();
 			$task->init($input, $args, $parser, $frame);
 			$task->parse();
+			if ( isset( $args["index"] ) ) {
+				if ( $args["index"] == "false" ) {
+					$task->indexing = false;
+				} else {
+					$task->indexing = true;
+				}
+			} else {
+				$task->indexing = true;
+			}
 			$html = $task->render();
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );

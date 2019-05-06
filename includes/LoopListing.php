@@ -41,6 +41,15 @@ class LoopListing extends LoopObject{
 			$listing = new LoopListing();
 			$listing->init($input, $args, $parser, $frame);
 			$listing->parse();
+			if ( isset( $args["index"] ) ) {
+				if ( $args["index"] == "false" ) {
+					$listing->indexing = false;
+				} else {
+					$listing->indexing = true;
+				}
+			} else {
+				$listing->indexing = true;
+			}
 			$html = $listing->render();
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
@@ -49,9 +58,6 @@ class LoopListing extends LoopObject{
 		return  $html ;		
 	}
 	
-	
-	
-
 }
 
 /**

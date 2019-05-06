@@ -42,6 +42,15 @@ class LoopTable extends LoopObject{
 			$table = new LoopTable();
 			$table->init($input, $args, $parser, $frame);
 			$table->parse();
+			if ( isset( $args["index"] ) ) {
+				if ( $args["index"] == "false" ) {
+					$table->indexing = false;
+				} else {
+					$table->indexing = true;
+				}
+			} else {
+				$table->indexing = true;
+			}
 			$html = $table->render();
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );

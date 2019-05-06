@@ -61,6 +61,15 @@ class LoopFigure extends LoopObject{
 		try {
 			$figure = new LoopFigure();
 			$figure->init($input, $args, $parser, $frame);
+			if ( isset( $args["index"] ) ) {
+				if ( $args["index"] == "false" ) {
+					$figure->indexing = false;
+				} else {
+					$figure->indexing = true;
+				}
+			} else {
+				$figure->indexing = true;
+			}
 			$figure->parse();
 			$html = $figure->render();
 		} catch ( LoopException $e ) {

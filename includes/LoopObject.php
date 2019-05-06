@@ -178,7 +178,7 @@ class LoopObject {
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
 				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
-			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
+			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->indexing ) {
 				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
 				$html .= '</span>';
 			}
@@ -776,9 +776,12 @@ class LoopObject {
 				$newContentText = $contentText;
 
 				foreach ( $object_tags as $object ) {
-					$objects[$object[0]]++;
-					
+					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] == "true" ) {
+						$objects[$object[0]]++;
+					}
+
 					$loopObjectIndex->index = $object[0];
+					#todo foreach index false --
 					$loopObjectIndex->nthItem = $objects[$object[0]];
 					
 					$loopObjectIndex->pageId = $title->getArticleID();
@@ -812,9 +815,9 @@ class LoopObject {
 						$loopObjectIndex->refId = $newRef; 
 
 					}
-
-					$loopObjectIndex->addToDatabase();
-
+					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] == "true" ) {
+						$loopObjectIndex->addToDatabase();
+					}
 				}
 
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
