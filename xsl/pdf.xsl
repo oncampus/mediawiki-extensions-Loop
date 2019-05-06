@@ -25,6 +25,7 @@
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="listing_exists" ><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>	
@@ -66,7 +67,7 @@
 			<xsl:call-template name="page-sequence-table-of-content"></xsl:call-template>
 			<xsl:call-template name="page-sequence-contentpages"></xsl:call-template>				
 		
-			<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1') or ($index_exists='1') or ($glossary_exists='1')">
+			<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($listing_exists='1') or ($task_exists='1') or ($index_exists='1') or ($glossary_exists='1')">
 				<xsl:call-template name="page-sequence-appendix"></xsl:call-template>
 			</xsl:if>
 			
@@ -79,6 +80,7 @@
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="listing_exists"><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>			
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
@@ -106,10 +108,13 @@
                 </xsl:if>
                 <xsl:if test="$media_exists='1'">
                     <xsl:call-template name="page-content-list-of-media"></xsl:call-template>
-                </xsl:if>
+                </xsl:if>-->
                 <xsl:if test="$formula_exists='1'">
                     <xsl:call-template name="page-content-list-of-formulas"></xsl:call-template>
-                </xsl:if>                
+                </xsl:if>
+                <!--     <xsl:if test="$listing_exists='1'">
+                    <xsl:call-template name="page-content-list-of-listings"></xsl:call-template>
+                </xsl:if>            
                 <xsl:if test="$task_exists='1'">
                     <xsl:call-template name="page-content-list-of-tasks"></xsl:call-template>
                 </xsl:if>
@@ -222,8 +227,14 @@
 							
 							<fo:inline font-weight="bold">
 								<xsl:value-of select="$word_figure_short"></xsl:value-of>
-								<xsl:text> </xsl:text>
-								<xsl:value-of select="count(preceding::extension[@extension_name='loop_figure'])+1"></xsl:value-of>
+								
+								<xsl:variable name="objectid" select="@id"></xsl:variable>
+		
+								<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
+									<xsl:text> </xsl:text>
+									<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
+								</xsl:if>
+										
 								<xsl:text>: </xsl:text>
 							</fo:inline>							
 							
@@ -317,6 +328,7 @@
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>	
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="listing_exists"><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>	
@@ -363,12 +375,11 @@
 				</fo:inline>
 			</fo:block>		
 		</xsl:if>	
-		
 		<xsl:if test="$formula_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
 				<fo:basic-link color="black">
-					<xsl:attribute name="internal-destination">list_of_figures</xsl:attribute>
+					<xsl:attribute name="internal-destination">list_of_formulas</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_formulas'"></xsl:with-param>
 					</xsl:call-template>					
@@ -377,13 +388,198 @@
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots"></fo:leader>
 					<fo:page-number-citation>
-						<xsl:attribute name="ref-id" >list_of_figures</xsl:attribute>
+						<xsl:attribute name="ref-id" >list_of_formulas</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
 			</fo:block>		
 		</xsl:if>	
+		<!-- <xsl:if test="$listing_exists='1'">
+			<fo:block text-align-last="justify">
+				<xsl:call-template name="font_normal"></xsl:call-template>
+				<fo:basic-link color="black">
+					<xsl:attribute name="internal-destination">list_of_listings</xsl:attribute>
+					<xsl:call-template name="appendix_number">
+						<xsl:with-param name="content" select="'list_of_listings'"></xsl:with-param>
+					</xsl:call-template>					
+					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_listings"></xsl:value-of>
+				</fo:basic-link>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"></fo:leader>
+					<fo:page-number-citation>
+						<xsl:attribute name="ref-id" >list_of_listings</xsl:attribute>
+					</fo:page-number-citation>
+				</fo:inline>
+			</fo:block>		
+		</xsl:if>	 -->
 	</xsl:template>		
 	
+	
+	<!-- OBJECT LOOP_FORMULA -->
+	<xsl:template name="loop_formula">
+		<xsl:param name="formula"></xsl:param>
+		<xsl:variable name="objectid" select="@id"></xsl:variable>
+		
+		<fo:float>
+
+			<fo:block>
+				<fo:table table-layout="auto" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse" padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
+					<xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute>
+					<fo:table-column column-number="1" column-width="0.4mm"/><fo:table-column/>
+					<fo:table-column column-number="2" /><fo:table-column/>
+					<fo:table-body>		
+						<fo:table-row keep-together.within-column="auto">
+							<fo:table-cell number-columns-spanned="2">
+								<fo:block  text-align="left" >
+							
+									<xsl:if test="ancestor::*[@extension_name='loop_area']">
+										<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
+									</xsl:if>
+							
+									<!-- <xsl:apply-templates select="$formula/descendant::link" mode="loop_object"></xsl:apply-templates> -->
+								</fo:block>
+							</fo:table-cell>	
+						</fo:table-row>
+						<fo:table-row keep-together.within-column="auto" >
+							<fo:table-cell background-color="gray" width="0.4mm" ></fo:table-cell>
+							<fo:table-cell  text-align="left" padding-left="1mm" padding-right="2mm">
+								<xsl:call-template name="font_object_title"></xsl:call-template>
+	
+								<fo:block text-align="left">
+								
+								<xsl:if test="ancestor::*[@extension_name='loop_area']">
+									<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
+								</xsl:if>								
+									<fo:inline font-weight="bold">
+										<xsl:value-of select="$word_formula_short"></xsl:value-of>
+										
+										<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
+											<xsl:text> </xsl:text>
+											<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
+										</xsl:if>
+			
+										<xsl:text>: </xsl:text>
+									</fo:inline>
+									<xsl:choose>
+										<xsl:when test="$formula/descendant::extension[@extension_name='loop_title']">
+											<xsl:apply-templates select="$formula/descendant::extension[@extension_name='loop_title']" mode="loop_object"></xsl:apply-templates>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:value-of select="$formula/@title"></xsl:value-of>	
+										</xsl:otherwise>
+									</xsl:choose>
+								</fo:block>
+	
+								<xsl:if test="($formula/@description) or ($formula/descendant::extension[@extension_name='loop_description'])">
+									<fo:block text-align="left">
+									
+										<xsl:if test="ancestor::*[@extension_name='loop_area']">
+											<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
+										</xsl:if>
+							
+										<xsl:choose>
+											<xsl:when test="$formula/descendant::extension[@extension_name='loop_description']">
+												<xsl:apply-templates select="$formula/descendant::extension[@extension_name='loop_description']" mode="loop_object"></xsl:apply-templates>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:value-of select="$formula/@description"></xsl:value-of>	
+											</xsl:otherwise>
+										</xsl:choose>
+									</fo:block>		
+								</xsl:if>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:float>
+	</xsl:template>
+	
+	<xsl:template name="page-content-list-of-formulas">
+	
+		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
+		<xsl:if test="$cite_exists='1'">
+			<fo:block break-before="page"></fo:block>
+		</xsl:if>		
+		
+		<fo:block>
+			<fo:marker marker-class-name="page-title-left">
+				<xsl:value-of select="$word_appendix"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		
+		<fo:block>
+			<fo:marker marker-class-name="page-title-right">
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'list_of_formulas'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+				<xsl:value-of select="$word_list_of_formulas"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		
+		
+		<fo:block id="list_of_formulas" keep-with-next="always"  margin-bottom="10mm">
+			<xsl:call-template name="font_head"></xsl:call-template>
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'list_of_formulas'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+			<xsl:value-of select="$word_list_of_formulas"></xsl:value-of>
+		</fo:block>
+		 		
+		<fo:table width="170mm" table-layout="auto">
+			<fo:table-body>
+				<xsl:apply-templates select="//*/extension[@extension_name='loop_formula']" mode="list_of_formulas"></xsl:apply-templates>
+			</fo:table-body>
+		</fo:table>		
+		
+	</xsl:template>	
+		
+	<xsl:template match="extension" mode="list_of_formulas">
+		<fo:table-row>
+			<fo:table-cell width="10mm">
+			</fo:table-cell>
+
+			<fo:table-cell width="140mm">
+				<fo:block text-align-last="justify" text-align="justify">
+						<fo:basic-link color="black">
+							<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+							
+							
+							<fo:inline font-weight="bold">
+								<xsl:value-of select="$word_formula_short"></xsl:value-of>
+
+								<xsl:variable name="objectid" select="@id"></xsl:variable>
+		
+								<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
+									<xsl:text> </xsl:text>
+									<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
+								</xsl:if>
+								<xsl:text>: </xsl:text>
+							</fo:inline>							
+							
+							<fo:inline>	
+								<xsl:choose>
+									<xsl:when test="descendant::extension[@extension_name='loop_title']">
+										<xsl:apply-templates select="descendant::extension[@extension_name='loop_title']"></xsl:apply-templates>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:if test="@title">
+											<xsl:value-of select="@title"></xsl:value-of>
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>	
+								<fo:leader leader-pattern="dots"></fo:leader>
+								<fo:page-number-citation>
+									<xsl:attribute name="ref-id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+								</fo:page-number-citation>
+							</fo:inline>
+						</fo:basic-link>					
+				</fo:block>
+			</fo:table-cell>			
+		</fo:table-row>
+	</xsl:template>	
+	<!-- /OBJECT LOOP_FORMULA -->
 	
 	<xsl:template name="make-toc">
 		<xsl:apply-templates select="toc"  mode="toc"></xsl:apply-templates>
@@ -585,6 +781,7 @@
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="listing_exists"><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>		
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
@@ -597,7 +794,7 @@
 			<xsl:when test="($index_exists='1')">
 				<xsl:text>index_sequence</xsl:text>
 			</xsl:when>
-			<xsl:when test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1') or ($glossary_exists='1')">
+			<xsl:when test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($listing_exists='1') or ($task_exists='1') or ($glossary_exists='1')">
 				<xsl:text>appendix_sequence</xsl:text>
 			</xsl:when>			
 			<xsl:otherwise>
@@ -912,8 +1109,7 @@
 			
 	</xsl:template>	
 	
-	
-	
+	<!-- OBJECT LOOP_FIGURE -->
 	<xsl:template name="loop_figure">
 		<xsl:param name="figure"></xsl:param>
 		<xsl:variable name="objectid" select="@id"></xsl:variable>
@@ -1024,7 +1220,7 @@
 		</fo:float>
 		
 	</xsl:template>
-	
+	<!-- OBJECT LOOP_FIGURE -->
 	
 	<xsl:template match="extension" mode="loop_object">
 		<xsl:choose>
@@ -1049,6 +1245,16 @@
 				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
+		<xsl:if test="@extension_name='loop_formula'">
+			<fo:inline>
+				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+			</fo:inline>			
+		</xsl:if>	
+		<!-- <xsl:if test="@extension_name='loop_listing'">
+			<fo:inline>
+				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+			</fo:inline>			
+		</xsl:if>	 -->
 		<xsl:choose>
 		
 			<xsl:when test="@extension_name='loop_figure'">
@@ -1057,6 +1263,19 @@
                 	<xsl:with-param name="figure" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
+		
+			<xsl:when test="@extension_name='loop_formula'">
+				<!-- <xsl:apply-templates select="php:function('xsl_transform_loop_figure', .)"></xsl:apply-templates> -->
+				<xsl:call-template name="loop_formula">
+                	<xsl:with-param name="formula" select="."></xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<!-- <xsl:when test="@extension_name='loop_listing'">
+				<xsl:apply-templates select="php:function('xsl_transform_loop_figure', .)"></xsl:apply-templates>
+				<xsl:call-template name="loop_listing">
+                	<xsl:with-param name="listing" select="."></xsl:with-param>
+				</xsl:call-template>
+			</xsl:when> -->
 			<xsl:otherwise>
 				
 			</xsl:otherwise>
@@ -1128,6 +1347,16 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>		
+	<xsl:template name="listing_exists">
+		<xsl:choose>
+			<xsl:when test="//*/extension[@extension_name='loop_listing']">
+				<xsl:text>1</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>0</xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>		
 	
 	<xsl:template name="task_exists">
 		<xsl:choose>
@@ -1160,6 +1389,7 @@
 		<xsl:variable name="c_tables" ><xsl:call-template name="table_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_media" ><xsl:call-template name="media_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_formulas" ><xsl:call-template name="formula_exists"></xsl:call-template></xsl:variable>
+		<xsl:variable name="c_listings" ><xsl:call-template name="listing_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_tasks" ><xsl:call-template name="task_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_index" ><xsl:call-template name="index_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_glossary" ><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:variable>
@@ -1180,15 +1410,18 @@
 				</xsl:when>				
 				<xsl:when test="$content='list_of_formulas'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas"></xsl:value-of>
+				</xsl:when>		
+				<xsl:when test="$content='list_of_listings'">
+					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings"></xsl:value-of>
 				</xsl:when>
 				<xsl:when test="$content='list_of_tasks'">
-					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_tasks"></xsl:value-of>
+					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings + $c_tasks"></xsl:value-of>
 				</xsl:when>
 				<xsl:when test="$content='index'">
-					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_tasks + $c_index"></xsl:value-of>
+					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings + $c_tasks + $c_index"></xsl:value-of>
 				</xsl:when>												
 				<xsl:when test="$content='glossary'">
-					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_tasks + $c_index + $c_glossary"></xsl:value-of>
+					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings + $c_tasks + $c_index + $c_glossary"></xsl:value-of>
 				</xsl:when>																												
 			</xsl:choose>
 		</xsl:variable>
@@ -1201,6 +1434,8 @@
 			<xsl:when test="$temp_nr='6'"><xsl:text>VI</xsl:text></xsl:when>
 			<xsl:when test="$temp_nr='7'"><xsl:text>VII</xsl:text></xsl:when>
 			<xsl:when test="$temp_nr='8'"><xsl:text>VIII</xsl:text></xsl:when>
+			<xsl:when test="$temp_nr='9'"><xsl:text>IX</xsl:text></xsl:when>
+			<xsl:when test="$temp_nr='10'"><xsl:text>X</xsl:text></xsl:when>
 		</xsl:choose>
 
 	</xsl:template>
