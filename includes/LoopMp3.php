@@ -25,10 +25,11 @@ class LoopMp3 {
 			$domStructure = new domDocument('1.0', 'utf-8');
 			$domStructure->loadXML($structureXml);
 
+			$loopObjectsNodes = $domStructure->getElementsByTagName("loop_objects");
 			$articleNodes = $domStructure->getElementsByTagName("article");
 			
 			foreach ( $articleNodes as $node ) {
-
+				$node->appendChild( $loopObjectsNodes[0] ); 
 				$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
 				if ( $tmpData["articleId"] == $articleId ) {
 					$mp3File = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
@@ -104,7 +105,7 @@ class LoopMp3 {
 			}
 			$loopExportSsml = self::checkNestedTags($loopExportSsml);
 
-			#dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
+			dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
 			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
 
 			$mp3File = fopen( $filePathName , 'w') or die("can't write mp3 file");
@@ -375,7 +376,6 @@ class LoopMp3 {
 	 */
 	private static function transformToSsml ( $wiki_xml ) {
 		global $IP, $wgUploadDirectory;
-		
 		try {
 			
 			$xml = new DOMDocument('1.0', 'utf-8');
@@ -462,7 +462,7 @@ class LoopMp3 {
 		$intro = '<?xml version="1.0" encoding="UTF-8"?>';
 		$intro .= '<article id="intro">';
 		$intro .= '<speak voice="1">';
-		$intro .= '<p>'. wfMessage("loopexport-audio-intro-title", ':<break strength="strong"/>'.$loopStructure->getTitle() )->text() .'.</p>';
+		$intro .= '<p>'. wfMessage("loopexport-audio-intro-title", '<break strength="strong"/>'.$loopStructure->getTitle() )->text() .'.</p>';
 		$intro .= '</speak>';
 
 		$dateFormat = array("dmy", "d-m-Y");

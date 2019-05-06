@@ -16,32 +16,38 @@
 	
 	<xsl:variable name="word_figure"  select="functx:get_term_name('word_figure')" />
 	<xsl:variable name="word_figure_short"  select="functx:get_term_name('word_figure_short')" />
-	<xsl:variable name="phrase_loop_figure"  select="functx:get_term_name('phrase_loop_figure')" />	
+	<xsl:variable name="phrase_figure"  select="functx:get_term_name('phrase_figure')" />	
+	<xsl:variable name="phrase_figure_number"  select="functx:get_term_name('phrase_figure_number')" />	
 	<xsl:variable name="word_list_of_figures"  select="functx:get_term_name('word_list_of_figures')" />
 	
 	<xsl:variable name="word_formula"  select="functx:get_term_name('word_formula')" />
 	<xsl:variable name="word_formula_short"  select="functx:get_term_name('word_formula_short')" />
-	<xsl:variable name="phrase_loop_formula"  select="functx:get_term_name('phrase_loop_formula')" />	
+	<xsl:variable name="phrase_formula"  select="functx:get_term_name('phrase_formula')" />	
+	<xsl:variable name="phrase_formula_number"  select="functx:get_term_name('phrase_formula_number')" />	
 	<xsl:variable name="word_list_of_formulas"  select="functx:get_term_name('word_list_of_formulas')" />
 	
 	<xsl:variable name="word_listing"  select="functx:get_term_name('word_listing')" />
 	<xsl:variable name="word_listing_short"  select="functx:get_term_name('word_listing_short')" />
-	<xsl:variable name="phrase_loop_listing"  select="functx:get_term_name('phrase_loop_listing')" />	
+	<xsl:variable name="phrase_listing"  select="functx:get_term_name('phrase_listing')" />	
+	<xsl:variable name="phrase_listing_number"  select="functx:get_term_name('phrase_listing_number')" />	
 	<xsl:variable name="word_list_of_listings"  select="functx:get_term_name('word_list_of_listings')" />
 	
 	<xsl:variable name="word_media"  select="functx:get_term_name('word_media')" />
 	<xsl:variable name="word_media_short"  select="functx:get_term_name('word_media_short')" />
-	<xsl:variable name="phrase_loop_media"  select="functx:get_term_name('phrase_loop_media')" />	
+	<xsl:variable name="phrase_media"  select="functx:get_term_name('phrase_media')" />	
+	<xsl:variable name="phrase_media_number"  select="functx:get_term_name('phrase_media_number')" />	
 	<xsl:variable name="word_list_of_media"  select="functx:get_term_name('word_list_of_media')" />
 	
 	<xsl:variable name="word_table"  select="functx:get_term_name('word_table')" />
 	<xsl:variable name="word_table_short"  select="functx:get_term_name('word_table_short')" />
-	<xsl:variable name="phrase_loop_table"  select="functx:get_term_name('phrase_loop_table')" />	
+	<xsl:variable name="phrase_table"  select="functx:get_term_name('phrase_table')" />	
+	<xsl:variable name="phrase_table_number"  select="functx:get_term_name('phrase_table_number')" />	
 	<xsl:variable name="word_list_of_tables"  select="functx:get_term_name('word_list_of_tables')" />
 	
 	<xsl:variable name="word_task"  select="functx:get_term_name('word_task')" />
 	<xsl:variable name="word_task_short"  select="functx:get_term_name('word_task_short')" />
-	<xsl:variable name="phrase_loop_task"  select="functx:get_term_name('phrase_loop_task')" />	
+	<xsl:variable name="phrase_task"  select="functx:get_term_name('phrase_task')" />	
+	<xsl:variable name="phrase_task_number"  select="functx:get_term_name('phrase_task_number')" />	
 	<xsl:variable name="word_list_of_tasks"  select="functx:get_term_name('word_list_of_tasks')" />
 	
 	<xsl:variable name="word_appendix"  select="functx:get_term_name('word_appendix')" />

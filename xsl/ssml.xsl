@@ -67,7 +67,18 @@
 	</xsl:template>	
 
 
+	<xsl:template match="loop_objects">
+	</xsl:template>
+	
+	<xsl:template match="link">
+	</xsl:template>
+	<xsl:template match="php_link">
+	</xsl:template>
+	<xsl:template match="php_link_image">
+	</xsl:template>
+
 	<xsl:template match="extension">
+
 	
 		<xsl:if test="@extension_name='loop_title'">
 			<xsl:apply-templates/>
@@ -79,12 +90,19 @@
 				<xsl:apply-templates/>
 		</xsl:if>	
 
-
 		<xsl:if test="@extension_name='loop_figure'">
 				
-				<xsl:value-of select="$phrase_loop_figure"/>
-
-				<xsl:text> </xsl:text>
+				<xsl:variable name="objectid" select="@id"></xsl:variable>
+				<xsl:choose>
+					<xsl:when test="//*/loop_object[@refid = $objectid]/object_number">
+						<xsl:value-of select="$phrase_figure_number"/>
+						<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
+						<xsl:text>.</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$phrase_figure"/>
+					</xsl:otherwise>
+				</xsl:choose>
 
 				<xsl:if test="@title">
 					<xsl:value-of select="@title"></xsl:value-of>
