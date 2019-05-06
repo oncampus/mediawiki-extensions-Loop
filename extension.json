@@ -558,29 +558,9 @@
 			"description" : ""
 		},
 		
-		"LoopFigureNumbering": {
+		"LoopObjectNumbering": {
 			"value": true,
-			"description" : ""
-		},
-		"LoopTableNumbering": {
-			"value": true,
-			"description" : ""
-		},
-		"LoopMediaNumbering": {
-			"value": true,
-			"description" : ""
-		},
-		"LoopFormulaNumbering": {
-			"value": true,
-			"description" : ""
-		},
-		"LoopListingNumbering": {
-			"value": true,
-			"description" : ""
-		},
-		"LoopTaskNumbering": {
-			"value": true,
-			"description" : ""
+			"description" : "Default value for activating object numberings"
 		},
 		"LoopNumberingType": {
 			"value": "ongoing",

@@ -149,7 +149,7 @@ class LoopObject {
 	 * @return string
 	 */
 	public function render() {
-		global $wgLoopFigureNumbering;
+		global $wgLoopObjectNumbering;
 	
 		$floatclass = '';
 		if ($this->getAlignment()=='left') {
@@ -211,35 +211,29 @@ class LoopObject {
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
-		$wgLoopTaskNumbering, $wgLoopNumberingType;
-		#dd($wgLoopTableNumbering, $wgLoopNumberingType);
+		global $wgLoopObjectNumbering, $wgLoopNumberingType;
+		
 		$objectClass = get_class( $this );
 		switch ( $objectClass ) {
 			case "LoopFormula":
-				$numbering = $wgLoopFormulaNumbering;
 				$type = 'loop_formula';
 				break;
 			case "LoopListing":
-				$numbering = $wgLoopListingNumbering;
 				$type = 'loop_listing';
 				break;
 			case "LoopMedia":
-				$numbering = $wgLoopMediaNumbering;
 				$type = 'loop_media';
 				break;
 			case "LoopTable":
-				$numbering = $wgLoopTableNumbering;
 				$type = 'loop_table';
 				break;
 			case "LoopTask":
-				$numbering = $wgLoopTaskNumbering;
 				$type = 'loop_task';
 				break;
 		}
 		#dd($numbering, $type);
 		$numberText = '';
-		if ( $numbering != 'false' ) {
+		if ( $wgLoopObjectNumbering == true ) {
 			if ( $wgLoopNumberingType == 'chapter' ) {
 		
 				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
@@ -267,7 +261,7 @@ class LoopObject {
 			}
 		}
 
-		$html = '<div class="loop_object_footer ml-1">';
+		$html = '<div class="loop_object_footer ml-1 mb-2">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
 		
@@ -939,8 +933,7 @@ class LoopObject {
 	
 	public static function onParserAfterTidy(&$parser, &$text) {
 		
-		global $wgLoopNumberingType, $wgLoopFigureNumbering, $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
-		$wgLoopTaskNumbering, $wgLoopNumberingType;;
+		global $wgLoopNumberingType, $wgLoopObjectNumbering;
 
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
@@ -962,30 +955,10 @@ class LoopObject {
 
 		foreach ( self::$mObjectTypes as $objectType ) {
 			
-			switch ( $objectType ) {
-				case "loop_figure":
-					$numbering = $wgLoopFigureNumbering;
-					break;
-				case "loop_formula":
-					$numbering = $wgLoopFormulaNumbering;
-					break;
-				case "loop_listing":
-					$numbering = $wgLoopListingNumbering;
-					break;
-				case "loop_media":
-					$numbering = $wgLoopMediaNumbering;
-					break;
-				case "loop_table":
-					$numbering = $wgLoopTableNumbering;
-					break;
-				case "loop_task":
-					$numbering = $wgLoopTaskNumbering;
-					break;
-			}
 			$matches = array();
 			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 			
-			if ( $lsi && $numbering == 1 ) {
+			if ( $lsi && $wgLoopObjectNumbering == 1 ) {
 				if ( $wgLoopNumberingType == "chapter" ) {
 					
 					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);

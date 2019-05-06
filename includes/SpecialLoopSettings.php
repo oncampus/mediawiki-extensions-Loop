@@ -267,19 +267,9 @@ class SpecialLoopSettings extends SpecialPage {
 
 					$html .= '<h3>' . $this->msg( 'loopsettings-numbering' ) . '</h3>';
 
-					$html .= '<input type="checkbox" name="numbering-figures" id="numbering-figures" value="numberingFigures" ' . ( $currentLoopSettings->numberingFigures == 1 ? 'checked' : '' ) .'>
-					<label for="numbering-figures">' . $this->msg( 'loopsettings-numbering-figures-label' ) . '</label><br>';
-					$html .= '<input type="checkbox" name="numbering-formulas" id="numbering-formulas" value="numberingFormulas" ' . ( $currentLoopSettings->numberingFormulas == 1 ? 'checked' : '' ) .'>
-					<label for="numbering-formulas">' . $this->msg( 'loopsettings-numbering-formulas-label' ) . '</label><br>';
-					$html .= '<input type="checkbox" name="numbering-listings" id="numbering-listings" value="numberingListings" ' . ( $currentLoopSettings->numberingListings == 1 ? 'checked' : '' ) .'>
-					<label for="numbering-listings">' . $this->msg( 'loopsettings-numbering-listings-label' ) . '</label><br>';
-					$html .= '<input type="checkbox" name="numbering-media" id="numbering-media" value="numberingMedia" ' . ( $currentLoopSettings->numberingMedia == 1 ? 'checked' : '' ) .'>
-					<label for="numbering-media">' . $this->msg( 'loopsettings-numbering-media-label' ) . '</label><br>';
-					$html .= '<input type="checkbox" name="numbering-tables" id="numbering-tables" value="numberingTables" ' . ( $currentLoopSettings->numberingTables == 1 ? 'checked' : '' ) .'>
-					<label for="numbering-tables">' . $this->msg( 'loopsettings-numbering-tables-label' ) . '</label><br>';
-					$html .= '<input type="checkbox" name="numbering-tasks" id="numbering-tasks" value="numberingTasks" ' . ( $currentLoopSettings->numberingTasks == 1 ? 'checked' : '' ) .'>
-					<label for="numbering-tasks">' . $this->msg( 'loopsettings-numbering-tasks-label' ) . '</label><br><br>';
-			#dd($currentLoopSettings->numberingType);
+					$html .= '<input type="checkbox" name="numbering-objects" id="numbering-objects" value="numberingObjects" ' . ( $currentLoopSettings->numberingObjects == true ? 'checked' : '' ) .'>
+					<label for="numbering-objects">' . $this->msg( 'loopsettings-numbering-objects-label' ) . '</label><br><br>';
+
 					$html .= '<input type="radio" name="numbering-type" id="ongoing" value="ongoing" ' . ( $currentLoopSettings->numberingType == "ongoing" ? 'checked' : '' ) .'>
 					<label for="ongoing">' . $this->msg( 'loopsettings-numbering-type-ongoing-label' ) . '</label><br>';
 

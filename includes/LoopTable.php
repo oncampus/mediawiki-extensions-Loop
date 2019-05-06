@@ -15,8 +15,8 @@ class LoopTable extends LoopObject{
 	 * @see LoopObject::getShowNumber()
 	 */
 	public function getShowNumber() {
-		global $wgLoopTableNumbering;
-		return $wgLoopTableNumbering;
+		global $wgLoopObjectNumbering;
+		return $wgLoopObjectNumbering;
 	}
 	
 	/**

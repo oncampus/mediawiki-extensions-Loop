@@ -42,8 +42,8 @@ class LoopMedia extends LoopObject{
 	 * @see LoopObject::getShowNumber()
 	 */
 	public function getShowNumber() {
-		global $wgLoopMediaNumbering;
-		return $wgLoopMediaNumbering;
+		global $wgLoopObjectNumbering;
+		return $wgLoopObjectNumbering;
 	}
 	
 	/**

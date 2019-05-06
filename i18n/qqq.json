@@ -59,12 +59,7 @@
 	"loopsettings-skin-style-label": "Label for Skin-Style dropdown",
 	"loopsettings-error": "Error message after server-side validation failing",
 	"loopsettings-numbering": "Headline on settings page, automatic numbering",
-	"loopsettings-numbering-figures-label": "Label for numbering of figures checkbox",
-	"loopsettings-numbering-formulas-label": "Label for numbering of formulas checkbox",
-	"loopsettings-numbering-listings-label": "Label for numbering of listings checkbox",
-	"loopsettings-numbering-media-label": "Label for numbering of media checkbox",
-	"loopsettings-numbering-tables-label": "Label for numbering of tables checkbox",
-	"loopsettings-numbering-tasks-label": "Label for numbering of tasks checkbox",
+	"loopsettings-numbering-objects-label": "Label for numbering of objects checkbox",
 	"loopsettings-numbering-type-ongoing-label": "Label for type of numbering radio button - ongoing numbering",
 	"loopsettings-numbering-type-chapter-label": "Label for type of numbering radio button - numbering per chapter",
 

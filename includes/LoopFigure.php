@@ -20,8 +20,8 @@ class LoopFigure extends LoopObject{
 	 * @see LoopObject::getShowNumber()
 	 */
 	public function getShowNumber() {
-		global $wgLoopFigureNumbering;
-		return $wgLoopFigureNumbering;
+		global $wgLoopObjectNumbering;
+		return $wgLoopObjectNumbering;
 	}
 	
 	/**
@@ -141,7 +141,7 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgLoopFigureNumbering, $wgLoopNumberingType;
+		global $wgLoopObjectNumbering, $wgLoopNumberingType;
 
 		$html = '<div class="row mb-2 ml-2">';
 		
@@ -161,7 +161,7 @@ class LoopFigure extends LoopObject{
 		}
 
 		$numberText = '';
-		if ( $wgLoopFigureNumbering != 'false' ) {
+		if ( $wgLoopObjectNumbering == 1 ) {
 			if ( $wgLoopNumberingType == 'chapter' ) {
 		
 				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );

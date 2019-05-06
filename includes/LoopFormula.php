@@ -15,8 +15,8 @@ class LoopFormula extends LoopObject{
 	 * @see LoopObject::getShowNumber()
 	 */
 	public function getShowNumber() {
-		global $wgLoopFormulaNumbering;
-		return $wgLoopFormulaNumbering;
+		global $wgLoopObjectNumbering;
+		return $wgLoopObjectNumbering;
 	}
 	
 	/**

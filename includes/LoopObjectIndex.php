@@ -93,8 +93,7 @@ class LoopObjectIndex {
     // returns structure objects with numberings in the table
     public static function getAllObjects ( $loopStructure ) {
         
-        global $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering,
-        $wgLoopTaskNumbering, $wgLoopNumberingType, $wgLoopFigureNumbering;
+        global $wgLoopObjectNumbering, $wgLoopNumberingType;
         
         $dbr = wfGetDB( DB_SLAVE );
         
@@ -130,28 +129,7 @@ class LoopObjectIndex {
             if ( $lsi ) {
                 $numberText = '';
                 
-                switch ( $row->loi_index ) {
-                    case "loop_figure":
-                        $numbering = $wgLoopFigureNumbering;
-                        break;
-                    case "loop_formula":
-                        $numbering = $wgLoopFormulaNumbering;
-                        break;
-                    case "loop_listing":
-                        $numbering = $wgLoopListingNumbering;
-                        break;
-                    case "loop_media":
-                        $numbering = $wgLoopMediaNumbering;
-                        break;
-                    case "loop_table":
-                        $numbering = $wgLoopTableNumbering;
-                        break;
-                    case "loop_task":
-                        $numbering = $wgLoopTaskNumbering;
-                        break;
-                }
-                
-                if ( $numbering != 'false' ) {
+                if ( $wgLoopObjectNumbering == true ) {
                     if ( $wgLoopNumberingType == 'chapter' ) {
                         
                         $tocChapter = '';

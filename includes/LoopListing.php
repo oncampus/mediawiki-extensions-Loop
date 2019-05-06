@@ -15,8 +15,8 @@ class LoopListing extends LoopObject{
 	 * @see LoopObject::getShowNumber()
 	 */
 	public function getShowNumber() {
-		global $wgLoopListingNumbering;
-		return $wgLoopListingNumbering;
+		global $wgLoopObjectNumbering;
+		return $wgLoopObjectNumbering;
 	}
 	
 	/**

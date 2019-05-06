@@ -61,12 +61,7 @@
 	"loopsettings-error": "Es ist ein Fehler beim Speichern dieser Einstellung aufgetreten",
 	"loopsettings-tab-content": "Inhaltseinstellungen",
 	"loopsettings-numbering": "Automatische Nummerierung",
-	"loopsettings-numbering-figures-label": "Nummerierung von '''Abbildungen''' aktivieren",
-	"loopsettings-numbering-formulas-label": "Nummerierung von '''Formeln''' aktivieren",
-	"loopsettings-numbering-listings-label": "Nummerierung von '''Listings''' aktivieren",
-	"loopsettings-numbering-media-label": "Nummerierung von '''Medien''' aktivieren",
-	"loopsettings-numbering-tables-label": "Nummerierung von '''Tabellen''' aktivieren",
-	"loopsettings-numbering-tasks-label": "Nummerierung von '''Aufgaben''' aktivieren",
+	"loopsettings-numbering-objects-label": "Nummerierung von allen LOOP-Objekten aktivieren, z.B. Abbildungen",
 	"loopsettings-numbering-type-ongoing-label": "Durchlaufende Nummerierung - z.B. '''Abb. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Nummerierung nach Kapiteln - z.B. '''Abb. 3.12'''",
 

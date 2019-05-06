@@ -27,12 +27,7 @@ class LoopSettings {
     public $githubLink;
     public $instagramIcon;
     public $instagramLink;
-    public $numberingFigures;
-    public $numberingFormulas;
-    public $numberingListings;
-    public $numberingMedia;
-    public $numberingTables;
-    public $numberingTasks;
+    public $numberingObjects;
     public $numberingType;
 
     /**
@@ -69,12 +64,7 @@ class LoopSettings {
                 'lset_githublink' => $this->githubLink,
                 'lset_instagramicon' => $this->instagramIcon,
                 'lset_instagramlink' => $this->instagramLink,
-                'lset_numberingfigures' => $this->numberingFigures,
-                'lset_numberingformulas' => $this->numberingFormulas,
-                'lset_numberinglistings' => $this->numberingListings,
-                'lset_numberingmedia' => $this->numberingMedia,
-                'lset_numberingtables' => $this->numberingTables,
-                'lset_numberingtasks' => $this->numberingTasks,
+                'lset_numberingobjects' => $this->numberingObjects,
                 'lset_numberingtype' => $this->numberingType
             )
         );
@@ -117,12 +107,7 @@ class LoopSettings {
                 'lset_githublink',
                 'lset_instagramicon',
                 'lset_instagramlink',
-                'lset_numberingfigures',
-                'lset_numberingformulas',
-                'lset_numberinglistings',
-                'lset_numberingmedia',
-                'lset_numberingtables',
-                'lset_numberingtasks',
+                'lset_numberingobjects',
                 'lset_numberingtype'
             ),
             array(),
@@ -161,12 +146,7 @@ class LoopSettings {
                 $this->githubLink = $row->lset_githublink;
                 $this->instagramIcon = $row->lset_instagramicon;
                 $this->instagramLink = $row->lset_instagramlink;
-                $this->numberingFigures = $row->lset_numberingfigures;
-                $this->numberingFormulas = $row->lset_numberingformulas;
-                $this->numberingListings = $row->lset_numberinglistings;
-                $this->numberingMedia = $row->lset_numberingmedia;
-                $this->numberingTables = $row->lset_numberingtables;
-                $this->numberingTasks = $row->lset_numberingtasks;
+                $this->numberingObjects = $row->lset_numberingobjects;
                 $this->numberingType = $row->lset_numberingtype;
                 
                 return true;
@@ -176,20 +156,13 @@ class LoopSettings {
                     
             }
         } else { // fetch data from global variables
-            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopFigureNumbering,
-                $wgLoopFormulaNumbering, $wgLoopListingNumbering, $wgLoopMediaNumbering, $wgLoopTableNumbering, 
-                $wgLoopTaskNumbering, $wgLoopNumberingType;
+            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType;
 
             $this->oncampusLink = $wgOncampusLink;
             $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
             $this->imprintLink = $wgImprintLink;
             $this->privacyLink = $wgPrivacyLink;
-            $this->numberingFigures = $wgLoopFigureNumbering;
-            $this->numberingFormulas = $wgLoopFormulaNumbering;
-            $this->numberingListings = $wgLoopListingNumbering;
-            $this->numberingMedia = $wgLoopMediaNumbering;
-            $this->numberingTables = $wgLoopTableNumbering;
-            $this->numberingTasks = $wgLoopTaskNumbering;
+            $this->numberingObjects = $wgLoopObjectNumbering;
             $this->numberingType = $wgLoopNumberingType;
             
             return true;
@@ -330,70 +303,15 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
         }
         
-        # Numbering figures
-        if ( $request->getText( 'numbering-figures' ) == 'numberingFigures' ) { 
-            $this->numberingFigures = true;
+        # Numbering objects
+        if ( $request->getText( 'numbering-objects' ) == 'numberingObjects' ) { 
+            $this->numberingObjects = true;
             LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-figures' ) ) ) {
-            $this->numberingFigures = "false";
-            LoopObject::removeStructureCache();
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-figures-label' ) );
-        }
-
-        # Numbering listings
-        if ( $request->getText( 'numbering-listings' ) == 'numberingListings' ) { 
-            $this->numberingListings = true;
-            LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-listings' ) ) ) {
-            $this->numberingListings = "false";
+        } elseif ( empty ( $request->getText( 'numbering-objects' ) ) ) {
+            $this->numberingObjects = false;
             LoopObject::removeStructureCache();
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-listings-label' ) );
-        }
-                
-        # Numbering media
-        if ( $request->getText( 'numbering-media' ) == 'numberingMedia' ) { 
-            $this->numberingMedia = true;
-            LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-media' ) ) ) {
-            $this->numberingMedia = "false";
-            LoopObject::removeStructureCache();
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-media-label' ) );
-        }
-        
-        # Numbering tables
-        if ( $request->getText( 'numbering-tables' ) == 'numberingTables' ) { 
-            $this->numberingTables = true;
-            LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-tables' ) ) ) {
-            $this->numberingTables = "false";
-            LoopObject::removeStructureCache();
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-tables-label' ) );
-        }
-        
-        # Numbering formulas
-        if ( $request->getText( 'numbering-formulas' ) == 'numberingFormulas' ) { 
-            $this->numberingFormulas = true;
-            LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-formulas' ) ) ) {
-            $this->numberingFormulas = "false";
-            LoopObject::removeStructureCache();
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-formulas-label' ) );
-        }
-        
-        # Numbering tasks
-        if ( $request->getText( 'numbering-tasks' ) == 'numberingTasks' ) { 
-            $this->numberingTasks = true;
-            LoopObject::removeStructureCache();
-        } elseif ( empty ( $request->getText( 'numbering-tasks' ) ) ) {
-            $this->numberingTasks = "false";
-            LoopObject::removeStructureCache();
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-tasks-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-objects-label' ) );
         }
 
         # Numbering type
