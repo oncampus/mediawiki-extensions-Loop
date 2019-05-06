@@ -32,6 +32,10 @@
 		
 	public static function onExtensionLoad() {
 
+		if ( ! defined( 'FLAGGED_REVISIONS' ) ) {
+			exit( "FlaggedRevs must be installed to run LOOP" );
+		}
+
 		# Loop Object constants
 		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
 		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
