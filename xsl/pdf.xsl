@@ -1205,10 +1205,6 @@
 		<xsl:value-of select="."></xsl:value-of>
 	</xsl:template>
 	
-	<xsl:template match="php_link">
-		<xsl:value-of select="."></xsl:value-of>
-	</xsl:template>
-	
 	<xsl:template match="php_link_external">
 		<fo:basic-link>
 			<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
