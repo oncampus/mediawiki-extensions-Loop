@@ -5,7 +5,7 @@ class LoopPdf {
 	public static function structure2pdf(LoopStructure $structure) {
 		global $IP, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
 	
-		
+		require_once ($IP."/extensions/Loop/xsl/LoopXsl.php");
 	
 		$unique = uniqid();
 	

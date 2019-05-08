@@ -680,9 +680,11 @@
 							<fo:basic-link>
 								<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
 								<fo:block>
-								<!-- <fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit">
-									<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
-								 </fo:external-graphic> -->
+								<xsl:if test="php:function('xsl_transform_imagepath', descendant::link/target)!=''">
+									 <fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
+										<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
+									</fo:external-graphic>
+								 </xsl:if>
 								</fo:block>
 							</fo:basic-link>
 						</fo:block>
@@ -722,7 +724,7 @@
 							</xsl:choose>	
 							
 							<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
-								
+								<xsl:text> </xsl:text>
 								<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
 							</xsl:if>
 							<xsl:text>: </xsl:text>
