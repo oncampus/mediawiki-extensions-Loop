@@ -26,7 +26,6 @@
 		<xsl:apply-templates select="article"/>
 	</xsl:template>	
 	
-
 	<xsl:template match="article">
 		<xsl:element name="article">
 			<xsl:attribute name="id">
@@ -36,34 +35,35 @@
 				<xsl:attribute name="voice">
 					<xsl:text>2</xsl:text>
 				</xsl:attribute>
+			
+				<xsl:element name="p">
 				
-				<!-- <amazon:autobreaths> -->
-				
-					<xsl:element name="p">
+					<xsl:value-of select="$word_chapter"/>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@tocnumber"></xsl:value-of>
 					
-						<xsl:value-of select="$word_chapter"/>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="@tocnumber"></xsl:value-of>
-						
-						<xsl:element name="break">
-							<xsl:attribute name="strength">
-								<xsl:text>medium</xsl:text>
-							</xsl:attribute>
-						</xsl:element>
-
-						<xsl:value-of select="@toctext"></xsl:value-of>
-						
-						<xsl:element name="break">
-							<xsl:attribute name="time">
-								<xsl:text>700ms</xsl:text>
-							</xsl:attribute>
-						</xsl:element>
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>medium</xsl:text>
+						</xsl:attribute>
 					</xsl:element>
-							
-				<xsl:apply-templates/>
-				<!-- </amazon:autobreaths>-->
+
+					<xsl:value-of select="@toctext"></xsl:value-of>
+					
+					<xsl:element name="break">
+						<xsl:attribute name="time">
+							<xsl:text>700ms</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+
+				</xsl:element>
+						
 			</xsl:element>
+
+			<xsl:apply-templates/>
+			
 		</xsl:element>
+	
 	</xsl:template>	
 
 
@@ -146,6 +146,14 @@
 			</xsl:choose>
 		</xsl:variable>
 
+		<xsl:element name="p">
+			<xsl:text> </xsl:text>
+		</xsl:element>
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>1200ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
 		<xsl:choose>
 			<xsl:when test="//*/loop_object[@refid = $objectid]/object_number">
 			
@@ -229,9 +237,19 @@
 		</xsl:if>
 		<xsl:choose>
 			<xsl:when test="$object/descendant::extension[@extension_name='loop_copyright']">
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>medium</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
 				<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_copyright']" mode="loop_object"></xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>medium</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
 				<xsl:value-of select="$object/@copyright"></xsl:value-of>	
 			</xsl:otherwise>
 		</xsl:choose>

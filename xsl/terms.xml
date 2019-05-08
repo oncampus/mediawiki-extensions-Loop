@@ -103,7 +103,7 @@
 	<msg name="phrase_table" lang="sv">Här är en tabell.</msg>	
 	<msg name="phrase_table_number" lang="en">Here is the table </msg>
 	<msg name="phrase_table_number" lang="de">Hier befindet sich die Tabelle </msg>	
-	<msg name="phrase_table_number" lang="sv">Här är tabell </msg>	
+	<msg name="phrase_table_number" lang="sv">Här är tabellen </msg>	
 	<msg name="word_list_of_tables" lang="en">List of tables</msg>
 	<msg name="word_list_of_tables" lang="de">Tabellenverzeichnis</msg>		
 	<msg name="word_list_of_tables" lang="sv">Tabellförteckning</msg>	
@@ -112,78 +112,8 @@
 	<msg name="word_appendix" lang="de">Anhang</msg>
 	<msg name="word_appendix" lang="sv">Appendix</msg>
 	
-	<msg name="word_looparea_task" lang="en">Task</msg>
-	<msg name="word_looparea_task" lang="de">Aufgabe</msg>
-	<msg name="word_looparea_task" lang="sv">Aufgabe</msg>
-	<msg name="word_looparea_timerequirement" lang="en">Time requirement</msg>
-	<msg name="word_looparea_timerequirement" lang="de">Zeitumfang</msg>
-	<msg name="word_looparea_timerequirement" lang="sv">Zeitumfang</msg>
-	<msg name="word_looparea_learningobjectives" lang="en">Learning objectives</msg>
-	<msg name="word_looparea_learningobjectives" lang="de">Lernziele</msg>
-	<msg name="word_looparea_learningobjectives" lang="sv">Utbildningsmål</msg>
-	<msg name="word_looparea_arrangement" lang="en">Arrangement</msg>
-	<msg name="word_looparea_arrangement" lang="de">Gliederung</msg>
-	<msg name="word_looparea_arrangement" lang="sv">Struktur</msg>
-	<msg name="word_looparea_example" lang="en">Example</msg>
-	<msg name="word_looparea_example" lang="de">Beispiel</msg>
-	<msg name="word_looparea_example" lang="sv">Exempel</msg>
-	<msg name="word_looparea_reflection" lang="en">Reflection</msg>
-	<msg name="word_looparea_reflection" lang="de">Refexion</msg>
-	<msg name="word_looparea_reflection" lang="sv">Refektion</msg>
-	<msg name="word_looparea_notice" lang="en">Notice</msg>
-	<msg name="word_looparea_notice" lang="de">Hinweis</msg>
-	<msg name="word_looparea_notice" lang="sv">Ledtråd</msg>
-	<msg name="word_looparea_important" lang="en">Important</msg>
-	<msg name="word_looparea_important" lang="de">Wichtig</msg>
-	<msg name="word_looparea_important" lang="sv">Viktigt</msg>
-	<msg name="word_looparea_annotation" lang="en">Annotation</msg>
-	<msg name="word_looparea_annotation" lang="de">Anmerkung</msg>
-	<msg name="word_looparea_annotation" lang="sv">Anteckning</msg>
-	<msg name="word_looparea_definition" lang="en">Definition</msg>
-	<msg name="word_looparea_definition" lang="de">Definition</msg>
-	<msg name="word_looparea_definition" lang="sv">Definition</msg>
-	<msg name="word_looparea_formula" lang="en">Formula</msg>
-	<msg name="word_looparea_formula" lang="de">Formel</msg>
-	<msg name="word_looparea_formula" lang="sv">Formel</msg>
-	<msg name="word_looparea_markedsentence" lang="en">Marked sentence</msg>
-	<msg name="word_looparea_markedsentence" lang="de">Merksatz</msg>
-	<msg name="word_looparea_markedsentence" lang="sv">Huvudpunkt</msg>
-	<msg name="word_looparea_sourcecode" lang="en">Sourcecode</msg>
-	<msg name="word_looparea_sourcecode" lang="de">Code</msg>
-	<msg name="word_looparea_sourcecode" lang="sv">Code</msg>
-	<msg name="word_looparea_summary" lang="en">Summary</msg>
-	<msg name="word_looparea_summary" lang="de">Zusammenfassung</msg>
-	<msg name="word_looparea_summary" lang="sv">Sammanfattning</msg>
-	<msg name="word_looparea_indentation" lang="en">Indentation</msg>
-	<msg name="word_looparea_indentation" lang="de">Vertiefung</msg>
-	<msg name="word_looparea_indentation" lang="sv">Fördjupning</msg>
-	<msg name="word_looparea_norm" lang="en">Standard</msg>
-	<msg name="word_looparea_norm" lang="de">Norm</msg>
-	<msg name="word_looparea_norm" lang="sv">Standard</msg>
-	<msg name="word_looparea_law" lang="en">Law</msg>
-	<msg name="word_looparea_law" lang="de">Gesetz</msg>
-	<msg name="word_looparea_law" lang="sv">Lag</msg>
-	<msg name="word_looparea_question" lang="en">Question</msg>
-	<msg name="word_looparea_question" lang="de">Fråga</msg>
-	<msg name="word_looparea_question" lang="sv">Frage</msg>
-	<msg name="word_looparea_practice" lang="en">Practice</msg>
-	<msg name="word_looparea_practice" lang="de">Aus der Praxis</msg>
-	<msg name="word_looparea_practice" lang="sv">Från praktiken</msg>
-	<msg name="word_looparea_exercise" lang="en">Exercise</msg>
-	<msg name="word_looparea_exercise" lang="de">Übung</msg>
-	<msg name="word_looparea_exercise" lang="sv">Övning</msg>
-	<msg name="word_looparea_websource" lang="en">Websource</msg>
-	<msg name="word_looparea_websource" lang="de">Quelle im Web</msg>
-	<msg name="word_looparea_websource" lang="sv">Websource</msg>
-	<msg name="word_looparea_experiment" lang="en">Experiment</msg>
-	<msg name="word_looparea_experiment" lang="de">Experiment</msg>
-	<msg name="word_looparea_experiment" lang="sv">Experiment</msg>
-	<msg name="word_looparea_citation" lang="en">Citation</msg>
-	<msg name="word_looparea_citation" lang="de">Zitat</msg>	
-	<msg name="word_looparea_citation" lang="sv">Citat</msg>	
-	
-	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
+<!--	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
 	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
-	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg>
+	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> -->
 	
-</terms>
+</terms> 
