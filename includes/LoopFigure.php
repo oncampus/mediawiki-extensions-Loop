@@ -153,8 +153,8 @@ class LoopFigure extends LoopObject{
 	public function renderForSpecialpage() {
 		global $wgLoopObjectNumbering, $wgLoopNumberingType;
 
-		$html = '<div class="row mb-2 ml-2">';
-		$html .= '<div class="col-2">';
+		$html = '<div class="row mb-2 pl-2">';
+		$html .= '<div class="col-2 p-0 list_of_figures">';
 		
 		if ( $this->mFile ) {
 
@@ -164,7 +164,7 @@ class LoopFigure extends LoopObject{
 					'height' => 100 
 			) );
 			$html .= $thumb->toHtml( array (
-					'desc-link' => false
+				'desc-link' => false
 			) );
 		} 
 		$html .= '</div>';
@@ -199,7 +199,7 @@ class LoopFigure extends LoopObject{
 				}
 			}
 		}
-		$html .= '<div class="col-10">';
+		$html .= '<div class="col-10 pl-0">';
 		$html .= '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
