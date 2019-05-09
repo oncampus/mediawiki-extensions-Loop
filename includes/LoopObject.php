@@ -52,6 +52,11 @@ class LoopObject {
 			'none'
 	);	
 
+	public static $mIndexingOptions = array (
+			'true',
+			'false'
+	);	
+
 	/**
 	 * Register the loop object tags hook
 	 * @param Parser $parser

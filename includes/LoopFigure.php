@@ -62,10 +62,12 @@ class LoopFigure extends LoopObject{
 			$figure = new LoopFigure();
 			$figure->init($input, $args, $parser, $frame);
 			if ( isset( $args["index"] ) ) {
-				if ( $args["index"] == "false" ) {
+				if ( strtolower( $args["index"] ) == "false" ) {
 					$figure->indexing = false;
-				} else {
+				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$figure->indexing = true;
+				} else {
+					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
 				}
 			} else {
 				$figure->indexing = true;
@@ -129,14 +131,10 @@ class LoopFigure extends LoopObject{
 				$filename = $tmp_src_array [6];
 			} else {
 				$filename = "";
-				# TODO loop exception
-				$e = new LoopException( wfMessage( 'loopobject-error-no-file' ) );
-				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-				throw $e;
 			}
 			$filename = urldecode ( $filename );
 			$this->setFile($filename);
-		}
+		} 
 		
 		if (preg_match ( '<div class="float-left">', $this->getContent(), $float_matches ) === 1) {
 			$this->setAlignment('left');
@@ -156,6 +154,7 @@ class LoopFigure extends LoopObject{
 		global $wgLoopObjectNumbering, $wgLoopNumberingType;
 
 		$html = '<div class="row mb-2 ml-2">';
+		$html .= '<div class="col-2">';
 		
 		if ( $this->mFile ) {
 
@@ -167,40 +166,40 @@ class LoopFigure extends LoopObject{
 			$html .= $thumb->toHtml( array (
 					'desc-link' => false
 			) );
-		} else {
-			
-			$html .= '<div class="thumb_placeholder" style="width:120px; height: 50px;"></div>';
-		}
-
+		} 
+		$html .= '</div>';
 		$numberText = '';
 		if ( $wgLoopObjectNumbering == 1 ) {
-			if ( $wgLoopNumberingType == 'chapter' ) {
-		
-				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
-				$tocChapter = '';
-				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
+			
+			$loopStructure = new LoopStructure();
+			$loopStructure->loadStructureItems();
+			$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
+			
+			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			if ( $lsi ) {
+					
+				$number = $previousObjects['loop_figure'] + $this->getNumber();
+			
+				if ( $wgLoopNumberingType == 'chapter' ) {
+			
+					$tocChapter = '';
+					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
 
-				if (isset($tocChapterArray[1])) {
-					$tocChapter = $tocChapterArray[1];
-				} else {
-					$tocChapter = 0;
-				}
-				
-				if ( $lsi ) {
+					if (isset($tocChapterArray[1])) {
+						$tocChapter = $tocChapterArray[1];
+					} else {
+						$tocChapter = 0;
+					}
 					
-					$loopStructure = new LoopStructure();
-					$loopStructure->loadStructureItems();
 					
-					$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
-					$number = $previousObjects['loop_figure'] + $this->getNumber();
 					$numberText = ' ' . $tocChapter . '.' . $number;
-				}
 
-			} else {
-				$numberText = ' ' . $this->getNumber();
+				} elseif ( $wgLoopNumberingType == 'ongoing' ) {
+					$numberText = ' ' . $number;
+				}
 			}
 		}
-		
+		$html .= '<div class="col-10">';
 		$html .= '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
@@ -222,6 +221,7 @@ class LoopFigure extends LoopObject{
 				array()
 				) . '<br/>';
 		}
+		$html .= '</div>';
 		$html .= '</div></div>';
 		return $html;
 	}
@@ -289,12 +289,7 @@ class SpecialLoopFigures extends SpecialPage {
 						
 						$figure->parse(true);
 
-						if ( $wgLoopNumberingType == "chapter" ) {
-							$figure->setNumber ( $figure_tag["nthoftype"] );
-						} elseif ( $wgLoopNumberingType == "ongoing" ) {
-							$figure->setNumber ( $figure_number );
-							$figure_number ++;
-						}
+						$figure->setNumber ( $figure_tag["nthoftype"] );
 						$figure->setArticleId ( $article_id );
 
 						preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)

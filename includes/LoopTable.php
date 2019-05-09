@@ -45,8 +45,10 @@ class LoopTable extends LoopObject{
 			if ( isset( $args["index"] ) ) {
 				if ( $args["index"] == "false" ) {
 					$table->indexing = false;
-				} else {
+				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$table->indexing = true;
+				} else {
+					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
 				}
 			} else {
 				$table->indexing = true;
@@ -58,9 +60,6 @@ class LoopTable extends LoopObject{
 		}
 		return  $html ;		
 	}
-	
-	
-
 }
 
 /**

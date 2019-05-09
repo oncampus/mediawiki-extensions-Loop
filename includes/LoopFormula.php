@@ -45,8 +45,10 @@ class LoopFormula extends LoopObject{
 			if ( isset( $args["index"] ) ) {
 				if ( $args["index"] == "false" ) {
 					$formula->indexing = false;
-				} else {
+				}  elseif ( strtolower( $args["index"] ) == "true" ) {
 					$formula->indexing = true;
+				} else {
+					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
 				}
 			} else {
 				$formula->indexing = true;

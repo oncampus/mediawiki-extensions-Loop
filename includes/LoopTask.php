@@ -45,8 +45,10 @@ class LoopTask extends LoopObject{
 			if ( isset( $args["index"] ) ) {
 				if ( $args["index"] == "false" ) {
 					$task->indexing = false;
-				} else {
+				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$task->indexing = true;
+				} else {
+					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
 				}
 			} else {
 				$task->indexing = true;

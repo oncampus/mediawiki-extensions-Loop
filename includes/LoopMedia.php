@@ -97,8 +97,10 @@ class LoopMedia extends LoopObject{
 			if ( isset( $args["index"] ) ) {
 				if ( $args["index"] == "false" ) {
 					$media->indexing = false;
-				} else {
+				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$media->indexing = true;
+				} else {
+					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
 				}
 			} else {
 				$media->indexing = true;
