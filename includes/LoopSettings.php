@@ -156,9 +156,10 @@ class LoopSettings {
                     
             }
         } else { // fetch data from global variables
-            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType;
+            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
 
             $this->oncampusLink = $wgOncampusLink;
+            $this->languageCode = $wgLanguageCode;
             $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
             $this->imprintLink = $wgImprintLink;
             $this->privacyLink = $wgPrivacyLink;

@@ -322,6 +322,21 @@
 			<xsl:when test="extension[@extension_name='loop_figure']">
         		<func:result>2</func:result>
 			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_formula']">
+        		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_listing']">
+        		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_media']">
+        		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_table']">
+        		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_task']">
+        		<func:result>2</func:result>
+			</xsl:when>
 
 			<xsl:otherwise>
         		<func:result>1</func:result>

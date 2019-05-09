@@ -120,6 +120,11 @@ class LoopExportXml extends LoopExport {
 		$this->request = $request;
 	}
 
+	/**
+	 * Add indexable item to the database
+	 * @param Array $modifiers: 
+	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
+	 */
 	public function generateExportContent( Array $modifiers = null ) {
 		$query = array();
 		if ( isset( $this->request ) ) {
@@ -161,7 +166,7 @@ class LoopExportPdf extends LoopExport {
 		$this->exportDirectory = '/export/pdf';
 		$this->fileExtension = 'pdf';
 	}
-
+	
 	public function generateExportContent() {
 		$this->exportContent = LoopPdf::structure2pdf($this->structure);
 	}

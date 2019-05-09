@@ -130,7 +130,7 @@
 	/**
 	 * Set up LOOP-specific pages so they are not red links
 	 */
-	private static function setupLoopPages() {
+	public static function setupLoopPages() {
 		
 		global $wgOut;
 

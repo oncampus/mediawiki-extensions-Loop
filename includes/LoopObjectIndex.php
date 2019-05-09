@@ -41,7 +41,7 @@ class LoopObjectIndex {
 	// deletes all objects of a page
     public function removeAllPageItemsFromDb ( $article ) {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_MASTER );
 		$dbr->delete(
 			'loop_object_index',
 			'loi_pageid = ' . $article,
