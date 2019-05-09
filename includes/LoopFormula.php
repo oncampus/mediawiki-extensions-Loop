@@ -43,7 +43,7 @@ class LoopFormula extends LoopObject{
 			$formula->init($input, $args, $parser, $frame);
 			$formula->parse();
 			if ( isset( $args["index"] ) ) {
-				if ( $args["index"] == "false" ) {
+				if ( strtolower( $args["index"] ) == "false" ) {
 					$formula->indexing = false;
 				}  elseif ( strtolower( $args["index"] ) == "true" ) {
 					$formula->indexing = true;

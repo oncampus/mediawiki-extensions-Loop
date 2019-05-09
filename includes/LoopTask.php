@@ -43,7 +43,7 @@ class LoopTask extends LoopObject{
 			$task->init($input, $args, $parser, $frame);
 			$task->parse();
 			if ( isset( $args["index"] ) ) {
-				if ( $args["index"] == "false" ) {
+				if ( strtolower( $args["index"] ) == "false" ) {
 					$task->indexing = false;
 				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$task->indexing = true;

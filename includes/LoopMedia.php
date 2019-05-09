@@ -95,7 +95,7 @@ class LoopMedia extends LoopObject{
 			$media->init($input, $args, $parser, $frame);
 			$media->parse();
 			if ( isset( $args["index"] ) ) {
-				if ( $args["index"] == "false" ) {
+				if ( strtolower( $args["index"] ) == "false" ) {
 					$media->indexing = false;
 				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$media->indexing = true;

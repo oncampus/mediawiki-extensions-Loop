@@ -1,5 +1,12 @@
 <?php
 class LoopXml {
+	
+	/**
+	 * Add indexable item to the database
+	 * @param LoopStructure $loopStructure: 
+	 * @param Array $modifiers: 
+	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
+	 */
 	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
 		global $wgCanonicalServer, $wgLanguageCode;
 		

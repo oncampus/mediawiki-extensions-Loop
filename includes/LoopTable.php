@@ -43,7 +43,7 @@ class LoopTable extends LoopObject{
 			$table->init($input, $args, $parser, $frame);
 			$table->parse();
 			if ( isset( $args["index"] ) ) {
-				if ( $args["index"] == "false" ) {
+				if ( strtolower( $args["index"] ) == "false" ) {
 					$table->indexing = false;
 				} elseif ( strtolower( $args["index"] ) == "true" ) {
 					$table->indexing = true;

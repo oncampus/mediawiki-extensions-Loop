@@ -42,7 +42,7 @@ class LoopListing extends LoopObject{
 			$listing->init($input, $args, $parser, $frame);
 			$listing->parse();
 			if ( isset( $args["index"] ) ) {
-				if ( $args["index"] == "false" ) {
+				if ( strtolower( $args["index"] ) == "false" ) {
 					$listing->indexing = false;
 				}  elseif ( strtolower( $args["index"] ) == "true" ) {
 					$listing->indexing = true;

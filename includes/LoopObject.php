@@ -787,47 +787,50 @@ class LoopObject {
 				$newContentText = $contentText;
 
 				foreach ( $object_tags as $object ) {
+					
+					$tmpLoopObjectIndex = new LoopObjectIndex();
+
 					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] == "true" ) {
 						$objects[$object[0]]++;
 					}
 
-					$loopObjectIndex->index = $object[0];
-					#todo foreach index false --
-					$loopObjectIndex->nthItem = $objects[$object[0]];
+					$tmpLoopObjectIndex->index = $object[0];
+					$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
 					
-					$loopObjectIndex->pageId = $title->getArticleID();
-
+					$tmpLoopObjectIndex->pageId = $title->getArticleID();
+					
+					
 					if ( $object[0] == "loop_figure" ) {
-						$loopObjectIndex->itemThumb = $object[1];
+						$tmpLoopObjectIndex->itemThumb = $object[1];
 					}
 					if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
-						$loopObjectIndex->itemType = $object[2]["type"];
+						$tmpLoopObjectIndex->itemType = $object[2]["type"];
 					}
 					if ( isset( $object[2]["title"] ) ) {
-						$loopObjectIndex->itemTitle = $object[2]["title"];
+						$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
 					}
 					if ( isset( $object[2]["description"] ) ) {
-						$loopObjectIndex->itemDescription = $object[2]["description"];
+						$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
 					}
 					if ( isset( $object[2]["id"] ) ) {
 						
-						if ( $loopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
-							$loopObjectIndex->refId = $object[2]["id"];
+						if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
+							$tmpLoopObjectIndex->refId = $object[2]["id"];
 						} else {
 							# dublicate id must be replaced
 							$newRef = uniqid();
 							$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
-							$loopObjectIndex->refId = $newRef; 
+							$tmpLoopObjectIndex->refId = $newRef; 
 						}
 					} else {
 						# create new id
 						$newRef = uniqid();
 						$newContentText = self::setReferenceId( $newContentText, $newRef ); 
-						$loopObjectIndex->refId = $newRef; 
+						$tmpLoopObjectIndex->refId = $newRef; 
 
 					}
 					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] == "true" ) {
-						$loopObjectIndex->addToDatabase();
+						$tmpLoopObjectIndex->addToDatabase();
 					}
 				}
 
