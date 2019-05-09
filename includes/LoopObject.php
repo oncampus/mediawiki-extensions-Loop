@@ -646,7 +646,9 @@ class LoopObject {
 		}
 
 		if ( ! in_array ( $this->getRenderOption(), self::$mRenderOptions ) ) {
-			throw new LoopException( wfMessage( 'loopobject-error-unknown-renderoption', $this->getRenderOption(), implode( ', ', self::$mRenderOptions ) ) );
+			$e = new LoopException( wfMessage( 'loopobject-error-unknown-renderoption', $this->getRenderOption(), implode( ', ', self::$mRenderOptions ) ) );
+			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+			throw $e;
 		}
 		
 		if ($alignment = $this->GetArg('align')) {
@@ -656,7 +658,9 @@ class LoopObject {
 		}		
 		
 		if ( ! in_array ( $this->getAlignment(), self::$mAlignmentOptions ) ) {
-			throw new LoopException( wfMessage( 'loopobject-error-unknown-alignmentoption', $this->getAlignment(), implode( ', ', self::$mAlignmentOptions ) ) );
+			$e =  new LoopException( wfMessage( 'loopobject-error-unknown-alignmentoption', $this->getAlignment(), implode( ', ', self::$mAlignmentOptions ) ) );
+			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+			throw $e;
 		}		
 		
 		if ($title = $this->GetArg('title')) {
@@ -683,7 +687,9 @@ class LoopObject {
 				$this->setShowCopyright(false);
 				break;
 			default:
-				throw new LoopException( wfMessage( 'loopobject-error-unknown-showcopyrightoption', $showcopyright, array('true','false') ) );
+				$e = new LoopException( wfMessage( 'loopobject-error-unknown-showcopyrightoption', $showcopyright, array('true', 'false') ) );
+				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+				throw $e;
 		}
 		
 		if ($copyright = $this->GetArg('copyright')) {

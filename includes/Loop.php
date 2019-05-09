@@ -126,5 +126,18 @@
 
 		return true;
 	}
+	
+	/**
+	 * Set up LOOP-specific pages so they are not red links
+	 */
+	private static function setupLoopPages() {
+		
+		global $wgOut;
+
+		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->text(), NS_CATEGORY ));
+		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
+		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $wgOut->getUser() );
+
+	}
 
 }

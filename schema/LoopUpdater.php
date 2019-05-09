@@ -15,7 +15,8 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_properties', dirname( __FILE__ ) . '/loop_structure_properties.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', dirname( __FILE__ ) . '/loop_settings.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', dirname( __FILE__ ) . '/loop_object_index.sql', true ) );
-		#$updater->addExtensionUpdate(array( 'modifyTable', 'loop_index', dirname( __FILE__ ) . '/loop_index.sql', true ) );
+		
+		Loop::setupLoopPages();
 
 		return true;
 	}

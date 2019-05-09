@@ -20,6 +20,14 @@ class LoopException extends Exception {
 	 * @return string Error message HTML.
 	 */
 	public function __toString() {
-		return Html::rawElement( 'div',	array( 'class' => 'errorbox' ),	$this->getMessage() );
+		
+		global $wgOut;
+		$user = $wgOut->getUser();
+		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		if ( $editMode == true ) {
+			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ),	$this->getMessage() );
+		} else {
+			return '';
+		}
 	}
 }
