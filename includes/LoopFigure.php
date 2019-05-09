@@ -130,6 +130,9 @@ class LoopFigure extends LoopObject{
 			} else {
 				$filename = "";
 				# TODO loop exception
+				$e = new LoopException( wfMessage( 'loopobject-error-no-file' ) );
+				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+				throw $e;
 			}
 			$filename = urldecode ( $filename );
 			$this->setFile($filename);
