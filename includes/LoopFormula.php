@@ -24,8 +24,8 @@ class LoopFormula extends LoopObject{
 	 * @see LoopObject::getDefaultRenderOption()
 	 */
 	public function getDefaultRenderOption() {
-		global $wgLoopFormulaDefaultRenderOption;
-		return $wgLoopFormulaDefaultRenderOption;
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
 	}
 		
 	

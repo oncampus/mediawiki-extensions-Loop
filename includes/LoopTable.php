@@ -24,8 +24,8 @@ class LoopTable extends LoopObject{
 	 * @see LoopObject::getDefaultRenderOption()
 	 */
 	public function getDefaultRenderOption() {
-		global $wgLoopTableDefaultRenderOption;
-		return $wgLoopTableDefaultRenderOption;
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
 	}
 		
 	

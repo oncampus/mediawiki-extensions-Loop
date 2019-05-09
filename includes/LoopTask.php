@@ -24,8 +24,8 @@ class LoopTask extends LoopObject{
 	 * @see LoopObject::getDefaultRenderOption()
 	 */
 	public function getDefaultRenderOption() {
-		global $wgLoopTaskDefaultRenderOption;
-		return $wgLoopTaskDefaultRenderOption;
+		global $LoopObjectDefaultRenderOption;
+		return $LoopObjectDefaultRenderOption;
 	}	
 	
 	

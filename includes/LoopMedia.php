@@ -51,8 +51,8 @@ class LoopMedia extends LoopObject{
 	 * @see LoopObject::getDefaultRenderOption()
 	 */
 	public function getDefaultRenderOption() {
-		global $wgLoopMediaDefaultRenderOption;
-		return $wgLoopMediaDefaultRenderOption;
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
 	}
 		
 	/**

@@ -29,8 +29,8 @@ class LoopFigure extends LoopObject{
 	 * @see LoopObject::getDefaultRenderOption()
 	 */
 	public function getDefaultRenderOption() {
-		global $wgLoopFigureDefaultRenderOption;
-		return $wgLoopFigureDefaultRenderOption;
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
 	}
 	
 	/**

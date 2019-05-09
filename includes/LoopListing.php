@@ -24,8 +24,8 @@ class LoopListing extends LoopObject{
 	 * @see LoopObject::getDefaultRenderOption()
 	 */
 	public function getDefaultRenderOption() {
-		global $wgLoopListingDefaultRenderOption;
-		return $wgLoopListingDefaultRenderOption;
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
 	}
 	
 	/**

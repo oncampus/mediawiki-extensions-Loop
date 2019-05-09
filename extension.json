@@ -533,31 +533,10 @@
 			"description" : "Array of available languages to use"
 		},
 		
-		"LoopFigureDefaultRenderOption": {
+		"LoopObjectDefaultRenderOption": {
 			"value": "icon",
 			"description" : ""
 		},
-		"LoopTableDefaultRenderOption": {
-			"value": "icon",
-			"description" : ""
-		},
-		"LoopMediaDefaultRenderOption": {
-			"value": "icon",
-			"description" : ""
-		},
-		"LoopFormulaDefaultRenderOption": {
-			"value": "icon",
-			"description" : ""
-		},
-		"LoopListingDefaultRenderOption": {
-			"value": "icon",
-			"description" : ""
-		},
-		"LoopTaskDefaultRenderOption": {
-			"value": "icon",
-			"description" : ""
-		},
-		
 		"LoopObjectNumbering": {
 			"value": true,
 			"description" : "Default value for activating object numberings"
@@ -566,7 +545,6 @@
 			"value": "ongoing",
 			"description" : "Setting default type for numbering of objects [ongoing|chapter]"
 		},
-		
 		"LoopMediaDefaultType": {
 			"value": "media",
 			"description" : ""
