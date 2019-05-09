@@ -130,9 +130,9 @@ class LoopFigure extends LoopObject{
 			} else {
 				$filename = "";
 				# TODO loop exception
-				$e = new LoopException( wfMessage( 'loopobject-error-no-file' ) );
-				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-				throw $e;
+				#$e = new LoopException( wfMessage( 'loopobject-error-no-file' ) );
+				#$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+				#throw $e;
 			}
 			$filename = urldecode ( $filename );
 			$this->setFile($filename);
@@ -155,7 +155,8 @@ class LoopFigure extends LoopObject{
 	public function renderForSpecialpage() {
 		global $wgLoopObjectNumbering, $wgLoopNumberingType;
 
-		$html = '<div class="row mb-2 ml-2">';
+		$html = '<div class="row mb-2 pl-2">';
+		$html .= '<div class="col-2 p-0 list_of_figures">';
 		
 		if ( $this->mFile ) {
 
@@ -165,13 +166,13 @@ class LoopFigure extends LoopObject{
 					'height' => 100 
 			) );
 			$html .= $thumb->toHtml( array (
-					'desc-link' => false
+				'desc-link' => false
 			) );
 		} else {
 			
 			$html .= '<div class="thumb_placeholder" style="width:120px; height: 50px;"></div>';
 		}
-
+		$html .= '</div>';
 		$numberText = '';
 		if ( $wgLoopObjectNumbering == 1 ) {
 			if ( $wgLoopNumberingType == 'chapter' ) {
@@ -200,7 +201,7 @@ class LoopFigure extends LoopObject{
 				$numberText = ' ' . $this->getNumber();
 			}
 		}
-		
+		$html .= '<div class="col-10 pl-0">';
 		$html .= '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
@@ -222,6 +223,7 @@ class LoopFigure extends LoopObject{
 				array()
 				) . '<br/>';
 		}
+		$html .= '</div>';
 		$html .= '</div></div>';
 		return $html;
 	}
