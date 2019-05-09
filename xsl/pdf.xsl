@@ -402,37 +402,74 @@
 								</xsl:if>							
 									<xsl:choose>
 										<xsl:when test="$object[@extension_name='loop_figure']">
-											<xsl:text>&#xe912; </xsl:text>
+											<xsl:value-of select="$icon_figure"></xsl:value-of>
+											<xsl:text> </xsl:text>
 											<fo:inline font-weight="bold">
 												<xsl:value-of select="$word_figure_short"></xsl:value-of>
 											</fo:inline>
 										</xsl:when>
 										<xsl:when test="$object[@extension_name='loop_formula']">
-											<xsl:text>&#xe91b; </xsl:text>
+											<xsl:value-of select="$icon_formula"></xsl:value-of>
+											<xsl:text> </xsl:text>
 											<fo:inline font-weight="bold">
 												<xsl:value-of select="$word_formula_short"></xsl:value-of>
 											</fo:inline>
 										</xsl:when>
 										<xsl:when test="$object[@extension_name='loop_listing']">
-											<xsl:text>&#xe96a; </xsl:text>
+											<xsl:value-of select="$icon_listing"></xsl:value-of>
+											<xsl:text> </xsl:text>
 											<fo:inline font-weight="bold">
 												<xsl:value-of select="$word_listing_short"></xsl:value-of>
 											</fo:inline>
 										</xsl:when>
 										<xsl:when test="$object[@extension_name='loop_media']">
-											<xsl:text>&#xe903; </xsl:text>
+											<xsl:choose>
+												<xsl:when test="$object[@type='rollover']">
+													<xsl:value-of select="$icon_rollover"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='video']">
+													<xsl:value-of select="$icon_video"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='interaction']">
+													<xsl:value-of select="$icon_interaction"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='click']">
+													<xsl:value-of select="$icon_click"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='audio']">
+													<xsl:value-of select="$icon_audio"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='animation']">
+													<xsl:value-of select="$icon_animation"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='simulation']">
+													<xsl:value-of select="$icon_simulation"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='dragdrop']">
+													<xsl:value-of select="$icon_dragdrop"></xsl:value-of>
+												</xsl:when>
+												<xsl:when test="$object[@type='media']">
+													<xsl:value-of select="$icon_media"></xsl:value-of>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:value-of select="$icon_media"></xsl:value-of>
+												</xsl:otherwise>
+											</xsl:choose>
+											<xsl:text> </xsl:text>
 											<fo:inline font-weight="bold">
 												<xsl:value-of select="$word_media_short"></xsl:value-of>
 											</fo:inline>
 										</xsl:when>
 										<xsl:when test="$object[@extension_name='loop_task']">
-											<xsl:text>&#xe94b; </xsl:text>
+											<xsl:value-of select="$icon_task"></xsl:value-of>
+											<xsl:text> </xsl:text>
 											<fo:inline font-weight="bold">
 												<xsl:value-of select="$word_task_short"></xsl:value-of>
 											</fo:inline>
 										</xsl:when>
 										<xsl:when test="$object[@extension_name='loop_table']">
-											<xsl:text>&#xe94a; </xsl:text>
+											<xsl:value-of select="$word_media_short"></xsl:value-of>
+											<xsl:text> </xsl:text>
 											<fo:inline font-weight="bold">
 												<xsl:value-of select="$word_table_short"></xsl:value-of>
 											</fo:inline>

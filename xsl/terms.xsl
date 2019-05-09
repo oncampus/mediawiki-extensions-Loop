@@ -9,6 +9,25 @@
 		<xsl:param name="term_name_key"/>
 		<func:result select="document($terms_file)/terms/msg[(@name=$term_name_key) and (@lang=$lang)]"/>
 	</func:function>
+	<func:function name="functx:get_icon">
+		<xsl:param name="term_icon_key"/>
+		<func:result select="document($terms_file)/terms/msg[(@name=$term_icon_key)]"/>
+	</func:function>
+
+	<xsl:variable name="icon_figure" select="functx:get_icon('icon_figure')" />
+	<xsl:variable name="icon_formula" select="functx:get_icon('icon_formula')" />
+	<xsl:variable name="icon_listing" select="functx:get_icon('icon_listing')" />
+	<xsl:variable name="icon_media" select="functx:get_icon('icon_media')" />
+	<xsl:variable name="icon_table" select="functx:get_icon('icon_table')" />
+	<xsl:variable name="icon_task" select="functx:get_icon('icon_task')" />
+	<xsl:variable name="icon_rollover" select="functx:get_icon('icon_rollover')" />
+	<xsl:variable name="icon_video" select="functx:get_icon('icon_video')" />
+	<xsl:variable name="icon_interaction" select="functx:get_icon('icon_interaction')" />
+	<xsl:variable name="icon_click" select="functx:get_icon('icon_click')" />
+	<xsl:variable name="icon_audio" select="functx:get_icon('icon_audio')" />
+	<xsl:variable name="icon_animation" select="functx:get_icon('icon_animation')" />
+	<xsl:variable name="icon_simulation" select="functx:get_icon('icon_simulation')" />
+	<xsl:variable name="icon_dragdrop" select="functx:get_icon('icon_dragdrop')" />
 
 	<xsl:variable name="word_chapter" select="functx:get_term_name('word_chapter')" />
 	<xsl:variable name="word_state"  select="functx:get_term_name('word_state')" />
