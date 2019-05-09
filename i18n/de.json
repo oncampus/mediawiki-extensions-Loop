@@ -139,5 +139,9 @@
 	"loopmedia": "Medienverzeichnis",
 	"looplistings": "Listingverzeichnis",
 	"loopformulas": "Formelverzeichnis",
-	"looptasks": "Aufgabenverzeichnis"
+	"looptasks": "Aufgabenverzeichnis",
+
+	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
+	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX"
+	
 }

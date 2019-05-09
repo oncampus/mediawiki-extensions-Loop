@@ -137,5 +137,9 @@
 	"loopmedia": "List of media",
 	"looplistings": "List of listings",
 	"loopformulas": "List of tasks",
-	"looptasks": "List of tasks"
+	"looptasks": "List of tasks",
+	
+	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
+	"loopobject-error-unknown-alignmentoption" : "The object's alignment option  (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''."
+
 }

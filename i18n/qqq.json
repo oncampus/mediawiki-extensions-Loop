@@ -136,5 +136,8 @@
 	"loopmedia": "Loop media",
 	"looplistings": "Loop listings",
 	"loopformulas": "Loop formulas",
-	"looptasks": "Loop tasks"
+	"looptasks": "Loop tasks",
+	
+	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
+	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options"
 }
