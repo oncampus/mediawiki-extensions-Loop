@@ -834,7 +834,7 @@ class LoopObject {
 
 				}
 				if ( $contentText !== $newContentText ) {
-				
+					#dd($contentText , $newContentText);
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					$content = $content->updateRedirect	( $title );
 					$wikiPage->doEditContent ( $content, $summary, $flags, false, $user );
@@ -850,12 +850,11 @@ class LoopObject {
 	 * @param string $id
 	 */
 	public static function setReferenceId( $text, $id ) {
-	
 		$changedText = false;
-		$text = '<div>'.$text.'</div>';
+		$text = "<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>';
 		
-		$dom = new DOMDocument;
-		@$dom->loadHTML( $text, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		$dom = new DOMDocument("1.0", "utf-8");
+		@$dom->loadHTML( $text, LIBXML_HTML_NODEFDTD );
 		
 		$xpath = new DOMXPath( $dom );
 		
@@ -873,7 +872,8 @@ class LoopObject {
 			if( ! $existingId ) {
 				$node->setAttribute('id', $id );
 				$changed = true;
-				$changedText = mb_substr($dom->saveHTML(),5,-7);
+				$changedText = mb_substr($dom->saveHTML(), 55, -21);
+				
 				return $changedText;
 				break;
 			}
