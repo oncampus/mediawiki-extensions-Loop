@@ -133,6 +133,7 @@
 	"looparea-name-summary" : "Zusammenfassung",
 	"looparea-name-task" : "Aufgabe",
 	"looparea-name-timerequirement" : "Zeitumfang",
+	"looparea-name-websource" : "Websource",
 	
 	"looparea-icon-text-annotation" : "Anmerkung",
 	"looparea-icon-text-area" : "",
@@ -156,5 +157,6 @@
 	"looparea-icon-text-sourcecode" : "Code",
 	"looparea-icon-text-summary" : "Zusammen&shy;fassung",
 	"looparea-icon-text-task" : "Aufgabe",
-	"looparea-icon-text-timerequirement" : "Zeitumfang"
+	"looparea-icon-text-timerequirement" : "Zeitumfang",
+	"looparea-icon-text-websource" : "Websource"
 }

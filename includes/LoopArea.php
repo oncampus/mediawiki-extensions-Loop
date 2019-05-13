@@ -56,7 +56,7 @@ class LoopArea {
 			$ownicon = 'style="background-image: url(' . $owniconurl . ')"'; 
 		}
 
-		$ret = '<div class="looparea ' . $cssrender . '">';
+		$ret = '<div class="looparea ' . $cssrender . ' looparea-'. $iconimg .'">';
 		$ret .= '<div class="looparea-container">';
 		$ret .= '<div class="looparea-left">';
 		$ret .= '<span class="' . $cssicon . '" ' . $ownicon . '></span>';

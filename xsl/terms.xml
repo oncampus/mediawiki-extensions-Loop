@@ -10,5 +10,52 @@
 
 	<msg name="word_content" lang="en">Content</msg>
 	<msg name="word_content" lang="de">Inhalt</msg>	
-	<msg name="word_content" lang="sv">Innehåll</msg>	
+	<msg name="word_content" lang="sv">Innehåll</msg>
+
+	<msg name="word_looparea_task" lang="en">task</msg>
+	<msg name="word_looparea_task" lang="de">Aufgabe</msg>
+	<msg name="word_looparea_timerequirement" lang="en">timerequirement</msg>
+	<msg name="word_looparea_timerequirement" lang="de">Zeitumfang</msg>
+	<msg name="word_looparea_learningobjectives" lang="en">learningobjectives</msg>
+	<msg name="word_looparea_learningobjectives" lang="de">Lernziele</msg>
+	<msg name="word_looparea_arrangement" lang="en">arrangement</msg>
+	<msg name="word_looparea_arrangement" lang="de">Gliederung</msg>
+	<msg name="word_looparea_example" lang="en">example</msg>
+	<msg name="word_looparea_example" lang="de">Beispiel</msg>
+	<msg name="word_looparea_reflection" lang="en">reflection</msg>
+	<msg name="word_looparea_reflection" lang="de">Refexion</msg>
+	<msg name="word_looparea_notice" lang="en">notice</msg>
+	<msg name="word_looparea_notice" lang="de">Hinweis</msg>
+	<msg name="word_looparea_important" lang="en">important</msg>
+	<msg name="word_looparea_important" lang="de">Wichtig</msg>
+	<msg name="word_looparea_annotation" lang="en">annotation</msg>
+	<msg name="word_looparea_annotation" lang="de">Anmerkung</msg>
+	<msg name="word_looparea_definition" lang="en">definition</msg>
+	<msg name="word_looparea_definition" lang="de">Definition</msg>
+	<msg name="word_looparea_formula" lang="en">formula</msg>
+	<msg name="word_looparea_formula" lang="de">Formel</msg>
+	<msg name="word_looparea_markedsentence" lang="en">marked sentence</msg>
+	<msg name="word_looparea_markedsentence" lang="de">Merksatz</msg>
+	<msg name="word_looparea_sourcecode" lang="en">sourcecode</msg>
+	<msg name="word_looparea_sourcecode" lang="de">Code</msg>
+	<msg name="word_looparea_summary" lang="en">summary</msg>
+	<msg name="word_looparea_summary" lang="de">Zusammenfassung</msg>
+	<msg name="word_looparea_indentation" lang="en">indentation</msg>
+	<msg name="word_looparea_indentation" lang="de">Vertiefung</msg>
+	<msg name="word_looparea_norm" lang="en">norm</msg>
+	<msg name="word_looparea_norm" lang="de">Norm</msg>
+	<msg name="word_looparea_law" lang="en">law</msg>
+	<msg name="word_looparea_law" lang="de">Gesetz</msg>
+	<msg name="word_looparea_question" lang="en">question</msg>
+	<msg name="word_looparea_question" lang="de">Frage</msg>
+	<msg name="word_looparea_practice" lang="en">practice</msg>
+	<msg name="word_looparea_practice" lang="de">Aus der Praxis</msg>
+	<msg name="word_looparea_exercise" lang="en">exercise</msg>
+	<msg name="word_looparea_exercise" lang="de">Übung</msg>
+	<msg name="word_looparea_websource" lang="en">websource</msg>
+	<msg name="word_looparea_websource" lang="de">Quelle im Web</msg>
+	<msg name="word_looparea_experiment" lang="en">experiment</msg>
+	<msg name="word_looparea_experiment" lang="de">Experiment</msg>
+	<msg name="word_looparea_citation" lang="en">citation</msg>
+	<msg name="word_looparea_citation" lang="de">Zitat</msg>	
 </terms>

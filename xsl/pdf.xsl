@@ -61,7 +61,8 @@
 		</fo:root>
 	</xsl:template>
 	
-	
+
+
 	<xsl:template name="make-declarations">
 		<axf:document-info name="document-title" >
 			<xsl:attribute name="value"><xsl:value-of select="/loop/meta/title"></xsl:value-of></xsl:attribute>
@@ -523,8 +524,88 @@
 		</fo:inline>
 	</xsl:template>	
 	
-	
-	
+
+
+
+	<!-- Loop Area -->
+	<xsl:template match="extension[@extension_name='loop_area']">
+		<fo:block border-left="solid 0.2mm #000000" margin-bottom="3mm" margin-top="3mm" padding="3mm 3mm 3mm 3mm" page-break-before="auto">
+			<fo:block keep-with-next.within-page="always" margin-bottom="2mm" padding-bottom="1mm">
+				<!-- ICON IMG -->
+				<fo:inline font-size="x-large" padding-right="2mm">
+					<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+						<xsl:when test="@type='task'">&#xe94b;</xsl:when>
+						<xsl:when test="@type='timerequirement'">&#xe94c;</xsl:when>
+						<xsl:when test="@type='learningobjectives'">&#xe924;</xsl:when>
+						<xsl:when test="@type='arrangement'">&#xe956;</xsl:when>
+						<xsl:when test="@type='example'">&#xe90f;</xsl:when>
+						<xsl:when test="@type='reflection'">&#xe939;</xsl:when>
+						<xsl:when test="@type='notice'">&#xe92d;</xsl:when>
+						<xsl:when test="@type='important'">&#xe91f;</xsl:when>
+						<xsl:when test="@type='annotation'">&#xe955;</xsl:when>
+						<xsl:when test="@type='definition'">&#xe909;</xsl:when>
+						<xsl:when test="@type='formula'">&#xe91b;</xsl:when>
+						<xsl:when test="@type='markedsentence'">&#xe928;</xsl:when>
+						<xsl:when test="@type='sourcecode'">&#xe94d;</xsl:when>
+						<xsl:when test="@type='summary'">&#xe949;</xsl:when>
+						<xsl:when test="@type='indentation'">&#xe953;</xsl:when>
+						<xsl:when test="@type='norm'">&#xe92c;</xsl:when>
+						<xsl:when test="@type='law'">&#xe922;</xsl:when>
+						<xsl:when test="@type='question'">&#xe937;</xsl:when>
+						<xsl:when test="@type='practice'">&#xe932;</xsl:when>
+						<xsl:when test="@type='exercise'">&#xe910;</xsl:when>
+						<xsl:when test="@type='websource'">&#xe925;</xsl:when>
+						<xsl:when test="@type='experiment'">&#xe911;</xsl:when>
+						<xsl:when test="@type='citation'">&#xe906;</xsl:when>
+						<xsl:when test="@icon">
+							<!--<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
+							
+							<xsl:if test="php:function('xsl_transform_imagepath', $iconfilename)!=''">
+								<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
+								<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
+								</fo:external-graphic>
+							</xsl:if>
+-->
+							<!-- <xsl:value-of select="@icon" /> -->
+						</xsl:when>
+						<xsl:otherwise></xsl:otherwise> <!-- todo: error msg? -->
+					</xsl:choose>
+				</fo:inline>
+				<!-- ICON TEXT -->
+				<fo:inline font-weight="bold">
+					<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+						<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$word_looparea_learningobjectives"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='arrangement'"><xsl:value-of select="$word_looparea_arrangement"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='example'"><xsl:value-of select="$word_looparea_example"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='reflection'"><xsl:value-of select="$word_looparea_reflection"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='notice'"><xsl:value-of select="$word_looparea_notice"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='important'"><xsl:value-of select="$word_looparea_important"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='annotation'"><xsl:value-of select="$word_looparea_annotation"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='definition'"><xsl:value-of select="$word_looparea_definition"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='formula'"><xsl:value-of select="$word_looparea_formula"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='markedsentence'"><xsl:value-of select="$word_looparea_markedsentence"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='sourcecode'"><xsl:value-of select="$word_looparea_sourcecode"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='summary'"><xsl:value-of select="$word_looparea_summary"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='indentation'"><xsl:value-of select="$word_looparea_indentation"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='norm'"><xsl:value-of select="$word_looparea_norm"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='law'"><xsl:value-of select="$word_looparea_law"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='question'"><xsl:value-of select="$word_looparea_question"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='practice'"><xsl:value-of select="$word_looparea_practice"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='exercise'"><xsl:value-of select="$word_looparea_exercise"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='websource'"><xsl:value-of select="$word_looparea_websource"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='experiment'"><xsl:value-of select="$word_looparea_experiment"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
+						<xsl:when test="@icontext">ASD</xsl:when>
+						<xsl:otherwise></xsl:otherwise> <!-- todo: error msg? -->
+					</xsl:choose>
+				</fo:inline>
+			</fo:block>
+			<fo:block><xsl:value-of select="current()"/></fo:block>
+		</fo:block>
+  	</xsl:template>
+
 	<xsl:template match="heading">
 		<xsl:variable name="level" select="@level"></xsl:variable>
 		<xsl:choose>
@@ -634,8 +715,7 @@
 			</fo:external-graphic>
 		</fo:block>
 	</fo:float>		
-			
-		
+
 	</xsl:template>	
 	
 </xsl:stylesheet>
