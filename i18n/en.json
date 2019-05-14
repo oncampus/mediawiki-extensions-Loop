@@ -141,6 +141,9 @@
 	
 	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''."
+	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
+	"loopobject-error-unknown-showcopyrightoption" : "The object's show copyright option (show_copyright) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
+	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''."
+
 
 }
