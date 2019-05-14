@@ -558,15 +558,15 @@
 						<xsl:when test="@type='experiment'">&#xe911;</xsl:when>
 						<xsl:when test="@type='citation'">&#xe906;</xsl:when>
 						<xsl:when test="@icon">
-							<!--<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
+							<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
 							
 							<xsl:if test="php:function('xsl_transform_imagepath', $iconfilename)!=''">
-								<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
+								<fo:external-graphic scaling="uniform" content-height="scale-to-fit" max-height="6mm" margin-top="5mm">
 								<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
 								</fo:external-graphic>
 							</xsl:if>
--->
-							<!-- <xsl:value-of select="@icon" /> -->
+
+							<!-- content-width="24mm" -->
 						</xsl:when>
 						<xsl:otherwise></xsl:otherwise> <!-- todo: error msg? -->
 					</xsl:choose>
