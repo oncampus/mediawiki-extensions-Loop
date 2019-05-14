@@ -23,9 +23,13 @@ class LoopException extends Exception {
 		
 		global $wgOut;
 		$user = $wgOut->getUser();
+		
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
 		if ( $editMode == true ) {
-			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ),	$this->getMessage() );
+			global $wgParser, $wgFrame;
+			
+			$parsedMsg = $wgParser->recursiveTagParse( $this->getMessage(), $wgFrame );
+			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg );
 		} else {
 			return '';
 		}
