@@ -59,7 +59,7 @@ class LoopXml {
 	    
 	    foreach ( $objects as $object ) {
 	        
-	        $xml .= "<loop_object object_type='".$object["index"]."' articleid='".$object["pageid"]."' refid='".$object["id"]."'>\n";
+	        $xml .= "<loop_object object_type='".$object["index"]."' articleid='".$object["pageid"]."' n='".$object["nthoftype"]."' refid='".$object["id"]."'>\n";
 	        if ( ! empty($object["objectnumber"]) ) {   $xml .= "<object_number>".$object["objectnumber"]."</object_number>\n"; }
 	        if ( ! empty($object["type"]) ) {   $xml .= "<object_media_type>".$object["type"]."</object_media_type>\n"; }
 	       

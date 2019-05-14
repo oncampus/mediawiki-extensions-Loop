@@ -150,7 +150,7 @@ class LoopObjectIndex {
                }
             
             
-               $objects[] = array(
+               $objects[$row->loi_refid] = array(
                    "pageid" => $row->loi_pageid,
                    "id" => $row->loi_refid,
                    "title" => $row->loi_itemtitle,
@@ -159,7 +159,7 @@ class LoopObjectIndex {
                    "type" => $row->loi_itemtype,
                    "id" => $row->loi_refid,
                    #"thumb" => $row->loi_itemthumb,
-                   #"nthoftype" => $row->loi_nthoftype,
+                   "nthoftype" => $row->loi_nthoftype,
                    "objectnumber" => $numberText
                 );
             }
@@ -221,19 +221,15 @@ class LoopObjectIndex {
 			}
 		} elseif ( $wgLoopNumberingType == "chapter" ) {
 			foreach ( $structureItems as $item ) {
-				#dd($item);
 				$tmpId = $item->article;
 				$tocNumber = array();
 				preg_match('/(\d+)\.{0,1}/', $item->tocNumber, $tocNumber);
 				
 				if ( isset( $tocNumber[1] ) && $tocNumber[1] == $lsiTocNumber ) {
-					#dd();
 					if (  $item->sequence < $lsi->sequence  ) {
 						foreach( $objects as $objectType => $page ) {
 							if ( isset( $page[$tmpId] ) ) {
 								$return[$objectType] += sizeof($page[$tmpId]);
-								#var_dump($return[$objectType]);
-								#dd($return);
 							}
 						}
 					}

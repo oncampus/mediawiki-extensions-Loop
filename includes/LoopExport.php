@@ -42,7 +42,7 @@ abstract class LoopExport {
 		global $wgUploadDirectory;
 
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
-		if ( $this->lsi != null ) {
+		if (  isset($this->lsi) && $this->lsi != null ) {
 			$export_dir .= '/'. $this->lsi->article;
 		
 		}
@@ -50,7 +50,7 @@ abstract class LoopExport {
 		if (!is_dir($export_dir)) {
 			@mkdir($export_dir, 0777, true);
 		}
-		if ( $this->lsi != null ) {
+		if ( isset($this->lsi) && $this->lsi != null ) {
 			if (!is_dir($export_dir)) {
 				@mkdir($export_dir, 0777, true);
 			}
