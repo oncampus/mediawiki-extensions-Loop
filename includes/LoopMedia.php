@@ -90,27 +90,13 @@ class LoopMedia extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopMedia($input, array $args, $parser, $frame) {
-		try {
-			$media = new LoopMedia();
-			$media->init($input, $args, $parser, $frame);
-			$media->parse();
-			if ( isset( $args["index"] ) ) {
-				if ( strtolower( $args["index"] ) == "false" ) {
-					$media->indexing = false;
-				} elseif ( strtolower( $args["index"] ) == "true" ) {
-					$media->indexing = true;
-				} else {
-					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
-				}
-			} else {
-				$media->indexing = true;
-			}
-			$html = $media->render();
-		} catch ( LoopException $e ) {
-			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-			$html = "$e";
-		}
-		return  $html ;
+		
+		$media = new LoopMedia();
+		$media->init($input, $args, $parser, $frame);
+		$media->parse();
+		$html = $media->render();
+			
+		return  $html;
 	}
 	
 	/**
@@ -127,7 +113,10 @@ class LoopMedia extends LoopObject{
 		}
 		
 		if ( ! in_array ( $this->getMediaType(), self::$mMediaTypes ) ) {
-			throw new LoopException( wfMessage( 'loopmedia-error-unknown-mediatype', $this->getMediaType(), implode( ', ',self::$mMediaTypes ) ) );
+			$this->setMediaType('media');
+			$e = new LoopException( wfMessage( 'loopmedia-error-unknown-mediatype', $mediatype, implode( ', ',self::$mMediaTypes ) ) );
+			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+			$this->error = $e;
 		}		
 		
 		$this->setContent($this->getParser()->recursiveTagParse($this->getInput()) );
@@ -188,7 +177,7 @@ class SpecialLoopMedia extends SpecialPage {
 				$media = new LoopMedia();
 				$media->init($media_tag ["thumb"], $media_tag ["args"]);
 				
-				$media->parse(true);
+				$media->parse();
 				if ( $wgLoopNumberingType == "chapter" ) {
 					$media->setNumber ( $media_tag["nthoftype"] );
 				} elseif ( $wgLoopNumberingType == "ongoing" ) {

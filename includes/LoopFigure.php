@@ -58,26 +58,12 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopFigure($input, array $args, $parser, $frame) {
-		try {
-			$figure = new LoopFigure();
-			$figure->init($input, $args, $parser, $frame);
-			if ( isset( $args["index"] ) ) {
-				if ( strtolower( $args["index"] ) == "false" ) {
-					$figure->indexing = false;
-				} elseif ( strtolower( $args["index"] ) == "true" ) {
-					$figure->indexing = true;
-				} else {
-					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
-				}
-			} else {
-				$figure->indexing = true;
-			}
-			$figure->parse();
-			$html = $figure->render();
-		} catch ( LoopException $e ) {
-				$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-				$html = "$e";
-		}
+		
+		$figure = new LoopFigure();
+		$figure->init($input, $args, $parser, $frame);
+		$figure->parse();
+		$html = $figure->render();
+		
 		return  $html ;			
 	}
 	
@@ -101,14 +87,14 @@ class LoopFigure extends LoopObject{
 			switch ($subtag [0]) {
 				case 'loop_figure_title' :
 					if ($fullparse == true) {
-						$this->setTitleFullyParsed($this->extraParse( $subtag [1] ));
+						$this->setTitleFullyParsed($this->extraParse( $subtag [1] ), false);
 					} else {
 						$this->setTitle($this->mParser->stripOuterParagraph ( $this->getParser()->recursiveTagParse ( $subtag [1] ) ));
 					}
 					break;
 				case 'loop_figure_description' :
 					if ($fullparse == true) {
-						$this->setDescriptionFullyParsed($this->extraParse( $subtag [1] ));
+						$this->setDescriptionFullyParsed($this->extraParse( $subtag [1] ), false);
 					} else {
 						$this->setDescription($this->mParser->stripOuterParagraph ( $this->getParser()->recursiveTagParse ( $subtag [1] ) ));
 					}
@@ -202,11 +188,20 @@ class LoopFigure extends LoopObject{
 		$html .= '<div class="col-10 pl-0">';
 		$html .= '<div class="loop_object_footer ml-1">';
 		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
-		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getTitleFullyParsed() ) . '</span><br/>';
-		
-		if ($this->mDescription) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
+		$outputTitle = '';
+
+		if ( $this->getTitleFullyParsed() ) {
+			$outputTitle = $this->getTitleFullyParsed();
+		} elseif ( $this->getTitle() ) {
+			$outputTitle = $this->getTitle();
 		}
+		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/>';
+		
+		if ($this->mDescriptionFullyParsed) {
+			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
+		} elseif ($this->mDescription) {
+			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
+		} 
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
@@ -287,7 +282,7 @@ class SpecialLoopFigures extends SpecialPage {
 						$figure = new LoopFigure();
 						$figure->init($figure_tag["thumb"], $figure_tag["args"]);
 						
-						$figure->parse(true);
+						$figure->parse();
 
 						$figure->setNumber ( $figure_tag["nthoftype"] );
 						$figure->setArticleId ( $article_id );

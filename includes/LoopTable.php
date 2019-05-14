@@ -38,26 +38,12 @@ class LoopTable extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopTable($input, array $args, $parser, $frame) {
-		try {
-			$table = new LoopTable();
-			$table->init($input, $args, $parser, $frame);
-			$table->parse();
-			if ( isset( $args["index"] ) ) {
-				if ( strtolower( $args["index"] ) == "false" ) {
-					$table->indexing = false;
-				} elseif ( strtolower( $args["index"] ) == "true" ) {
-					$table->indexing = true;
-				} else {
-					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
-				}
-			} else {
-				$table->indexing = true;
-			}
-			$html = $table->render();
-		} catch ( LoopException $e ) {
-			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-			$html = "$e";
-		}
+		
+		$table = new LoopTable();
+		$table->init($input, $args, $parser, $frame);
+		$table->parse();
+		$html = $table->render();
+
 		return  $html ;		
 	}
 }
@@ -117,7 +103,7 @@ class SpecialLoopTables extends SpecialPage {
 					$table = new LoopTable();
 					$table->init($table_tag["thumb"], $table_tag["args"]);
 					
-					$table->parse(true);
+					$table->parse();
 					if ( $wgLoopNumberingType == "chapter" ) {
 						$table->setNumber ( $table_tag["nthoftype"] );
 					} elseif ( $wgLoopNumberingType == "ongoing" ) {

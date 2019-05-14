@@ -196,7 +196,7 @@ class LoopObject {
 			}
 			#dd($this->mIndexing,  $this->getId());
 			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->mIndexing ) {
-				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . uniqid() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
 				$html .= '</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
@@ -831,7 +831,7 @@ class LoopObject {
 				foreach ( $object_tags as $object ) {
 					
 					$tmpLoopObjectIndex = new LoopObjectIndex();
-					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] == "true" ) {
+					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != "false" ) {
 						$objects[$object[0]]++;
 					}
 					$tmpLoopObjectIndex->index = $object[0];
@@ -1000,32 +1000,49 @@ class LoopObject {
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			$allObjects = LoopObjectIndex::getAllObjects( $loopStructure );
 			
 		}
 		foreach ( self::$mObjectTypes as $objectType ) {
 			
 			$matches = array();
-			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")([a-z0-9]{13})(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
+			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 			
 			if ( $lsi && $wgLoopObjectNumbering == 1 ) {
 				if ( $wgLoopNumberingType == "chapter" ) {
-					
-					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
-					if (isset($tocChapter[1])) {
-						$tocChapter = $tocChapter[1];
-					}
-					
-					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
-					foreach ( $matches[0] as $objectmarker ) {
-						if ( empty( $tocChapter ) ) {
-							$tocChapter = 0;
+					$i = 0;
+					if ( isset( $matches[2][$i]) ) {
+						
+						#dd($objectid);
+						preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
+						if (isset($tocChapter[1])) {
+							$tocChapter = $tocChapter[1];
 						}
-						$text = preg_replace ( "/" . $objectmarker . "/", $tocChapter . "." . $i++, $text );
-					} 
+						
+						foreach ( $matches[0] as $objectmarker ) {
+							$objectid = $matches[2][$i];
+							$number = '';
+							if ( isset( $allObjects[$objectid] ) ) {
+								$number = $previousObjects[$objectType] + $allObjects[$objectid]["nthoftype"];
+							}
+							if ( empty( $tocChapter ) ) {
+								$tocChapter = 0;
+							}
+							$text = preg_replace ( "/" . $objectmarker . "/", $tocChapter . "." . $number, $text );
+
+							$i++;
+						} 
+					}
 				} else {
-					$i = $previousObjects[$objectType] + $count[$objectType] + 1;
+					$i = 0;
 					foreach ( $matches[0] as $objectmarker ) {
-						$text = preg_replace ( "/" . $objectmarker . "/", $i++, $text );
+						$objectid = $matches[2][$i];
+						$number = '';
+						if ( isset( $allObjects[$objectid] ) ) {
+							$number = $previousObjects[$objectType] + $allObjects[$objectid]["nthoftype"];
+						}
+						$text = preg_replace ( "/" . $objectmarker . "/", $number, $text );
+						$i++;
 					}
 				}
 			} else {

@@ -37,26 +37,12 @@ class LoopListing extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopListing($input, array $args, $parser, $frame) {
-		try {
-			$listing = new LoopListing();
-			$listing->init($input, $args, $parser, $frame);
-			$listing->parse();
-			if ( isset( $args["index"] ) ) {
-				if ( strtolower( $args["index"] ) == "false" ) {
-					$listing->indexing = false;
-				}  elseif ( strtolower( $args["index"] ) == "true" ) {
-					$listing->indexing = true;
-				} else {
-					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
-				}
-			} else {
-				$listing->indexing = true;
-			}
-			$html = $listing->render();
-		} catch ( LoopException $e ) {
-			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-			$html = "$e";
-		}
+
+		$listing = new LoopListing();
+		$listing->init($input, $args, $parser, $frame);
+		$listing->parse();
+		$html = $listing->render();
+		
 		return  $html ;		
 	}
 	
@@ -116,7 +102,7 @@ class SpecialLoopListings extends SpecialPage {
 					$listing = new LoopListing();
 					$listing->init($listing_tag["thumb"], $listing_tag["args"]);
 					
-					$listing->parse(true);
+					$listing->parse();
 					if ( $wgLoopNumberingType == "chapter" ) {
 						$listing->setNumber ( $listing_tag["nthoftype"] );
 					} elseif ( $wgLoopNumberingType == "ongoing" ) {

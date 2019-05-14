@@ -38,31 +38,14 @@ class LoopFormula extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopFormula($input, array $args, $parser, $frame) {
-		try {
-			$formula = new LoopFormula();
-			$formula->init($input, $args, $parser, $frame);
-			$formula->parse();
-			if ( isset( $args["index"] ) ) {
-				if ( strtolower( $args["index"] ) == "false" ) {
-					$formula->indexing = false;
-				}  elseif ( strtolower( $args["index"] ) == "true" ) {
-					$formula->indexing = true;
-				} else {
-					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
-				}
-			} else {
-				$formula->indexing = true;
-			}
-			$html = $formula->render();
-		} catch ( LoopException $e ) {
-			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-			$html = "$e";
-		}
+
+		$formula = new LoopFormula();
+		$formula->init($input, $args, $parser, $frame);
+		$formula->parse();
+		$html = $formula->render();
+		
 		return  $html ;		
 	}
-	
-	
-	
 
 }
 
@@ -120,7 +103,7 @@ class SpecialLoopFormulas extends SpecialPage {
 					$formula = new LoopFormula();
 					$formula->init($formula_tag ["thumb"], $formula_tag ["args"]);
 					
-					$formula->parse(true);
+					$formula->parse();
 					if ( $wgLoopNumberingType == "chapter" ) {
 						$formula->setNumber ( $formula_tag["nthoftype"] );
 					} elseif ( $wgLoopNumberingType == "ongoing" ) {

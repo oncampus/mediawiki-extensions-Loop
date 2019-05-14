@@ -38,26 +38,12 @@ class LoopTask extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopTask($input, array $args, $parser, $frame) {
-		try {
-			$task = new LoopTask();
-			$task->init($input, $args, $parser, $frame);
-			$task->parse();
-			if ( isset( $args["index"] ) ) {
-				if ( strtolower( $args["index"] ) == "false" ) {
-					$task->indexing = false;
-				} elseif ( strtolower( $args["index"] ) == "true" ) {
-					$task->indexing = true;
-				} else {
-					throw new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $args["index"], implode( ', ', LoopObject::$mIndexingOptions ) ) );
-				}
-			} else {
-				$task->indexing = true;
-			}
-			$html = $task->render();
-		} catch ( LoopException $e ) {
-			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-			$html = "$e";
-		}
+		
+		$task = new LoopTask();
+		$task->init($input, $args, $parser, $frame);
+		$task->parse();
+		$html = $task->render();
+
 		return  $html ;		
 	}
 	
@@ -121,7 +107,7 @@ class SpecialLoopTasks extends SpecialPage {
 					$task = new LoopTask();
 					$task->init($task_tag["thumb"], $task_tag["args"]);
 					
-					$task->parse(true);
+					$task->parse();
 					if ( $wgLoopNumberingType == "chapter" ) {
 						$task->setNumber ( $task_tag["nthoftype"] );
 					} elseif ( $wgLoopNumberingType == "ongoing" ) {
