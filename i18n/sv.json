@@ -26,7 +26,7 @@
 	"loopsettings": "LOOP-Inställningar",
 	"loopsettings-specialpage-title": "LOOP-Inställningar",
 	"loopsettings-no-permission": "Du har inte behörighet för att visa den här sidan.",
-	"loopsettings-save-success": "Ändringarna har accepterats. Rensa cachen för att se dem.",
+	"loopsettings-save-success": "Ändringarna har accepterats. Rensa browsercachen för att se dem.",
 	"loopsettings-use-cc-label": "Använd Creative Commons licens",
 	"loopsettings-rights-label": "Deklaration av rättigheter i footer",
 	"loopsettings-rights-text-placeholder": "t.ex. namnet av upphovsrättsinnehavaren",

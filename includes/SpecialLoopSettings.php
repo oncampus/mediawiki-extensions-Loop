@@ -55,10 +55,6 @@ class SpecialLoopSettings extends SpecialPage {
 					
 				}
 				
-				$cache_button = '<button type="button" class="mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'purgecache' ) . '</button><br>';
-				$cache_link = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'PurgeCache' ), new HtmlArmor( $cache_button ) ); 
-				$html .= $cache_link;
-				
 			} else {
 				$currentLoopSettings->loadSettings();
 			}

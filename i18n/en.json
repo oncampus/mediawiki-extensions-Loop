@@ -28,7 +28,7 @@
 	"loopsettings" : "LOOP settings",
 	"loopsettings-specialpage-title" : "LOOP settings",
 	"loopsettings-no-permission": "You are not permitted to view this page.",
-	"loopsettings-save-success": "The changes were updated. Empty cache to see all changes.",
+	"loopsettings-save-success": "The changes were updated. Empty your browser's cache to see all changes.",
 	"loopsettings-use-cc-label": "Use Creative Commons license",
 	"loopsettings-rights-label": "Rights text in footer",
 	"loopsettings-rights-text-placeholder": "for example the name of the copyright owner",

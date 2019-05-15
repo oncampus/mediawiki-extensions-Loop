@@ -307,10 +307,8 @@ class LoopSettings {
         # Numbering objects
         if ( $request->getText( 'numbering-objects' ) == 'numberingObjects' ) { 
             $this->numberingObjects = true;
-            LoopObject::removeStructureCache();
         } elseif ( empty ( $request->getText( 'numbering-objects' ) ) ) {
             $this->numberingObjects = false;
-            LoopObject::removeStructureCache();
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-objects-label' ) );
         }
@@ -319,10 +317,8 @@ class LoopSettings {
         if ( ! empty ( $request->getText( 'numbering-type' ) ) ) { 
             if ( $request->getText( 'numbering-type' ) == "ongoing" ) { 
                 $this->numberingType = "ongoing";
-                LoopObject::removeStructureCache();
             } elseif ( $request->getText( 'numbering-type' ) == "chapter" ) { 
                 $this->numberingType = "chapter";
-                LoopObject::removeStructureCache();
             } else {
                 array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
             }
@@ -331,6 +327,7 @@ class LoopSettings {
         }
 
         $this->addToDatabase();
+        SpecialPurgeCache::purge();
         return true;
 
     }

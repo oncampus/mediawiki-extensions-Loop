@@ -28,7 +28,7 @@
 	"loopsettings": "LOOP-Einstellungen",
 	"loopsettings-specialpage-title": "LOOP-Einstellungen",
 	"loopsettings-no-permission": "Sie haben nicht die Rechte, um diese Seite sehen zu können.",
-	"loopsettings-save-success": "Die Änderungen wurden übernommen. Löschen Sie den Cache, um alle Änderungen sehen zu können.",
+	"loopsettings-save-success": "Die Änderungen wurden übernommen. Löschen Sie den Browsercache, um alle Änderungen sehen zu können.",
 	"loopsettings-use-cc-label": "Creative Commons Lizenz verwenden",
 	"loopsettings-rights-label": "Rechteangabe im Footer",
 	"loopsettings-rights-text-placeholder": "z.B. Name des Rechteinhabers",
