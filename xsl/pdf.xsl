@@ -628,7 +628,7 @@
 		</fo:block>
 		<xsl:choose>
 			<xsl:when test="$object_type='loop_figure'">
-				<fo:block id="list_of_figures" keep-with-next="always"  margin-bottom="10mm">
+				<fo:block id="list_of_figures" keep-with-next="always" margin-bottom="5mm" margin-top="15mm">
 					<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_figures'"></xsl:with-param>
@@ -638,7 +638,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$object_type='loop_formula'">
-				<fo:block id="list_of_formulas" keep-with-next="always"  margin-bottom="10mm">
+				<fo:block id="list_of_formulas" keep-with-next="always" margin-bottom="3mm" margin-top="15mm">
 					<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_formulas'"></xsl:with-param>
@@ -648,7 +648,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$object_type='loop_listing'">
-				<fo:block id="list_of_listings" keep-with-next="always"  margin-bottom="10mm">
+				<fo:block id="list_of_listings" keep-with-next="always" margin-bottom="3mm" margin-top="15mm">
 					<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_listings'"></xsl:with-param>
@@ -658,7 +658,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$object_type='loop_media'">
-				<fo:block id="list_of_media" keep-with-next="always"  margin-bottom="10mm">
+				<fo:block id="list_of_media" keep-with-next="always" margin-bottom="3mm" margin-top="15mm">
 					<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_media'"></xsl:with-param>
@@ -668,7 +668,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$object_type='loop_table'">
-				<fo:block id="list_of_tables" keep-with-next="always"  margin-bottom="10mm">
+				<fo:block id="list_of_tables" keep-with-next="always" margin-bottom="3mm" margin-top="15mm">
 					<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_tables'"></xsl:with-param>
@@ -678,7 +678,7 @@
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="$object_type='loop_task'">
-				<fo:block id="list_of_tasks" keep-with-next="always"  margin-bottom="10mm">
+				<fo:block id="list_of_tasks" keep-with-next="always" margin-bottom="3mm" margin-top="15mm">
 					<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_tasks'"></xsl:with-param>
@@ -691,7 +691,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 		 		
-		<fo:table width="170mm" table-layout="auto">
+		<fo:table width="170mm" table-layout="auto" margin-bottom="8mm">
 			<fo:table-body>
 				<xsl:choose>
 					<xsl:when test="$object_type='loop_figure'">

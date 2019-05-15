@@ -102,7 +102,7 @@ class LoopMp3 {
 				$id3tag_track = "0";
 			} else {
 				$loopExportSsml = LoopMp3::transformToSsml( $articleXml );
-				dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
+				#dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
 			}
 			$loopExportSsml = self::checkNestedTags($loopExportSsml);
 

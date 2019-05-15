@@ -54,7 +54,7 @@ class LoopObjectIndex {
     // returns ALL objects of a type in the wiki.
     public static function getObjectsOfType ( $type ) {
         
-        $dbr = wfGetDB( DB_SLAVE );
+        $dbr = wfGetDB( DB_REPLICA );
         
         $res = $dbr->select(
             'loop_object_index',
@@ -95,7 +95,7 @@ class LoopObjectIndex {
         
         global $wgLoopObjectNumbering, $wgLoopNumberingType;
         
-        $dbr = wfGetDB( DB_SLAVE );
+        $dbr = wfGetDB( DB_REPLICA );
         
         $res = $dbr->select(
             'loop_object_index',
@@ -191,7 +191,7 @@ class LoopObjectIndex {
 			$return[$objectType] = 0; 
 		}
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 
 		$res = $dbr->select(
 			'loop_object_index',
@@ -241,7 +241,7 @@ class LoopObjectIndex {
 
 	public function checkDublicates( $refId ) {
 		
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_object_index',
 			array(
