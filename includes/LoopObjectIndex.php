@@ -254,7 +254,8 @@ class LoopObjectIndex {
 		);
 		
 		foreach( $res as $row ) {
-			# given refId is already in use
+            # if res has rows, 
+			# given refId is already in use. 
 			return false;
 
 		}
