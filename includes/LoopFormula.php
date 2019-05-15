@@ -85,6 +85,7 @@ class SpecialLoopFormulas extends SpecialPage {
 		$formulas = array ();
 		$items = $loopStructure->getStructureItems();
 		$formula_number = 1;
+		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
 		foreach ( $items as $item ) {
 			
 			$article_id = $item->getArticle ();
@@ -116,6 +117,7 @@ class SpecialLoopFormulas extends SpecialPage {
 				}
 			}
 		}
+		$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

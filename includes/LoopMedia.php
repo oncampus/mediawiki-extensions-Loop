@@ -159,6 +159,7 @@ class SpecialLoopMedia extends SpecialPage {
 		$medias = array ();
 		$items = $loopStructure->getStructureItems();
 		$media_number = 1;
+		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
 		foreach ( $items as $item ) {
 			
 			$article_id = $item->getArticle ();
@@ -190,6 +191,7 @@ class SpecialLoopMedia extends SpecialPage {
 				}
 			}
 		}
+		$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

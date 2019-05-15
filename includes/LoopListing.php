@@ -84,6 +84,7 @@ class SpecialLoopListings extends SpecialPage {
 		$listings = array ();
 		$items = $loopStructure->getStructureItems();
 		$listing_number = 1;
+		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
 		foreach ( $items as $item ) {
 			
 			$article_id = $item->getArticle ();
@@ -115,6 +116,7 @@ class SpecialLoopListings extends SpecialPage {
 				}
 			}
 		}
+		$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

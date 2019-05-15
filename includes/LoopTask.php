@@ -88,6 +88,8 @@ class SpecialLoopTasks extends SpecialPage {
 		$tasks = array ();
 		$items = $loopStructure->getStructureItems();
 		$task_number = 1;
+		
+		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
 		foreach ( $items as $item ) {
 			
 			$article_id = $item->getArticle ();
@@ -100,7 +102,6 @@ class SpecialLoopTasks extends SpecialPage {
 			$parser->setTitle ( $title );
 			
 			$task_tags = LoopObjectIndex::getObjectsOfType ( 'loop_task' );
-			
 			if ( isset( $task_tags[$article_id] ) ) {
 				foreach ( $task_tags[$article_id] as $task_tag ) {
 
@@ -120,6 +121,7 @@ class SpecialLoopTasks extends SpecialPage {
 				}
 			}
 		}
+		$out->addHtml ( '</table>' );
 	}
 
 	protected function getGroupName() {

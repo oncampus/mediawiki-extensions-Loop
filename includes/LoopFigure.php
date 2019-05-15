@@ -139,8 +139,10 @@ class LoopFigure extends LoopObject{
 	public function renderForSpecialpage() {
 		global $wgLoopObjectNumbering, $wgLoopNumberingType;
 
-		$html = '<div class="row mb-2 pl-2">';
-		$html .= '<div class="col-2 p-0 list_of_figures">';
+		$html = '<tr scope="row" class="ml-1 pb-3">';
+		#$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
+	#	$html .= '<td scope="col" class=""><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		$html .= '<td scope="col" class="pl-0 pr-0">';
 		
 		if ( $this->mFile ) {
 
@@ -153,7 +155,7 @@ class LoopFigure extends LoopObject{
 				'desc-link' => false
 			) );
 		} 
-		$html .= '</div>';
+		$html .= '</td>';
 		$numberText = '';
 		if ( $wgLoopObjectNumbering == 1 ) {
 			
@@ -185,9 +187,9 @@ class LoopFigure extends LoopObject{
 				}
 			}
 		}
-		$html .= '<div class="col-10 pl-0">';
-		$html .= '<div class="loop_object_footer ml-1">';
-		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
+		#$html .= '<div class="col-10 pl-0">';
+		#$html .= '<div class="loop_object_footer ml-1">';
+		#$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$outputTitle = '';
 
 		if ( $this->getTitleFullyParsed() ) {
@@ -195,8 +197,9 @@ class LoopFigure extends LoopObject{
 		} elseif ( $this->getTitle() ) {
 			$outputTitle = $this->getTitle();
 		}
-		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/>';
-		
+		$html .= '<td scope="col" class="pl-1 pr-1"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/><span>';
+	
 		if ($this->mDescriptionFullyParsed) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
 		} elseif ($this->mDescription) {
@@ -216,8 +219,8 @@ class LoopFigure extends LoopObject{
 				array()
 				) . '<br/>';
 		}
-		$html .= '</div>';
-		$html .= '</div></div>';
+		$html .= '</span></td>';
+		$html .= '</tr>';
 		return $html;
 	}
 	
@@ -267,6 +270,7 @@ class SpecialLoopFigures extends SpecialPage {
 		$figures = array ();
 		$items = $loopStructure->getStructureItems();
 		$figure_number = 1;
+		$out->addHtml ( '<table class="table table-hover list_of_figures list_of_objects">' );
 		
 		$figure_tags = LoopObjectIndex::getObjectsOfType ( 'loop_figure' );
 
@@ -296,6 +300,7 @@ class SpecialLoopFigures extends SpecialPage {
 				}
 			}
 		}
+		$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {
 		return 'loop';

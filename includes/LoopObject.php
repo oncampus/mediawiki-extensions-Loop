@@ -286,9 +286,10 @@ class LoopObject {
 			$outputTitle = $this->getTitle();
 		}
 
-		$html = '<div class="loop_object_footer ml-1 mb-2">';
-		$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
-		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name' )->inContentLanguage ()->text () . $numberText . ': ' . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/>';
+		$html = '<tr scope="row" class="ml-1 pb-3">';
+		#$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
+		$html .= '<td scope="col" class="pl-1 pr-1"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/><span>';
 		
 		if ($this->mDescriptionFullyParsed) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
@@ -309,7 +310,8 @@ class LoopObject {
 				array()
 				) . '<br/>';
 		}
-		$html .= '</div>';
+		$html .= '</span></td>';
+		$html .= '</tr>';
 		return $html;
 	}	
 	
