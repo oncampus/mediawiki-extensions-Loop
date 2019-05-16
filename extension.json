@@ -61,9 +61,6 @@
 		"SpecialLoopTasks": "includes/LoopTask.php"
 	},
 	"Hooks": {
-		"ParserFirstCallInit" : [
-			"LoopArea::onParserInit"
-		],
 		"LoadExtensionSchemaUpdates":[
 			"LoopUpdater::onLoadExtensionSchemaUpdates"
 		],
@@ -74,7 +71,8 @@
 			"LoopHooks::onPageRenderingHash"
 		],
 		"ParserFirstCallInit": [
-			"LoopObject::onParserSetup"
+			"LoopObject::onParserSetup",
+			"LoopArea::onParserInit"
 		],
 		"PageContentSaveComplete": [
 			"LoopObject::onPageContentSaveComplete"
