@@ -44,6 +44,19 @@ class SpecialPurgeCache extends SpecialPage {
 			$out->addHTML( $html );
 		}
 	}
+	public static function purge() {
+		global $wgOut, $wgUploadDirectory;
+
+		if ( $wgOut->getUser()->isAllowed( 'purgecache' ) ) {
+			#$dbw = wfGetDB( DB_MASTER );
+			#$dbw->delete( 'objectcache', '*', __METHOD__ );
+					
+			$exportPath = $wgUploadDirectory . "/export/";
+			SpecialPurgeCache::deleteAll($exportPath);
+			LoopObject::removeStructureCache();
+		}
+		return true;
+	}
 
 	public static function deleteAll( $str ) {
 		if (is_file($str)) {

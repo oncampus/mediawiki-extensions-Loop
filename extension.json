@@ -14,9 +14,11 @@
 	"requires": {
 		"MediaWiki": ">= 1.32.0",
 		"extensions": {
-			"WikiEditor": "*"
+			"WikiEditor": "*",
+			"Math": "*"
 		}
 	},
+	"callback": "Loop::onExtensionLoad",
 	"AutoloadClasses": {
 		"Loop": "includes/Loop.php",
 		"LoopHooks": "includes/Loop.hooks.php",
@@ -40,7 +42,22 @@
 		"SpecialLoopExport": "includes/SpecialLoopExport.php",
 		"LoopSettings": "includes/LoopSettings.php",
 		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
-		"SpecialPurgeCache": "includes/SpecialPurgeCache.php"
+		"SpecialPurgeCache": "includes/SpecialPurgeCache.php",
+		"LoopException": "includes/LoopException.php",
+		"LoopObjectIndex": "includes/LoopObjectIndex.php",
+		"LoopObject": "includes/LoopObject.php",
+		"LoopFigure": "includes/LoopFigure.php",
+		"SpecialLoopFigures": "includes/LoopFigure.php",
+		"LoopFormula": "includes/LoopFormula.php",
+		"SpecialLoopFormulas": "includes/LoopFormula.php",
+		"LoopListing": "includes/LoopListing.php",
+		"SpecialLoopListings": "includes/LoopListing.php",
+		"LoopMedia": "includes/LoopMedia.php",
+		"SpecialLoopMedia": "includes/LoopMedia.php",
+		"LoopTable": "includes/LoopTable.php",
+		"SpecialLoopTables": "includes/LoopTable.php",
+		"LoopTask": "includes/LoopTask.php",
+		"SpecialLoopTasks": "includes/LoopTask.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -52,8 +69,17 @@
 		"PageRenderingHash":[
 			"LoopHooks::onPageRenderingHash"
 		],
-		"SetupAfterCache": [
-			"LoopHooks::onSetupAfterCache"
+		"ParserFirstCallInit": [
+			"LoopObject::onParserSetup"
+		],
+		"PageContentSaveComplete": [
+			"LoopObject::onPageContentSaveComplete"
+		],
+		"ParserAfterTidy": [
+			"LoopObject::onParserAfterTidy"
+		],
+		"SpecialPage_initList": [
+			"LoopHooks::onSpecialPageinitList"
 		]
 	},
 	"SpecialPages": {
@@ -61,7 +87,13 @@
 		"LoopStructureEdit": "SpecialLoopStructureEdit",
 		"LoopExport": "SpecialLoopExport",
 		"LoopSettings": "SpecialLoopSettings",
-		"PurgeCache": "SpecialPurgeCache"
+		"PurgeCache": "SpecialPurgeCache",
+		"LoopFigures": "SpecialLoopFigures",
+		"LoopFormulas": "SpecialLoopFormulas",
+		"LoopListings": "SpecialLoopListings",
+		"LoopMedia": "SpecialLoopMedia",
+		"LoopTables": "SpecialLoopTables",
+		"LoopTasks": "SpecialLoopTasks"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -96,7 +128,8 @@
 			"loop-view-export-log": false,
 			"createtalk": false,
 			"createpage": false,
-			"writeapi": false
+			"writeapi": false,
+			"loop-view-special-pages": false
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -108,7 +141,8 @@
 			"loop-export-scorm": false,
 			"loop-settings-edit": false,
 			"loop-pageaudio": true,
-			"createpage": true
+			"createpage": true,
+			"loop-view-special-pages": true
 		},
 		"sysop": {
 			"loop-toc-edit": true,
@@ -126,12 +160,13 @@
 			"purgecache": true,
 			"unreviewedpages": true,
 			"review": true,
-			"autoreview": true
+			"autoreview": true,
+			"loop-view-special-pages": true
 		},
 		"author": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": true,
@@ -157,12 +192,13 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"loop-view-special-pages": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": true,
@@ -188,12 +224,13 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"loop-view-special-pages": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
@@ -216,23 +253,25 @@
 			"rollback": true,
 			"delete": true,
 			"undelete": true,
-			"protect": true
+			"protect": true,
+			"loop-view-special-pages": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
-			"purge": true
+			"purge": true,
+			"loop-view-special-pages": true
 		},
 		"student_edit": {
 			"edit": true,
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
@@ -245,11 +284,12 @@
 			"createpage": true,
 			"deletedtext": true,
 			"deletedhistory": true,
-			"browsearchive": true
+			"browsearchive": true,
+			"loop-view-special-pages": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
-			"loop-export-xml": true,
+			"loop-export-xml": false,
 			"loop-export-mp3": true,
 			"loop-export-epub": true,
 			"loop-export-html": false,
@@ -332,7 +372,8 @@
 		"loop-export-scorm",
 		"loop-rendermode",
 		"loop-settings-edit",
-		"loop-view-export-log"
+		"loop-view-export-log",
+		"loop-view-special-pages"
 	],
 	"MessagesDirs": {
 		"Loop": [
@@ -490,6 +531,23 @@
 				"sv"
 			],
 			"description" : "Array of available languages to use"
+		},
+		
+		"LoopObjectDefaultRenderOption": {
+			"value": "icon",
+			"description" : ""
+		},
+		"LoopObjectNumbering": {
+			"value": true,
+			"description" : "Default value for activating object numberings"
+		},
+		"LoopNumberingType": {
+			"value": "ongoing",
+			"description" : "Setting default type for numbering of objects [ongoing|chapter]"
+		},
+		"LoopMediaDefaultType": {
+			"value": "media",
+			"description" : ""
 		}
 
 	},

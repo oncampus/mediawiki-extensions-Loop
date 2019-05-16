@@ -210,7 +210,7 @@ class LoopStructure {
 	 */
 	public function loadStructureItems() {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 
 		$res = $dbr->select(
 			'loop_structure_items',
@@ -278,12 +278,16 @@ class LoopStructure {
 		foreach( $this->structureItems as $structureItem ) {
 			$structureItem->addToDatabase();
 		}
+		
+		LoopObject::removeStructureCache();
 	}
 
 	/**
 	 * Delete all items from database
 	 */
 	public function deleteItems() {
+
+		LoopObject::removeStructureCache(); # update page_touched on structure pages. 
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(
@@ -302,7 +306,7 @@ class LoopStructure {
 
 
 	public function lastChanged() {
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$last_touched  =  $dbr->selectField(
 			array(
 					'loop_structure_items',
@@ -343,6 +347,19 @@ class LoopStructure {
 			$lsTitle = Title::newFromID($this->getMainpage())->getText();
 		}
 		return $lsTitle;
+	}
+
+	public function hasObjects( $type ) {
+		$objects = LoopObjectIndex::getObjectsOfType ( $type );
+		$structureItems = $this->getStructureItems();
+
+		foreach ( $structureItems as $item ) {
+			if ( isset ( $objects[$item->article] ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 
@@ -404,7 +421,7 @@ class LoopStructureItem {
 	 */
 	public static function newFromIds( $article ) {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_structure_items',
 			array(
@@ -457,7 +474,7 @@ class LoopStructureItem {
 	*/
 	public static function newFromText( $title ) {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_structure_items',
 			array(
@@ -512,7 +529,7 @@ class LoopStructureItem {
 	 */
 	public static function newFromToctext( $toctext ) {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 				'loop_structure_items',
 				array(
@@ -560,7 +577,7 @@ class LoopStructureItem {
 
 	public function getPreviousChapterItem () {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$prev_id =  $dbr->selectField(
 			'loop_structure_items',
 			'lsi_article',
@@ -585,7 +602,7 @@ class LoopStructureItem {
 
 	public function getNextChapterItem () {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$next_id = $dbr->selectField(
 			'loop_structure_items',
 			'lsi_article',
@@ -684,7 +701,7 @@ class LoopStructureItem {
 
 	public function lastChanged() {
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$last_touched  =  $dbr->selectField(
 			array(
 				'loop_structure_items',
@@ -731,7 +748,7 @@ class LoopStructureItem {
 
 		$childs = array();
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 				'loop_structure_items',
 				array(

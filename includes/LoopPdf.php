@@ -5,12 +5,12 @@ class LoopPdf {
 	public static function structure2pdf(LoopStructure $structure) {
 		global $IP, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
 	
-		
+		require_once ($IP."/extensions/Loop/xsl/LoopXsl.php");
 	
 		$unique = uniqid();
 	
 		$wiki_xml = LoopXml::structure2xml($structure);
-	
+		#var_dump($wiki_xml);exit;
 		try {
 			$xml = new DOMDocument();
 			$xml->loadXML($wiki_xml);

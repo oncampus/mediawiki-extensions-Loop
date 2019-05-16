@@ -36,9 +36,11 @@ class LoopHtml{
             //LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
 
             # prepare global config
+            $editModeBefore = $wgOut->getUser()->getOption( 'LoopEditMode', $wgDefaultUserOptions['LoopEditMode'], true );
             $renderModeBefore = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
             $debugModeBefore = $wgResourceLoaderDebug;
             $wgOut->getUser()->setOption( 'LoopRenderMode', 'offline' );
+            $wgOut->getUser()->setOption( 'LoopEditMode', false );
             $wgResourceLoaderDebug = true;
 
             $exportSkin = clone $context->getSkin();
@@ -120,6 +122,12 @@ class LoopHtml{
             }
 
             unlink( $tmpZipPath );
+
+            
+            # reset global config
+            $wgOut->getUser()->setOption( 'LoopRenderMode', $renderModeBefore );
+            $wgOut->getUser()->setOption( 'LoopEditMode', $editModeBefore );
+            $wgResourceLoaderDebug = $debugModeBefore;
 
             return $zip;
 
