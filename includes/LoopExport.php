@@ -42,7 +42,7 @@ abstract class LoopExport {
 		global $wgUploadDirectory;
 
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
-		if ( $this->lsi != null ) {
+		if (  isset($this->lsi) && $this->lsi != null ) {
 			$export_dir .= '/'. $this->lsi->article;
 		
 		}
@@ -50,7 +50,7 @@ abstract class LoopExport {
 		if (!is_dir($export_dir)) {
 			@mkdir($export_dir, 0777, true);
 		}
-		if ( $this->lsi != null ) {
+		if ( isset($this->lsi) && $this->lsi != null ) {
 			if (!is_dir($export_dir)) {
 				@mkdir($export_dir, 0777, true);
 			}
@@ -120,7 +120,12 @@ class LoopExportXml extends LoopExport {
 		$this->request = $request;
 	}
 
-	public function generateExportContent() {
+	/**
+	 * Add indexable item to the database
+	 * @param Array $modifiers: 
+	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
+	 */
+	public function generateExportContent( Array $modifiers = null ) {
 		$query = array();
 		if ( isset( $this->request ) ) {
 			$query = $this->request->getQueryValues();
@@ -129,7 +134,7 @@ class LoopExportXml extends LoopExport {
 			$this->exportContent = LoopXml::articleFromId2xml( $query['articleId'] );
 			var_dump($this->exportContent); exit; //debug output of page
 		} else {
-			$this->exportContent = LoopXml::structure2xml($this->structure);
+			$this->exportContent = LoopXml::structure2xml($this->structure, $modifiers);
 		}
 	}
 
@@ -161,7 +166,7 @@ class LoopExportPdf extends LoopExport {
 		$this->exportDirectory = '/export/pdf';
 		$this->fileExtension = 'pdf';
 	}
-
+	
 	public function generateExportContent() {
 		$this->exportContent = LoopPdf::structure2pdf($this->structure);
 	}

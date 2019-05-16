@@ -55,10 +55,6 @@ class SpecialLoopSettings extends SpecialPage {
 					
 				}
 				
-				$cache_button = '<button type="button" class="mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'purgecache' ) . '</button><br>';
-				$cache_link = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'PurgeCache' ), new HtmlArmor( $cache_button ) ); 
-				$html .= $cache_link;
-				
 			} else {
 				$currentLoopSettings->loadSettings();
 			}
@@ -74,6 +70,7 @@ class SpecialLoopSettings extends SpecialPage {
 					<a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general" aria-selected="true">' . $this->msg( 'loopsettings-tab-general' ) . '</a>
 					<a class="nav-item nav-link" id="nav-appearance-tab" data-toggle="tab" href="#nav-appearance" role="tab" aria-controls="nav-appearance" aria-selected="true">' . $this->msg( 'loopsettings-tab-appearance' ) . '</a>
 					<a class="nav-item nav-link" id="nav-footer-tab" data-toggle="tab" href="#nav-footer" role="tab" aria-controls="nav-footer" aria-selected="true">' . $this->msg( 'loopsettings-tab-footer' ) . '</a>
+					<a class="nav-item nav-link" id="nav-content-tab" data-toggle="tab" href="#nav-content" role="tab" aria-controls="nav-content" aria-selected="true">' . $this->msg( 'loopsettings-tab-content' ) . '</a>
 				</div>
 			</nav>
 			<form class="needs-validation mw-editform mt-3 mb-3" id="loopsettings-form" method="post" novalidate enctype="multipart/form-data">';
@@ -257,6 +254,26 @@ class SpecialLoopSettings extends SpecialPage {
 							</div>';
 					} 
 				$html .= '</div>'; // end of footer-tab
+
+				
+				/** 
+				 * CONTENT TAB 
+				 */	
+				$html .= '<div class="tab-pane fade" id="nav-content" role="tabpanel" aria-labelledby="nav-content-tab">';
+
+					$html .= '<h3>' . $this->msg( 'loopsettings-numbering' ) . '</h3>';
+
+					$html .= '<input type="checkbox" name="numbering-objects" id="numbering-objects" value="numberingObjects" ' . ( $currentLoopSettings->numberingObjects == true ? 'checked' : '' ) .'>
+					<label for="numbering-objects">' . $this->msg( 'loopsettings-numbering-objects-label' ) . '</label><br><br>';
+
+					$html .= '<input type="radio" name="numbering-type" id="ongoing" value="ongoing" ' . ( $currentLoopSettings->numberingType == "ongoing" ? 'checked' : '' ) .'>
+					<label for="ongoing">' . $this->msg( 'loopsettings-numbering-type-ongoing-label' ) . '</label><br>';
+
+					$html .= '<input type="radio" name="numbering-type" id="chapter" value="chapter" ' . ( $currentLoopSettings->numberingType == "chapter" ? 'checked' : '' ) .'>
+					<label for="chapter">' . $this->msg( 'loopsettings-numbering-type-chapter-label' ) . '</label><br>';
+			
+
+				$html .= '</div>'; // end of content-tab
 				
 			$html .= '</div>'; // end of tab-content
 			

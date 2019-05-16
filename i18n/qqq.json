@@ -58,6 +58,10 @@
 	"loopsettings-url-imprint-privacy-hint": "Hint for imprint and privacy input field. URL required or page title in LOOP",
 	"loopsettings-skin-style-label": "Label for Skin-Style dropdown",
 	"loopsettings-error": "Error message after server-side validation failing",
+	"loopsettings-numbering": "Headline on settings page, automatic numbering",
+	"loopsettings-numbering-objects-label": "Label for numbering of objects checkbox",
+	"loopsettings-numbering-type-ongoing-label": "Label for type of numbering radio button - ongoing numbering",
+	"loopsettings-numbering-type-chapter-label": "Label for type of numbering radio button - numbering per chapter",
 
 	"loopexport-specialpage-title" : "Page title for Loop Export special page",
 	"loopexport": "Name of Specialpage Export in List of Specialpages",
@@ -181,5 +185,39 @@
 	"looparea-icon-class-summary" : "icon class of the looparea type summary",
 	"looparea-icon-class-task" : "icon class of the looparea type task",
 	"looparea-icon-class-timerequirement" : "icon class of the looparea type timerequirement",
-	"looparea-icon-class-websource" : "icon class of the looparea type websource"
+	"looparea-icon-class-websource" : "icon class of the looparea type websource",
+
+	"loop_figure-name": "Prepend title of loop_figure",
+	"loop_figure-name-short": "Prepend title of loop_figure (short)",
+	"loop_table-name": "Prepend title of loop_table",
+	"loop_table-name-short": "Prepend title of loop_table (short)",
+	"loop_media-name": "Prepend title of loop_media",
+	"loop_media-name-short": "Prepend title of loop_media (short)",
+	"loop_listing-name": "Prepend title of loop_listing",
+	"loop_listing-name-short": "Prepend title of loop_listing (short)",
+	"loop_formula-name": "Prepend title of loop_formula",
+	"loop_formula-name-short": "Prepend title of loop_formula (short)",
+	"loop_task-name": "Prepend title of loop_task",
+	"loop_task-name-short": "Prepend title of loop_task (short)",
+	
+	"loopfigures-specialpage-title": "Page title for Loop figures special page",
+	"looptables-specialpage-title": "Page title for Loop tables special page",
+	"loopmedia-specialpage-title": "Page title for Loop media special page",
+	"looplistings-specialpage-title": "Page title for Loop listings special page",
+	"loopformulas-specialpage-title": "Page title for Loop formulas special page",
+	"looptasks-specialpage-title": "Page title for Loop tasks special page",
+	"loopfigures": "Loop figures",
+	"looptables": "Loop tables",
+	"loopmedia": "Loop media",
+	"looplistings": "Loop listings",
+	"loopformulas": "Loop formulas",
+	"looptasks": "Loop tasks",
+	
+	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
+	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options",
+	"loopobject-error-unknown-indexingoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - indexing option\n* $2 supported index options",
+	"loopobject-error-unknown-showcopyrightoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - show_copyright option\n* $2 supported show_copyright options",
+	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options",
+	"looparea-error-unknown-attribute" : "LoopArea contains an unknown value. Valid: '''type''', '''icon''' und '''icontext'''."
+	
 }

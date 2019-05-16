@@ -21,85 +21,6 @@ class LoopHooks {
 	}
 
 	/**
-	 * Apply settings set on Special:LoopSettings
-	 *
-	 * This is attached to the MediaWiki 'SetupAfterCache' hook.
-	 *
-	 * @return true
-	 */
-	public static function onSetupAfterCache(  ) {
-
-		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
-		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
-		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgLogRestrictions,
-		$wgFileExtensions;
-
-		$dbr = wfGetDB( DB_REPLICA );
-		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
-		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
-		if ( $dbr->tableExists( 'loop_settings' ) ) {
-
-			$res = $dbr->select(
-				'loop_settings',
-				array( 
-					'lset_id', 
-					'lset_rightstext', 
-					'lset_rightsurl', 
-					'lset_rightsicon', 
-					'lset_languagecode', 
-					'lset_skinstyle', 
-					'lset_imprintlink', 
-					'lset_privacylink' 
-				),
-				array(),
-				__METHOD__,
-				array( 'ORDER BY' => 'lset_id DESC LIMIT 1' )
-			);
-			$row = $res->fetchObject();
-
-			if ( isset( $row->lset_id ) ) {
-				$wgRightsText = ( empty( $row->lset_rightstext ) ? $wgRightsText : $row->lset_rightstext );
-				$wgRightsUrl = ( empty( $row->lset_rightsurl ) ? $wgRightsUrl : $row->lset_rightsurl );
-				$wgRightsIcon = ( empty( $row->lset_rightsicon ) ? $wgRightsIcon : $row->lset_rightsicon  );
-				$wgLanguageCode = ( empty( $row->lset_languagecode ) ? $wgLanguageCode : $row->lset_languagecode );
-				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
-				$wgWhitelistRead[] = empty( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
-				$wgWhitelistRead[] = empty( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
-				
-			}
-		}
-		
-		$wgWhitelistRead[] = "MediaWiki:Common.css";
-		$wgWhitelistRead[] = "MediaWiki:Common.js";
-		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
-		
-		# FlaggedRevs Settings
-		$wgFlaggedRevsLowProfile = false;
-		$wgFlaggedRevsExceptions = array();
-		$wgFlaggedRevsTags = array(
-			'official' => array( 'levels' => 1, 'quality' => 1, 'pristine' => 1 )
-		);
-		$wgFlaggedRevsTagsRestrictions = array(
-			'official' => array( 'review' => 1, 'autoreview' => 1 )
-		);
-		$wgFlaggedRevsAutopromote=false;
-		$wgShowRevisionBlock = false;
-		$wgSimpleFlaggedRevsUI = false;
-		$wgFlaggedRevsAutoReview = FR_AUTOREVIEW_CREATION_AND_CHANGES;
-
-		# Log viewing rights
-		$wgLogRestrictions["loopexport"] = "loop-view-export-log";
-		$wgLogRestrictions["block"] = "loop-view-export-log"; #Benutzersperr-Logbuch
-		$wgLogRestrictions["newusers"] = "loop-view-export-log"; #Neu angemeldete User-Logbuch
-		$wgLogRestrictions["rights"] = "loop-view-export-log"; #Benutzerrechte-Logbuch
-
-		# Uploadable file extensions
-		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg','eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr'));
-
-		return true;
-	}
-
-	/**
 	 * Cache different page version depending on status of Mode
 	 *
 	 * This is attached to the MediaWiki 'PageRenderingHash' hook.
@@ -121,6 +42,44 @@ class LoopHooks {
 			$confstr .= "!looprendermode=" . $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions["LoopRenderMode"], true );
 		}
 
+		return true;
+	}
+
+	/**
+	 * Restricts viewing special pages to privileged users
+	 *
+	 * This is attached to the MediaWiki 'SpecialPage_initList' hook.
+	 *
+	 * @param array $specialPages
+	 * @return boolean
+	 */
+	public static function onSpecialPageinitList ( &$specialPages ) {
+		global $wgOut;
+		$user = $wgOut->getUser();
+		if ( ! $user->isAllowed( "loop-view-special-pages" ) ) {
+
+			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects',  'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
+				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
+				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers', 
+				'MergeHistory', 'Randompage', 'Protectedpages', 'Wantedfiles', 'Listgrouprights', 'EditWatchlist', 'Blockme', 'FileDuplicateSearch', 
+				'Withoutinterwiki', 'Randomredirect', 'BlockList', 'Popularpages', 'Emailuser', 'Booksources', 'Upload', 'Confirmemail', 'Watchlist', 
+				'MIMEsearch', 'Allpages', 'Fewestrevisions', 'Unblock', 'ComparePages', 'Uncategorizedimages', 'Mostinterwikis', 'Preferences', 
+				'Categories', 'Statistics', 'Version', 'UploadStash', 'Undelete', 'Whatlinkshere', 'Lockdb', 'Lonelypages', 'Mostimages', 
+				'Unwatchedpages', 'Shortpages', 'Protectedtitles', 'Revisiondelete', 'Newpages', 'Unusedtemplates', 'Allmessages', 'CachedPage', 
+				'Filepath', 'Wantedpages', 'LinkSearch', 'Prefixindex', 'BrokenRedirects', 'Mostlinked', 'Tags', 'LoopStructureEdit', 'LoopSettings', 
+				'Longpages', 'Uncategorizedpages', 'Newimages', 'Blankpage', 'Disambiguations', 'Unusedcategories', 'Wantedcategories', 
+				'Unlockdb', 'PagesWithProp', 'Listfiles', 'Contributions', 'Listusers', 'Wantedtemplates', 'TrackingCategories', 'Stabilization',
+				'AutoblockList',  'ResetTokens', 'Listgrants', 'Listadmins', 'Listbots', 'PasswordPolicies', 'MediaStatistics', 'ListDuplicatedFiles', 
+				'ApiSandbox', 'RandomInCategory', 'Randomrootpage', 'GoToInterwiki', 'ExpandTemplates', 'ApiHelp', 'Diff', 'EditTags', 'Mycontributions', 
+				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel', 
+				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'ChangeCredentials', 'RemoveCredentials',
+				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages'
+				
+			);
+			foreach( $hidePages as $page ){ 
+				unset( $specialPages[$page] );
+			}
+		}
 		return true;
 	}
 

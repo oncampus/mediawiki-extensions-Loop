@@ -27,6 +27,8 @@ class LoopSettings {
     public $githubLink;
     public $instagramIcon;
     public $instagramLink;
+    public $numberingObjects;
+    public $numberingType;
 
     /**
      * Add settings to the database
@@ -61,7 +63,9 @@ class LoopSettings {
                 'lset_githubicon' => $this->githubIcon,
                 'lset_githublink' => $this->githubLink,
                 'lset_instagramicon' => $this->instagramIcon,
-                'lset_instagramlink' => $this->instagramLink
+                'lset_instagramlink' => $this->instagramLink,
+                'lset_numberingobjects' => $this->numberingObjects,
+                'lset_numberingtype' => $this->numberingType
             )
         );
         
@@ -102,7 +106,9 @@ class LoopSettings {
                 'lset_githubicon',
                 'lset_githublink',
                 'lset_instagramicon',
-                'lset_instagramlink'
+                'lset_instagramlink',
+                'lset_numberingobjects',
+                'lset_numberingtype'
             ),
             array(),
             __METHOD__,
@@ -140,6 +146,8 @@ class LoopSettings {
                 $this->githubLink = $row->lset_githublink;
                 $this->instagramIcon = $row->lset_instagramicon;
                 $this->instagramLink = $row->lset_instagramlink;
+                $this->numberingObjects = $row->lset_numberingobjects;
+                $this->numberingType = $row->lset_numberingtype;
                 
                 return true;
             } else {
@@ -148,13 +156,16 @@ class LoopSettings {
                     
             }
         } else { // fetch data from global variables
-            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink;
+            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
 
             $this->oncampusLink = $wgOncampusLink;
+            $this->languageCode = $wgLanguageCode;
             $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
             $this->imprintLink = $wgImprintLink;
             $this->privacyLink = $wgPrivacyLink;
-
+            $this->numberingObjects = $wgLoopObjectNumbering;
+            $this->numberingType = $wgLoopNumberingType;
+            
             return true;
         }
 
@@ -292,8 +303,31 @@ class LoopSettings {
             $this->customLogoFilePath = "";
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
         }
-            
+        
+        # Numbering objects
+        if ( $request->getText( 'numbering-objects' ) == 'numberingObjects' ) { 
+            $this->numberingObjects = true;
+        } elseif ( empty ( $request->getText( 'numbering-objects' ) ) ) {
+            $this->numberingObjects = false;
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-objects-label' ) );
+        }
+
+        # Numbering type
+        if ( ! empty ( $request->getText( 'numbering-type' ) ) ) { 
+            if ( $request->getText( 'numbering-type' ) == "ongoing" ) { 
+                $this->numberingType = "ongoing";
+            } elseif ( $request->getText( 'numbering-type' ) == "chapter" ) { 
+                $this->numberingType = "chapter";
+            } else {
+                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
+            }
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
+        }
+
         $this->addToDatabase();
+        SpecialPurgeCache::purge();
         return true;
 
     }
