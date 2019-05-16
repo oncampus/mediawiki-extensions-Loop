@@ -158,5 +158,7 @@
 	"looparea-icon-text-summary" : "Zusammen&shy;fassung",
 	"looparea-icon-text-task" : "Aufgabe",
 	"looparea-icon-text-timerequirement" : "Zeitumfang",
-	"looparea-icon-text-websource" : "Websource"
+	"looparea-icon-text-websource" : "Websource",
+
+	"looparea-error-unknown-attribute" : "Unbekanntes Attribut für LoopArea. Erlaubte Attribute sind '''type''', '''icon''' und '''icontext'''."
 }

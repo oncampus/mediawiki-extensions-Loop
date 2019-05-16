@@ -15,6 +15,22 @@ class LoopArea {
 		$argtype = 'area';
 		$iconimg = 'example';
 		
+		$allowed_attr = ['type', 'icontext', 'icon']; // allowed attributes for loop_area
+
+		$arraydiff = array_diff(array_keys($args), $allowed_attr);
+
+		// todo: check if no attribute is defined
+
+
+		if($arraydiff) {
+			//$e = new LoopException( wfMessage( 'looparea-error-unknown-attribute' ));
+			//$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+			//$this->error = $e;
+			print_r("error"); //temp
+		}
+
+
+
 		if( !empty( $args['type'] ) ) {
 			$argtype = $args['type'];
 			$iconimg = $argtype;
@@ -57,12 +73,12 @@ class LoopArea {
 		}
 
 		$ret = '<div class="looparea ' . $cssrender . ' looparea-'. $iconimg .'">';
-		$ret .= '<div class="looparea-container">';
-		$ret .= '<div class="looparea-left">';
+		$ret .= '<div class="looparea-container mb-3">';
+		$ret .= '<div class="looparea-left pt-3 px-1">';
 		$ret .= '<span class="' . $cssicon . '" ' . $ownicon . '></span>';
 		$ret .= '<span class="looparea-left-type">' . $icontext . '</span>';
 		$ret .= '</div>';
-		$ret .= '<div class="looparea-right">' . $parser->recursiveTagParseFully( $input ) . '</div>';
+		$ret .= '<div class="looparea-right p-3">' . $parser->recursiveTagParseFully( $input ) . '</div>';
 		$ret .= '</div>';
 		$ret .= '</div>';
 		return $ret;

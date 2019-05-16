@@ -151,5 +151,7 @@
 	"looparea-icon-text-sourcecode" : "Code",
 	"looparea-icon-text-summary" : "Samman$shy;fattning",
 	"looparea-icon-text-task" : "Uppgift",
-	"looparea-icon-text-timerequirement" : "Tidslinje"
+	"looparea-icon-text-timerequirement" : "Tidslinje",
+
+	"looparea-error-unknown-attribute" : "LoopArea contains an unknown value. Valid: '''type''', '''icon''' und '''icontext'''."
 }

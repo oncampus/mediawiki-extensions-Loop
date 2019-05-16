@@ -157,5 +157,7 @@
 	"looparea-icon-text-summary" : "Summary",
 	"looparea-icon-text-task" : "Task",
 	"looparea-icon-text-timerequirement" : "Timerequirement",
-	"looparea-icon-text-websource" : "Websource"
+	"looparea-icon-text-websource" : "Websource",
+
+	"looparea-error-unknown-attribute" : "LoopArea contains an unknown value. Valid: '''type''', '''icon''' und '''icontext'''."
 }
