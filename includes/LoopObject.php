@@ -670,7 +670,7 @@ class LoopObject {
 		
 		// handle rendering option
 		if ($renderoption = $this->GetArg('render')) {
-			$this->setRenderOption(htmlspecialchars($renderoption));
+			$this->setRenderOption(strtolower(htmlspecialchars($renderoption)));
 		} else {
 			$this->setRenderOption('default');	
 		}
@@ -686,7 +686,7 @@ class LoopObject {
 		
 		try {
 			if ($alignment = $this->GetArg('align')) {
-				$this->setAlignment(htmlspecialchars($alignment));
+				$this->setAlignment(strtolower(htmlspecialchars($alignment)));
 			} else {
 				$this->setAlignment('none');
 			}		
@@ -710,7 +710,7 @@ class LoopObject {
 			$this->setDescription(htmlspecialchars($description));
 		}
 		if ($this->GetArg('show_copyright')) {
-			$showcopyright = htmlspecialchars($this->GetArg('show_copyright'));
+			$showcopyright = strtolower(htmlspecialchars($this->GetArg('show_copyright')));
 		} else {
 			$showcopyright = 'false';
 		}
@@ -729,7 +729,7 @@ class LoopObject {
 		}
 
 		if ($this->GetArg('index')) {
-			$indexing = htmlspecialchars($this->GetArg('index'));
+			$indexing = strtolower(htmlspecialchars($this->GetArg('index')));
 		} else {
 			$indexing = 'true';
 		}
