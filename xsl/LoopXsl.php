@@ -45,3 +45,39 @@ function xsl_transform_imagepath($input) {
 			}
 	}
 }
+
+
+function xsl_transform_math($input) {
+	global $IP;
+	$input_object = $input[0];
+	$mathcontent = $input_object->textContent;
+	
+	$math = new MathMathML($mathcontent);
+	$math->render();
+	$return = $math->getHtmlOutput();
+	
+	$dom = new DOMDocument;
+	$dom->loadHTML( $return );
+	$mathnode = $dom->getElementsByTagName('math')->item(0);
+	
+	$doc = new DOMDocument;
+	
+	$old_error_handler = set_error_handler( "xsl_error_handler" );
+	libxml_use_internal_errors( true );
+	
+	try {
+		$doc->loadXML($mathnode->C14N());
+		$return = $doc->documentElement;
+	} catch ( Exception $e ) {
+	
+	}
+	restore_error_handler();
+	#dd($input);
+	return $return;	
+	
+
+}
+
+function xsl_error_handler($errno, $errstr, $errfile, $errline) {
+	return true;
+}

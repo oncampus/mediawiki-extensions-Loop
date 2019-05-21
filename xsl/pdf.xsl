@@ -387,7 +387,7 @@
 									<xsl:if test="ancestor::*[@extension_name='loop_area']">
 										<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
 									</xsl:if>
-									<xsl:apply-templates select="$object/descendant::link" mode="loop_object"></xsl:apply-templates> 
+									<xsl:apply-templates/> 
 								</fo:block>
 							</fo:table-cell>	
 						</fo:table-row>
@@ -1241,29 +1241,29 @@
 				<!-- ICON IMG -->
 				<fo:inline font-size="x-large" padding-right="2mm">
 					<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
-						<xsl:when test="@type='task'">&#xe94b;</xsl:when>
-						<xsl:when test="@type='timerequirement'">&#xe94c;</xsl:when>
-						<xsl:when test="@type='learningobjectives'">&#xe924;</xsl:when>
-						<xsl:when test="@type='arrangement'">&#xe956;</xsl:when>
-						<xsl:when test="@type='example'">&#xe90f;</xsl:when>
-						<xsl:when test="@type='reflection'">&#xe939;</xsl:when>
-						<xsl:when test="@type='notice'">&#xe92d;</xsl:when>
-						<xsl:when test="@type='important'">&#xe91f;</xsl:when>
-						<xsl:when test="@type='annotation'">&#xe955;</xsl:when>
-						<xsl:when test="@type='definition'">&#xe909;</xsl:when>
-						<xsl:when test="@type='formula'">&#xe91b;</xsl:when>
-						<xsl:when test="@type='markedsentence'">&#xe928;</xsl:when>
-						<xsl:when test="@type='sourcecode'">&#xe94d;</xsl:when>
-						<xsl:when test="@type='summary'">&#xe949;</xsl:when>
-						<xsl:when test="@type='indentation'">&#xe953;</xsl:when>
-						<xsl:when test="@type='norm'">&#xe92c;</xsl:when>
-						<xsl:when test="@type='law'">&#xe922;</xsl:when>
-						<xsl:when test="@type='question'">&#xe937;</xsl:when>
-						<xsl:when test="@type='practice'">&#xe932;</xsl:when>
-						<xsl:when test="@type='exercise'">&#xe910;</xsl:when>
-						<xsl:when test="@type='websource'">&#xe925;</xsl:when>
-						<xsl:when test="@type='experiment'">&#xe911;</xsl:when>
-						<xsl:when test="@type='citation'">&#xe906;</xsl:when>
+						<xsl:when test="@type='task'"><xsl:value-of select="$icon_task"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='timerequirement'"><xsl:value-of select="$icon_timerequirement"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$icon_learningobjectives"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='arrangement'"><xsl:value-of select="$icon_arrangement"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='example'"><xsl:value-of select="$icon_example"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='reflection'"><xsl:value-of select="$icon_reflection"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='notice'"><xsl:value-of select="$icon_notice"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='important'"><xsl:value-of select="$icon_important"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='annotation'"><xsl:value-of select="$icon_annotation"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='definition'"><xsl:value-of select="$icon_definition"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='formula'"><xsl:value-of select="$icon_formula"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='markedsentence'"><xsl:value-of select="$icon_markedsentence"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='sourcecode'"><xsl:value-of select="$icon_sourcecode"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='summary'"><xsl:value-of select="$icon_summary"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='indentation'"><xsl:value-of select="$icon_indentation"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='norm'"><xsl:value-of select="$icon_norm"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='law'"><xsl:value-of select="$icon_law"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='question'"><xsl:value-of select="$icon_question"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='practice'"><xsl:value-of select="$icon_practice"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='exercise'"><xsl:value-of select="$icon_exercise"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='websource'"><xsl:value-of select="$icon_websource"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='experiment'"><xsl:value-of select="$icon_experiment"></xsl:value-of></xsl:when>
+						<xsl:when test="@type='citation'"><xsl:value-of select="$icon_citation"></xsl:value-of></xsl:when>
 						<xsl:when test="@icon">
 							<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
 							
@@ -1309,7 +1309,7 @@
 					</xsl:choose>
 				</fo:inline>
 			</fo:block>
-			<fo:block><xsl:value-of select="current()"/></fo:block>
+			<fo:block><xsl:apply-templates/></fo:block>
 		</fo:block>
   	</xsl:template>
 
@@ -1507,6 +1507,11 @@
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@extension_name='math'">
+				<fo:instream-foreign-object>
+					<xsl:copy-of select="php:function('xsl_transform_math', .)"></xsl:copy-of>  
+				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:otherwise>
 			</xsl:otherwise>

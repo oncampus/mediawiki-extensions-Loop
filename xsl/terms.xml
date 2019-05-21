@@ -17,6 +17,28 @@
 	<msg name="icon_simulation">&#xe93f;</msg>
 	<msg name="icon_dragdrop">&#xe90c;</msg>
 
+	<msg name="icon_timerequirement">&#xe94c;</msg>
+	<msg name="icon_learningobjectives">&#xe924;</msg>
+	<msg name="icon_arrangement">&#xe956;</msg>
+	<msg name="icon_example">&#xe90f;</msg>
+	<msg name="icon_reflection">&#xe939;</msg>
+	<msg name="icon_notice">&#xe92d;</msg>
+	<msg name="icon_important">&#xe91f;</msg>
+	<msg name="icon_annotation">&#xe955;</msg>
+	<msg name="icon_definition">&#xe909;</msg>
+	<msg name="icon_markedsentence">&#xe928;</msg>
+	<msg name="icon_sourcecode">&#xe94d;</msg>
+	<msg name="icon_summary">&#xe949;</msg>
+	<msg name="icon_indentation">&#xe953;</msg>
+	<msg name="icon_norm">&#xe92c;</msg>
+	<msg name="icon_law">&#xe922;</msg>
+	<msg name="icon_question">&#xe937;</msg>
+	<msg name="icon_practice">&#xe932;</msg>
+	<msg name="icon_exercise">&#xe910;</msg>
+	<msg name="icon_websource">&#xe925;</msg>
+	<msg name="icon_experiment">&#xe911;</msg>
+	<msg name="icon_citation">&#xe906;</msg>
+
 	<msg name="word_chapter" lang="en">Chapter</msg>
 	<msg name="word_state" lang="en">state</msg>
 	<msg name="word_content" lang="en">Content</msg>
