@@ -132,7 +132,6 @@
 	"looparea-name-summary": "Sammanfattning",
 	"looparea-name-task": "Uppgift",
 	"looparea-name-timerequirement": "Tidslinje",
-	
 	"looparea-icon-text-annotation" : "Anteckning",
 	"looparea-icon-text-area" : "",
 	"looparea-icon-text-arrangement" : "Struktur",
@@ -156,6 +155,9 @@
 	"looparea-icon-text-summary" : "Samman$shy;fattning",
 	"looparea-icon-text-task" : "Uppgift",
 	"looparea-icon-text-timerequirement" : "Tidslinje",
+	"looparea-error-unknown-type-attribute" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
+	"looparea-error-unknown-render-attribute" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
+	"looparea-error-imagenotfound" : "This object could not find '''$1'''",
 
 	"loop_figure-name": "Figur",
 	"loop_figure-name-short": "Fig.",
@@ -187,7 +189,5 @@
 	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-showcopyrightoption" : "Värdet av parametern (show_copyright) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"loopmedia-error-unknown-mediatype" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"looparea-error-unknown-attribute" : "LoopArea contains an unknown value. Valid: '''type''', '''icon''' und '''icontext'''."
-
+	"loopmedia-error-unknown-mediatype" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''."
 }

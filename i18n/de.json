@@ -139,7 +139,6 @@
 	"looparea-name-task" : "Aufgabe",
 	"looparea-name-timerequirement" : "Zeitumfang",
 	"looparea-name-websource" : "Websource",
-	
 	"looparea-icon-text-annotation" : "Anmerkung",
 	"looparea-icon-text-area" : "",
 	"looparea-icon-text-arrangement" : "Gliederung",
@@ -164,6 +163,9 @@
 	"looparea-icon-text-task" : "Aufgabe",
 	"looparea-icon-text-timerequirement" : "Zeitumfang",
 	"looparea-icon-text-websource" : "Websource",
+	"looparea-error-unknown-type-attribute" : "Dieser Seitenbereich besitzt für den Parameter Typ (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
+	"looparea-error-unknown-render-attribute" : "Dieser Seitenbereich besitzt für den Parameter Render (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
+	"looparea-error-imagenotfound" : "Dieser Seitenbereich kann das Icon '''$1''' nicht finden.",
 
 	"loop_figure-name": "Abbildung",
 	"loop_figure-name-short": "Abb.",
@@ -195,7 +197,5 @@
 	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-showcopyrightoption" : "Die Auszeichnung besitzt für den Parameter Copyright anzeigen (show_copyright) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopmedia-error-unknown-mediatype" : "Das Medienelement besitzt für den Parameter Medientyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Medienelementen: XXX",
-	"looparea-error-unknown-attribute" : "Unbekanntes Attribut für LoopArea. Erlaubte Attribute sind '''type''', '''icon''' und '''icontext'''."
-	
+	"loopmedia-error-unknown-mediatype" : "Das Medienelement besitzt für den Parameter Medientyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Medienelementen: XXX"
 }

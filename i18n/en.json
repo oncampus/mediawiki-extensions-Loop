@@ -137,7 +137,6 @@
 	"looparea-name-task" : "Task",
 	"looparea-name-timerequirement" : "Timerequirement",
 	"looparea-name-websource" : "Websource",
-
 	"looparea-icon-text-annotation" : "Annotation",
 	"looparea-icon-text-area" : "",
 	"looparea-icon-text-arrangement" : "Arrangement",
@@ -162,6 +161,9 @@
 	"looparea-icon-text-task" : "Task",
 	"looparea-icon-text-timerequirement" : "Timerequirement",
 	"looparea-icon-text-websource" : "Websource",
+	"looparea-error-unknown-type-attribute" : "This object's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
+	"looparea-error-unknown-render-attribute" : "This object's rendering option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
+	"looparea-error-imagenotfound" : "This object could not find '''$1'''",
 
 	"loop_figure-name": "Figure",
 	"loop_figure-name-short": "Fig.",
@@ -193,7 +195,5 @@
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
 	"loopobject-error-unknown-showcopyrightoption" : "The object's show copyright option (show_copyright) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
-	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"looparea-error-unknown-attribute" : "LoopArea contains an unknown value. Valid: '''type''', '''icon''' und '''icontext'''."
-
+	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''."
 }

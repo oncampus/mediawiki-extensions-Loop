@@ -161,7 +161,6 @@
 	"looparea-icon-text-task" : "icon text of the looparea type task",
 	"looparea-icon-text-timerequirement" : "icon text of the looparea type timerequirement",
 	"looparea-icon-text-websource" : "icon text of the looparea type websource",
-	
 	"looparea-icon-class-annotation" : "icon class of the looparea type annotation",
 	"looparea-icon-class-area" : "icon class of the looparea type area",
 	"looparea-icon-class-arrangement" : "icon class of the looparea type arrangement",
@@ -186,6 +185,9 @@
 	"looparea-icon-class-task" : "icon class of the looparea type task",
 	"looparea-icon-class-timerequirement" : "icon class of the looparea type timerequirement",
 	"looparea-icon-class-websource" : "icon class of the looparea type websource",
+	"looparea-error-unknown-type-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
+	"looparea-error-unknown-render-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
+	"looparea-error-imagenotfound" : "Error Message rendered when loop area could not find image",
 
 	"loop_figure-name": "Prepend title of loop_figure",
 	"loop_figure-name-short": "Prepend title of loop_figure (short)",
@@ -217,7 +219,5 @@
 	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options",
 	"loopobject-error-unknown-indexingoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - indexing option\n* $2 supported index options",
 	"loopobject-error-unknown-showcopyrightoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - show_copyright option\n* $2 supported show_copyright options",
-	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options",
-	"looparea-error-unknown-attribute" : "LoopArea contains an unknown value. Valid: '''type''', '''icon''' und '''icontext'''."
-	
+	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options"
 }
