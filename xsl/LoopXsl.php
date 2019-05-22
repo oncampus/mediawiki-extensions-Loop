@@ -57,7 +57,7 @@ function xsl_transform_math($input) {
 	$return = $math->getHtmlOutput();
 	
 	$dom = new DOMDocument;
-	$dom->loadHTML( $return );
+	$dom->loadXML( $return );
 	$mathnode = $dom->getElementsByTagName('math')->item(0);
 	
 	$doc = new DOMDocument;
@@ -72,12 +72,39 @@ function xsl_transform_math($input) {
 	
 	}
 	restore_error_handler();
-	#dd($input);
+	#dd($input,$doc->saveXML(),$math);
 	return $return;	
 	
-
 }
 
+
+function xsl_transform_math_ssml($input) {
+	global $IP;
+	$input_object = $input[0];
+	$mathcontent = $input_object->textContent;
+	
+	$math = new MathMathML($mathcontent);
+	$math->render();
+	$return = $math->getHtmlOutput();
+	
+	$dom = new DOMDocument;
+	$dom->loadXML( $return, LIBXML_DTDATTR );
+
+	$doc = new DOMDocument;
+	$old_error_handler = set_error_handler( "xsl_error_handler" );
+	libxml_use_internal_errors( true );
+	$return = "";
+	foreach ($dom->getElementsByTagName('mi') as $item) {
+		#dd($item);
+		$tmpNode = $doc->importNode($item, true);
+		$doc->appendChild( $tmpNode );
+		
+	}
+	$return = $doc;
+	restore_error_handler();
+	#dd($input,$doc->saveXML(),$math,$return->saveXML());
+	return $return;	
+}
 function xsl_error_handler($errno, $errstr, $errfile, $errline) {
 	return true;
 }

@@ -8,7 +8,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	 
 	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd" 
-	 xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:func="http://exslt.org/functions" extension-element-prefixes="func" xmlns:functx="http://www.functx.com">
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:func="http://exslt.org/functions" 
+	extension-element-prefixes="func php str" 
+	xmlns:functx="http://www.functx.com"
+	xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
+	xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions">
 	
 	<xsl:import href="terms.xsl"></xsl:import>	
 	
@@ -111,6 +116,23 @@
 				</xsl:call-template>
 			</xsl:when>
 
+			<xsl:when test="@extension_name='loop_area'">
+				<xsl:apply-templates/>
+			</xsl:when>
+
+			<xsl:when test="@extension_name='math'">
+				<xsl:call-template name="math">
+                	<xsl:with-param name="object">
+						<xsl:copy-of select="php:function('xsl_transform_math_ssml', .)"></xsl:copy-of>
+					</xsl:with-param>
+				</xsl:call-template>
+				
+				<xsl:call-template name="math">
+				
+				</xsl:call-template>
+
+			</xsl:when>
+
 			<xsl:when test="@extension_name='loop_title'">
 				<xsl:apply-templates/>
 			</xsl:when>	
@@ -123,7 +145,6 @@
 
 			
 		</xsl:choose>	
-
 		<!--
 				<xsl:element name="break">
 					<xsl:attribute name="strength">
@@ -131,6 +152,19 @@
 					</xsl:attribute>
 				</xsl:element>
 		-->
+	</xsl:template>
+	
+	<xsl:template name="math">
+		<xsl:param name="object"></xsl:param>
+		<xsl:text> </xsl:text>
+		
+			<xsl:value-of select="$object"></xsl:value-of>
+			
+
+		<xsl:text> </xsl:text>
+
+
+	
 	</xsl:template>
 
 	<xsl:template name="loop_object">
@@ -336,6 +370,9 @@
 			</xsl:when>
 			<xsl:when test="extension[@extension_name='loop_task']">
         		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_area']">
+        		<func:result>3</func:result>
 			</xsl:when>
 
 			<xsl:otherwise>
