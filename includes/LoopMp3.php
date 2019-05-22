@@ -8,7 +8,7 @@ class LoopMp3 {
 	 * @param LoopStructure $loopStructure
 	 * @param int $articleId
 	 */
-	public static function getMp3FromRequest( $loopStructure, $articleId ) {
+	public static function getMp3FromRequest( $loopStructure, $articleId, $debug = false ) {
 		
 		global $wgUploadPath;
 
@@ -32,7 +32,7 @@ class LoopMp3 {
 				$node->appendChild( $loopObjectsNodes[0] ); 
 				$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
 				if ( $tmpData["articleId"] == $articleId ) {
-					$mp3File = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
+					$mp3File = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"], $debug );
 					$mp3FilePath = $wgUploadPath."/export/mp3/".$loopStructure->getId()."/$articleId/$articleId"."_".$tmpData["lastChanged"].".mp3";
 					
 					return $mp3FilePath;
@@ -45,7 +45,7 @@ class LoopMp3 {
 			$articleXml = LoopXml::articleFromId2xml( $articleId );
 			$lastChanged = $wikiPage->getTouched();
 
-			$mp3File = LoopMp3::page2Mp3( $loopStructure, $articleXml, $articleId, $lastChanged );
+			$mp3File = LoopMp3::page2Mp3( $loopStructure, $articleXml, $articleId, $lastChanged, $debug );
 			$mp3FilePath = $wgUploadPath."/export/mp3/ns/$articleId/$articleId"."_"."$lastChanged.mp3";
 
 			return $mp3FilePath;
@@ -75,7 +75,7 @@ class LoopMp3 {
 	 * @param int $articleId
 	 * @param string $lastChanged
 	 */
-	public static function page2mp3( $loopStructure, $articleXml, $articleId, $lastChanged ) { 
+	public static function page2mp3( $loopStructure, $articleXml, $articleId, $lastChanged, $debug = false ) { 
 
 		global $wgLanguageCode, $wgUploadDirectory;
 
@@ -93,7 +93,9 @@ class LoopMp3 {
 		$filePathName = $filePath . $fileName;
 		
 		$fileUpToDate = LoopMp3::existingFileUpToDate( $filePath, $lastChanged, "mp3" );
-
+		if ( $debug ) {
+			dd(LoopMp3::transformToSsml( $articleXml ),$articleXml); # exit at first article ssml and xml
+		}
 		if ( ! $fileUpToDate ) {
 			global $IP, $wgSitename;
 			
@@ -105,8 +107,9 @@ class LoopMp3 {
 				#dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
 			}
 			$loopExportSsml = self::checkNestedTags($loopExportSsml);
-
-			#dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
+			if ( $debug ) {
+				dd($loopExportSsml,$articleXml); # exit at first article ssml and xml
+			}
 			$responseData = LoopMp3::requestArticleAsMp3( $loopExportSsml, $wgLanguageCode, "ssml" );
 
 			$mp3File = fopen( $filePathName , 'w') or die("can't write mp3 file");
