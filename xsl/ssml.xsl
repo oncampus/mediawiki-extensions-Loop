@@ -126,11 +126,6 @@
 						<xsl:copy-of select="php:function('xsl_transform_math_ssml', .)"></xsl:copy-of>
 					</xsl:with-param>
 				</xsl:call-template>
-				
-				<xsl:call-template name="math">
-				
-				</xsl:call-template>
-
 			</xsl:when>
 
 			<xsl:when test="@extension_name='loop_title'">
@@ -157,14 +152,27 @@
 	<xsl:template name="math">
 		<xsl:param name="object"></xsl:param>
 		<xsl:text> </xsl:text>
-		
-			<xsl:value-of select="$object"></xsl:value-of>
-			
+			<xsl:element name="break">
+				<xsl:attribute name="strength">
+					<xsl:text>medium</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
+
+			<xsl:element name="lang">
+                <xsl:attribute name="xml:lang">
+					<xsl:text>en-GB</xsl:text><!-- todo add language support in mathoid -->
+				</xsl:attribute>
+				<xsl:value-of select="$object"></xsl:value-of>
+			</xsl:element>
+
+			<xsl:element name="break">
+				<xsl:attribute name="strength">
+					<xsl:text>medium</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
 
 		<xsl:text> </xsl:text>
 
-
-	
 	</xsl:template>
 
 	<xsl:template name="loop_object">

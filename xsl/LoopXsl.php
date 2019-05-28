@@ -77,34 +77,24 @@ function xsl_transform_math($input) {
 	
 }
 
-
 function xsl_transform_math_ssml($input) {
-	global $IP;
+	global $wgMathMathMLUrl;
 	$input_object = $input[0];
 	$mathcontent = $input_object->textContent;
 	
 	$math = new MathMathML($mathcontent);
 	$math->render();
-	$return = $math->getHtmlOutput();
-	
-	$dom = new DOMDocument;
-	$dom->loadXML( $return, LIBXML_DTDATTR );
+	$host = $wgMathMathMLUrl."speech/";
+	$post = 'q=' . rawurlencode( $mathcontent );
+	$math->makeRequest($host, $post, $return, $er);
 
-	$doc = new DOMDocument;
-	$old_error_handler = set_error_handler( "xsl_error_handler" );
-	libxml_use_internal_errors( true );
-	$return = "";
-	foreach ($dom->getElementsByTagName('mi') as $item) {
-		#dd($item);
-		$tmpNode = $doc->importNode($item, true);
-		$doc->appendChild( $tmpNode );
-		
+	if (empty($er)) {
+		return $return;	
+	} else {
+		return '';
 	}
-	$return = $doc;
-	restore_error_handler();
-	#dd($input,$doc->saveXML(),$math,$return->saveXML());
-	return $return;	
 }
+
 function xsl_error_handler($errno, $errstr, $errfile, $errline) {
 	return true;
 }
