@@ -35,40 +35,55 @@ class LoopSettings {
      * @return bool true
      */
     function addToDatabase() {
-        
-        $dbw = wfGetDB( DB_MASTER );
-            
-        $dbw->insert(
-            'loop_settings',
-            array(
-                'lset_imprintlink' => $this->imprintLink,
-                'lset_privacylink' => $this->privacyLink,
-                'lset_oncampuslink' => $this->oncampusLink,
-                'lset_rightstext' => $this->rightsText,
-                'lset_rightstype' => $this->rightsType,
-                'lset_rightsurl' => $this->rightsUrl,
-                'lset_rightsicon' => $this->rightsIcon,
-                'lset_customlogo' => $this->customLogo,
-                'lset_customlogofilename' => $this->customLogoFileName,
-                'lset_customlogofilepath' => $this->customLogoFilePath,
-                'lset_languagecode' => $this->languageCode,
-                'lset_extrafooter' => $this->extraFooter,
-                'lset_skinstyle' => $this->skinStyle,
-                'lset_facebookicon' => $this->facebookIcon,
-                'lset_facebooklink' => $this->facebookLink,
-                'lset_twittericon' => $this->twitterIcon,
-                'lset_twitterlink' => $this->twitterLink,
-                'lset_youtubeicon' => $this->youtubeIcon,
-                'lset_youtubelink' => $this->youtubeLink,
-                'lset_githubicon' => $this->githubIcon,
-                'lset_githublink' => $this->githubLink,
-                'lset_instagramicon' => $this->instagramIcon,
-                'lset_instagramlink' => $this->instagramLink,
-                'lset_numberingobjects' => $this->numberingObjects,
-                'lset_numberingtype' => $this->numberingType
-            )
+
+        $this->dbkeys = array(
+            'lset_imprintlink' => $this->imprintLink,
+            'lset_privacylink' => $this->privacyLink,
+            'lset_oncampuslink' => $this->oncampusLink,
+            'lset_rightstext' => $this->rightsText,
+            'lset_rightstype' => $this->rightsType,
+            'lset_rightsurl' => $this->rightsUrl,
+            'lset_rightsicon' => $this->rightsIcon,
+            'lset_customlogo' => $this->customLogo,
+            'lset_customlogofilename' => $this->customLogoFileName,
+            'lset_customlogofilepath' => $this->customLogoFilePath,
+            'lset_languagecode' => $this->languageCode,
+            'lset_extrafooter' => $this->extraFooter,
+            'lset_skinstyle' => $this->skinStyle,
+            'lset_facebookicon' => $this->facebookIcon,
+            'lset_facebooklink' => $this->facebookLink,
+            'lset_twittericon' => $this->twitterIcon,
+            'lset_twitterlink' => $this->twitterLink,
+            'lset_youtubeicon' => $this->youtubeIcon,
+            'lset_youtubelink' => $this->youtubeLink,
+            'lset_githubicon' => $this->githubIcon,
+            'lset_githublink' => $this->githubLink,
+            'lset_instagramicon' => $this->instagramIcon,
+            'lset_instagramlink' => $this->instagramLink,
+            'lset_numberingobjects' => $this->numberingObjects,
+            'lset_numberingtype' => $this->numberingType
         );
         
+        $dbw = wfGetDB( DB_MASTER );
+
+        
+		$dbw->delete(
+			'loop_settings',
+			'lset_structure = 0', # TODO Structure support
+			__METHOD__
+        );
+        
+        foreach ( $this->dbkeys as $dbk => $val ) {
+            $dbw->insert(
+                'loop_settings',
+                array(
+                    'lset_structure' => 0, # TODO Structure support
+                    'lset_property' => $dbk,
+                    'lset_value' => $val,
+                )
+            );
+        }
+
         return true;
         
     }
@@ -79,82 +94,52 @@ class LoopSettings {
     public function loadSettings() {
 
         $dbr = wfGetDB( DB_REPLICA );
+        
         $res = $dbr->select(
             'loop_settings',
             array(
-                'lset_id',
-                'lset_timestamp',
-                'lset_imprintlink',
-                'lset_privacylink',
-                'lset_oncampuslink',
-                'lset_rightstext',
-                'lset_rightstype',
-                'lset_rightsurl',
-                'lset_rightsicon',
-                'lset_customlogo',
-                'lset_customlogofilename',
-                'lset_customlogofilepath',
-                'lset_languagecode',
-                'lset_extrafooter',
-                'lset_skinstyle',
-                'lset_facebookicon',
-                'lset_facebooklink',
-                'lset_twittericon',
-                'lset_twitterlink',
-                'lset_youtubeicon',
-                'lset_youtubelink',
-                'lset_githubicon',
-                'lset_githublink',
-                'lset_instagramicon',
-                'lset_instagramlink',
-                'lset_numberingobjects',
-                'lset_numberingtype'
+                'lset_structure',
+                'lset_property',
+                'lset_value',
             ),
-            array(),
-            __METHOD__,
             array(
-                'ORDER BY' => 'lset_id DESC LIMIT 1'
-            )
+                 'lset_structure = "' . 0 .'"' # TODO Structure support
+            ),
+            __METHOD__
         );
 
-        $row = $res->fetchObject();
-        if ( isset($row->lset_id) ) {
-            if( $row ) {
+        foreach ( $res as $row ) {
+            $data[$row->lset_property] = $row->lset_value;
+        }
 
-                $this->id = $row->lset_id;
-                $this->timeStamp = $row->lset_timestamp;
-                $this->imprintLink = $row->lset_imprintlink;
-                $this->privacyLink = $row->lset_privacylink;
-                $this->oncampusLink = $row->lset_oncampuslink;
-                $this->rightsText = $row->lset_rightstext;
-                $this->rightsType = $row->lset_rightstype;
-                $this->rightsUrl = $row->lset_rightsurl;
-                $this->rightsIcon = $row->lset_rightsicon;
-                $this->customLogo = $row->lset_customlogo;
-                $this->customLogoFileName = $row->lset_customlogofilename;
-                $this->customLogoFilePath = $row->lset_customlogofilepath;
-                $this->languageCode = $row->lset_languagecode;
-                $this->extraFooter = $row->lset_extrafooter;
-                $this->skinStyle = $row->lset_skinstyle;
-                $this->facebookIcon = $row->lset_facebookicon;
-                $this->facebookLink = $row->lset_facebooklink;
-                $this->twitterIcon = $row->lset_twittericon;
-                $this->twitterLink = $row->lset_twitterlink;
-                $this->youtubeIcon = $row->lset_youtubeicon;
-                $this->youtubeLink = $row->lset_youtubelink;
-                $this->githubIcon = $row->lset_githubicon;
-                $this->githubLink = $row->lset_githublink;
-                $this->instagramIcon = $row->lset_instagramicon;
-                $this->instagramLink = $row->lset_instagramlink;
-                $this->numberingObjects = $row->lset_numberingobjects;
-                $this->numberingType = $row->lset_numberingtype;
+        if ( isset($row->lset_structure) ) {
+            $this->imprintLink = $data['lset_imprintlink'];
+            $this->privacyLink = $data['lset_privacylink'];
+            $this->oncampusLink = $data['lset_oncampuslink'];
+            $this->rightsText = $data['lset_rightstext'];
+            $this->rightsType = $data['lset_rightstype'];
+            $this->rightsUrl = $data['lset_rightsurl'];
+            $this->rightsIcon = $data['lset_rightsicon'];
+            $this->customLogo = $data['lset_customlogo'];
+            $this->customLogoFileName = $data['lset_customlogofilename'];
+            $this->customLogoFilePath = $data['lset_customlogofilepath'];
+            $this->languageCode = $data['lset_languagecode'];
+            $this->extraFooter = $data['lset_extrafooter'];
+            $this->skinStyle = $data['lset_skinstyle'];
+            $this->facebookIcon = $data['lset_facebookicon'];
+            $this->facebookLink = $data['lset_facebooklink'];
+            $this->twitterIcon = $data['lset_twittericon'];
+            $this->twitterLink = $data['lset_twitterlink'];
+            $this->youtubeIcon = $data['lset_youtubeicon'];
+            $this->youtubeLink = $data['lset_youtubelink'];
+            $this->githubIcon = $data['lset_githubicon'];
+            $this->githubLink = $data['lset_githublink'];
+            $this->instagramIcon = $data['lset_instagramicon'];
+            $this->instagramLink = $data['lset_instagramlink'];
+            $this->numberingObjects = $data['lset_numberingobjects'];
+            $this->numberingType = $data['lset_numberingtype'];
                 
-                return true;
-            } else {
-                    
-                return false;
-                    
-            }
+            return true;
         } else { // fetch data from global variables
             global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
 
