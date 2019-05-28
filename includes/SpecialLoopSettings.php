@@ -178,7 +178,7 @@ class SpecialLoopSettings extends SpecialPage {
 					}
 					$html .= 
 					'<label for="skin-style">' . $this->msg( 'loopsettings-skin-style-label' ) . '</label>
-					<select class="form-control" '. ( empty( $currentLoopSettings->skinStyle ) ? 'disabled' : '' ) .' name="skin-style" id="skin-style" selected="'. $currentLoopSettings->skinStyle .' ">' . $skinStyleOptions . '</select><br>';
+					<select class="form-control" name="skin-style" id="skin-style" selected="'. $currentLoopSettings->skinStyle .' ">' . $skinStyleOptions . '</select><br>';
 					
 					### LOGO BLOCK ###
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-logo' ) . '</h3>';

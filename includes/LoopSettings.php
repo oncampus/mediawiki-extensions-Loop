@@ -112,6 +112,16 @@ class LoopSettings {
             $data[$row->lset_property] = $row->lset_value;
         }
 
+        global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
+
+        $this->oncampusLink = $wgOncampusLink;
+        $this->languageCode = $wgLanguageCode;
+        $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
+        $this->imprintLink = $wgImprintLink;
+        $this->privacyLink = $wgPrivacyLink;
+        $this->numberingObjects = $wgLoopObjectNumbering;
+        $this->numberingType = $wgLoopNumberingType;
+        
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = $data['lset_imprintlink'];
             $this->privacyLink = $data['lset_privacylink'];
@@ -138,22 +148,10 @@ class LoopSettings {
             $this->instagramLink = $data['lset_instagramlink'];
             $this->numberingObjects = $data['lset_numberingobjects'];
             $this->numberingType = $data['lset_numberingtype'];
-                
-            return true;
-        } else { // fetch data from global variables
-            global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
-
-            $this->oncampusLink = $wgOncampusLink;
-            $this->languageCode = $wgLanguageCode;
-            $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
-            $this->imprintLink = $wgImprintLink;
-            $this->privacyLink = $wgPrivacyLink;
-            $this->numberingObjects = $wgLoopObjectNumbering;
-            $this->numberingType = $wgLoopNumberingType;
-            
-            return true;
         }
-
+        
+        return true;
+        
     }
 	
 	/**
