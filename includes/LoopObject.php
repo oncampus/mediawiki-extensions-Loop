@@ -925,7 +925,7 @@ class LoopObject {
 		$cond = "";
 		// if a title is given, each page after given one is updated
 		if ( isset($title) ) {
-			$cond = "lsi_article=" . $title->getArticleID();
+			# $cond = "lsi_article=" . $title->getArticleID(); # TODO remove? Für referenzen müssen alle Seiten immer neu geladen werden.
 		} 
 
 		$dbr = wfGetDB ( DB_SLAVE );
