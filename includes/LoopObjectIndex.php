@@ -136,7 +136,7 @@ class LoopObjectIndex {
                         "index" => $row->loi_index,
                         "nthoftype" => $row->loi_nthoftype
                     );
-                    $numberText = LoopObject::getObjectNumberingOutput($row->loi_refid, $lsi, $loopStructure, $previousObjects[$loopStructureItem->article], $objectData);
+                    $numberText = LoopObject::getObjectNumberingOutput($row->loi_refid, $lsi, $loopStructure, $previousObjects[$row->loi_pageid], $objectData);
 			        
                }
             
