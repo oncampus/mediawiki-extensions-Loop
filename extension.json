@@ -57,7 +57,8 @@
 		"LoopTable": "includes/LoopTable.php",
 		"SpecialLoopTables": "includes/LoopTable.php",
 		"LoopTask": "includes/LoopTask.php",
-		"SpecialLoopTasks": "includes/LoopTask.php"
+		"SpecialLoopTasks": "includes/LoopTask.php",
+		"LoopReference": "includes/LoopReference.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -70,7 +71,8 @@
 			"LoopHooks::onPageRenderingHash"
 		],
 		"ParserFirstCallInit": [
-			"LoopObject::onParserSetup"
+			"LoopObject::onParserSetup",
+			"LoopReference::onParserSetup"
 		],
 		"PageContentSaveComplete": [
 			"LoopObject::onPageContentSaveComplete"
@@ -80,6 +82,9 @@
 		],
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
+		],
+		"HtmlPageLinkRendererEnd": [
+			"LoopHooks::onHtmlPageLinkRendererEnd"
 		]
 	},
 	"SpecialPages": {
