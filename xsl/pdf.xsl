@@ -1427,6 +1427,11 @@
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
+			<xsl:when test="@extension_name='loop_reference'">
+				<xsl:call-template name="loop_reference">
+                	<xsl:with-param name="object" select="."></xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
 			<xsl:otherwise>
 			</xsl:otherwise>
 		</xsl:choose>	
@@ -1611,5 +1616,64 @@
 				
 		</xsl:choose>
 	</xsl:template>	
+
+	
+	<xsl:template name="loop_reference">
+		<xsl:param name="object"></xsl:param>
+
+		<xsl:variable name="objectid">
+			<xsl:choose>
+				<xsl:when test="@id"> 
+					<xsl:value-of select="@id"></xsl:value-of>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text></xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+			
+			<xsl:choose>
+				<xsl:when test="$object=''">
+					<xsl:choose>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_figure'">
+							<xsl:value-of select="$word_figure_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_formula'">
+							<xsl:value-of select="$word_formula_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_listing'">
+							<xsl:value-of select="$word_listing_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_media'">
+							<xsl:value-of select="$word_media_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_task'">
+							<xsl:value-of select="$word_task_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_table'">
+							<xsl:value-of select="$word_table_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:otherwise>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:text> </xsl:text>
+					<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
+						<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
+					</xsl:if>
+
+					<xsl:if test="$object/@title='true'">
+						<xsl:text> </xsl:text>
+						<xsl:if test="//*/loop_object[@refid = $objectid]/object_title">
+							<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_title"></xsl:value-of>
+						</xsl:if>
+					</xsl:if>
+
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates/>
+				</xsl:otherwise>
+			</xsl:choose>
+
+	</xsl:template>
 	
 </xsl:stylesheet>
