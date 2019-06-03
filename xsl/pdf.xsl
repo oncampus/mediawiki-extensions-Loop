@@ -1632,6 +1632,11 @@
 			</xsl:choose>
 		</xsl:variable>
 			
+		<fo:basic-link color="black">
+			<xsl:if test="@id"> 
+				<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+			</xsl:if>
+		
 			<xsl:choose>
 				<xsl:when test="$object=''">
 					<xsl:choose>
@@ -1673,6 +1678,8 @@
 					<xsl:apply-templates/>
 				</xsl:otherwise>
 			</xsl:choose>
+
+		</fo:basic-link>
 
 	</xsl:template>
 	
