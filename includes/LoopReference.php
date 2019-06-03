@@ -51,17 +51,22 @@ class LoopReference {
 				$parser->addTrackingCategory( 'loop-tracking-category-error' );
 				$html = $e . $html;
 			}
-			#dd(	$showTitle, (isset($args["title"]) && strtolower($args["title"]) == "true"), $wgLoopObjectNumbering);
 			if ( isset($objectData) && $objectData ) {
+				
+				$lsi = LoopStructureItem::newFromIds ( $objectData["articleId"] );
+
 				if ( !empty( $input ) ) {
 					$linkTitle .= $parser->recursiveTagParse ( $input, $frame );
-					$linkTitleAttr = wfMessage ( $objectData["index"].'-name-short' )->inContentLanguage ()->text () . " " . $objectData["title"];
+					if ( $wgLoopObjectNumbering ) {
+						if ( $lsi ) {
+							$linkTitleAttr = wfMessage ( $objectData["index"].'-name-short' )->inContentLanguage ()->text () . " ";
+							$linkTitleAttr .= LoopObject::getObjectNumberingOutput($refId, $lsi, $loopStructure, null, $objectData );
+							$linkTitleAttr .= " ".$objectData["title"];
+						}
+					}
 				} else {
 					$linkTitle .= wfMessage ( $objectData["index"].'-name-short' )->inContentLanguage ()->text () . " ";
 					if ( $wgLoopObjectNumbering ) {
-						
-						$lsi = LoopStructureItem::newFromIds ( $objectData["articleId"] );
-							
 						if ( $lsi ) {
 							$linkTitle .= LoopObject::getObjectNumberingOutput($refId, $lsi, $loopStructure, null, $objectData );
 						}
@@ -77,6 +82,7 @@ class LoopReference {
 					array( 
 						"class" => "loop-reference",
 						"title" => $linkTitleAttr,
+						"alt" => $linkTitleAttr,
 						"data-target" => $refId # target id will be added in hook
 						)
 				);
