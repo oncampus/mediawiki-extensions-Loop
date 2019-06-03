@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <terms>
 	
-	<msg name="accent_color">gray</msg>
-
 	<msg name="icon_figure">&#xe912;</msg>
 	<msg name="icon_formula">&#xe91b;</msg>
 	<msg name="icon_listing">&#xe96a;</msg>
@@ -182,7 +180,8 @@
 	<msg name="word_looparea_sourcecode" lang="en">sourcecode</msg>
 	<msg name="word_looparea_sourcecode" lang="de">Code</msg>
 	<msg name="word_looparea_summary" lang="en">summary</msg>
-	<msg name="word_looparea_summary" lang="de">Zusammenfassung</msg>
+	<msg name="word_looparea_summary" lang="de">Zusammen- 
+	fassung</msg>
 	<msg name="word_looparea_indentation" lang="en">indentation</msg>
 	<msg name="word_looparea_indentation" lang="de">Vertiefung</msg>
 	<msg name="word_looparea_norm" lang="en">norm</msg>
