@@ -393,7 +393,11 @@
 						</fo:table-row>
 						<xsl:if test="count($object[@render]) = 0 or $object[@render!='none']">
 							<fo:table-row keep-together.within-column="auto" >
-								<fo:table-cell background-color="gray" width="0.4mm" ></fo:table-cell>
+								<fo:table-cell width="0.4mm" >
+									<xsl:attribute name="background-color">
+										<xsl:value-of select="$accent_color"></xsl:value-of>
+									</xsl:attribute>
+								</fo:table-cell>
 								<fo:table-cell  text-align="left" padding-left="1mm" padding-right="2mm">
 									<xsl:call-template name="font_object_title"></xsl:call-template>
 		
@@ -1236,7 +1240,11 @@
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']">
-		<fo:block border-left="solid 0.2mm #000000" margin-bottom="3mm" margin-top="3mm" padding="3mm 3mm 3mm 3mm" page-break-before="auto">
+		<fo:block border-left="solid 0.4mm" margin-bottom="3mm" margin-top="3mm" padding="3mm 3mm 3mm 3mm" page-break-before="auto">
+			<xsl:attribute name="border-color">
+				<xsl:value-of select="$accent_color"></xsl:value-of>
+			</xsl:attribute>
+
 			<fo:block keep-with-next.within-page="always" margin-bottom="2mm" padding-bottom="1mm">
 				<!-- ICON IMG -->
 				<fo:inline font-size="x-large" padding-right="2mm">
@@ -1264,18 +1272,20 @@
 						<xsl:when test="@type='websource'"><xsl:value-of select="$icon_websource"></xsl:value-of></xsl:when>
 						<xsl:when test="@type='experiment'"><xsl:value-of select="$icon_experiment"></xsl:value-of></xsl:when>
 						<xsl:when test="@type='citation'"><xsl:value-of select="$icon_citation"></xsl:value-of></xsl:when>
-						<xsl:when test="@icon">
-							<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
+						
+						<xsl:otherwise>
+							<xsl:if test="@icon">
+								<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
 							
-							<xsl:if test="php:function('xsl_transform_imagepath', $iconfilename)!=''">
-								<fo:external-graphic scaling="uniform" content-height="scale-to-fit" max-height="6mm" margin-top="5mm">
-								<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
-								</fo:external-graphic>
-							</xsl:if>
+								<xsl:if test="php:function('xsl_transform_imagepath', $iconfilename)!=''">
+									<fo:external-graphic scaling="uniform" content-height="scale-to-fit" max-height="6mm" margin-top="5mm">
+									<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
+									</fo:external-graphic>
+								</xsl:if>
 
-							<!-- content-width="24mm" -->
-						</xsl:when>
-						<xsl:otherwise></xsl:otherwise> <!-- todo: error msg? -->
+								<!-- content-width="24mm" -->
+							</xsl:if>
+						</xsl:otherwise> <!-- todo: error msg? -->
 					</xsl:choose>
 				</fo:inline>
 				<!-- ICON TEXT -->
@@ -1304,8 +1314,10 @@
 						<xsl:when test="@type='websource'"><xsl:value-of select="$word_looparea_websource"></xsl:value-of></xsl:when>
 						<xsl:when test="@type='experiment'"><xsl:value-of select="$word_looparea_experiment"></xsl:value-of></xsl:when>
 						<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
-						<xsl:when test="@icontext">ASD</xsl:when>
-						<xsl:otherwise></xsl:otherwise> <!-- todo: error msg? -->
+						<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
+						<xsl:otherwise>
+							<xsl:if test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:if>
+						</xsl:otherwise> <!-- todo: error msg? -->
 					</xsl:choose>
 				</fo:inline>
 			</fo:block>

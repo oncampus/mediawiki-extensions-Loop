@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <terms>
 	
+	<msg name="accent_color">gray</msg>
+
 	<msg name="icon_figure">&#xe912;</msg>
 	<msg name="icon_formula">&#xe91b;</msg>
 	<msg name="icon_listing">&#xe96a;</msg>
