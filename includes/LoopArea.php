@@ -63,13 +63,13 @@ class LoopArea {
 				}
 			} else {
 				// ... set default type
-				$argtype = 'important';
+				$argtype = 'area';
 				$iconimg = $argtype;
 			}
 		} catch ( LoopException $e) {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			$error = $e;
-			$argtype = 'important';
+			$argtype = 'area';
 			$iconimg = $argtype;
 		}
 
