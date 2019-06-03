@@ -163,7 +163,7 @@
 	"looparea-icon-text-websource" : "Websource",
 	"looparea-error-unknown-type-attribute" : "This object's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"looparea-error-unknown-render-attribute" : "This object's rendering option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"looparea-error-imagenotfound" : "This object could not find '''$1'''",
+	"looparea-error-imagenotfound" : "This area's given image '''$1''' could not be found. Please upload it and save the page again.",
 
 	"loop_figure-name": "Figure",
 	"loop_figure-name-short": "Fig.",

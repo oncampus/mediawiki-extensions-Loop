@@ -165,7 +165,7 @@
 	"looparea-icon-text-websource" : "Websource",
 	"looparea-error-unknown-type-attribute" : "Dieser Seitenbereich besitzt für den Parameter Typ (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"looparea-error-unknown-render-attribute" : "Dieser Seitenbereich besitzt für den Parameter Render (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"looparea-error-imagenotfound" : "Dieser Seitenbereich kann das Icon '''$1''' nicht finden.",
+	"looparea-error-imagenotfound" : "Die im Seitenbereich angegebene Grafik '''$1''' wurde nicht gefunden. Bitte laden Sie die Grafik hoch und speichern die Seite erneut. <br/>Dokumentation zu Auszeichnungen: XXX",
 
 	"loop_figure-name": "Abbildung",
 	"loop_figure-name-short": "Abb.",
