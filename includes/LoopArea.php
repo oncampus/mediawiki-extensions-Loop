@@ -126,12 +126,12 @@ class LoopArea {
 			$ret .= $error;
 		} 
 		$ret .= '<div class="looparea position-relative ' . $cssrender . ' looparea-'. $iconimg .'">';
-		$ret .= '<div class="looparea-container mb-3 d-block d-lg-flex">';
+		$ret .= '<div class="looparea-container mb-2 d-block d-lg-flex">';
 		$ret .= '<div class="looparea-left position-relative pl-1 pr-1 pt-2 pt-lg-0">';
 		$ret .= '<span class="' . $cssicon . '" ' . $ownicon . '></span>';
 		$ret .= '<span class="looparea-left-type d-block font-weight-bold">' . $icontext . '</span>';
 		$ret .= '</div>';
-		$ret .= '<div class="looparea-right pl-3 pr-3 pt-1 pt-md-2 pb-2 pb-md-1 pb-lg-0">' . $parser->recursiveTagParseFully( $input ) . '</div>';
+		$ret .= '<div class="looparea-right pl-3 pr-3 pt-1 pt-md-2 pb-1 pb-lg-0">' . $parser->recursiveTagParseFully( $input ) . '</div>';
 		$ret .= '</div>';
 		$ret .= '</div>';
 		return $ret;
