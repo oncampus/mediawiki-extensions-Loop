@@ -753,7 +753,9 @@
 						<xsl:when test="$object_type='loop_figure'">
 							<fo:block>
 								<fo:basic-link>
-									<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+									<xsl:attribute name="internal-destination">
+										<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+									</xsl:attribute>
 									<fo:block>
 									<xsl:if test="php:function('xsl_transform_imagepath', descendant::link/target)!=''">
 										<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
@@ -772,7 +774,9 @@
 				<fo:table-cell width="140mm">
 					<fo:block text-align-last="justify" text-align="justify">
 						<fo:basic-link color="black">
-							<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+							<xsl:attribute name="internal-destination">
+								<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+							</xsl:attribute>
 							
 							<fo:inline font-weight="bold">
 								<xsl:choose>
@@ -821,7 +825,9 @@
 								</xsl:choose>	
 								<fo:leader leader-pattern="dots"></fo:leader>
 								<fo:page-number-citation>
-									<xsl:attribute name="ref-id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+									<xsl:attribute name="ref-id">
+										<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+									</xsl:attribute>
 								</fo:page-number-citation>
 							</fo:inline>
 						</fo:basic-link>					
@@ -1366,32 +1372,44 @@
 		<!-- <xsl:if test="not(@extension_name='mathimage')"> -->
 		<xsl:if test="@extension_name='loop_figure'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_formula'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_listing'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_media'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_table'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_task'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:choose>
@@ -1632,9 +1650,11 @@
 			</xsl:choose>
 		</xsl:variable>
 			
-		<fo:basic-link color="black">
+		<fo:basic-link color="black" text-decoration="underline">
 			<xsl:if test="@id"> 
-				<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="internal-destination">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</xsl:if>
 		
 			<xsl:choose>
