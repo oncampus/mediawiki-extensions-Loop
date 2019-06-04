@@ -93,7 +93,7 @@ class LoopObjectIndex {
     // returns structure objects with numberings in the table
     public static function getAllObjects ( $loopStructure ) {
         
-        global $wgLoopObjectNumbering, $wgLoopNumberingType;
+        global $wgLoopObjectNumbering;
         
         $dbr = wfGetDB( DB_REPLICA );
         
@@ -130,25 +130,15 @@ class LoopObjectIndex {
                 $numberText = '';
                 
                 if ( $wgLoopObjectNumbering == true ) {
-                    if ( $wgLoopNumberingType == 'chapter' ) {
-                        
-                        $tocChapter = '';
-                        preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
-                        
-                        if (isset($tocChapterArray[1])) {
-                            $tocChapter = $tocChapterArray[1];
-                        } else {
-                            $tocChapter = 0;
-                        }
-                        
-                        $number = $previousObjects[$row->loi_pageid][$row->loi_index] + $row->loi_nthoftype;
-                        $numberText = $tocChapter . '.' . $number;
-                        
-                    } else {
-                        $numberText = $row->loi_nthoftype + $previousObjects[$row->loi_pageid][$row->loi_index];
-                    }
+                    
+                    $objectData = array(
+                        "refId" => $row->loi_refid,
+                        "index" => $row->loi_index,
+                        "nthoftype" => $row->loi_nthoftype
+                    );
+                    $numberText = LoopObject::getObjectNumberingOutput($row->loi_refid, $lsi, $loopStructure, $previousObjects[$row->loi_pageid], $objectData);
+			        
                }
-            
             
                $objects[$row->loi_refid] = array(
                    "pageid" => $row->loi_pageid,
@@ -261,6 +251,45 @@ class LoopObjectIndex {
 		}
 		# id is unique in index
 		return true;
-	}
+    }
+    
+    public static function getObjectData( $refId, LoopStructure $loopStructure ) {
+        
+        $dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'loop_object_index',
+			array(
+                'loi_pageid',
+                'loi_refid',
+                'loi_index',
+                'loi_itemtype',
+                'loi_itemtitle',
+                'loi_nthoftype'
+			),
+			array(
+				'loi_refid = "' . $refId .'"'
+			),
+			__METHOD__
+		);
+		
+		foreach( $res as $row ) {
+
+            $lsi = LoopStructureItem::newFromIds ( $row->loi_pageid );
+            $return = array(
+                'refId' => $row->loi_refid,
+                'articleId' => $row->loi_pageid,
+                'index' => $row->loi_index,
+                'title' => $row->loi_itemtitle,
+                'type' => $row->loi_itemtype,
+                'nthoftype' => $row->loi_nthoftype,
+            );
+
+			return $return;
+
+		}
+		# id unknown
+		return false;
+
+    }
 
 }

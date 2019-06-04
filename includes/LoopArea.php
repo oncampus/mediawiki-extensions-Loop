@@ -2,7 +2,7 @@
 
 class LoopArea {
 
-	static function onParserInit( Parser $parser ) {
+	static function onParserSetup( Parser $parser ) {
 		$parser->setHook( 'loop_area', 'LoopArea::renderLoopArea' ); 
 		return true;
 	}

@@ -67,16 +67,28 @@
 			}
 
 			if ( isset( $row->lset_structure ) ) {
-				$wgRightsText = ( empty( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
-				$wgRightsUrl = ( empty( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
-				$wgRightsIcon = ( empty( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
-				$wgLanguageCode = ( empty( $data['lset_languagecode'] ) ? $wgLanguageCode : $data['lset_languagecode'] );
-				$wgDefaultUserOptions['LoopSkinStyle'] = ( empty( $data['lset_skinstyle'] ) ? 'loop-common' : $data['lset_skinstyle'] );
-				$wgWhitelistRead[] = empty( $data['lset_imprintlink'] ? $wgImprintLink : $data['lset_imprintlink'] );
-				$wgWhitelistRead[] = empty( $data['lset_privacylink'] ) ? $wgPrivacyLink : $data['lset_privacylink'];
-				$wgLoopObjectNumbering = ( empty( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
-				$wgLoopNumberingType = ( empty( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
-				
+				$wgRightsText = ( !isset( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
+				$wgRightsUrl = ( !isset( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
+				$wgRightsIcon = ( !isset( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
+				$wgLanguageCode = ( !isset( $data['lset_languagecode'] ) ? $wgLanguageCode : $data['lset_languagecode'] );
+				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? 'loop-common' : $data['lset_skinstyle'] );
+				$wgWhitelistRead[] = ( !isset( $data['lset_imprintlink'] ) ? $wgImprintLink : $data['lset_imprintlink'] );
+				$wgWhitelistRead[] = ( !isset( $data['lset_privacylink'] ) ? $wgPrivacyLink : $data['lset_privacylink'] );
+				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
+				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
+
+				/*
+			if ( isset( $row->lset_id ) ) {
+				$wgRightsText = ( !isset( $row->lset_rightstext ) ? $wgRightsText : $row->lset_rightstext );
+				$wgRightsUrl = ( !isset( $row->lset_rightsurl ) ? $wgRightsUrl : $row->lset_rightsurl );
+				$wgRightsIcon = ( !isset( $row->lset_rightsicon ) ? $wgRightsIcon : $row->lset_rightsicon  );
+				$wgLanguageCode = ( !isset( $row->lset_languagecode ) ? $wgLanguageCode : $row->lset_languagecode );
+				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
+				$wgWhitelistRead[] = !isset( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
+				$wgWhitelistRead[] = !isset( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
+				$wgLoopObjectNumbering = ( !isset( $row->lset_numberingobjects ) ? $wgLoopObjectNumbering : $row->lset_numberingobjects );
+				$wgLoopNumberingType = ( !isset( $row->lset_numberingtype ) ? $wgLoopNumberingType : $row->lset_numberingtype );
+				*/
 			}
 		}
 		

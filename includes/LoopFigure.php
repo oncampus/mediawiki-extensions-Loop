@@ -137,11 +137,9 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public function renderForSpecialpage() {
-		global $wgLoopObjectNumbering, $wgLoopNumberingType;
+		global $wgLoopObjectNumbering;
 
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		#$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
-	#	$html .= '<td scope="col" class=""><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
 		$html .= '<td scope="col" class="pl-0 pr-0">';
 		
 		if ( $this->mFile ) {
@@ -165,31 +163,9 @@ class LoopFigure extends LoopObject{
 			
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 			if ( $lsi ) {
-					
-				$number = $previousObjects['loop_figure'] + $this->getNumber();
-			
-				if ( $wgLoopNumberingType == 'chapter' ) {
-			
-					$tocChapter = '';
-					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapterArray);
-
-					if (isset($tocChapterArray[1])) {
-						$tocChapter = $tocChapterArray[1];
-					} else {
-						$tocChapter = 0;
-					}
-					
-					
-					$numberText = ' ' . $tocChapter . '.' . $number;
-
-				} elseif ( $wgLoopNumberingType == 'ongoing' ) {
-					$numberText = ' ' . $number;
-				}
+				$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
 			}
 		}
-		#$html .= '<div class="col-10 pl-0">';
-		#$html .= '<div class="loop_object_footer ml-1">';
-		#$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		$outputTitle = '';
 
 		if ( $this->getTitleFullyParsed() ) {
