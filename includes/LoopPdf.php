@@ -1,5 +1,4 @@
 <?php 
-
 class LoopPdf {
 	
 	public static function structure2pdf(LoopStructure $structure) {

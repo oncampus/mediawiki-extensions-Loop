@@ -387,13 +387,14 @@
 									<xsl:if test="ancestor::*[@extension_name='loop_area']">
 										<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
 									</xsl:if>
-									<xsl:apply-templates select="$object/descendant::link" mode="loop_object"></xsl:apply-templates> 
+									<xsl:apply-templates/> 
 								</fo:block>
 							</fo:table-cell>	
 						</fo:table-row>
 						<xsl:if test="count($object[@render]) = 0 or $object[@render!='none']">
 							<fo:table-row keep-together.within-column="auto" >
-								<fo:table-cell background-color="gray" width="0.4mm" ></fo:table-cell>
+								<fo:table-cell width="0.4mm" background-color="{$accent_color}">
+								</fo:table-cell>
 								<fo:table-cell  text-align="left" padding-left="1mm" padding-right="2mm">
 									<xsl:call-template name="font_object_title"></xsl:call-template>
 		
@@ -1088,6 +1089,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="line-height">18.5pt</xsl:attribute>
 		<xsl:attribute name="margin-top">7pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 	</xsl:template>	
 		
 	<xsl:template name="font_subsubhead">
@@ -1095,6 +1097,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="line-height">18.5pt</xsl:attribute>
 		<xsl:attribute name="margin-top">7pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 	</xsl:template>
 
 	<xsl:template name="font_subhead">
@@ -1102,6 +1105,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="line-height">15.5pt</xsl:attribute>
 		<xsl:attribute name="margin-top">7pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 	</xsl:template>
 
 	<xsl:template name="font_head">
@@ -1109,6 +1113,7 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="line-height">16.5pt</xsl:attribute>
 		<xsl:attribute name="margin-top">7pt</xsl:attribute>
+		<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
 	</xsl:template>	
 	
 	<xsl:template name="font_object_title">
@@ -1118,21 +1123,10 @@
 	</xsl:template>	
 	
 	<xsl:template match="paragraph">
-		<xsl:choose>
-			<xsl:when test="preceding::*[1][name()='heading' and (@level='4' or @level='5')]">
-				<fo:block >
-					<xsl:call-template name="font_normal"></xsl:call-template>
-					<xsl:apply-templates></xsl:apply-templates>
-				</fo:block>	
-			</xsl:when>
-			<xsl:otherwise>
-	
-				<fo:block margin-top="7pt">
-					<xsl:call-template name="font_normal"></xsl:call-template>
-					<xsl:apply-templates></xsl:apply-templates>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
+		<fo:block margin-bottom="5pt">
+			<xsl:call-template name="font_normal"></xsl:call-template>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="preblock" >
@@ -1236,8 +1230,108 @@
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>	
-
 	
+	<!-- Loop Area -->
+	<xsl:template match="extension[@extension_name='loop_area']">
+		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
+			<fo:table-column column-number="1" column-width="10mm" />
+			<fo:table-column column-number="2" column-width="0.8mm" background-color="{$accent_color}"/>
+			<fo:table-column column-number="3" column-width="150mm" padding-left="14.5mm"/>
+
+			<fo:table-body>		
+				<fo:table-row>
+					<fo:table-cell width="10mm" text-align="center" color="#555555">
+						<fo:block>
+						<!-- ICON IMG -->
+						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm">
+							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+								<xsl:when test="@type='task'"><xsl:value-of select="$icon_task"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$icon_timerequirement"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$icon_learningobjectives"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='arrangement'"><xsl:value-of select="$icon_arrangement"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='example'"><xsl:value-of select="$icon_example"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='reflection'"><xsl:value-of select="$icon_reflection"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='notice'"><xsl:value-of select="$icon_notice"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='important'"><xsl:value-of select="$icon_important"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='annotation'"><xsl:value-of select="$icon_annotation"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='definition'"><xsl:value-of select="$icon_definition"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='formula'"><xsl:value-of select="$icon_formula"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='markedsentence'"><xsl:value-of select="$icon_markedsentence"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='sourcecode'"><xsl:value-of select="$icon_sourcecode"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='summary'"><xsl:value-of select="$icon_summary"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='indentation'"><xsl:value-of select="$icon_indentation"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='norm'"><xsl:value-of select="$icon_norm"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='law'"><xsl:value-of select="$icon_law"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='question'"><xsl:value-of select="$icon_question"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='practice'"><xsl:value-of select="$icon_practice"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='exercise'"><xsl:value-of select="$icon_exercise"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='websource'"><xsl:value-of select="$icon_websource"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='experiment'"><xsl:value-of select="$icon_experiment"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='citation'"><xsl:value-of select="$icon_citation"></xsl:value-of></xsl:when>
+								
+								<xsl:otherwise>
+									<xsl:if test="@icon">
+										<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
+									
+										<xsl:if test="php:function('xsl_transform_imagepath', $iconfilename)!=''">
+											<fo:external-graphic scaling="uniform" content-width="scale-to-fit" max-width="13mm" max-height="13mm">
+												<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
+											</fo:external-graphic>
+										</xsl:if>
+
+										<!-- content-width="24mm" -->
+									</xsl:if>
+								</xsl:otherwise> <!-- todo: error msg? -->
+							</xsl:choose>
+						</fo:block>
+
+						<fo:block font-weight="bold" font-size="8.5pt" line-height="10pt" white-space-treatment="preserve"  linefeed-treatment="preserve">
+							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+								<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$word_looparea_learningobjectives"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='arrangement'"><xsl:value-of select="$word_looparea_arrangement"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='example'"><xsl:value-of select="$word_looparea_example"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='reflection'"><xsl:value-of select="$word_looparea_reflection"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='notice'"><xsl:value-of select="$word_looparea_notice"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='important'"><xsl:value-of select="$word_looparea_important"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='annotation'"><xsl:value-of select="$word_looparea_annotation"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='definition'"><xsl:value-of select="$word_looparea_definition"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='formula'"><xsl:value-of select="$word_looparea_formula"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='markedsentence'"><xsl:value-of select="$word_looparea_markedsentence"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='sourcecode'"><xsl:value-of select="$word_looparea_sourcecode"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='summary'"><xsl:value-of select="$word_looparea_summary"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='indentation'"><xsl:value-of select="$word_looparea_indentation"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='norm'"><xsl:value-of select="$word_looparea_norm"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='law'"><xsl:value-of select="$word_looparea_law"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='question'"><xsl:value-of select="$word_looparea_question"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='practice'"><xsl:value-of select="$word_looparea_practice"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='exercise'"><xsl:value-of select="$word_looparea_exercise"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='websource'"><xsl:value-of select="$word_looparea_websource"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='experiment'"><xsl:value-of select="$word_looparea_experiment"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
+								<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
+								<xsl:otherwise>
+									<xsl:if test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:if>
+								</xsl:otherwise> <!-- todo: error msg? -->
+							</xsl:choose>
+						</fo:block>
+						</fo:block>
+					</fo:table-cell>
+				
+				<fo:table-cell></fo:table-cell>
+				<fo:table-cell padding-left="14.5mm">
+					<fo:block>
+						<xsl:apply-templates/>
+					</fo:block>
+				</fo:table-cell>
+			</fo:table-row>
+			
+		</fo:table-body>	
+	</fo:table>
+	<fo:block white-space-collapse="false" white-space-treatment="preserve" font-size="0pt" line-height="18.5pt">.</fo:block>
+  	</xsl:template>
+
 	<xsl:template match="heading">
 		<xsl:variable name="level" select="@level"></xsl:variable>
 		<xsl:choose>
@@ -1444,6 +1538,11 @@
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@extension_name='math'">
+				<fo:instream-foreign-object>
+					<xsl:copy-of select="php:function('xsl_transform_math', .)"></xsl:copy-of>  
+				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_reference'">
 				<xsl:call-template name="loop_reference">

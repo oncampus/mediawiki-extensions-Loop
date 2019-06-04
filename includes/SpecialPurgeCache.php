@@ -31,6 +31,7 @@ class SpecialPurgeCache extends SpecialPage {
 				$dbw = wfGetDB( DB_MASTER );
 				$dbw->delete( 'objectcache', '*', __METHOD__ );
 				$out->addWikiMsg( 'purgecache-purged' );
+				$out->addHTML( $this->makeForm() );
 						
 				$exportPath = $wgUploadDirectory . "/export/";
 				SpecialPurgeCache::deleteAll($exportPath);

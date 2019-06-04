@@ -72,11 +72,19 @@ class LoopXml {
 	}
 	
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
-		$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ()->getNativeData ();
+		#$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ( Revision::RAW )->getNativeData ();
+		
+		$title = Title::newFromId( $structureItem->getArticle () );
+		$fwp = new FlaggableWikiPage ( $title );
+		$stableRev = $fwp->getStable();
+		if ( $stableRev == 0 ) {
+			$stableRev = $structureItem->getArticle ();
+		}
+		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
 		
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
-		
+		#dd();
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
@@ -105,7 +113,13 @@ class LoopXml {
 		global $wgLanguageCode;
 		$langParts = mb_split("-", $wgLanguageCode);
 
-		$content = WikiPage::newFromID ( $articleId )->getContent ()->getNativeData ();
+		$title = Title::newFromId($articleId);
+		$fwp = new FlaggableWikiPage ( $title );
+		$stableRev = $fwp->getStable();
+		if ( $stableRev == 0 ) {
+			$stableRev = $articleId;
+		}
+		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
 		$content = html_entity_decode($content);
 		
 		$wiki2xml = new wiki2xml ();
@@ -1860,4 +1874,3 @@ class wiki2xml
 	}
 
 }
-

@@ -31,6 +31,7 @@
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
+		"LoopArea": "includes/LoopArea.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -72,6 +73,7 @@
 		],
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
+			"LoopArea::onParserSetup",
 			"LoopReference::onParserSetup"
 		],
 		"PageContentSaveComplete": [

@@ -229,7 +229,11 @@ class LoopExportPageMp3 extends LoopExport {
 	public function generateExportContent() {
 		$query = $this->request->getQueryValues();
 		if ( isset( $query['articleId'] ) ) {
-			$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'] );
+			if ( isset( $query['debug'] ) ) {
+				$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'], $query['debug'] );
+			} else {
+				$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'], false );
+			}
 		} else {
 			$this->exportContent = null;
 		}

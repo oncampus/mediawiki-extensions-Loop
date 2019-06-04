@@ -29,6 +29,29 @@
 	<xsl:variable name="icon_simulation" select="functx:get_icon('icon_simulation')" />
 	<xsl:variable name="icon_dragdrop" select="functx:get_icon('icon_dragdrop')" />
 
+
+	<xsl:variable name="icon_timerequirement" select="functx:get_icon('icon_timerequirement')" />
+	<xsl:variable name="icon_learningobjectives" select="functx:get_icon('icon_learningobjectives')" />
+	<xsl:variable name="icon_arrangement" select="functx:get_icon('icon_arrangement')" />
+	<xsl:variable name="icon_example" select="functx:get_icon('icon_example')" />
+	<xsl:variable name="icon_reflection" select="functx:get_icon('icon_reflection')" />
+	<xsl:variable name="icon_notice" select="functx:get_icon('icon_notice')" />
+	<xsl:variable name="icon_important" select="functx:get_icon('icon_important')" />
+	<xsl:variable name="icon_annotation" select="functx:get_icon('icon_annotation')" />
+	<xsl:variable name="icon_definition" select="functx:get_icon('icon_definition')" />
+	<xsl:variable name="icon_markedsentence" select="functx:get_icon('icon_markedsentence')" />
+	<xsl:variable name="icon_sourcecode" select="functx:get_icon('icon_sourcecode')" />
+	<xsl:variable name="icon_summary" select="functx:get_icon('icon_summary')" />
+	<xsl:variable name="icon_indentation" select="functx:get_icon('icon_indentation')" />
+	<xsl:variable name="icon_norm" select="functx:get_icon('icon_norm')" />
+	<xsl:variable name="icon_law" select="functx:get_icon('icon_law')" />
+	<xsl:variable name="icon_question" select="functx:get_icon('icon_question')" />
+	<xsl:variable name="icon_practice" select="functx:get_icon('icon_practice')" />
+	<xsl:variable name="icon_exercise" select="functx:get_icon('icon_exercise')" />
+	<xsl:variable name="icon_websource" select="functx:get_icon('icon_websource')" />
+	<xsl:variable name="icon_experiment" select="functx:get_icon('icon_experiment')" />
+	<xsl:variable name="icon_citation" select="functx:get_icon('icon_citation')" />
+
 	<xsl:variable name="word_chapter" select="functx:get_term_name('word_chapter')" />
 	<xsl:variable name="word_state"  select="functx:get_term_name('word_state')" />
 	<xsl:variable name="word_content"  select="functx:get_term_name('word_content')" />
@@ -97,6 +120,5 @@
 	<xsl:variable name="word_looparea_citation"  select="functx:get_term_name('word_looparea_citation')" />	
 	
 	<xsl:variable name="word_spoiler_defaulttitle"  select="functx:get_term_name('word_spoiler_defaulttitle')" />
-	
 
 </xsl:stylesheet>

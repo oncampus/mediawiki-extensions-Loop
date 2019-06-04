@@ -49,27 +49,35 @@
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
 		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
 		if ( $dbr->tableExists( 'loop_settings' ) ) {
-
+			
 			$res = $dbr->select(
 				'loop_settings',
-				array( 
-					'lset_id', 
-					'lset_rightstext', 
-					'lset_rightsurl', 
-					'lset_rightsicon', 
-					'lset_languagecode', 
-					'lset_skinstyle', 
-					'lset_imprintlink', 
-					'lset_privacylink', 
-					'lset_numberingobjects', 
-					'lset_numberingtype'
+				array(
+					'lset_structure',
+					'lset_property',
+					'lset_value',
 				),
-				array(),
-				__METHOD__,
-				array( 'ORDER BY' => 'lset_id DESC LIMIT 1' )
+				array(
+					'lset_structure = "' . 0 .'"' # TODO Structure support
+				),
+				__METHOD__
 			);
-			$row = $res->fetchObject();
+			foreach ( $res as $row ) {
+				$data[$row->lset_property] = $row->lset_value;
+			}
 
+			if ( isset( $row->lset_structure ) ) {
+				$wgRightsText = ( !isset( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
+				$wgRightsUrl = ( !isset( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
+				$wgRightsIcon = ( !isset( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
+				$wgLanguageCode = ( !isset( $data['lset_languagecode'] ) ? $wgLanguageCode : $data['lset_languagecode'] );
+				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? 'loop-common' : $data['lset_skinstyle'] );
+				$wgWhitelistRead[] = ( !isset( $data['lset_imprintlink'] ) ? $wgImprintLink : $data['lset_imprintlink'] );
+				$wgWhitelistRead[] = ( !isset( $data['lset_privacylink'] ) ? $wgPrivacyLink : $data['lset_privacylink'] );
+				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
+				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
+
+				/*
 			if ( isset( $row->lset_id ) ) {
 				$wgRightsText = ( !isset( $row->lset_rightstext ) ? $wgRightsText : $row->lset_rightstext );
 				$wgRightsUrl = ( !isset( $row->lset_rightsurl ) ? $wgRightsUrl : $row->lset_rightsurl );
@@ -80,7 +88,7 @@
 				$wgWhitelistRead[] = !isset( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
 				$wgLoopObjectNumbering = ( !isset( $row->lset_numberingobjects ) ? $wgLoopObjectNumbering : $row->lset_numberingobjects );
 				$wgLoopNumberingType = ( !isset( $row->lset_numberingtype ) ? $wgLoopNumberingType : $row->lset_numberingtype );
-				
+				*/
 			}
 		}
 		
@@ -89,8 +97,6 @@
 		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
 		
 		# FlaggedRevs Settings
-		#global $IP; // move here? kann bei mw-einrichtung nicht automatisch angegeben werden und wirft wegen folgender zeilen fehler.
-		#require_once "$IP/extensions/FlaggedRevs/FlaggedRevs.php";
 		$wgFlaggedRevsLowProfile = false;
 		$wgFlaggedRevsExceptions = array();
 		$wgFlaggedRevsTags = array(

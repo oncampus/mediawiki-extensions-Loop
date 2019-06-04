@@ -20,6 +20,9 @@
     <xsl:param name="font_family">
 		<xsl:value-of select="document($config_file)/config/font_family"/>
     </xsl:param>    
-    
+
+    <xsl:param name="accent_color">
+		<xsl:value-of select="document($config_file)/config/accent_color"/>
+    </xsl:param>    
     
 </xsl:stylesheet>
