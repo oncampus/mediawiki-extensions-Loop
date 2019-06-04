@@ -753,7 +753,9 @@
 						<xsl:when test="$object_type='loop_figure'">
 							<fo:block>
 								<fo:basic-link>
-									<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+									<xsl:attribute name="internal-destination">
+										<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+									</xsl:attribute>
 									<fo:block>
 									<xsl:if test="php:function('xsl_transform_imagepath', descendant::link/target)!=''">
 										<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
@@ -772,7 +774,9 @@
 				<fo:table-cell width="140mm">
 					<fo:block text-align-last="justify" text-align="justify">
 						<fo:basic-link color="black">
-							<xsl:attribute name="internal-destination"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+							<xsl:attribute name="internal-destination">
+								<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+							</xsl:attribute>
 							
 							<fo:inline font-weight="bold">
 								<xsl:choose>
@@ -821,7 +825,9 @@
 								</xsl:choose>	
 								<fo:leader leader-pattern="dots"></fo:leader>
 								<fo:page-number-citation>
-									<xsl:attribute name="ref-id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+									<xsl:attribute name="ref-id">
+										<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+									</xsl:attribute>
 								</fo:page-number-citation>
 							</fo:inline>
 						</fo:basic-link>					
@@ -1366,32 +1372,44 @@
 		<!-- <xsl:if test="not(@extension_name='mathimage')"> -->
 		<xsl:if test="@extension_name='loop_figure'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_formula'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_listing'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_media'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_table'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_task'">
 			<fo:inline>
-				  <xsl:attribute name="id"><xsl:value-of select="generate-id()"></xsl:value-of></xsl:attribute>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:choose>
@@ -1424,6 +1442,11 @@
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_task'">
 				<xsl:call-template name="loop_object">
+                	<xsl:with-param name="object" select="."></xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@extension_name='loop_reference'">
+				<xsl:call-template name="loop_reference">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
@@ -1611,5 +1634,73 @@
 				
 		</xsl:choose>
 	</xsl:template>	
+
+	
+	<xsl:template name="loop_reference">
+		<xsl:param name="object"></xsl:param>
+
+		<xsl:variable name="objectid">
+			<xsl:choose>
+				<xsl:when test="@id"> 
+					<xsl:value-of select="@id"></xsl:value-of>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:text></xsl:text>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+			
+		<fo:basic-link color="black" text-decoration="underline">
+			<xsl:if test="@id"> 
+				<xsl:attribute name="internal-destination">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
+			</xsl:if>
+		
+			<xsl:choose>
+				<xsl:when test="$object=''">
+					<xsl:choose>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_figure'">
+							<xsl:value-of select="$word_figure_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_formula'">
+							<xsl:value-of select="$word_formula_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_listing'">
+							<xsl:value-of select="$word_listing_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_media'">
+							<xsl:value-of select="$word_media_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_task'">
+							<xsl:value-of select="$word_task_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:when test="//*/loop_object[@refid = $objectid]/@object_type='loop_table'">
+							<xsl:value-of select="$word_table_short"></xsl:value-of>
+						</xsl:when>
+						<xsl:otherwise>
+						</xsl:otherwise>
+					</xsl:choose>
+					<xsl:text> </xsl:text>
+					<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
+						<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
+					</xsl:if>
+
+					<xsl:if test="$object/@title='true'">
+						<xsl:text> </xsl:text>
+						<xsl:if test="//*/loop_object[@refid = $objectid]/object_title">
+							<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_title"></xsl:value-of>
+						</xsl:if>
+					</xsl:if>
+
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates/>
+				</xsl:otherwise>
+			</xsl:choose>
+
+		</fo:basic-link>
+
+	</xsl:template>
 	
 </xsl:stylesheet>

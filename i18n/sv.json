@@ -139,7 +139,11 @@
 	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-showcopyrightoption" : "Värdet av parametern (show_copyright) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"loopmedia-error-unknown-mediatype" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''."
+	"loopmedia-error-unknown-mediatype" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
+	"loopreference-error-unknown-titleoption" : "Värdet av parametern (title) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
+	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
+	"loopreference-error-no-refid" : "Inget ID (id) har angivits i referensen."
+	
 	
 	
 }

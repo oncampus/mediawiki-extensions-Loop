@@ -83,4 +83,12 @@ class LoopHooks {
 		return true;
 	}
 
+	public static function onHtmlPageLinkRendererEnd( $linkRenderer, $target, $isKnown, &$text, &$attribs, &$ret ) {
+
+		# Add id to loop_reference links
+		if ( isset( $attribs["data-target"])) {
+			$attribs["href"] .= "#". $attribs["data-target"];
+		}
+		return true;
+	}
 }

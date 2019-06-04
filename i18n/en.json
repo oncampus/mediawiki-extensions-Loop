@@ -143,7 +143,9 @@
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
 	"loopobject-error-unknown-showcopyrightoption" : "The object's show copyright option (show_copyright) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
-	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''."
-
-
+	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
+	"loopreference-error-unknown-titleoption" : "The reference's show title option (title) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
+	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
+	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id)."
+	
 }

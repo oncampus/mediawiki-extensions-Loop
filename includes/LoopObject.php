@@ -255,28 +255,19 @@ class LoopObject {
 		#dd($numbering, $type);
 		$numberText = '';
 		if ( $wgLoopObjectNumbering == true ) {
-			if ( $wgLoopNumberingType == 'chapter' ) {
 		
-				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
-				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
-				if (isset($tocChapter[1])) {
-					$tocChapter = $tocChapter[1];
-				} else {
-					$tocChapter = 0;
-				}
+			$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
+				
+			if ( $lsi ) {
+					
+				$loopStructure = new LoopStructure();
+				$loopStructure->loadStructureItems();
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 				
 				if ( $lsi ) {
-					
-					$loopStructure = new LoopStructure();
-					$loopStructure->loadStructureItems();
-					
-					$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
-					#dd($previousObjects[$type]+$this->getNumber() );
-					$number = $previousObjects[$type] + $this->getNumber();
-					$numberText = ' ' . $tocChapter . '.' . $number;
+					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
 				}
-			} else {
-				$numberText = ' ' . $this->getNumber();
+					
 			}
 		}
 		$outputTitle = '';
@@ -934,7 +925,7 @@ class LoopObject {
 		$cond = "";
 		// if a title is given, each page after given one is updated
 		if ( isset($title) ) {
-			$cond = "lsi_article=" . $title->getArticleID();
+			# $cond = "lsi_article=" . $title->getArticleID(); # TODO remove? Für referenzen müssen alle Seiten immer neu geladen werden.
 		} 
 
 		$dbr = wfGetDB ( DB_SLAVE );
@@ -987,7 +978,7 @@ class LoopObject {
 	
 	public static function onParserAfterTidy(&$parser, &$text) {
 		
-		global $wgLoopNumberingType, $wgLoopObjectNumbering;
+		global $wgLoopObjectNumbering;
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
 		
@@ -1002,7 +993,7 @@ class LoopObject {
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
-			$allObjects = LoopObjectIndex::getAllObjects( $loopStructure );
+			#$allObjects = LoopObjectIndex::getAllObjects( $loopStructure );
 			
 		}
 		foreach ( self::$mObjectTypes as $objectType ) {
@@ -1011,42 +1002,16 @@ class LoopObject {
 			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 			
 			if ( $lsi && $wgLoopObjectNumbering == 1 ) {
-				if ( $wgLoopNumberingType == "chapter" ) {
-					$i = 0;
-					if ( isset( $matches[2][$i]) ) {
-						
-						#dd($objectid);
-						preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
-						if (isset($tocChapter[1])) {
-							$tocChapter = $tocChapter[1];
-						}
-						
-						foreach ( $matches[0] as $objectmarker ) {
-							$objectid = $matches[2][$i];
-							$number = '';
-							if ( isset( $allObjects[$objectid] ) ) {
-								$number = $previousObjects[$objectType] + $allObjects[$objectid]["nthoftype"];
-							}
-							if ( empty( $tocChapter ) ) {
-								$tocChapter = 0;
-							}
-							$text = preg_replace ( "/" . $objectmarker . "/", $tocChapter . "." . $number, $text );
+				
+				$i = 0;
+				foreach ( $matches[0] as $objectmarker ) {
+					$objectid = $matches[2][$i];
+					$numbering = self::getObjectNumberingOutput($objectid, $lsi, $loopStructure, $previousObjects);
+					
+					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
+					$i++;
+				} 
 
-							$i++;
-						} 
-					}
-				} else {
-					$i = 0;
-					foreach ( $matches[0] as $objectmarker ) {
-						$objectid = $matches[2][$i];
-						$number = '';
-						if ( isset( $allObjects[$objectid] ) ) {
-							$number = $previousObjects[$objectType] + $allObjects[$objectid]["nthoftype"];
-						}
-						$text = preg_replace ( "/" . $objectmarker . "/", $number, $text );
-						$i++;
-					}
-				}
 			} else {
 				foreach ( $matches[0] as $objectmarker ) {
 					$text = preg_replace ( "/" . $objectmarker . "/", "", $text );
@@ -1055,6 +1020,37 @@ class LoopObject {
 		}
 		
 		return true;
+	}
+
+	public static function getObjectNumberingOutput($objectid, $lsi, $loopStructure, $previousObjects = null, $objectData = null ) {
+
+		global $wgLoopNumberingType;
+		if ( $previousObjects == null ) {
+			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+		}
+		if ( $objectData == null ) {
+			$objectData = LoopObjectIndex::getObjectData($objectid, $loopStructure);
+		}
+
+		if ( $objectData["refId"] == $objectid ) {
+			if ( $wgLoopNumberingType == "chapter" ) {
+
+				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
+
+				if (isset($tocChapter[1])) {
+					$tocChapter = $tocChapter[1];
+				}
+				if ( empty( $tocChapter ) ) {
+					$tocChapter = 0;
+				}
+				return $tocChapter . "." . ( $previousObjects[$objectData["index"]] + $objectData["nthoftype"] );
+				
+			} elseif ( $wgLoopNumberingType == "ongoing" ) {
+				
+				return ( $previousObjects[$objectData["index"]] + $objectData["nthoftype"] );
+					
+			} 
+		}
 	}
 }
 ?>
