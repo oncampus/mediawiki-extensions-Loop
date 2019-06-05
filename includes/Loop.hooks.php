@@ -4,16 +4,16 @@ class LoopHooks {
 	/**
 	 * Catch the Request to perform custom action LoopEditMode and LoopRenderMode
 	 *
-	 * This is attached to the MediaWiki 'BeforeInitialize' hook.
+	 * This is attached to the MediaWiki 'MediaWikiPerformAction' hook.
 	 *
-	 * @param Title $title
-	 * @param Article $article
 	 * @param OutputPage $output
+	 * @param Article $article
+	 * @param Title $title
 	 * @param User $user
 	 * @param Request $request
 	 * @param Wiki $wiki
 	 */
-	public static function onBeforeInitialize( $title, $article = null, $output, $user, $request, $wiki ) {
+	public static function onMediaWikiPerformAction( $output, $article, $title, $user, $request, $wiki ) {
 
 		Loop::handleLoopRequest( $output, $request, $user );
 
@@ -30,16 +30,16 @@ class LoopHooks {
 	 * @param array $forOptions
 	 * @return boolean
 	 */
-	public static function onPageRenderingHash( &$confstr, User $user, &$forOptions ) {
+	public static function onPageRenderingHash( &$confstr, $user, $forOptions ) {
 
 		global $wgDefaultUserOptions;
 
-		if ( in_array( 'loopeditmode', $forOptions ) ) {
-			$confstr .= "!loopeditmode=" . $user->getOption( 'LoopEditMode', false, true );
-		}
+		$editMode = $user->getOption( 'LoopEditMode', false, true );
 
-		if ( in_array( 'looprendermode', $forOptions ) ) {
-			$confstr .= "!looprendermode=" . $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions["LoopRenderMode"], true );
+		if ( $editMode ) {
+			$confstr .= "!loopeditmode=true";
+		} else {
+			$confstr .= "!loopeditmode=false";
 		}
 
 		return true;
@@ -91,4 +91,33 @@ class LoopHooks {
 		}
 		return true;
 	}
+
+	
+	/**
+	 * Remove image link when not in loopeditmode
+	 * 
+	 * This is attached to the MediaWiki 'ParserMakeImageParams' hook.
+	 * 
+	 * @param Title $title
+	 * @param File $file
+	 * @param array $params
+	 * @param Parser $parser
+	 * @return boolean
+	 */
+	public static function onParserMakeImageParams( $title, $file, &$params, $parser ) {
+		
+		$loopEditMode = ( $parser->getUser()->getOption( 'LoopEditMode', false, true ) == 'true' ) ? true : false;
+		$parser->getOptions()->optionUsed( 'LoopEditMode' );
+		#dd($loopEditMode);
+		
+		if ($loopEditMode) {
+			$params['frame']['no-link'] = false;
+		} else {
+			$params['frame']['no-link'] = true;
+		}
+		
+		return true;
+	}	
+	
+
 }
