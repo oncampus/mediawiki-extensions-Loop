@@ -3,7 +3,7 @@
 	/**
 	 * Save changes in LoopEditMode and LoopRenderMode
 	 * 
-	 * This is called by 'SpecialPageBeforeExecute' and 'MediaWikiPerformAction' hooks.
+	 * This is called by 'MediaWikiPerformAction' hook.
 	 * 
 	 * @param OutputPage $output
 	 * @param Request $request
@@ -77,18 +77,6 @@
 				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
 				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
 
-				/*
-			if ( isset( $row->lset_id ) ) {
-				$wgRightsText = ( !isset( $row->lset_rightstext ) ? $wgRightsText : $row->lset_rightstext );
-				$wgRightsUrl = ( !isset( $row->lset_rightsurl ) ? $wgRightsUrl : $row->lset_rightsurl );
-				$wgRightsIcon = ( !isset( $row->lset_rightsicon ) ? $wgRightsIcon : $row->lset_rightsicon  );
-				$wgLanguageCode = ( !isset( $row->lset_languagecode ) ? $wgLanguageCode : $row->lset_languagecode );
-				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $row->lset_skinstyle ) ? 'loop-common' : $row->lset_skinstyle );
-				$wgWhitelistRead[] = !isset( $row->lset_imprintlink ) ? $wgImprintLink : $row->lset_imprintlink;
-				$wgWhitelistRead[] = !isset( $row->lset_privacylink ) ? $wgPrivacyLink : $row->lset_privacylink;
-				$wgLoopObjectNumbering = ( !isset( $row->lset_numberingobjects ) ? $wgLoopObjectNumbering : $row->lset_numberingobjects );
-				$wgLoopNumberingType = ( !isset( $row->lset_numberingtype ) ? $wgLoopNumberingType : $row->lset_numberingtype );
-				*/
 			}
 		}
 		

@@ -65,8 +65,8 @@
 		"LoadExtensionSchemaUpdates":[
 			"LoopUpdater::onLoadExtensionSchemaUpdates"
 		],
-		"BeforeInitialize":[
-			"LoopHooks::onBeforeInitialize"
+		"MediaWikiPerformAction":[
+			"LoopHooks::onMediaWikiPerformAction"
 		],
 		"PageRenderingHash":[
 			"LoopHooks::onPageRenderingHash"
@@ -87,6 +87,9 @@
 		],
 		"HtmlPageLinkRendererEnd": [
 			"LoopHooks::onHtmlPageLinkRendererEnd"
+		],
+		"ParserMakeImageParams":[
+			"LoopHooks::onParserMakeImageParams"
 		]
 	},
 	"SpecialPages": {
