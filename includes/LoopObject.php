@@ -790,12 +790,39 @@ class LoopObject {
 		}
 		#$striped_text = $this->getParser()->killMarkers ( $text );
 	}
+	public static function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) {
+		#dd("onPageContentSaveComplete");
+		#self::doOnPageContentSaveComplete( $wikiPage );
+		return true;
+
+	}
+	public static function onLinksUpdateConstructed( $linksUpdate ) { 
+		$title = $linksUpdate->getTitle();
+		$wikiPage = WikiPage::factory( $title );
+		$latestRevId = $title->getLatestRevID();
+		if ( isset($title->flaggedRevsArticle) ) {
+			$stableRevId = $title->flaggedRevsArticle;
+			#dd($title->flaggedRevsArticle);
+			$stableRevId = $stableRevId->getStable();
+			if ( $latestRevId == $stableRevId ) {
+				self::doOnPageContentSaveComplete( $wikiPage, $title );
+			}
+		} else {
+			self::doOnPageContentSaveComplete( $wikiPage, $title );
+		}
+
+		#dd($title->flaggedRevsArticle,$fwp,$latestRevId, $linksUpdate);
+		return true;
+	}
+
 	/**
 	 * Adds objects to db after edit
 	 */
-	public static function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) {
+	public static function doOnPageContentSaveComplete( $wikiPage, $title ) {
 		
 		$title = $wikiPage->getTitle();
+
+		$content = $wikiPage->getContent();
 		if ( $title->getNamespace() == NS_MAIN ) {
 				
 			# on edit, delete all objects of that page from db. 

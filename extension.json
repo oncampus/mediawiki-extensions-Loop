@@ -90,7 +90,8 @@
 		],
 		"ParserMakeImageParams":[
 			"LoopHooks::onParserMakeImageParams"
-		]
+		],
+		"LinksUpdateConstructed": "LoopObject::onLinksUpdateConstructed"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
