@@ -790,44 +790,66 @@ class LoopObject {
 		}
 		#$striped_text = $this->getParser()->killMarkers ( $text );
 	}
-	public static function onPageContentSaveComplete( $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section, &$flags, $revision, $status, $baseRevId, $undidRevId ) {
-		#dd("onPageContentSaveComplete");
-		#self::doOnPageContentSaveComplete( $wikiPage );
-		return true;
+	
+	/**
+	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion() and FlaggableWikiPage->updateStableVersion()
+	 * @param LinksUpdate $linksUpdate
+	 */
+	public static function onAfterStabilizeChange ( $title, $content = null ) {
+		$wikiPage = WikiPage::factory($title);
+		self::doIndexLoopObjects( $wikiPage, $title, $content );
 
+		return true;
 	}
+
+	/**
+	 * When deleting a page, remove all Object entries from DB.
+	 * Attached to ArticleDeleteComplete hook.
+	 */
+	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ) {
+		
+		LoopObjectIndex::removeAllPageItemsFromDb ( $id );
+
+		return true;
+	}
+
+	/**
+	 * Checks revision status after saving content and starts db writing function in case of stable revision.
+	 * Attached to LinksUpdateConstructed hook.
+	 * @param LinksUpdate $linksUpdate
+	 */
 	public static function onLinksUpdateConstructed( $linksUpdate ) { 
 		$title = $linksUpdate->getTitle();
 		$wikiPage = WikiPage::factory( $title );
 		$latestRevId = $title->getLatestRevID();
 		if ( isset($title->flaggedRevsArticle) ) {
 			$stableRevId = $title->flaggedRevsArticle;
-			#dd($title->flaggedRevsArticle);
 			$stableRevId = $stableRevId->getStable();
-			if ( $latestRevId == $stableRevId ) {
-				self::doOnPageContentSaveComplete( $wikiPage, $title );
+
+			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
+				self::doIndexLoopObjects( $wikiPage, $title );
 			}
-		} else {
-			self::doOnPageContentSaveComplete( $wikiPage, $title );
 		}
 
-		#dd($title->flaggedRevsArticle,$fwp,$latestRevId, $linksUpdate);
 		return true;
 	}
 
 	/**
-	 * Adds objects to db after edit
+	 * Adds objects to db. Called by onLinksUpdateConstructed and onAfterStabilizeChange (custom Hook)
+	 * @param WikiPage $wikiPage
+	 * @param Title $title
+	 * @param Content $content
 	 */
-	public static function doOnPageContentSaveComplete( $wikiPage, $title ) {
+	public static function doIndexLoopObjects( &$wikiPage, $title, $content = null ) {
 		
-		$title = $wikiPage->getTitle();
-
-		$content = $wikiPage->getContent();
+		if ($content == null) {
+			$content = $wikiPage->getContent();
+		}
 		if ( $title->getNamespace() == NS_MAIN ) {
 				
 			# on edit, delete all objects of that page from db. 
 			$loopObjectIndex = new LoopObjectIndex();
-			$loopObjectIndex->removeAllPageItemsFromDb($title->getArticleID());
+			LoopObjectIndex::removeAllPageItemsFromDb ( $title->getArticleID() );
 			$contentText = ContentHandler::getContentText( $content );
 			$parser = new Parser();
 			
@@ -888,7 +910,8 @@ class LoopObject {
 						$newContentText = self::setReferenceId( $newContentText, $newRef ); 
 						$tmpLoopObjectIndex->refId = $newRef; 
 					}
-					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) {
+					if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
+						
 						$tmpLoopObjectIndex->addToDatabase();
 					}
 				}
@@ -898,10 +921,10 @@ class LoopObject {
 					self::removeStructureCache( $title );
 				}
 				if ( $contentText !== $newContentText ) {
-					#dd($contentText , $newContentText);
+					$summary = '';
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					$content = $content->updateRedirect	( $title );
-					$wikiPage->doEditContent ( $content, $summary, $flags, false, $user );
+					$wikiPage->doEditContent ( $content, $summary, 0, false );
 				}
 			}
 		}
@@ -1008,6 +1031,20 @@ class LoopObject {
 		global $wgLoopObjectNumbering;
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
+		$showNumbers = true;
+		if ( isset( $title->flaggedRevsArticle ) ) {
+			#dd($title);
+			$fwp = $title->flaggedRevsArticle;
+			if ( $fwp->getRevision() ) {
+				$revId = $fwp->getRevision()->getId();
+				$stableId = $fwp->getStable();
+				if ( $stableId != $revId && $stableId != null ) {
+					$showNumbers = false;
+				}
+			}
+		}
+		
+		#dd($fwp->getStable(), $fwp->getRevision()->getId(), $showNumbers);
 		
 		$count = array();
 		foreach (self::$mObjectTypes as $objectType) {
@@ -1028,7 +1065,7 @@ class LoopObject {
 			$matches = array();
 			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
 			
-			if ( $lsi && $wgLoopObjectNumbering == 1 ) {
+			if ( $lsi && $wgLoopObjectNumbering == 1 && $showNumbers ) {
 				
 				$i = 0;
 				foreach ( $matches[0] as $objectmarker ) {
