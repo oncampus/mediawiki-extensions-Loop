@@ -1120,7 +1120,10 @@ class LoopObject {
 				if ( empty( $tocChapter ) ) {
 					$tocChapter = 0;
 				}
-				return $tocChapter . "." . ( $previousObjects[$objectData["index"]] + $objectData["nthoftype"] );
+				if ( isset($previousObjects[$objectData["index"]]) ) {
+					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
+				}
+				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 				
 			} elseif ( $wgLoopNumberingType == "ongoing" ) {
 				$tmpPreviousObjects = 0;
