@@ -792,12 +792,25 @@ class LoopObject {
 	}
 	
 	/**
-	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion() and FlaggableWikiPage->updateStableVersion()
-	 * @param LinksUpdate $linksUpdate
+	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
+	 * @param Title $title
+	 * @param Content $content
 	 */
-	public static function onAfterStabilizeChange ( $title, $content = null ) {
+	public static function onAfterStabilizeChange ( $title, $content ) {
+		error_log("stabilize");
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title, $content );
+
+		return true;
+	}
+	/**
+	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion()
+	 * @param Title $title
+	 */
+	public static function onAfterClearStable( $title ) {
+		error_log("clear");
+		$wikiPage = WikiPage::factory($title);
+		self::doIndexLoopObjects( $wikiPage, $title );
 
 		return true;
 	}

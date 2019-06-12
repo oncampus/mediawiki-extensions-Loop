@@ -90,7 +90,8 @@
 		],
 		"LinksUpdateConstructed": "LoopObject::onLinksUpdateConstructed",
 		"ArticleDeleteComplete": "LoopObject::onArticleDeleteComplete",
-		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange"
+		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange",
+		"AfterClearStable":"LoopObject::onAfterClearStable"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
