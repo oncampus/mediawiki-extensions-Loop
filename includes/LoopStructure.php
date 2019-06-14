@@ -43,14 +43,18 @@ class LoopStructure {
 				} else {
 					$tabLevel = 1;
 				}
-
-				$link = $linkRenderer->makeLink(
-					Title::newFromID( $structureItem->article ),
-					new HtmlArmor( $structureItem->tocNumber .' '. $structureItem->tocText )
-				);
-
+				$title = Title::newFromID( $structureItem->article );
+				$link =  $structureItem->tocNumber .' '. $structureItem->tocText;
+				if ( $title ) {
+					$link = $linkRenderer->makeLink(
+						Title::newFromID( $structureItem->article ),
+						new HtmlArmor( $structureItem->tocNumber .' '. $structureItem->tocText )
+					);
+					
+				} 
 				$text .= '<div class="loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat('	',  $tabLevel ) . $link . '</div>';
-
+				
+				
 			}
 
 		}
