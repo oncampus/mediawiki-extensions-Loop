@@ -628,10 +628,11 @@ class LoopObject {
 	public function extraParse($wikiText, $recursive = false) {
 		$localParser = new Parser ();
 		if ( ! $recursive ) {
-			global $wgTitle, $wgOut;
+			global $wgOut;
 			$user = $wgOut->getUser();
+			$tmpTitle = Title::newFromText('NO_TITLE_TMP');
 			$localParserOptions = ParserOptions::newFromUser ( $user );
-			$result = $localParser->parse ( $wikiText, $wgTitle, $localParserOptions );
+			$result = $localParser->parse ( $wikiText, $tmpTitle, $localParserOptions );
 		} else {
 			$result = $localParser->recursiveTagParse ( $wikiText, $this->GetFrame() );
 		}
@@ -797,7 +798,6 @@ class LoopObject {
 	 * @param Content $content
 	 */
 	public static function onAfterStabilizeChange ( $title, $content ) {
-		error_log("stabilize");
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title, $content );
 
@@ -808,7 +808,6 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-		error_log("clear");
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title );
 
@@ -886,7 +885,7 @@ class LoopObject {
 				foreach ( $object_tags as $object ) {
 					
 					$tmpLoopObjectIndex = new LoopObjectIndex();
-					if ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != "false" ) {
+					if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != "false" ) && isset( $objects[$object[0]] ) ) {
 						$objects[$object[0]]++;
 					}
 					$tmpLoopObjectIndex->index = $object[0];
