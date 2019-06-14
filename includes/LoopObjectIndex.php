@@ -16,7 +16,7 @@ class LoopObjectIndex {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
-
+       
         $dbw = wfGetDB( DB_MASTER );
         
         $dbw->insert(
@@ -39,7 +39,7 @@ class LoopObjectIndex {
     }
 	
 	// deletes all objects of a page
-    public function removeAllPageItemsFromDb ( $article ) {
+    public static function removeAllPageItemsFromDb ( $article ) {
 
 		$dbr = wfGetDB( DB_MASTER );
 		$dbr->delete(

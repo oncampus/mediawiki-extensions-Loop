@@ -76,9 +76,6 @@
 			"LoopArea::onParserSetup",
 			"LoopReference::onParserSetup"
 		],
-		"PageContentSaveComplete": [
-			"LoopObject::onPageContentSaveComplete"
-		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
 		],
@@ -90,7 +87,11 @@
 		],
 		"ParserMakeImageParams":[
 			"LoopHooks::onParserMakeImageParams"
-		]
+		],
+		"LinksUpdateConstructed": "LoopObject::onLinksUpdateConstructed",
+		"ArticleDeleteComplete": "LoopObject::onArticleDeleteComplete",
+		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange",
+		"AfterClearStable":"LoopObject::onAfterClearStable"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",

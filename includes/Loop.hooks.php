@@ -105,7 +105,8 @@ class LoopHooks {
 	 * @return boolean
 	 */
 	public static function onParserMakeImageParams( $title, $file, &$params, $parser ) {
-		
+		global $wgOut;
+		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
 		#dd($loopEditMode);
