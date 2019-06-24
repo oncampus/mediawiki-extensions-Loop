@@ -16,7 +16,8 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', dirname( __FILE__ ) . '/loop_settings.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', dirname( __FILE__ ) . '/loop_object_index.sql', true ) );
 		
-		Loop::setupLoopPages();
+		#Loop::setupLoopPages();
+		error_log("working");
 		
 		$dbr = wfGetDB( DB_REPLICA );
 		if ( $dbr->tableExists( 'loop_object_index' ) ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
@@ -45,6 +46,7 @@ class LoopUpdater {
 		);
 		
 		foreach( $res as $row ) {
+			error_log("working " . $row->page_id);
 			#todo $wgparser
 			$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
 			$stableRev = $tmpFPage->getStable();

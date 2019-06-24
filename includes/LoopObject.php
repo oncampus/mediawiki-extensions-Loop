@@ -887,44 +887,45 @@ class LoopObject {
 					$tmpLoopObjectIndex = new LoopObjectIndex();
 					if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != "false" ) && isset( $objects[$object[0]] ) ) {
 						$objects[$object[0]]++;
-					}
-					$tmpLoopObjectIndex->index = $object[0];
-					$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
+						$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
+						$tmpLoopObjectIndex->index = $object[0];
 					
-					$tmpLoopObjectIndex->pageId = $title->getArticleID();
-					
-					
-					if ( $object[0] == "loop_figure" ) {
-						$tmpLoopObjectIndex->itemThumb = $object[1];
-					}
-					if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
-						$tmpLoopObjectIndex->itemType = $object[2]["type"];
-					}
-					if ( isset( $object[2]["title"] ) ) {
-						$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
-					}
-					if ( isset( $object[2]["description"] ) ) {
-						$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
-					}
-					if ( isset( $object[2]["id"] ) ) {
+						$tmpLoopObjectIndex->pageId = $title->getArticleID();
+						$tmpLoopObjectIndex->nthItem = 1;
 						
-						if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
-							$tmpLoopObjectIndex->refId = $object[2]["id"];
+						
+						if ( $object[0] == "loop_figure" ) {
+							$tmpLoopObjectIndex->itemThumb = $object[1];
+						}
+						if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
+							$tmpLoopObjectIndex->itemType = $object[2]["type"];
+						}
+						if ( isset( $object[2]["title"] ) ) {
+							$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
+						}
+						if ( isset( $object[2]["description"] ) ) {
+							$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+						}
+						if ( isset( $object[2]["id"] ) ) {
+							
+							if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
+								$tmpLoopObjectIndex->refId = $object[2]["id"];
+							} else {
+								# dublicate id must be replaced
+								$newRef = uniqid();
+								$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+								$tmpLoopObjectIndex->refId = $newRef; 
+							}
 						} else {
-							# dublicate id must be replaced
+							# create new id
 							$newRef = uniqid();
-							$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+							$newContentText = self::setReferenceId( $newContentText, $newRef ); 
 							$tmpLoopObjectIndex->refId = $newRef; 
 						}
-					} else {
-						# create new id
-						$newRef = uniqid();
-						$newContentText = self::setReferenceId( $newContentText, $newRef ); 
-						$tmpLoopObjectIndex->refId = $newRef; 
-					}
-					if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-						
-						$tmpLoopObjectIndex->addToDatabase();
+						if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
+							
+							$tmpLoopObjectIndex->addToDatabase();
+						}
 					}
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
