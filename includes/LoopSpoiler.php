@@ -50,12 +50,44 @@ class LoopSpoiler {
 	public function getContent() {
 		return $this->mContent;
 	}
-	
+
 	public static function onParserSetup( Parser &$parser ) {
 		
-		$parser->setHook( 'spoiler', 'LoopSpoiler::renderLoopSpoiler' );
-		$parser->setHook( 'loop_spoiler', 'LoopSpoiler::renderLoopSpoiler' ); // entfernen?
+		$parser->setHook( 'spoiler', 'LoopSpoiler::renderLoopSpoiler2' );
+		$parser->setHook( 'loop_spoiler', 'LoopSpoiler::renderLoopSpoiler2' ); // entfernen?
 		return true;
+	}
+
+	public static function renderLoopSpoiler2( $input, array $args, Parser $parser, PPFrame $frame ) {
+		
+		try {		
+			$spoiler = LoopSpoiler::newFromTag($input, $args, $parser, $frame);
+			$spoiler->setContent($parser->recursiveTagParse($input));
+			$return  = $spoiler->render2();
+		} catch ( LoopException $e ) {
+			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
+			$return = "$e";
+		}
+		
+		return $return;
+	}
+	
+	
+	/**
+	 * Render
+	 */
+	public function render2() {
+		$content = $this->getContent();
+		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
+			$content = substr( $content, 0, -1 );
+		}
+		$return = '<span class="btn loopspoiler loopspoiler_type_'.$this->getType().'" onclick="$(\'#'.$this->getId().'\').toggleClass(\'d-inline\'); $(\'#'.$this->getId().'\').toggleClass(\'d-none\'); return false;" >'.$this->getBtnText().'</span>';
+		$return .= '<div id="'.$this->getId().'" class="loopspoiler_content_wrapper d-none loopspoiler_type_'.$this->getType().'">';
+		$return .= '<div class="loopspoiler_content">'.$content.'</div>';
+		$return .= "\n</div>";
+		
+		return $return;
+		
 	}
 
 	public static function renderLoopSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -71,7 +103,7 @@ class LoopSpoiler {
 			$toset = $parser->recursiveTagParse($toset); 
 			//$toset = $parser->killMarkers( $toset );
 			//$toset = $parser->insertStripItem($toset, $parser->mStripState);
-			$toset = $parser->killMarkers( $toset );
+			#$toset = $parser->killMarkers( $toset ); #killmarkers muss für loopobjekte etc raus
 			$spoiler->setContent($toset);
 
 	
@@ -84,13 +116,14 @@ class LoopSpoiler {
 			$html .= '</span>';
 			*/
 
-			$html = Html::openElement('span', ['class'=>'loopspoilercontainer loopspoilercontainer_'.$spoiler->getType()]);
+			$html = Html::openElement('span', ['class'=>'loopspoilercontainer d-inline loopspoilercontainer_'.$spoiler->getType()]);
 			$html .= Html::element('span', ['class'=>'btn loopspoilerbutton loopspoiler_type_'. $spoiler->getType(), 'onclick'=>'$(\'#'.$spoiler->getId().'\').toggle(); $(this).toggleClass(\'spoileractive\'); $(this).parent().toggleClass(\'parentspoileractive\');return false;'], $spoiler->getBtnText());
 			$html .= Html::openElement('span', ['id'=>$spoiler->getId(), 'class'=>'loopspoiler_type_'.$spoiler->getType(), 'style'=>'display:none;']);
-			$html .= Html::element('span', ['class'=>'loopspoiler_content'], $spoiler->getContent());
+			$html .= $spoiler->getContent(); # inhalte wurden als text angezeigt, wenn sie in einem html::element als content eingefügt wurden. (delete comment)
 			$html .= Html::closeElement('span');
 			$html .= Html::closeElement('span');
 			$return = $html;
+			#dd($toset,$input,$html);
 
 			//$return = $parser->killMarkers( $return );
 
@@ -115,13 +148,13 @@ class LoopSpoiler {
 		
 		// set spoiler type to standard if not submitted.
 		if ( ! isset( $args['type'] ) ) {
-			$spoiler->setType($wgLoopSpoilerDefaultType);
+			$spoiler->setType($wgLoopSpoilerDefaultType); # muss noch in extension.json/config gesetzt werden oder einfach hier den standard definieren
 		} else {
 			$spoiler->setType( htmlspecialchars ( $args['type'] ) );
 		}		
 		
 		// throw exception if spoiler type is not valid
-		if ( !in_array ( $spoiler->getType(), self::$mSpoilerTypes ) ) {
+		if ( !empty($spoiler->getType()) && !in_array ( $spoiler->getType(), self::$mSpoilerTypes ) ) {
 			throw new LoopException( wfMessage ( 'loopspoiler-error-unknown-spoilertype', $spoiler->getType(), implode ( ', ',self::$mSpoilerTypes ) ) );
 		}		
 		
