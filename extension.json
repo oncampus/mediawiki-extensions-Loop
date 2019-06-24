@@ -22,6 +22,7 @@
 	"AutoloadClasses": {
 		"Loop": "includes/Loop.php",
 		"LoopHooks": "includes/Loop.hooks.php",
+		"LoopSpoiler": "includes/LoopSpoiler.php",
 		"LoopUpdater": "schema/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
@@ -74,7 +75,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
-			"LoopReference::onParserSetup"
+			"LoopReference::onParserSetup",
+			"LoopSpoiler::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
