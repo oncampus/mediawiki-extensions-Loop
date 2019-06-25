@@ -561,6 +561,10 @@
 		"LoopMediaDefaultType": {
 			"value": "media",
 			"description" : ""
+		},
+		"LoopSpoilerDefaultType": {
+			"value": "default",
+			"description" : "Setting default type for loop spoiler"
 		}
 
 	},
