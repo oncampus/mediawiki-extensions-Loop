@@ -26,6 +26,7 @@ class LoopReference {
 		$loopStructure->loadStructureItems();
 		$html = '';
 		$linkTitle = '';
+		$linkTitleAttr = '';
 		try {
 			if ( isset($args["id"]) ) {
 				$refId = $args["id"];
@@ -54,7 +55,6 @@ class LoopReference {
 		if ( isset($objectData) && $objectData ) {
 			
 			$lsi = LoopStructureItem::newFromIds ( $objectData["articleId"] );
-
 			if ( !empty( $input ) ) {
 				$linkTitle .= $parser->recursiveTagParse ( $input, $frame );
 				if ( $wgLoopObjectNumbering ) {
