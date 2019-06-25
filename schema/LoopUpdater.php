@@ -16,18 +16,18 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', dirname( __FILE__ ) . '/loop_settings.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', dirname( __FILE__ ) . '/loop_object_index.sql', true ) );
 		
-		#Loop::setupLoopPages();
-		error_log("working");
+		#Loop::setupLoopPages(); #causes error on update
+		#error_log("working");
 		
 		$dbr = wfGetDB( DB_REPLICA );
 		if ( $dbr->tableExists( 'loop_object_index' ) ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
-		
+			Loop::setupLoopPages();
 			self::saveAllWikiPages();
 		}
 		return true;
 	}
 
-	private static function saveAllWikiPages() {
+	public static function saveAllWikiPages() {
 		
 		global $wgOut;
 		$dbr = wfGetDB( DB_REPLICA );
@@ -46,16 +46,23 @@ class LoopUpdater {
 		);
 		
 		foreach( $res as $row ) {
-			error_log("working " . $row->page_id);
+			error_log("started " . $row->page_id);
 			#todo $wgparser
+			$title = Title::newFromId( $row->page_id, NS_MAIN );
 			$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
+			#$content = $tmpFPage->getContent();
 			$stableRev = $tmpFPage->getStable();
 			if ( $stableRev == 0 ) {
-				$stableRev = $tmpFPage->getRevision()->getId();
+				#$stableRev = $tmpFPage->getRevision()->getId();
+				error_log("save unstable" . $stableRev .  " of " . $row->page_id);
+			} else {
+				error_log("save stable" . $stableRev .  " of " . $row->page_id);
 			}
-			$tmpFPage->doEditContent( $tmpFPage->getContent(), '', EDIT_FORCE_BOT, $stableRev, $wgOut->getUser() );
+			Hooks::run( 'LoopUpdateSavePage', array( $title ) );
+			#error_log($tmpFPage->doEditContent( $tmpFPage->getContent(), '', EDIT_INTERNAL, $stableRev, $wgOut->getUser() )->getMessage());
 			#$tmpPage = WikiPage::factory( Title::newFromId( $row->page_id, NS_MAIN ));
 			#$tmpPage->doEditContent( $tmpPage->getContent(), '', EDIT_FORCE_BOT, $tmpPage->getRevision()->getId(), $wgOut->getUser() );
+			error_log("finished " . $row->page_id);
 		}
 	}
 }

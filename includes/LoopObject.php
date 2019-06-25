@@ -798,9 +798,9 @@ class LoopObject {
 	 * @param Content $content
 	 */
 	public static function onAfterStabilizeChange ( $title, $content ) {
+		error_log("onAfterStabilizeChange");#TODO remove
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title, $content );
-
 		return true;
 	}
 	/**
@@ -808,9 +808,20 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
+		error_log("onAfterClearStable");#TODO remove
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title );
+		return true;
+	}
 
+	/**
+	 * Custom hook called when updating LOOP
+	 * @param Title $title
+	 */
+	public static function onLoopUpdateSavePage( $title ) {
+		error_log("onLoopUpdateSavePage");#TODO remove
+		$wikiPage = WikiPage::factory($title);
+		self::doIndexLoopObjects( $wikiPage, $title );
 		return true;
 	}
 
@@ -831,6 +842,7 @@ class LoopObject {
 	 * @param LinksUpdate $linksUpdate
 	 */
 	public static function onLinksUpdateConstructed( $linksUpdate ) { 
+		error_log("onLinksUpdateConstructed ");#TODO remove
 		$title = $linksUpdate->getTitle();
 		$wikiPage = WikiPage::factory( $title );
 		$latestRevId = $title->getLatestRevID();
@@ -840,6 +852,7 @@ class LoopObject {
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
 				self::doIndexLoopObjects( $wikiPage, $title );
+				error_log("onLinksUpdateConstructed +");#TODO remove
 			}
 		}
 
@@ -879,57 +892,63 @@ class LoopObject {
 					$objects[$objectType] = 0;
 				}
 				$object_tags = array ();
-				$extractTags = array_merge(self::$mObjectTypes, array('nowiki'));
+				$extractTags = array_merge(self::$mObjectTypes, array( 'nowiki', 'code' ));
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
+				#dd($object_tags);
 				foreach ( $object_tags as $object ) {
-					
-					$tmpLoopObjectIndex = new LoopObjectIndex();
-					if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != "false" ) && isset( $objects[$object[0]] ) ) {
-						$objects[$object[0]]++;
-						$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
-						$tmpLoopObjectIndex->index = $object[0];
-					
-						$tmpLoopObjectIndex->pageId = $title->getArticleID();
-						$tmpLoopObjectIndex->nthItem = 1;
+					error_log( "-" . $object[0]);
+					if ( $object[0] != 'nowiki' && $object[0] != 'code' ) { #exclude loop-tags that are in code or nowiki tags
+						error_log( "+" . $object[0]);
+						if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
+							$tmpLoopObjectIndex = new LoopObjectIndex();
+							$objects[$object[0]]++;
+							$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
+							$tmpLoopObjectIndex->index = $object[0];
 						
-						
-						if ( $object[0] == "loop_figure" ) {
-							$tmpLoopObjectIndex->itemThumb = $object[1];
-						}
-						if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
-							$tmpLoopObjectIndex->itemType = $object[2]["type"];
-						}
-						if ( isset( $object[2]["title"] ) ) {
-							$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
-						}
-						if ( isset( $object[2]["description"] ) ) {
-							$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
-						}
-						if ( isset( $object[2]["id"] ) ) {
+							$tmpLoopObjectIndex->pageId = $title->getArticleID();
 							
-							if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
-								$tmpLoopObjectIndex->refId = $object[2]["id"];
-							} else {
-								# dublicate id must be replaced
-								$newRef = uniqid();
-								$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
-								$tmpLoopObjectIndex->refId = $newRef; 
+							if ( $object[0] == "loop_figure" ) {
+								$tmpLoopObjectIndex->itemThumb = $object[1];
 							}
-						} else {
-							# create new id
-							$newRef = uniqid();
-							$newContentText = self::setReferenceId( $newContentText, $newRef ); 
-							$tmpLoopObjectIndex->refId = $newRef; 
-						}
-						if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-							
-							$tmpLoopObjectIndex->addToDatabase();
+							if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
+								$tmpLoopObjectIndex->itemType = $object[2]["type"];
+							}
+							if ( isset( $object[2]["title"] ) ) {
+								$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
+							}
+							if ( isset( $object[2]["description"] ) ) {
+								$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+							}
+							if ( isset( $object[2]["id"] ) ) {
+								error_log("befintlig: " . $object[2]["id"] );
+								if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
+									$tmpLoopObjectIndex->refId = $object[2]["id"];
+									error_log("id ok" );
+								} else {
+									# dublicate id must be replaced
+									$newRef = uniqid();
+									$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+									$tmpLoopObjectIndex->refId = $newRef; 
+									error_log("id dublicate,new:" . $newRef );
+								}
+							} else {
+								# create new id
+								$newRef = uniqid();
+								$newContentText = self::setReferenceId( $newContentText, $newRef ); 
+								$tmpLoopObjectIndex->refId = $newRef; 
+								error_log("new id: " . $newRef);
+							}
+							if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
+								
+								$tmpLoopObjectIndex->addToDatabase();
+							}
 						}
 					}
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
 				
+			#LoopUpdater::saveAllWikiPages();
 				if ( $lsi ) {
 					self::removeStructureCache( $title );
 				}
