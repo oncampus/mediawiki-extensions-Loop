@@ -16,9 +16,12 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_structure_items (
 
 -- Migrate old structures items
 INSERT INTO /*$wgDBprefix*/loop_structure_items (lsi_article,lsi_previous_article,lsi_next_article,lsi_parent_article,lsi_toc_level,lsi_sequence,lsi_toc_number,lsi_toc_text) SELECT ArticleId, PreviousArticleId, NextArticleId, ParentArticleId, TocLevel, Sequence, TocNumber, TocText FROM /*$wgDBprefix*/loopstructure;
-INSERT INTO /*$wgDBprefix*/loop_structure_items (lsi_structure) VALUES (0);
--- Migate toc page in new namespace
---UPDATE page SET page_namespace = 3100, page_title = (SELECT lsi_toc_text from loop_structure_items WHERE lsi_toc_level = 0) WHERE page_title = 'Loop_toc' AND page_namespace = 8;
 
--- Delete old table
+-- Set default structure
+INSERT INTO /*$wgDBprefix*/loop_structure_items (lsi_structure) VALUES (0);
+
+-- Delete empty row
+DELETE FROM loop_structure_items WHERE lsi_article = 0 AND lsi_next_article = 0;
+
+-- Delete old table #TODO
 --DROP TABLE IF EXISTS /*$wgDBprefix*/loopstructure; 
