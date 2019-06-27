@@ -947,13 +947,13 @@ class LoopObject {
 					$objects[$objectType] = 0;
 				}
 				$object_tags = array ();
-				$forbiddenTags = array( 'nowiki', 'code', '!--'); # don't render when in here
+				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight' ); # don't render when in here
 				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
 
 				foreach ( $object_tags as $object ) {
-					if ( ! in_array( $object[0], $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
+					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
 						if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
 							$tmpLoopObjectIndex = new LoopObjectIndex();
 							$objects[$object[0]]++;
@@ -1040,6 +1040,7 @@ class LoopObject {
 	public static function setReferenceId( $text, $id ) {
 		$changedText = false;
 		$text = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
+		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight'); # don't set ids when in these tags 
 		
 		$dom = new DOMDocument("1.0", 'utf-8');
 		@$dom->loadHTML( $text, LIBXML_HTML_NODEFDTD );
@@ -1055,15 +1056,18 @@ class LoopObject {
 		$nodes = $xpath->query( $query );
 		$changed = false;
 		foreach ( $nodes as $node ) {
-			$existingId = $node->getAttribute( 'id' );
-			if( ! $existingId ) {
-				$node->setAttribute('id', $id );
-				$changed = true;
-				$changedText = mb_substr($dom->saveHTML(), 55, -21);
-				$decodedText = html_entity_decode($changedText);
-				#dd($changedText, $decodedText);
-				return $decodedText;
-				break;
+			# don't set ids when in these tags 
+			if ( ! in_array( strtolower($node->parentNode->nodeName), $forbiddenTags ) && ! in_array( strtolower($node->parentNode->parentNode->nodeName), $forbiddenTags ) ) {
+				$existingId = $node->getAttribute( 'id' );
+				if( ! $existingId ) {
+					$node->setAttribute('id', $id );
+					$changed = true;
+					$changedText = mb_substr($dom->saveHTML(), 55, -21);
+					$decodedText = html_entity_decode($changedText);
+					#dd($changedText, $decodedText);
+					return $decodedText;
+					break;
+				}
 			}
 		}
 	}
