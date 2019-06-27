@@ -797,10 +797,40 @@ class LoopObject {
 	 * @param Title $title
 	 * @param Content $content
 	 */
-	public static function onAfterStabilizeChange ( $title, $content ) {
-		error_log("onAfterStabilizeChange");#TODO remove
+	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
+		#error_log("onAfterStabilizeChange");#TODO remove
+		$latestRevId = $title->getLatestRevID();
+		
 		$wikiPage = WikiPage::factory($title);
-		self::doIndexLoopObjects( $wikiPage, $title, $content );
+		$fwp = new FlaggableWikiPage ( $title );
+		#dd( $fwp);
+		if ( isset($fwp) ) {
+			#$stableRevId = $title->flaggedRevsArticle;
+			$stableRevId = $fwp->getStable();
+
+			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
+				#error_log("(afterstabilize)latest is stable or never stabilized, latest:" . $latestRevId . ", stable: " . $stableRevId );#TODO remove
+
+				# In Loop Upgrade process, use user Administrator for edits and review.
+				$user = null;
+				$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => true, 'create'=> false, 'validate' => false ] );
+				if ( $systemUser->getId() == $userId ) {
+					$user = $systemUser;
+				}
+
+				self::doIndexLoopObjects( $wikiPage, $title, $content, $user );
+				#error_log("(afterstabilize)onAfterStabilizeChange done");#TODO remove
+			} else {
+				#error_log("(afterstabilize)latest it NOT stable, but there is a stable one!, latest:" . $latestRevId . ", stable: " . $stableRevId );#TODO remove
+				#$revision = $wikiPage->getRevision();
+				#$content = $revision->getContent();
+				#self::doIndexLoopObjects( $wikiPage, $title, $content );
+				#error_log("(afterstabilize)onAfterStabilizeChange done 2");#TODO remove
+			}
+		} else {
+			#error_log("no fwp set?");#TODO remove
+		}
+		#error_log("onAfterStabilizeChange return");#TODO remove
 		return true;
 	}
 	/**
@@ -808,7 +838,7 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-		error_log("onAfterClearStable");#TODO remove
+		#error_log("onAfterClearStable");#TODO remove
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title );
 		return true;
@@ -819,9 +849,34 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onLoopUpdateSavePage( $title ) {
-		error_log("onLoopUpdateSavePage");#TODO remove
+		#error_log("onLoopUpdateSavePage");#TODO remove$wikiPage = WikiPage::factory( $title );
+		$latestRevId = $title->getLatestRevID();
+		
 		$wikiPage = WikiPage::factory($title);
-		self::doIndexLoopObjects( $wikiPage, $title );
+		$fwp = new FlaggableWikiPage ( $title );
+
+		$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => true, 'create'=> false, 'validate' => false ] );
+		
+		#dd( $fwp);
+		if ( isset($fwp) ) {
+			#$stableRevId = $title->flaggedRevsArticle;
+			$stableRevId = $fwp->getStable();
+
+			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
+				#error_log("latest is stable or never stabilized, latest:" . $latestRevId . ", stable: " . $stableRevId );#TODO remove
+				self::doIndexLoopObjects( $wikiPage, $title, null, $systemUser );
+				#error_log("onLoopUpdateSavePage done");#TODO remove
+			} else {
+				#error_log("latest it NOT stable, but there is a stable one!");#TODO remove
+				$revision = $wikiPage->getRevision();
+				$content = $revision->getContent();
+				self::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
+				#error_log("onLoopUpdateSavePage done 2");#TODO remove
+			}
+		} else {
+			#error_log("no fwp set?");#TODO remove
+		}
+		#error_log("onLoopUpdateSavePage return");#TODO remove
 		return true;
 	}
 
@@ -842,7 +897,7 @@ class LoopObject {
 	 * @param LinksUpdate $linksUpdate
 	 */
 	public static function onLinksUpdateConstructed( $linksUpdate ) { 
-		error_log("onLinksUpdateConstructed ");#TODO remove
+		#error_log("onLinksUpdateConstructed ");#TODO remove
 		$title = $linksUpdate->getTitle();
 		$wikiPage = WikiPage::factory( $title );
 		$latestRevId = $title->getLatestRevID();
@@ -852,7 +907,7 @@ class LoopObject {
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
 				self::doIndexLoopObjects( $wikiPage, $title );
-				error_log("onLinksUpdateConstructed +");#TODO remove
+				#error_log("onLinksUpdateConstructed +");#TODO remove
 			}
 		}
 
@@ -865,7 +920,7 @@ class LoopObject {
 	 * @param Title $title
 	 * @param Content $content
 	 */
-	public static function doIndexLoopObjects( &$wikiPage, $title, $content = null ) {
+	public static function doIndexLoopObjects( &$wikiPage, $title, $content = null, $user = null ) {
 		
 		if ($content == null) {
 			$content = $wikiPage->getContent();
@@ -892,14 +947,13 @@ class LoopObject {
 					$objects[$objectType] = 0;
 				}
 				$object_tags = array ();
-				$extractTags = array_merge(self::$mObjectTypes, array( 'nowiki', 'code' ));
+				$forbiddenTags = array( 'nowiki', 'code', '!--'); # don't render when in here
+				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
-				#dd($object_tags);
+
 				foreach ( $object_tags as $object ) {
-					error_log( "-" . $object[0]);
-					if ( $object[0] != 'nowiki' && $object[0] != 'code' ) { #exclude loop-tags that are in code or nowiki tags
-						error_log( "+" . $object[0]);
+					if ( ! in_array( $object[0], $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
 						if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
 							$tmpLoopObjectIndex = new LoopObjectIndex();
 							$objects[$object[0]]++;
@@ -921,26 +975,27 @@ class LoopObject {
 								$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
 							}
 							if ( isset( $object[2]["id"] ) ) {
-								error_log("befintlig: " . $object[2]["id"] );
+								#error_log("id: " . $object[2]["id"] );#TODO remove
 								if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
 									$tmpLoopObjectIndex->refId = $object[2]["id"];
-									error_log("id ok" );
+									#error_log("id ok" );#TODO remove
 								} else {
 									# dublicate id must be replaced
 									$newRef = uniqid();
 									$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
 									$tmpLoopObjectIndex->refId = $newRef; 
-									error_log("id dublicate,new:" . $newRef );
+									#error_log("id dublicate, new:" . $newRef );#TODO remove
 								}
 							} else {
 								# create new id
 								$newRef = uniqid();
+								######### TODO:hier werden ALLE tags mit ids versetzt! das muss irgendwie anders
 								$newContentText = self::setReferenceId( $newContentText, $newRef ); 
 								$tmpLoopObjectIndex->refId = $newRef; 
-								error_log("new id: " . $newRef);
+								#error_log("new id: " . $newRef);#TODO remove
 							}
 							if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-								
+								#error_log("db added: " . $tmpLoopObjectIndex->refId );#TODO remove
 								$tmpLoopObjectIndex->addToDatabase();
 							}
 						}
@@ -948,16 +1003,31 @@ class LoopObject {
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
 				
-			#LoopUpdater::saveAllWikiPages();
 				if ( $lsi ) {
 					self::removeStructureCache( $title );
 				}
 				if ( $contentText !== $newContentText ) {
+					
+					$fwp = new FlaggableWikiPage ( $title );
+					$stableRev = $fwp->getStable();
+					if ( $stableRev == 0 ) {
+						$stableRev = $wikiPage->getRevision()->getId();
+					} 
+
 					$summary = '';
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
-					$content = $content->updateRedirect	( $title );
-					$wikiPage->doEditContent ( $content, $summary, 0, false );
+					#$content = $content->updateRedirect	( $title );
+
+					#$user = null;	
+					#if ($loopUpdater) {
+					#	$user = User::newSystemUser( 'Administrator', [ 'steal' => true, 'create'=> false, 'validate' => false ] );
+					#}
+
+					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
+					##error_log($status);	#TODO remove
 				}
+			} else {
+				#error_log("no object");	#TODO remove
 			}
 		}
 	}
