@@ -59,7 +59,8 @@
 		"SpecialLoopTables": "includes/LoopTable.php",
 		"LoopTask": "includes/LoopTask.php",
 		"SpecialLoopTasks": "includes/LoopTask.php",
-		"LoopReference": "includes/LoopReference.php"
+		"LoopReference": "includes/LoopReference.php",
+		"LoopCode": "includes/LoopCode.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -74,7 +75,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
-			"LoopReference::onParserSetup"
+			"LoopReference::onParserSetup",
+			"LoopCode::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
