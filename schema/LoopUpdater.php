@@ -16,14 +16,18 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', dirname( __FILE__ ) . '/loop_settings.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', dirname( __FILE__ ) . '/loop_object_index.sql', true ) );
 		
-		#Loop::setupLoopPages(); #causes error on update
-		#error_log("working");
-		
 		$dbr = wfGetDB( DB_REPLICA );
-		if ( $dbr->tableExists( 'loop_object_index' ) ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
+
+		if ( $dbr->tableExists( 'loop_structure_items' ) ) {
 			Loop::setupLoopPages();
-			self::saveAllWikiPages();
 		}
+
+		# LOOP1 to LOOP2 migration process
+		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
+			self::saveAllWikiPages();
+			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', dirname( __FILE__ ) . '/loopstructure_delete.sql', true ) );
+		}
+		
 		return true;
 	}
 
@@ -46,23 +50,14 @@ class LoopUpdater {
 		);
 		
 		foreach( $res as $row ) {
-			error_log("started " . $row->page_id);
-			#todo $wgparser
 			$title = Title::newFromId( $row->page_id, NS_MAIN );
 			$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
-			#$content = $tmpFPage->getContent();
 			$stableRev = $tmpFPage->getStable();
 			if ( $stableRev == 0 ) {
-				#$stableRev = $tmpFPage->getRevision()->getId();
-				error_log("save unstable" . $stableRev .  " of " . $row->page_id);
-			} else {
-				error_log("save stable" . $stableRev .  " of " . $row->page_id);
-			}
+				$stableRev = $tmpFPage->getRevision()->getId();
+			} 
+			error_log("Updating page " . $row->page_id . " (revision " . $stableRev .  ")");
 			Hooks::run( 'LoopUpdateSavePage', array( $title ) );
-			#error_log($tmpFPage->doEditContent( $tmpFPage->getContent(), '', EDIT_INTERNAL, $stableRev, $wgOut->getUser() )->getMessage());
-			#$tmpPage = WikiPage::factory( Title::newFromId( $row->page_id, NS_MAIN ));
-			#$tmpPage->doEditContent( $tmpPage->getContent(), '', EDIT_FORCE_BOT, $tmpPage->getRevision()->getId(), $wgOut->getUser() );
-			error_log("finished " . $row->page_id);
 		}
 	}
 }

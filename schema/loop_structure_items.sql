@@ -21,7 +21,4 @@ INSERT INTO /*$wgDBprefix*/loop_structure_items (lsi_article,lsi_previous_articl
 INSERT INTO /*$wgDBprefix*/loop_structure_items (lsi_structure) VALUES (0);
 
 -- Delete empty row
-DELETE FROM loop_structure_items WHERE lsi_article = 0 AND lsi_next_article = 0;
-
--- Delete old table #TODO
---DROP TABLE IF EXISTS /*$wgDBprefix*/loopstructure; 
+DELETE FROM /*$wgDBprefix*/loop_structure_items WHERE lsi_article = 0 AND lsi_next_article = 0;
