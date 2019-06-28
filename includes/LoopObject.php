@@ -789,7 +789,6 @@ class LoopObject {
 					break;
 			}
 		}
-		#$striped_text = $this->getParser()->killMarkers ( $text );
 	}
 	
 	/**
@@ -798,19 +797,15 @@ class LoopObject {
 	 * @param Content $content
 	 */
 	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
-		#error_log("onAfterStabilizeChange");#TODO remove
-		$latestRevId = $title->getLatestRevID();
 		
+		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-		#dd( $fwp);
+	
 		if ( isset($fwp) ) {
-			#$stableRevId = $title->flaggedRevsArticle;
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				#error_log("(afterstabilize)latest is stable or never stabilized, latest:" . $latestRevId . ", stable: " . $stableRevId );#TODO remove
-
 				# In Loop Upgrade process, use user Administrator for edits and review.
 				$user = null;
 				$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => true, 'create'=> false, 'validate' => false ] );
@@ -819,18 +814,8 @@ class LoopObject {
 				}
 
 				self::doIndexLoopObjects( $wikiPage, $title, $content, $user );
-				#error_log("(afterstabilize)onAfterStabilizeChange done");#TODO remove
-			} else {
-				#error_log("(afterstabilize)latest it NOT stable, but there is a stable one!, latest:" . $latestRevId . ", stable: " . $stableRevId );#TODO remove
-				#$revision = $wikiPage->getRevision();
-				#$content = $revision->getContent();
-				#self::doIndexLoopObjects( $wikiPage, $title, $content );
-				#error_log("(afterstabilize)onAfterStabilizeChange done 2");#TODO remove
-			}
-		} else {
-			#error_log("no fwp set?");#TODO remove
-		}
-		#error_log("onAfterStabilizeChange return");#TODO remove
+			} 
+		} 
 		return true;
 	}
 	/**
@@ -838,7 +823,6 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-		#error_log("onAfterClearStable");#TODO remove
 		$wikiPage = WikiPage::factory($title);
 		self::doIndexLoopObjects( $wikiPage, $title );
 		return true;
@@ -849,34 +833,23 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onLoopUpdateSavePage( $title ) {
-		#error_log("onLoopUpdateSavePage");#TODO remove$wikiPage = WikiPage::factory( $title );
-		$latestRevId = $title->getLatestRevID();
 		
+		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-
 		$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => true, 'create'=> false, 'validate' => false ] );
 		
-		#dd( $fwp);
 		if ( isset($fwp) ) {
-			#$stableRevId = $title->flaggedRevsArticle;
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				#error_log("latest is stable or never stabilized, latest:" . $latestRevId . ", stable: " . $stableRevId );#TODO remove
 				self::doIndexLoopObjects( $wikiPage, $title, null, $systemUser );
-				#error_log("onLoopUpdateSavePage done");#TODO remove
 			} else {
-				#error_log("latest it NOT stable, but there is a stable one!");#TODO remove
 				$revision = $wikiPage->getRevision();
 				$content = $revision->getContent();
 				self::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
-				#error_log("onLoopUpdateSavePage done 2");#TODO remove
 			}
-		} else {
-			#error_log("no fwp set?");#TODO remove
 		}
-		#error_log("onLoopUpdateSavePage return");#TODO remove
 		return true;
 	}
 
@@ -947,7 +920,7 @@ class LoopObject {
 					$objects[$objectType] = 0;
 				}
 				$object_tags = array ();
-				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight' ); # don't render when in here
+				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight' ); # don't save ids when in here
 				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
@@ -975,27 +948,21 @@ class LoopObject {
 								$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
 							}
 							if ( isset( $object[2]["id"] ) ) {
-								#error_log("id: " . $object[2]["id"] );#TODO remove
 								if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
 									$tmpLoopObjectIndex->refId = $object[2]["id"];
-									#error_log("id ok" );#TODO remove
 								} else {
 									# dublicate id must be replaced
 									$newRef = uniqid();
 									$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
 									$tmpLoopObjectIndex->refId = $newRef; 
-									#error_log("id dublicate, new:" . $newRef );#TODO remove
 								}
 							} else {
 								# create new id
 								$newRef = uniqid();
-								######### TODO:hier werden ALLE tags mit ids versetzt! das muss irgendwie anders
 								$newContentText = self::setReferenceId( $newContentText, $newRef ); 
 								$tmpLoopObjectIndex->refId = $newRef; 
-								#error_log("new id: " . $newRef);#TODO remove
 							}
 							if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-								#error_log("db added: " . $tmpLoopObjectIndex->refId );#TODO remove
 								$tmpLoopObjectIndex->addToDatabase();
 							}
 						}
@@ -1016,18 +983,10 @@ class LoopObject {
 
 					$summary = '';
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
-					#$content = $content->updateRedirect	( $title );
-
-					#$user = null;	
-					#if ($loopUpdater) {
-					#	$user = User::newSystemUser( 'Administrator', [ 'steal' => true, 'create'=> false, 'validate' => false ] );
-					#}
+					#$content = $content->updateRedirect( $title ); # probably unnecessary
 
 					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
-					##error_log($status);	#TODO remove
 				}
-			} else {
-				#error_log("no object");	#TODO remove
 			}
 		}
 	}
@@ -1064,7 +1023,6 @@ class LoopObject {
 					$changed = true;
 					$changedText = mb_substr($dom->saveHTML(), 55, -21);
 					$decodedText = html_entity_decode($changedText);
-					#dd($changedText, $decodedText);
 					return $decodedText;
 					break;
 				}
