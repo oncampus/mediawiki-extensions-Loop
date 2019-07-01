@@ -220,9 +220,7 @@
 	<msg name="word_content" lang="sv">Innehåll</msg>
 	<msg name="word_appendix" lang="sv">Appendix</msg>
 	
-
-<!--	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
+	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
 	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
-	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> -->
-	
+	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> 
 </terms> 

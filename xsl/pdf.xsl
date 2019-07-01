@@ -1230,15 +1230,73 @@
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>	
+		
+
+	<!-- Loop Spoiler -->
+	<xsl:template match="extension[@extension_name='spoiler']">
+		<xsl:choose>
+			<xsl:when test="(@type='in_text') or (@type='in_text_transparent')">
+				<fo:inline font-weight="bold"  padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm">
+					<xsl:attribute name="background-color">#d6d6d6</xsl:attribute>
+					<xsl:choose>
+						<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
+							<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
+						</xsl:when>
+						<xsl:when test="@text">
+							<xsl:value-of select="@text"></xsl:value-of>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>	
+						</xsl:otherwise>
+					</xsl:choose>			
+				</fo:inline>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block font-weight="bold">
+					<fo:inline padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm">
+						<xsl:attribute name="background-color">#d6d6d6</xsl:attribute>							
+						<xsl:choose>
+							<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
+								<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
+							</xsl:when>
+							<xsl:when test="@text">
+								<xsl:value-of select="@text"></xsl:value-of>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>	
+							</xsl:otherwise>
+						</xsl:choose>
+					</fo:inline>			
+				</fo:block>
+			</xsl:otherwise>				
+		</xsl:choose>
 	
+		<fo:table width="150mm" table-layout="fixed" border-collapse="separate">
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell width="1500mm">
+						<xsl:attribute name="background-color">#f1f1f1</xsl:attribute>
+						<xsl:attribute name="padding-top">2mm</xsl:attribute>
+						<xsl:attribute name="padding-left">3mm</xsl:attribute>
+						<xsl:attribute name="padding-right">3mm</xsl:attribute>
+						<xsl:attribute name="padding-end">3mm</xsl:attribute>	
+						<fo:block>
+							<xsl:apply-templates></xsl:apply-templates>
+						</fo:block>
+					</fo:table-cell>
+				</fo:table-row>
+			</fo:table-body>
+		</fo:table>
+	</xsl:template>
+
 	<!-- Loop Area -->
-	<xsl:template match="extension[@extension_name='loop_area']">
+	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
 		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
 			<fo:table-column column-number="1" column-width="10mm" />
 			<fo:table-column column-number="2" column-width="0.8mm" background-color="{$accent_color}"/>
 			<fo:table-column column-number="3" column-width="150mm" padding-left="14.5mm"/>
 
-			<fo:table-body>		
+			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="10mm" text-align="center" color="#555555">
 						<fo:block>

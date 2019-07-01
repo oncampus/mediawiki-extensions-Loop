@@ -72,9 +72,11 @@ class LoopSpoiler {
 	
 	public function render() {
 		$content = $this->getContent();
+	
 		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
 			$content = substr( $content, 0, -1 );
 		}
+	
 		$return = '<span class="btn loopspoiler loopspoiler_type_'.$this->getType().'" onclick="$(\'#'.$this->getId().'\').toggle(); $(this).toggleClass(\'spoileractive\'); return false;" >'.$this->getBtnText().'</span>';
 		$return .= '<div id="'.$this->getId().'" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType().'">';
 		$return .= '<div class="loopspoiler_content">'.$content.'</div>';
@@ -109,10 +111,10 @@ class LoopSpoiler {
 		if ( !isset( $args['text'] ) ) {
 			$spoiler->setBtnText( wfMessage( 'loopspoiler-default-title' )->inContentLanguage()->text() );
 		} else {
-			$spoiler->setBtnText( $parser->recursiveTagParse( htmlspecialchars ( $args['text'] ) ) );
+			$spoiler->setBtnText( htmlspecialchars( $args['text'] ) ); // parser raus
 		}		
 
 		return $spoiler;
 	}
-		
+	
 }
