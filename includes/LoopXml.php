@@ -2,7 +2,6 @@
 class LoopXml {
 	
 	/**
-	 * Add indexable item to the database
 	 * @param LoopStructure $loopStructure: 
 	 * @param Array $modifiers: 
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
@@ -71,6 +70,12 @@ class LoopXml {
 	    return $xml;
 	}
 	
+	/**
+	 * Converts structure items to XML code
+	 * @param LoopStructureItem $structureItem: 
+	 * @param Array $modifiers: 
+	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
+	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
 		#$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ( Revision::RAW )->getNativeData ();
 		
@@ -81,10 +86,14 @@ class LoopXml {
 			$stableRev = $structureItem->getArticle ();
 		}
 		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
-		
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
 		#dd();
+
+		# modify content for resolving space issues with syntaxhighlight in pdf
+		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/U', "$1$2$3\n$4", $content);
+		
+		#dd($content);
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
