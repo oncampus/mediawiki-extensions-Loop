@@ -96,6 +96,7 @@
 	<msg name="word_looparea_experiment" lang="en">experiment</msg>
 	<msg name="word_looparea_websource" lang="en">websource</msg>
 	<msg name="word_looparea_citation" lang="en">citation</msg>
+	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -156,6 +157,7 @@
 	<msg name="word_looparea_websource" lang="de">Quelle im Web</msg>
 	<msg name="word_looparea_experiment" lang="de">Experiment</msg>
 	<msg name="word_looparea_citation" lang="de">Zitat</msg>	
+	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>
@@ -189,8 +191,8 @@
 	<msg name="word_table_short" lang="sv">Tab.</msg>	
 	<msg name="phrase_table" lang="sv">Här är en tabell.</msg>	
 	<msg name="phrase_table_number" lang="sv">Här är tabellen </msg>	
-	<msg name="word_list_of_tables" lang="sv">Tabellförteckning</msg>		
-
+	<msg name="word_list_of_tables" lang="sv">Tabellförteckning</msg>	
+	<msg name="word_appendix" lang="sv">Appendix</msg>
 	<msg name="word_looparea_task" lang="sv">Uppgift</msg>
 	<msg name="word_looparea_timerequirement" lang="sv">Tidslinje</msg>
 	<msg name="word_looparea_learningobjectives" lang="sv">Utbildningsmål</msg>
@@ -214,13 +216,6 @@
 	<msg name="word_looparea_websource" lang="sv">Websource</msg>
 	<msg name="word_looparea_experiment" lang="sv">Experiment</msg>
 	<msg name="word_looparea_citation" lang="sv">Citat</msg>	
-
-	<msg name="word_content" lang="en">Content</msg>
-	<msg name="word_content" lang="de">Inhalt</msg>	
-	<msg name="word_content" lang="sv">Innehåll</msg>
-	<msg name="word_appendix" lang="sv">Appendix</msg>
-	
-	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
-	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
 	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> 
+	
 </terms> 
