@@ -142,7 +142,7 @@ class LoopFigure extends LoopObject{
 		$html = '<tr scope="row" class="ml-1 pb-3">';
 		$html .= '<td scope="col" class="pl-0 pr-0">';
 		
-		if ( $this->mFile ) {
+		if ( $this->mFile && wfLocalFile( $this->mFile ) ) {
 
 			$file = wfLocalFile( $this->mFile );
 			$thumb = $file->transform( array (

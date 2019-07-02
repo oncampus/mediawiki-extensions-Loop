@@ -96,7 +96,7 @@ class LoopStructure {
 			$rootTitleText = $matches[4];
 		} else {
 			$rootTitleText = "";
-			dd();
+			#dd();
 		}
 
 		# Title objects has to start with a letter else an error will occur.
