@@ -189,6 +189,8 @@
 	"looparea-error-unknown-render-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
 	"looparea-error-imagenotfound" : "Error Message rendered when loop area could not find image",
 
+	"loopspoiler-default-title": "default label for spoiler button",
+
 	"loop_figure-name": "Prepend title of loop_figure",
 	"loop_figure-name-short": "Prepend title of loop_figure (short)",
 	"loop_table-name": "Prepend title of loop_table",
@@ -222,6 +224,6 @@
 	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options",
 	"loopreference-error-unknown-titleoption" : "Error Message rendered when title option is unknown\n\nParameters:\n* $1 - title option\n* $2 supported title options",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
-	"loopreference-error-no-refid" : "Error Message rendered when no id is given"
-	
+	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
+	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types"
 }
