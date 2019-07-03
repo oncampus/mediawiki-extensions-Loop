@@ -167,6 +167,8 @@
 	"looparea-error-unknown-render-attribute" : "Dieser Seitenbereich besitzt für den Parameter Render (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"looparea-error-imagenotfound" : "Die im Seitenbereich angegebene Grafik '''$1''' wurde nicht gefunden. Bitte laden Sie die Grafik hoch und speichern die Seite erneut. <br/>Dokumentation zu Auszeichnungen: XXX",
 
+	"loopspoiler-default-title": "Lösung",
+
 	"loop_figure-name": "Abbildung",
 	"loop_figure-name-short": "Abb.",
 	"loop_table-name": "Tabelle",
@@ -200,6 +202,6 @@
 	"loopmedia-error-unknown-mediatype" : "Das Medienelement besitzt für den Parameter Medientyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Medienelementen: XXX",
 	"loopreference-error-unknown-titleoption" : "Die Referenz besitzt für den Parameter Titelanzeige (title) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
-	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX"
-	
+	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
+	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX"
 }
