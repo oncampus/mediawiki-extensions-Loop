@@ -1813,8 +1813,9 @@
 	
 	<xsl:template match="xhtml:code">
 	
-		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" white-space="pre" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
-			<xsl:apply-templates/>
+		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
+			<xsl:apply-templates select="php:function('xsl_transform_code', .)" mode="syntaxhighlight"></xsl:apply-templates>
+			<!-- <xsl:apply-templates></xsl:apply-templates> -->
 		</fo:block>
 
 	</xsl:template>
@@ -1823,7 +1824,7 @@
 		<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="div" mode="syntaxhighlight">
-		<fo:block width="50mm" linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" white-space="pre" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
+		<fo:block linefeed-treatment="preserve" white-space-collapse="false" hyphenation-character=" " white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
 			<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 		</fo:block>
 	</xsl:template>	
