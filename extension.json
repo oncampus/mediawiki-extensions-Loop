@@ -5,7 +5,8 @@
 	"author": [
 		"Marc Vorreiter",
 		"Kevin Berg",
-		"Dennis Krohn"
+		"Dennis Krohn",
+    "Dustin Neß"
 	],
 	"version": "2.0.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
@@ -22,6 +23,7 @@
 	"AutoloadClasses": {
 		"Loop": "includes/Loop.php",
 		"LoopHooks": "includes/Loop.hooks.php",
+		"LoopSpoiler": "includes/LoopSpoiler.php",
 		"LoopUpdater": "schema/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
@@ -76,6 +78,7 @@
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
 			"LoopReference::onParserSetup",
+			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup"
 		],
 		"ParserAfterTidy": [
@@ -562,6 +565,10 @@
 		"LoopMediaDefaultType": {
 			"value": "media",
 			"description" : ""
+		},
+		"LoopSpoilerDefaultType": {
+			"value": "default",
+			"description" : "Setting default type for loop spoiler"
 		}
 
 	},
