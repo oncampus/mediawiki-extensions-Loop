@@ -158,10 +158,25 @@
 				<xsl:value-of select="$phrase_looparea_start"></xsl:value-of>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="$looparea_type"></xsl:value-of>
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>strong</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
 				<xsl:apply-templates/>
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>strong</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
 				<xsl:value-of select="$phrase_looparea_end"></xsl:value-of>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="$looparea_type"></xsl:value-of>
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>strong</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
 			</xsl:when>
 
 			<xsl:when test="@extension_name='math'">
@@ -184,6 +199,22 @@
 
 			<xsl:when test="@extension_name='syntaxhighlight'">
 				<xsl:call-template name="syntaxhighlight"></xsl:call-template>
+			</xsl:when>	
+
+			<xsl:when test="@extension_name='loop_spoiler'">
+				<xsl:call-template name="loop_spoiler">
+                	<xsl:with-param name="object">
+						<xsl:copy-of select="."></xsl:copy-of>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>	
+
+			<xsl:when test="@extension_name='spoiler'">
+				<xsl:call-template name="loop_spoiler">
+                	<xsl:with-param name="object">
+						<xsl:copy-of select="."></xsl:copy-of>
+					</xsl:with-param>
+				</xsl:call-template>
 			</xsl:when>	
 
 			
@@ -225,6 +256,56 @@
 
 	<xsl:template name="syntaxhighlight">
 		<xsl:value-of select="$phrase_syntaxhighlight"></xsl:value-of>
+	</xsl:template>
+	
+	<xsl:template name="loop_spoiler">
+		<xsl:param name="object"></xsl:param>
+
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>medium</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		
+		<xsl:choose>
+			<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
+				<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
+			</xsl:when>
+			<xsl:when test="@text">
+				<xsl:value-of select="@text"></xsl:value-of>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>	
+
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+
+		<xsl:text> </xsl:text>
+		<xsl:value-of select="$phrase_spoiler_start"></xsl:value-of>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		<xsl:text> </xsl:text>
+		<xsl:apply-templates/>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		<xsl:value-of select="$phrase_spoiler_end"></xsl:value-of>
+		<xsl:text> </xsl:text>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
 	</xsl:template>
 
 
