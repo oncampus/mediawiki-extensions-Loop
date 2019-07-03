@@ -1233,7 +1233,7 @@
 		
 
 	<!-- Loop Spoiler -->
-	<xsl:template match="extension[@extension_name='spoiler']">
+	<xsl:template name="spoiler">
 		<xsl:choose>
 			<xsl:when test="(@type='in_text') or (@type='in_text_transparent')">
 				<fo:inline axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" font-weight="bold"  padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
@@ -1281,7 +1281,7 @@
 	
 	<!--  		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
  -->
-		<fo:table width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
+		<fo:table width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}" margin-bottom="5mm">
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="1500mm">
@@ -1623,6 +1623,12 @@
 					<xsl:apply-templates select="php:function('xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
 					<!-- <xsl:copy-of select="php:function('xsl_transform_syntaxhighlight', .)"></xsl:copy-of> -->
 				</fo:inline>
+			</xsl:when>
+			<xsl:when test="@extension_name='loop_spoiler'">
+				<xsl:call-template name="spoiler"></xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@extension_name='spoiler'">
+				<xsl:call-template name="spoiler"></xsl:call-template>
 			</xsl:when>
 
 			<xsl:otherwise>
