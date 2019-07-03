@@ -224,5 +224,9 @@
 <!--	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
 	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
 	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> -->
+
+	<msg name="phrase_syntaxhighlight" lang="de">An dieser Stelle befindet sich online Sourcecode mit Syntaxhighlights. </msg>
+	<msg name="phrase_looparea_start" lang="de">Hier beginnt der Seitenbereich</msg>
+	<msg name="phrase_looparea_end" lang="de">Hier endet der Seitenbereich</msg>
 	
 </terms> 
