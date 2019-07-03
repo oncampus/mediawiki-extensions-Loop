@@ -162,7 +162,7 @@ function xsl_transform_syntaxhighlight($input) {
 			$lexer = 'xml';
 		}
 		# doc for command: http://pygments.org/docs/formatters/#HtmlFormatter
-		$command = array( "-l", $lexer ); # defines lexer (language to highlight in)
+		$command = array( "-l", $lexer, "-O", "linenos=inline" ); # defines lexer (language to highlight in)
 
 		# we ignore the 'inline' attribute as we need to have line breaks on paper
 
