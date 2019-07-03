@@ -16,7 +16,8 @@
 		"MediaWiki": ">= 1.32.0",
 		"extensions": {
 			"WikiEditor": "*",
-			"Math": "*"
+			"Math": "*",
+			"SyntaxHighlight": "*"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
