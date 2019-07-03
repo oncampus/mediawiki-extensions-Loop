@@ -5,7 +5,8 @@
 	"author": [
 		"Marc Vorreiter",
 		"Kevin Berg",
-		"Dennis Krohn"
+		"Dennis Krohn",
+    "Dustin Neß"
 	],
 	"version": "2.0.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
@@ -60,7 +61,8 @@
 		"SpecialLoopTables": "includes/LoopTable.php",
 		"LoopTask": "includes/LoopTask.php",
 		"SpecialLoopTasks": "includes/LoopTask.php",
-		"LoopReference": "includes/LoopReference.php"
+		"LoopReference": "includes/LoopReference.php",
+		"LoopCode": "includes/LoopCode.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -76,7 +78,8 @@
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
 			"LoopReference::onParserSetup",
-			"LoopSpoiler::onParserSetup"
+			"LoopSpoiler::onParserSetup",
+			"LoopCode::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -93,7 +96,8 @@
 		"LinksUpdateConstructed": "LoopObject::onLinksUpdateConstructed",
 		"ArticleDeleteComplete": "LoopObject::onArticleDeleteComplete",
 		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange",
-		"AfterClearStable":"LoopObject::onAfterClearStable"
+		"AfterClearStable":"LoopObject::onAfterClearStable",
+		"LoopUpdateSavePage":"LoopObject::onLoopUpdateSavePage"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
