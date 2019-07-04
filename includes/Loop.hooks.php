@@ -94,7 +94,7 @@ class LoopHooks {
 
 	
 	/**
-	 * Remove image link when not in loopeditmode
+	 * Remove image link when not in loopeditmode and add responsive-img class to all images
 	 * 
 	 * This is attached to the MediaWiki 'ParserMakeImageParams' hook.
 	 * 
@@ -109,8 +109,8 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		#dd($loopEditMode);
-		
+		$params['frame']['class'] = 'responsive-image';
+
 		if ($loopEditMode) {
 			$params['frame']['no-link'] = false;
 		} else {

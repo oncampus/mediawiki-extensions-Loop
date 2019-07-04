@@ -33,9 +33,9 @@ class LoopPdf {
 			var_dump($e);
 		}
 	
-		#var_dump($xmlfo);exit;
-		$url = $wgXmlfo2PdfServiceUrl. '?token='.$wgXmlfo2PdfServiceToken;
+		#dd($xmlfo); // display xmlfo and exit
 		
+		$url = $wgXmlfo2PdfServiceUrl. '?token='.$wgXmlfo2PdfServiceToken;
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/xml'));
