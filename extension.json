@@ -155,7 +155,8 @@
 			"createtalk": false,
 			"createpage": false,
 			"writeapi": false,
-			"loop-view-special-pages": false
+			"loop-view-special-pages": false,
+			"loop-edit-literature": false
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -168,7 +169,8 @@
 			"loop-settings-edit": false,
 			"loop-pageaudio": true,
 			"createpage": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": false
 		},
 		"sysop": {
 			"loop-toc-edit": true,
@@ -187,7 +189,8 @@
 			"unreviewedpages": true,
 			"review": true,
 			"autoreview": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -219,7 +222,8 @@
 			"delete": true,
 			"undelete": true,
 			"protect": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -251,7 +255,8 @@
 			"delete": true,
 			"undelete": true,
 			"protect": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -280,7 +285,8 @@
 			"delete": true,
 			"undelete": true,
 			"protect": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -292,7 +298,8 @@
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"purge": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": false
 		},
 		"student_edit": {
 			"edit": true,
@@ -311,7 +318,8 @@
 			"deletedtext": true,
 			"deletedhistory": true,
 			"browsearchive": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -321,7 +329,8 @@
 			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
-			"loop-settings-edit": false
+			"loop-settings-edit": false,
+			"loop-edit-literature": false
 		}
 	},
 	"DefaultUserOptions": {
@@ -399,7 +408,8 @@
 		"loop-rendermode",
 		"loop-settings-edit",
 		"loop-view-export-log",
-		"loop-view-special-pages"
+		"loop-view-special-pages",
+		"loop-edit-literature"
 	],
 	"MessagesDirs": {
 		"Loop": [

@@ -1,5 +1,10 @@
 <?php
 
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( "This file cannot be run standalone.\n" );
+}
+
+
 use MediaWiki\MediaWikiServices;
 
 class SpecialLoopLiterature extends SpecialPage {
@@ -9,8 +14,16 @@ class SpecialLoopLiterature extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
+		$user = $this->getUser();
 
-        return true;
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$out = $this->getOutput();
+
+		if ( $user->isAllowed('loop-edit-literature') ) {
+			
+		}
+		$html = "Hello world!";
+
     }
 
 	/**
@@ -26,12 +39,21 @@ class SpecialLoopLiterature extends SpecialPage {
 class SpecialLoopLiteratureEdit extends SpecialPage {
 
 	public function __construct() {
-		parent::__construct( 'LoopLiterature' );
+		parent::__construct( 'LoopLiteratureEdit' );
 	}
 
 	public function execute( $sub ) {
+		$user = $this->getUser();
 
-        return true;
+		if ( $user->isAllowed('loop-edit-literature') ) {
+			
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$out = $this->getOutput();
+
+			$html = "Hello world!";
+
+			$out->addHTML( $html );
+		}
     }
 
 	/**
@@ -47,12 +69,20 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 class SpecialLoopLiteratureImport extends SpecialPage {
 
 	public function __construct() {
-		parent::__construct( 'LoopLiterature' );
+		parent::__construct( 'LoopLiteratureImport' );
 	}
 
 	public function execute( $sub ) {
+		$user = $this->getUser();
 
-        return true;
+		if ( $user->isAllowed('loop-edit-literature') ) {
+			
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$out = $this->getOutput();
+
+			$html = "Hello world!";
+
+		}
     }
 
 	/**
