@@ -34,6 +34,8 @@
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
 		"LoopArea": "includes/LoopArea.php",
+		"LoopPrint": "includes/LoopPrint.php",
+		"LoopNoprint": "includes/LoopNoprint.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -77,6 +79,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
+			"LoopPrint::onParserSetup",
+			"LoopNoprint::onParserSetup",
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup"
