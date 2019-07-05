@@ -187,6 +187,10 @@
 	"loopformulas": "Formelförteckning",
 	"looptasks": "Uppgiftförteckning",
 
+	"loopliterature": "Bibliografi",
+	"loopliteratureedit": "Regidera litteratur",
+	"loopliteratureimport": "Importera litteratur",
+
 	"loopobject-error-unknown-renderoption" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
