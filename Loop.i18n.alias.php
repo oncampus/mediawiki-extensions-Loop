@@ -19,7 +19,10 @@ $specialPageAliases['en'] = array(
 	'LoopListings' => array( 'List of listings' ),
 	'LoopMedia' => array( 'List of media' ),
 	'LoopTables' => array( 'List of tables' ),
-	'LoopTasks' => array( 'List of tasks' )
+	'LoopTasks' => array( 'List of tasks' ),
+	'LoopLiterature' => array( 'Bibliography' ),
+	'LoopLiteratureEdit' => array( 'Edit literature' ),
+	'LoopLiteratureImport' => array( 'Import literature' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -33,7 +36,10 @@ $specialPageAliases['de'] = array(
 	'LoopListings' => array( 'Listingverzeichnis' ),
 	'LoopMedia' => array( 'Medienverzeichnis' ),
 	'LoopTables' => array( 'Tabellenverzeichnis' ),
-	'LoopTasks' => array( 'Aufgabenverzeichnis' )
+	'LoopTasks' => array( 'Aufgabenverzeichnis' ),
+	'LoopLiterature' => array( 'Literaturverzeichnis' ),
+	'LoopLiteratureEdit' => array( 'Literatur bearbeiten' ),
+	'LoopLiteratureImport' => array( 'Literatur importieren' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -47,7 +53,10 @@ $specialPageAliases['sv'] = array(
 	'LoopListings' => array( 'Listningförteckning' ),
 	'LoopMedia' => array( 'Medieförteckning' ),
 	'LoopTables' => array( 'Tabellförteckning' ),
-	'LoopTasks' => array( 'Uppgiftförteckning' )
+	'LoopTasks' => array( 'Uppgiftförteckning' ),
+	'LoopLiterature' => array( 'Bibliografi' ),
+	'LoopLiteratureEdit' => array( 'Regidera litteraturen' ),
+	'LoopLiteratureImport' => array( 'Importera litteraturen' )
 	);
 
 

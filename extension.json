@@ -63,7 +63,11 @@
 		"LoopTask": "includes/LoopTask.php",
 		"SpecialLoopTasks": "includes/LoopTask.php",
 		"LoopReference": "includes/LoopReference.php",
-		"LoopCode": "includes/LoopCode.php"
+		"LoopCode": "includes/LoopCode.php",
+		"LoopLiterature": "includes/LoopLiterature.php",
+		"SpecialLoopLiterature": "includes/SpecialLoopLiterature.php",
+		"SpecialLoopLiteratureEdit": "includes/SpecialLoopLiterature.php",
+		"SpecialLoopLiteratureImport": "includes/SpecialLoopLiterature.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -80,7 +84,8 @@
 			"LoopArea::onParserSetup",
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
-			"LoopCode::onParserSetup"
+			"LoopCode::onParserSetup",
+			"LoopLiterature::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -111,7 +116,10 @@
 		"LoopListings": "SpecialLoopListings",
 		"LoopMedia": "SpecialLoopMedia",
 		"LoopTables": "SpecialLoopTables",
-		"LoopTasks": "SpecialLoopTasks"
+		"LoopTasks": "SpecialLoopTasks",
+		"LoopLiterature": "SpecialLoopLiterature",
+		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
+		"LoopLiteratureImport": "SpecialLoopLiteratureImport"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
