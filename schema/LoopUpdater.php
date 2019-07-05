@@ -15,6 +15,8 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_properties', dirname( __FILE__ ) . '/loop_structure_properties.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', dirname( __FILE__ ) . '/loop_settings.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', dirname( __FILE__ ) . '/loop_object_index.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', dirname( __FILE__ ) . '/loop_literature_items.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', dirname( __FILE__ ) . '/loop_literature_references.sql', true ) );
 		
 		$dbr = wfGetDB( DB_REPLICA );
 
