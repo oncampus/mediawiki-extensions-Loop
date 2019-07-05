@@ -65,8 +65,8 @@
 	"loopsettings-numbering-type-ongoing-label": "Durchlaufende Nummerierung - z.B. '''Abb. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Nummerierung nach Kapiteln - z.B. '''Abb. 3.12'''",
 
-	"loopexport-specialpage-title": "Export",
-	"loopexport": "Export",
+	"loopexport-specialpage-title": "Loop Exportieren",
+	"loopexport": "Loop Exportieren",
 	"loopexport-audio-chapter": "Kap.",
 	"loopexport-audio-filename": "Hoerbuch",
 	"loopexport-offline-filename": "Offlineversion",

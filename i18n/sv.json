@@ -2,6 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Dennis Krohn"
+
+
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -34,6 +36,7 @@
 	"loopsettings-imprint-label": "Länk till imprint (webb-)sida",
 	"loopsettings-privacy-label": "Länk till dataskydd (webb-)sida",
 	"loopsettings-oncampus-label": "Visa länk till oncampus webbsida",
+	"loopsettings-language-label": "Språk",
 	"loopsettings-extra-footer-label": "Visa yttligare footer, t.ex. för '''sponsor logos'''.",
 	"loopsettings-extra-footer-linktext": "Editera yttligare footern",
 	"extraFooter": "Det här är den yttligare footer som har aktiverats i [[Special:LoopSettings|LOOP-Inställningar]]. Du kan editera dennas innehåll [[MediaWiki:ExtraFooter|här]].",
@@ -48,12 +51,15 @@
 	"loopsettings-headline-important-links": "Länkar i footer",
 	"loopsettings-headline-logo": "Logo",
 	"loopsettings-headline-skinstyle": "Tema",
+	"loopsettings-headline-language": "Språk",
 	"loopsettings-tab-general": "Allmän",
 	"loopsettings-tab-footer": "Footer",
 	"loopsettings-tab-appearance": "Utseende",
 	"loopsettings-url-imprint-privacy-hint": "Ange ett URL (http:// ingår) eller ett sidnamn från det här LOOP",
+	"loopsettings-url-hint": "Ange ett URL (http:// ingår)",
 	"loopsettings-skin-style-label": "Skin-Stil",
 	"loopsettings-error": "Det gick inte att spara den här inställningen",
+	"loopsettings-tab-content": "Innehållsinställningar",
 	"loopsettings-numbering": "Automatisk numrering",
 	"loopsettings-numbering-objects-label": "Aktivera numrering av LOOP-objekten, t.ex. figurer",
 	"loopsettings-numbering-type-ongoing-label": "Kontinuerlig numrering - t.ex. '''Fig. 47'''",
@@ -132,6 +138,7 @@
 	"looparea-name-summary": "Sammanfattning",
 	"looparea-name-task": "Uppgift",
 	"looparea-name-timerequirement": "Tidslinje",
+	"looparea-name-websource" : "Websource",
 	"looparea-icon-text-annotation" : "Anteckning",
 	"looparea-icon-text-area" : "",
 	"looparea-icon-text-arrangement" : "Struktur",
@@ -144,7 +151,7 @@
 	"looparea-icon-text-important" : "Viktigt",
 	"looparea-icon-text-indentation" : "Fördjupning",
 	"looparea-icon-text-law" : "Lag",
-	"looparea-icon-text-learningobjectives" : "Utbild$shy;ningsmål",
+	"looparea-icon-text-learningobjectives" : "Utbild&shy;ningsmål",
 	"looparea-icon-text-markedsentence" : "Huvudpunkt",
 	"looparea-icon-text-norm" : "Standard",
 	"looparea-icon-text-notice" : "Ledtråd",
@@ -152,9 +159,10 @@
 	"looparea-icon-text-question" : "Fråga",
 	"looparea-icon-text-reflection" : "Reflektion",
 	"looparea-icon-text-sourcecode" : "Code",
-	"looparea-icon-text-summary" : "Samman$shy;fattning",
+	"looparea-icon-text-summary" : "Samman&shy;fattning",
 	"looparea-icon-text-task" : "Uppgift",
 	"looparea-icon-text-timerequirement" : "Tidslinje",
+	"looparea-icon-text-websource" : "Websource",
 	"looparea-error-unknown-type-attribute" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"looparea-error-unknown-render-attribute" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"looparea-error-imagenotfound" : "Angivit grafik '''$1''' är okönd. Var god ladda upp den först och spara sidan igen.",
@@ -200,5 +208,4 @@
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Inget ID (id) har angivits i referensen.",
 	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''."
-
 }
