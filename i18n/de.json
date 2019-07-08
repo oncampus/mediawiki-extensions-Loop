@@ -211,5 +211,6 @@
 
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-title": "Glossar",
-	"loopglossary": "Glossar"
+	"loopglossary": "Glossar",
+	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen."
 }

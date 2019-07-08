@@ -211,5 +211,6 @@
 
 	"loop-glossary-namespace": "Glossary",
 	"loop-glossary-title": "Glossary",
-	"loopglossary": "Glossary"
+	"loopglossary": "Glossary",
+	"loop-glossary-empty": "The glossary is still empty. Add an entry by creating a page like ''[[Glossary:Term]]''."
 }
