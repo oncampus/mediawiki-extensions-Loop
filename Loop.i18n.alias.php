@@ -11,7 +11,7 @@ $specialPageAliases = array();
 $specialPageAliases['en'] = array(
 	'LoopStructure' => array( 'Table of Contents' ),
 	'LoopStructureEdit' => array( 'Edit TOC' ),
-	'LoopSettings' => array( 'Loop settings' ),
+	'LoopSettings' => array( 'Loop settings', 'Loop inställningar', 'Loop Einstellungen' ),
 	'PurgeCache' => array( 'Purge Cache' ),
 	'LoopExport' => array( 'Loop Export' ),
 	'LoopFigures' => array( 'List of figures' ),
@@ -22,13 +22,14 @@ $specialPageAliases['en'] = array(
 	'LoopTasks' => array( 'List of tasks' ),
 	'LoopLiterature' => array( 'Bibliography' ),
 	'LoopLiteratureEdit' => array( 'Edit literature' ),
-	'LoopLiteratureImport' => array( 'Import literature' )
+	'LoopLiteratureImport' => array( 'Import literature' ),
+	'LoopGlossary' => array( 'Glossary' )
 	);
 
 $specialPageAliases['de'] = array(
 	'LoopStructure' => array( 'Inhaltsverzeichnis' ),
 	'LoopStructureEdit' => array( 'Inhaltsverzeichnis bearbeiten' ),
-	'LoopSettings' => array( 'Loop Einstellungen' ),
+	'LoopSettings' => array( 'Loop Einstellungen', 'Loop settings', 'Loop inställningar' ),
 	'PurgeCache' => array( 'Cache Leeren' ),
 	'LoopExport' => array( 'Loop Export' ),
 	'LoopFigures' => array( 'Abbildungsverzeichnis' ),
@@ -39,13 +40,14 @@ $specialPageAliases['de'] = array(
 	'LoopTasks' => array( 'Aufgabenverzeichnis' ),
 	'LoopLiterature' => array( 'Literaturverzeichnis' ),
 	'LoopLiteratureEdit' => array( 'Literatur bearbeiten' ),
-	'LoopLiteratureImport' => array( 'Literatur importieren' )
+	'LoopLiteratureImport' => array( 'Literatur importieren' ),
+	'LoopGlossary' => array( 'Glossar', 'Glossary' )
 	);
 	
 $specialPageAliases['sv'] = array(
 	'LoopStructure' => array( 'Innehåll' ),
 	'LoopStructureEdit' => array( 'Regidera innehåll' ),
-	'LoopSettings' => array( 'Loop inställningar' ),
+	'LoopSettings' => array( 'Loop inställningar', 'Loop Einstellungen', 'Loop settings' ),
 	'PurgeCache' => array( 'Rensa cache' ),
 	'LoopExport' => array( 'Loop Export' ),
 	'LoopFigures' => array( 'Figurförteckning' ),
@@ -56,7 +58,8 @@ $specialPageAliases['sv'] = array(
 	'LoopTasks' => array( 'Uppgiftförteckning' ),
 	'LoopLiterature' => array( 'Bibliografi' ),
 	'LoopLiteratureEdit' => array( 'Regidera litteraturen' ),
-	'LoopLiteratureImport' => array( 'Importera litteraturen' )
+	'LoopLiteratureImport' => array( 'Importera litteraturen' ),
+	'LoopGlossary' => array( 'Glossary', 'Ordlista' )
 	);
 
 

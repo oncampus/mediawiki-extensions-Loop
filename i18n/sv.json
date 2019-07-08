@@ -210,5 +210,6 @@
 	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''.",
 
 	"loop-glossary-namespace": "Glossary",
-	"loop-glossary-title": "Ordlista"
+	"loop-glossary-title": "Ordlista",
+	"loopglossary": "Ordlista"
 }

@@ -67,7 +67,9 @@
 		"LoopLiterature": "includes/LoopLiterature.php",
 		"SpecialLoopLiterature": "includes/SpecialLoopLiterature.php",
 		"SpecialLoopLiteratureEdit": "includes/SpecialLoopLiterature.php",
-		"SpecialLoopLiteratureImport": "includes/SpecialLoopLiterature.php"
+		"SpecialLoopLiteratureImport": "includes/SpecialLoopLiterature.php",
+		"LoopGlossary": "includes/LoopGlossary.php",
+		"SpecialLoopGlossary": "includes/LoopGlossary.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -119,7 +121,8 @@
 		"LoopTasks": "SpecialLoopTasks",
 		"LoopLiterature": "SpecialLoopLiterature",
 		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
-		"LoopLiteratureImport": "SpecialLoopLiteratureImport"
+		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
+		"LoopGlossary": "SpecialLoopGlossary"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -600,6 +603,14 @@
     },
     "LogActionsHandlers": {
         "loopexport/*": "LogFormatter"
-    },
+	},
+	"namespaces": [
+		{
+			"id": 3000,
+			"constant": "NS_GLOSSARY",
+			"name": "loop-glossary-namespace",
+			"protection": "edit"
+		}
+	],
 	"manifest_version": 2
 }

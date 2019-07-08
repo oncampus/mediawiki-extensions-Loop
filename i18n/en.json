@@ -210,5 +210,6 @@
 	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
 
 	"loop-glossary-namespace": "Glossary",
-	"loop-glossary-title": "Glossary"
+	"loop-glossary-title": "Glossary",
+	"loopglossary": "Glossary"
 }

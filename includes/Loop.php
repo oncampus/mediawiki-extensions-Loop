@@ -43,7 +43,7 @@
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgLogRestrictions,
-		$wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType;
+		$wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces;
 		
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -117,6 +117,9 @@
 		$wgNamespaceProtection[NS_TEMPLATE_TALK] = ['*'];
 		$wgNamespaceProtection[NS_HELP_TALK] = ['*'];
 		$wgNamespaceProtection[NS_CATEGORY_TALK] = ['*'];
+
+		# Define new name for glossary
+		$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
 
 		return true;
 	}

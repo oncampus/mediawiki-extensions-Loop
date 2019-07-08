@@ -210,5 +210,6 @@
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
 	"loop-glossary-namespace": "Glossar",
-	"loop-glossary-title": "Glossar"
+	"loop-glossary-title": "Glossar",
+	"loopglossary": "Glossar"
 }
