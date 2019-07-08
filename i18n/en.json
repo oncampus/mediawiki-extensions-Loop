@@ -207,5 +207,8 @@
 	"loopreference-error-unknown-titleoption" : "The reference's show title option (title) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
-	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2"	
+	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
+
+	"loop-glossary-namespace": "Glossary",
+	"loop-glossary-title": "Glossary"
 }

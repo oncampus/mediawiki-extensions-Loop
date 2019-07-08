@@ -208,5 +208,8 @@
 	"loopreference-error-unknown-titleoption" : "Error Message rendered when title option is unknown\n\nParameters:\n* $1 - title option\n* $2 supported title options",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
-	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types"
+	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types",
+
+	"loop-glossary-namespace": "Namespace name for Glossary pages",
+	"loop-glossary-title": "Title displayed for list glossary"
 }

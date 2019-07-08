@@ -207,5 +207,8 @@
 	"loopreference-error-unknown-titleoption" : "Värdet av parametern (title) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Inget ID (id) har angivits i referensen.",
-	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''."
+	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''.",
+
+	"loop-glossary-namespace": "Glossary",
+	"loop-glossary-title": "Ordlista"
 }
