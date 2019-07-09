@@ -16,7 +16,6 @@ class LoopObjectIndex {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
-       
         $dbw = wfGetDB( DB_MASTER );
         
         $dbw->insert(
@@ -227,7 +226,61 @@ class LoopObjectIndex {
 			}
 		}
         return $return;
-	}
+    }
+    
+	// returns number of objects in glossary pages before current glossary page
+    public static function getObjectNumberingsForGlossaryPage ( $articleId ) {
+        $glossaryItems = LoopGlossary::getGlossaryPages();
+        $data = array();
+        foreach ( $glossaryItems as $sequence => $item ) {
+            $tmpArticleId = $item->getArticleID();
+            $data[$sequence] = array( $tmpArticleId );
+            if ( $tmpArticleId == $articleId ) {
+                $pageHasObjects = true;
+                break;
+            }
+        }
+        if ( $pageHasObjects ) {
+            
+            $objects = array();
+            foreach ( LoopObject::$mObjectTypes as $objectType ) {
+                $objects[$objectType] = array(); 
+                $return[$objectType] = 0; 
+            }
+            
+            $dbr = wfGetDB( DB_REPLICA );
+
+            $res = $dbr->select(
+                'loop_object_index',
+                array(
+                    'loi_pageid',
+                    'loi_refid',
+                    'loi_index'
+                ),
+                "*",
+                __METHOD__
+            );
+            foreach ( $res as $row ) {
+                $objects[$row->loi_index][$row->loi_pageid][] = $row->loi_refid;
+            }
+
+            foreach ( $data as $pos => $tmpId ) {
+                
+#dd($tmpId[$pos]);
+                foreach( $objects as $objectType => $page ) {
+                    if ( $tmpId[0] != $articleId ) {
+                        if ( array_key_exists( $tmpId[0], $page ) ) {
+                            $return[$objectType] += sizeof($page[$tmpId[0]]);
+                           # dd($objects , $objectType , $page,$tmpId,$data , $pos, sizeof($page[$tmpId[0]]), array_key_exists( $tmpId[0], $page ), $return  );
+                        }  
+                    }
+                }
+                #$tmpArticle = $obj[];
+            }
+        }
+        #dd($data, $glossaryItems);
+        return $return;
+    }
 
 	public function checkDublicates( $refId ) {
 		
@@ -253,7 +306,7 @@ class LoopObjectIndex {
 		return true;
     }
     
-    public static function getObjectData( $refId, LoopStructure $loopStructure ) {
+    public static function getObjectData( $refId ) { 
         
         $dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
@@ -274,7 +327,7 @@ class LoopObjectIndex {
 		
 		foreach( $res as $row ) {
 
-            $lsi = LoopStructureItem::newFromIds ( $row->loi_pageid );
+            #$lsi = LoopStructureItem::newFromIds ( $row->loi_pageid );
             $return = array(
                 'refId' => $row->loi_refid,
                 'articleId' => $row->loi_pageid,
