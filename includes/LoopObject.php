@@ -231,7 +231,7 @@ class LoopObject {
 	 *
 	 * @return string
 	 */
-	public function renderForSpecialpage() {
+	public function renderForSpecialpage( $ns ) {
 		global $wgLoopObjectNumbering, $wgLoopNumberingType;
 		$objectClass = get_class( $this );
 		switch ( $objectClass ) {
@@ -253,20 +253,19 @@ class LoopObject {
 		}
 		#dd($numbering, $type);
 		$numberText = '';
-		if ( $wgLoopObjectNumbering == true ) {
-		
-			$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
-				
-			if ( $lsi ) {
-					
+		if ( $wgLoopObjectNumbering == 1 ) {
+			if ( $ns == NS_MAIN || !isset( $ns ) ) {
 				$loopStructure = new LoopStructure();
 				$loopStructure->loadStructureItems();
-				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
 				
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 				if ( $lsi ) {
 					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
 				}
-					
+			} elseif ( $ns == NS_GLOSSARY ) {
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $this->mArticleId );
+				$numberText = " "  . wfMessage( 'loop-glossary-objectnumber-prefix' )->text() . LoopObject::getObjectNumberingOutputForGlossary( $this->mId, $this->mArticleId, $previousObjects);
 			}
 		}
 		$outputTitle = '';
@@ -293,8 +292,17 @@ class LoopObject {
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
-		if ($lsi) {
+		if ( $lsi ) {
 			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
+			
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$html .= $linkRenderer->makeLink( 
+				$linkTitle, 
+				new HtmlArmor( $linktext ),
+				array()
+				) . '<br/>';
+		} elseif ( $ns == NS_GLOSSARY ) {
+			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
 			
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
@@ -1153,7 +1161,7 @@ class LoopObject {
 					$objectid = $matches[2][$i];
 					$numbering = self::getObjectNumberingOutputForGlossary( $objectid, $article, $previousObjects );
 					#dd($numbering);
-					$text = preg_replace ( "/" . $objectmarker . "/", "Glossar " . $numbering, $text );
+					$text = preg_replace ( "/" . $objectmarker . "/", wfMessage("loop-glossary-objectnumber-prefix")->text() . $numbering, $text );
 					#dd($text);
 					$i++;
 				} 

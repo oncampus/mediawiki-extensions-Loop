@@ -82,21 +82,23 @@ class SpecialLoopListings extends SpecialPage {
 		$parser->Options ( $parserOptions );		
 		
 		$listings = array ();
-		$items = $loopStructure->getStructureItems();
+		$structureItems = $loopStructure->getStructureItems();
+		$glossaryItems = LoopGlossary::getGlossaryPages();
 		$listing_number = 1;
+		$articleIds = array();
 		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
-		foreach ( $items as $item ) {
+		$listing_tags = LoopObjectIndex::getObjectsOfType ( 'loop_listing' );
+
+		foreach ( $structureItems as $structureItem ) {
+			$articleIds[ $structureItem->article ] = NS_MAIN;
+		}
+		foreach ( $glossaryItems as $glossaryItem ) {
+			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+		}
+
+		foreach ( $articleIds as $article => $ns ) {
 			
-			$article_id = $item->getArticle ();
-			$title = Title::newFromID ( $article_id );
-			$rev = Revision::newFromTitle ( $title );
-			$content = $rev->getContent ();
-			$listing_tags = array ();
-			
-			$parser->clearState();
-			$parser->setTitle ( $title );
-			
-			$listing_tags = LoopObjectIndex::getObjectsOfType ( 'loop_listing' );
+			$article_id = $article;
 			
 			if ( isset( $listing_tags[$article_id] ) ) {
 				foreach ( $listing_tags[$article_id] as $listing_tag ) {
@@ -112,7 +114,7 @@ class SpecialLoopListings extends SpecialPage {
 					}
 					$listing->setArticleId ( $article_id );
 					
-					$out->addHtml ( $listing->renderForSpecialpage () );
+					$out->addHtml ( $listing->renderForSpecialpage ( $ns ) );
 				}
 			}
 		}

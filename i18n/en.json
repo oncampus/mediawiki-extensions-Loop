@@ -210,7 +210,7 @@
 	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
 
 	"loop-glossary-namespace": "Glossary",
-	"loop-glossary-object-addendum": "Glossary",
+	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glossary",
 	"loop-glossary-empty": "The glossary is still empty. Add an entry by creating a page like ''[[Glossary:Term]]''."
 }
