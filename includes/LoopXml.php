@@ -45,6 +45,13 @@ class LoopXml {
 		
 		$xml .= "</loop_objects>\n";
 		
+	
+		$xml .= "<glossary>\n";
+		
+		$xml .= self::glossary2xml ();
+		
+		$xml .= "</glossary>\n";
+		
 		$xml .= "</loop>";
 		#dd($xml);
 		return $xml;
@@ -83,9 +90,12 @@ class LoopXml {
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
-			$stableRev = $structureItem->getArticle ();
+			$stableRev = intval($articleId);
+			$wp = WikiPage::factory ( $title );
+			$content = $wp->getContent ()->getNativeData ();
+		} else {
+			$content = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
 		}
-		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
 		#dd();
@@ -126,9 +136,12 @@ class LoopXml {
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
-			$stableRev = $articleId;
+			$stableRev = intval($articleId);
+			$wp = WikiPage::factory ( $title );
+			$content = $wp->getContent ()->getNativeData ();
+		} else {
+			$content = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
 		}
-		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
 		$content = html_entity_decode($content);
 		
 		$wiki2xml = new wiki2xml ();
@@ -315,6 +328,22 @@ class LoopXml {
 	
 	
 	}	
+
+	
+	public static function glossary2xml( ) {
+
+		$articles = LoopGlossary::getGlossaryPages( "idArray" );
+		$return = '';
+
+		if ( !empty( $articles ) ) {
+			foreach ( $articles as $articleId ) {
+				#dd($articleId);
+				$return .= self::articleFromId2xml( $articleId );
+			}
+		}
+
+		return $return;
+	}
 	
 	
 }

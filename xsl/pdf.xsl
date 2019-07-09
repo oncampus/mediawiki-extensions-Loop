@@ -1636,7 +1636,7 @@
 		</xsl:choose>	
 	</xsl:template>
 	
-		<xsl:template name="glossary_exists">
+	<xsl:template name="glossary_exists">
 		<xsl:choose>
 			<xsl:when test="//*/glossary/article">
 				<xsl:text>1</xsl:text>

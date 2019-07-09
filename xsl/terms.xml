@@ -102,6 +102,7 @@
 	<msg name="phrase_looparea_end" lang="en"></msg> <!--Here ends the page area</msg>-->
 	<msg name="phrase_spoiler_start" lang="en">Here begins hidden content.</msg>
 	<msg name="phrase_spoiler_end" lang="en">Here ends the hidden content.</msg>
+	<msg name="word_glossary" lang="en">Glossary</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -168,6 +169,7 @@
 	<msg name="phrase_looparea_end" lang="de"></msg> <!--Hier endet der Seitenbereich</msg>-->
 	<msg name="phrase_spoiler_start" lang="de">Hier beginnt versteckter Inhalt.</msg>
 	<msg name="phrase_spoiler_end" lang="de">Hier endet der versteckte Inhalt.</msg>
+	<msg name="word_glossary" lang="de">Glossar</msg>
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>
@@ -232,5 +234,6 @@
 	<msg name="phrase_looparea_end" lang="sv"></msg> <!--slutar sidintervallet</msg>-->
 	<msg name="phrase_spoiler_start" lang="sv">Här börjar doldt innehåll.</msg>
 	<msg name="phrase_spoiler_end" lang="sv">Här slutar dolda innehållet.</msg>
+	<msg name="word_glossary" lang="sv">Ordlista</msg>
 	
 </terms> 
