@@ -14,25 +14,65 @@ class LoopGlossary {
 		
 		$showGlossary = false;
 
+		$glossaryItems = self::getGlossaryPages();
+
+		if ( $glossaryItems ) {
+			$showGlossary = true;
+		}
+
+		return $showGlossary;
+	}
+
+	// returns all pages in glossary namespace. 
+	// @param String $returnType if null, function will return all information. "idArray" only returns glossary article ids
+	public static function getGlossaryPages( $returnType = null ) {
+
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			array(
 				'page'
 			),
 			array(
-				'page_id'
+				'page_id',
+				'page_title'
 			),
 			array(
-				'page_namespace = 3000'
+				'page_namespace = ' . NS_GLOSSARY
 			),
 			__METHOD__
 		);
+		$glossaryItems = array();
 		foreach ( $res as $row ) {
-			$showGlossary = true;
-			break;
+			if ( $returnType == "idArray" ) {
+				array_push( $glossaryItems, $row->page_id );
+			} else {
+				$glossaryItems[ $row->page_title ] = Title::newFromId ( $row->page_id );
+			}
 		}
+		
+		if ( ! empty( $glossaryItems ) ) {
+			sort( $glossaryItems );
+			return $glossaryItems;
+		} else {
+			return false;
+		}
+	}
 
-		return $showGlossary;
+	// removes "cache" for 
+	public static function updateGlossaryPageTouched() {
+		$article_ids = self::getGlossaryPages("idArray");
+		// Update page_touched 
+		if ( $article_ids ) {
+			$article_ids = array_unique ( $article_ids );
+			$dbw = wfGetDB ( DB_MASTER );
+				
+			$dbPageTouchedResult = $dbw->update ( 'page', array (
+					'page_touched' => $dbw->timestamp()
+			), array (
+					0 => 'page_id in (' . implode ( ',', $article_ids ) . ')'
+			), __METHOD__ );
+		}
+		return true;
 	}
 	
 }
@@ -51,29 +91,11 @@ class SpecialLoopGlossary extends SpecialPage {
 
 		$out->setPageTitle(wfMessage('loop-glossary-title'));
 		$html = '<h1>' . wfMessage('loop-glossary-title') . '</h1>' ;
-		$glossaryItems = array();
 		
-		$dbr = wfGetDB( DB_REPLICA );
-		$res = $dbr->select(
-			array(
-				'page'
-			),
-			array(
-				'page_id',
-				'page_title'
-			),
-			array(
-				'page_namespace = 3000'
-			),
-			__METHOD__
-		);
-		foreach ( $res as $row ) {
-			$glossaryItems[ $row->page_title ] = Title::newFromId ( $row->page_id );
-		}
+		$glossaryItems = LoopGlossary::getGlossaryPages();
 		
-		if ( ! empty( $glossaryItems ) ) {
+		if ( $glossaryItems ) {
 			$html .= '<div class="list-group list-group-flush">';
-			sort( $glossaryItems );
 			foreach ( $glossaryItems as $pageTitle => $titleObject ) {
 
 				$html .= $linkRenderer->makeLink(
