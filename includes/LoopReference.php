@@ -30,7 +30,7 @@ class LoopReference {
 		try {
 			if ( isset($args["id"]) ) {
 				$refId = $args["id"];
-				$objectData = LoopObjectIndex::getObjectData($refId, $loopStructure);
+				$objectData = LoopObjectIndex::getObjectData( $refId );
 			} else {
 				throw new LoopException( wfMessage( 'loopreference-error-no-refid' )->text());
 			}

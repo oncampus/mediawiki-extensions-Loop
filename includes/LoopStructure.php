@@ -283,7 +283,7 @@ class LoopStructure {
 			$structureItem->addToDatabase();
 		}
 		
-		LoopObject::removeStructureCache();
+		LoopObject::updateStructurePageTouched();
 	}
 
 	/**
@@ -291,7 +291,7 @@ class LoopStructure {
 	 */
 	public function deleteItems() {
 
-		LoopObject::removeStructureCache(); # update page_touched on structure pages. 
+		LoopObject::updateStructurePageTouched(); # update page_touched on structure pages. 
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(
@@ -365,8 +365,6 @@ class LoopStructure {
 
 		return false;
 	}
-
-
 }
 
 /**
