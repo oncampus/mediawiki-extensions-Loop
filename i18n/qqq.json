@@ -211,7 +211,7 @@
 	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types",
 
 	"loop-glossary-namespace": "Namespace name for Glossary pages",
-	"loop-glossary-title": "Title displayed for list glossary",
+	"loop-glossary-object-addendum": "Addendum for LOOP object names in glossary",
 	"loopglossary": "Title displayed for list glossary",
 	"loop-glossary-empty": "Shown message on Glossary special page when there is no glossary entry. "
 }

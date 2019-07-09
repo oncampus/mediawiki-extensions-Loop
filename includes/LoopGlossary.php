@@ -89,8 +89,8 @@ class SpecialLoopGlossary extends SpecialPage {
 		$user = $this->getUser();
 		$out = $this->getOutput();
 
-		$out->setPageTitle(wfMessage('loop-glossary-title'));
-		$html = '<h1>' . wfMessage('loop-glossary-title') . '</h1>' ;
+		$out->setPageTitle(wfMessage('loopglossary'));
+		$html = '<h1>' . wfMessage('loopglossary') . '</h1>' ;
 		
 		$glossaryItems = LoopGlossary::getGlossaryPages();
 		

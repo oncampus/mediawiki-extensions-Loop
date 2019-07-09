@@ -210,7 +210,7 @@
 	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''.",
 
 	"loop-glossary-namespace": "Glossary",
-	"loop-glossary-title": "Ordlista",
+	"loop-glossary-object-addendum": "Ordlista",
 	"loopglossary": "Ordlista",
 	"loop-glossary-empty": "Ordlistan är fortfarande tom. Lägg till en post genom att skapa en sida som ''[[Glossary:Ord]]''."
 }
