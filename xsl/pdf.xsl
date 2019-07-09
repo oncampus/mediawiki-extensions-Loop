@@ -384,9 +384,6 @@
 						<fo:table-row keep-together.within-column="auto">
 							<fo:table-cell number-columns-spanned="2">
 								<fo:block  text-align="left" >
-									<xsl:if test="ancestor::*[@extension_name='loop_area']">
-										<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
-									</xsl:if>
 									<xsl:apply-templates/> 
 								</fo:block>
 							</fo:table-cell>	
@@ -1234,13 +1231,12 @@
 
 	<!-- Loop Spoiler -->
 	<xsl:template name="spoiler">
-		<xsl:choose>
-			<xsl:when test="(@type='in_text') or (@type='in_text_transparent')">
-				<fo:inline axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" font-weight="bold"  padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
-					
+		<fo:block keep-together.within-page="always">
+			<fo:block font-weight="bold">
+				<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
+
 					<xsl:attribute name="background-color"><xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
-					<xsl:attribute name="color">#ffffff</xsl:attribute>
-					
+					<xsl:attribute name="color">#ffffff</xsl:attribute>					
 					<xsl:choose>
 						<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
 							<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
@@ -1249,43 +1245,15 @@
 							<xsl:value-of select="@text"></xsl:value-of>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
+								<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
 						</xsl:otherwise>
-					</xsl:choose>			
-				</fo:inline>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block font-weight="bold">
-					<fo:inline axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
-						<xsl:attribute name="background-color"><xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
-						<xsl:attribute name="color">#ffffff</xsl:attribute>		
-										
-						<xsl:choose>
-							<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
-								<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
-							</xsl:when>
-							<xsl:when test="@text">
-								<xsl:value-of select="@text"></xsl:value-of>
-							</xsl:when>
-							<xsl:otherwise>
-								
-									<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
-								
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</fo:inline>			
-				</fo:block>
-			</xsl:otherwise>		
-		</xsl:choose>
-	
-	<!--  		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
- -->
-		<fo:table width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}" margin-bottom="5mm">
+					</xsl:choose>
+				</fo:inline>			
+		</fo:block>
+		<fo:table keep-together.within-column="always" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="1500mm">
-						<!--<xsl:attribute name="background-color">#f1f1f1</xsl:attribute>-->
 						<xsl:attribute name="padding-top">2mm</xsl:attribute>
 						<xsl:attribute name="padding-left">3mm</xsl:attribute>
 						<xsl:attribute name="padding-right">3mm</xsl:attribute>
@@ -1297,21 +1265,21 @@
 				</fo:table-row>
 			</fo:table-body>
 		</fo:table>
+		</fo:block>
 	</xsl:template>
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
-		<fo:table table-layout="auto" margin-left="-10.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
+		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
 			<fo:table-column column-number="1" column-width="10mm" />
-			<fo:table-column column-number="2" column-width="0.8mm" background-color="{$accent_color}"/>
-			<fo:table-column column-number="3" column-width="150mm" padding-left="14.5mm"/>
-
+			<fo:table-column column-number="2" column-width="6mm" margin-right="-10mm"/>
+			<fo:table-column column-number="3" column-width="150mm"/>
 			<fo:table-body>
 				<fo:table-row>
-					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}">
+					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" >
 						<fo:block>
 						<!-- ICON IMG -->
-						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm">
+						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
 								<xsl:when test="@type='task'"><xsl:value-of select="$icon_task"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$icon_timerequirement"></xsl:value-of></xsl:when>
@@ -1353,7 +1321,7 @@
 							</xsl:choose>
 						</fo:block>
 
-						<fo:block font-weight="bold" font-size="8.5pt" line-height="10pt" white-space-treatment="preserve"  linefeed-treatment="preserve">
+						<fo:block font-weight="bold" font-size="8.5pt" margin-right="0mm" line-height="10pt" white-space-treatment="preserve" linefeed-treatment="preserve">
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
 								<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
@@ -1387,8 +1355,10 @@
 						</fo:block>
 					</fo:table-cell>
 				
-				<fo:table-cell></fo:table-cell>
-				<fo:table-cell padding-left="14.5mm">
+				<fo:table-cell border-left="solid 0.8mm {$accent_color}">
+					<fo:block ></fo:block>
+				</fo:table-cell>
+				<fo:table-cell padding-left="9mm">
 					<fo:block>
 						<xsl:apply-templates/>
 					</fo:block>
