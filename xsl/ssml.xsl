@@ -42,10 +42,15 @@
 				</xsl:attribute>
 			
 				<xsl:element name="p">
-				
-					<xsl:value-of select="$word_chapter"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="@tocnumber"></xsl:value-of>
+					<xsl:choose>
+						<xsl:when test="@tocnumber=''">
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$word_chapter"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="@tocnumber"></xsl:value-of>
+						</xsl:otherwise>
+					</xsl:choose>
 					
 					<xsl:element name="break">
 						<xsl:attribute name="strength">
@@ -53,7 +58,12 @@
 						</xsl:attribute>
 					</xsl:element>
 
-					<xsl:value-of select="@toctext"></xsl:value-of>
+					<xsl:if test="@toctext">
+						<xsl:value-of select="@toctext"></xsl:value-of>
+					</xsl:if>
+					<xsl:if test="@title">
+						<xsl:value-of select="@title"></xsl:value-of>
+					</xsl:if>
 					
 					<xsl:element name="break">
 						<xsl:attribute name="time">
@@ -266,6 +276,11 @@
 
 	<xsl:template name="syntaxhighlight">
 		<xsl:value-of select="$phrase_syntaxhighlight"></xsl:value-of>
+			<xsl:element name="break">
+				<xsl:attribute name="strength">
+					<xsl:text>medium</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
 	</xsl:template>
 	
 	<xsl:template name="loop_spoiler">
@@ -395,7 +410,7 @@
 		</xsl:element>
 		<xsl:element name="break">
 			<xsl:attribute name="time">
-				<xsl:text>1200ms</xsl:text>
+				<xsl:text>700ms</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
 		<xsl:choose>

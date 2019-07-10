@@ -154,13 +154,7 @@ class LoopXml {
 		$wiki2xml = new wiki2xml ();
 		$xml = "<article ";
 		$xml .= "id=\"article" . $articleId . "\" ";
-
-		if ( isset( $modifiers["glossary"] ) ) {
-			if ( $modifiers["glossary"] ) {
-				$xml .= "title=\"" . $title->mTextform . "\"";
-			}
-		} 
-
+		$xml .= "title=\"" . $title->mTextform . "\"";
 		$xml .= ">\n";
 		
 		if ( isset( $modifiers["glossary"] ) ) {
