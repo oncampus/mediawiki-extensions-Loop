@@ -353,12 +353,20 @@ class LoopStructure {
 		return $lsTitle;
 	}
 
+	// Check structure- and glossary pages for objects
 	public function hasObjects( $type ) {
-		$objects = LoopObjectIndex::getObjectsOfType ( $type );
+		$objects = LoopObjectIndex::getObjectsOfType( $type );
 		$structureItems = $this->getStructureItems();
 
 		foreach ( $structureItems as $item ) {
 			if ( isset ( $objects[$item->article] ) ) {
+				return true;
+			}
+		}
+
+		$glossaryItems = LoopGlossary::getGlossaryPages( "idArray" );
+		foreach ( $glossaryItems as $item ) {
+			if ( isset ( $objects[$item] ) ) {
 				return true;
 			}
 		}

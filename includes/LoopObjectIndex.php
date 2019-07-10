@@ -232,12 +232,16 @@ class LoopObjectIndex {
     public static function getObjectNumberingsForGlossaryPage ( $articleId ) {
         $glossaryItems = LoopGlossary::getGlossaryPages();
         $data = array();
-        foreach ( $glossaryItems as $sequence => $item ) {
-            $tmpArticleId = $item->getArticleID();
-            $data[$sequence] = array( $tmpArticleId );
-            if ( $tmpArticleId == $articleId ) {
-                $pageHasObjects = true;
-                break;
+        $return = array();
+        $pageHasObjects = false;
+        if ( !empty ($glossaryItems) ) {
+            foreach ( $glossaryItems as $sequence => $item ) {
+                $tmpArticleId = $item->getArticleID();
+                $data[$sequence] = array( $tmpArticleId );
+                if ( $tmpArticleId == $articleId ) {
+                    $pageHasObjects = true;
+                    break;
+                }
             }
         }
         if ( $pageHasObjects ) {
@@ -265,20 +269,15 @@ class LoopObjectIndex {
             }
 
             foreach ( $data as $pos => $tmpId ) {
-                
-#dd($tmpId[$pos]);
                 foreach( $objects as $objectType => $page ) {
                     if ( $tmpId[0] != $articleId ) {
                         if ( array_key_exists( $tmpId[0], $page ) ) {
                             $return[$objectType] += sizeof($page[$tmpId[0]]);
-                           # dd($objects , $objectType , $page,$tmpId,$data , $pos, sizeof($page[$tmpId[0]]), array_key_exists( $tmpId[0], $page ), $return  );
                         }  
                     }
                 }
-                #$tmpArticle = $obj[];
             }
         }
-        #dd($data, $glossaryItems);
         return $return;
     }
 

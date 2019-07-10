@@ -54,7 +54,7 @@ class LoopGlossary {
 			sort( $glossaryItems );
 			return $glossaryItems;
 		} else {
-			return false;
+			return array();
 		}
 	}
 
