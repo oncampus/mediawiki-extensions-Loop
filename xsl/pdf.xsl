@@ -384,8 +384,16 @@
 					<fo:table-body>		
 						<fo:table-row keep-together.within-column="auto">
 							<fo:table-cell number-columns-spanned="2">
-								<fo:block  text-align="left">
-									<xsl:apply-templates select="loop_object" mode="loop_object"/> 
+								<fo:block text-align="left">
+									<xsl:choose> 
+										<xsl:when test="ancestor::*[@extension_name='loop_area']">
+											<xsl:attribute name="margin-left">13mm</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:attribute name="margin-left">2mm</xsl:attribute>
+										</xsl:otherwise>
+									</xsl:choose> 
+									<xsl:apply-templates/> 
 								</fo:block>
 							</fo:table-cell>	
 						</fo:table-row>
@@ -394,7 +402,14 @@
 								<fo:table-cell width="0.4mm" background-color="{$accent_color}">
 								</fo:table-cell>
 								<fo:table-cell  text-align="left" padding-right="2mm">
-									<xsl:attribute name="padding-left">14mm</xsl:attribute>
+								<xsl:choose> 
+									<xsl:when test="ancestor::*[@extension_name='loop_area']">
+										<xsl:attribute name="padding-left">13mm</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="padding-left">2mm</xsl:attribute>
+									</xsl:otherwise>
+								</xsl:choose> 
 									<xsl:if test="ancestor::*[@extension_name='spoiler']">
 										<xsl:attribute name="padding-left">2mm</xsl:attribute>
 									</xsl:if>
