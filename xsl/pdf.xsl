@@ -74,7 +74,7 @@
 		</fo:root>
 	</xsl:template>
 	
-		<xsl:template name="page-sequence-appendix">
+	<xsl:template name="page-sequence-appendix">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
@@ -132,7 +132,6 @@
 
 			</fo:flow>
 		</fo:page-sequence>
-		<!-- 	
 		<xsl:if test="$glossary_exists='1'">
 		<fo:page-sequence master-reference="full-page" id="glossary_sequence">
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
@@ -144,8 +143,9 @@
 			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
 				<xsl:call-template name="page-content-glossary"></xsl:call-template>
 			</fo:flow>
-		</fo:page-sequence>	            	
+		</fo:page-sequence>	         	
         </xsl:if>			
+		<!-- 	   
 		<xsl:if test="$index_exists='1'">
 		<fo:page-sequence master-reference="full-page-2column" id="index_sequence">
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
@@ -161,6 +161,43 @@
         </xsl:if>       
 	 	-->
 	</xsl:template>			
+	
+	
+	<xsl:template name="page-content-glossary">
+		<!-- <xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
+		
+		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1')">
+			<fo:block break-before="page"></fo:block>
+		</xsl:if>		 -->
+		<fo:block>
+			<fo:marker marker-class-name="page-title-left">
+				<xsl:value-of select="$word_appendix"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block>
+			<fo:marker marker-class-name="page-title-right">
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+				<xsl:value-of select="$word_glossary"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block id="glossary" keep-with-next="always" margin-bottom="10mm">
+			<xsl:call-template name="font_head"></xsl:call-template>
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+			<xsl:value-of select="$word_glossary"></xsl:value-of>
+		</fo:block>
+		<xsl:apply-templates select="//*/glossary/article"></xsl:apply-templates>
+	</xsl:template>		
 	
 	<xsl:template name="page-content-appendix">
 		<fo:block id="appendix"></fo:block>
@@ -363,6 +400,24 @@
 					<fo:leader leader-pattern="dots"></fo:leader>
 					<fo:page-number-citation>
 						<xsl:attribute name="ref-id">list_of_tasks</xsl:attribute>
+					</fo:page-number-citation>
+				</fo:inline>
+			</fo:block>		
+		</xsl:if>
+		<xsl:if test="$glossary_exists='1'">
+			<fo:block text-align-last="justify">
+				<xsl:call-template name="font_normal"></xsl:call-template>
+				<fo:basic-link color="black">
+					<xsl:attribute name="internal-destination">glossary</xsl:attribute>
+					<xsl:call-template name="appendix_number">
+						<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
+					</xsl:call-template>					
+					<xsl:text> </xsl:text><xsl:value-of select="$word_glossary"></xsl:value-of>
+				</fo:basic-link>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"></fo:leader>
+					<fo:page-number-citation>
+						<xsl:attribute name="ref-id">glossary</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
 			</fo:block>		
@@ -913,6 +968,15 @@
 		<xsl:choose>
 			<xsl:when test="@toclevel=''">
 				<xsl:apply-templates></xsl:apply-templates>
+			</xsl:when>
+			<xsl:when test="@title">
+				<fo:block margin-bottom="12mm">
+					<fo:block keep-with-next.within-page="always">
+						<xsl:call-template name="font_subhead"></xsl:call-template>
+						<xsl:value-of select="@title"></xsl:value-of>
+					</fo:block>
+					<xsl:apply-templates></xsl:apply-templates>
+				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block >
@@ -1705,7 +1769,7 @@
 		</xsl:choose>
 	</xsl:template>		
 	
-		<xsl:template name="appendix_number">
+	<xsl:template name="appendix_number">
 		<xsl:param name="content"></xsl:param>
 		
 		<xsl:variable name="c_bibliography" ><xsl:call-template name="cite_exists"></xsl:call-template></xsl:variable>	

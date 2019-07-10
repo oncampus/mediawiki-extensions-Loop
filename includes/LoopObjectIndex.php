@@ -115,43 +115,51 @@ class LoopObjectIndex {
         
         $objects = array(  );
         
-        
         $loopStructureItems = $loopStructure->getStructureItems();
         
         foreach ( $loopStructureItems as $loopStructureItem ) {
-            $previousObjects[$loopStructureItem->article] = self::getObjectNumberingsForPage($loopStructureItem, $loopStructure);
+            $previousObjects[ $loopStructureItem->article ] = self::getObjectNumberingsForPage( $loopStructureItem, $loopStructure );
+        }
+        
+		$glossaryItems = LoopGlossary::getGlossaryPages("idArray");
+        foreach ( $glossaryItems as $glossaryItem ) {
+            $previousObjects[ $glossaryItem ] = self::getObjectNumberingsForGlossaryPage( $glossaryItem );
         }
         #dd($previousObjects);
         foreach( $res as $row ) {
-            $lsi = LoopStructureItem::newFromIds($row->loi_pageid);
             
-            if ( $lsi ) {
-                $numberText = '';
+            $numberText = '';
+            
+            if ( $wgLoopObjectNumbering == true ) {
                 
-                if ( $wgLoopObjectNumbering == true ) {
-                    
-                    $objectData = array(
-                        "refId" => $row->loi_refid,
-                        "index" => $row->loi_index,
-                        "nthoftype" => $row->loi_nthoftype
-                    );
-                    $numberText = LoopObject::getObjectNumberingOutput($row->loi_refid, $lsi, $loopStructure, $previousObjects[$row->loi_pageid], $objectData);
-			        
-               }
-            
-               $objects[$row->loi_refid] = array(
-                   "pageid" => $row->loi_pageid,
-                   "id" => $row->loi_refid,
-                   "title" => $row->loi_itemtitle,
-                   "description" => $row->loi_itemdesc,
-                   "index" => $row->loi_index,
-                   "type" => $row->loi_itemtype,
-                   "id" => $row->loi_refid,
-                   #"thumb" => $row->loi_itemthumb,
-                   "nthoftype" => $row->loi_nthoftype,
-                   "objectnumber" => $numberText
+                $objectData = array(
+                    "refId" => $row->loi_refid,
+                    "index" => $row->loi_index,
+                    "nthoftype" => $row->loi_nthoftype
                 );
+                
+                $lsi = LoopStructureItem::newFromIds($row->loi_pageid);
+                if ( $lsi ) {
+                    $pageData = array( "structure", $lsi, $loopStructure );
+                    $numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
+                } elseif ( isset ( $previousObjects[ $row->loi_pageid ] ) ) {
+					$pageData = array( "glossary", $row->loi_pageid );
+					$numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
+                }
             }
+        
+            $objects[$row->loi_refid] = array(
+                "pageid" => $row->loi_pageid,
+                "id" => $row->loi_refid,
+                "title" => $row->loi_itemtitle,
+                "description" => $row->loi_itemdesc,
+                "index" => $row->loi_index,
+                "type" => $row->loi_itemtype,
+                "id" => $row->loi_refid,
+                #"thumb" => $row->loi_itemthumb,
+                "nthoftype" => $row->loi_nthoftype,
+                "objectnumber" => $numberText
+            );
         }
         #dd($objects);
         return $objects;

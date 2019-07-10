@@ -163,11 +163,13 @@ class LoopFigure extends LoopObject{
 				
 				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 				if ( $lsi ) {
-					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
+					$pageData = array( "structure", $lsi, $loopStructure );
+					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $pageData, $previousObjects);
 				}
 			} elseif ( $ns == NS_GLOSSARY ) {
-				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $this->mArticleId );
-				$numberText = " "  . wfMessage('loop-glossary-objectnumber-prefix')->text()  . LoopObject::getObjectNumberingOutputForGlossary( $this->mId, $this->mArticleId, $previousObjects);
+				$pageData = array( "glossary", $this->mArticleId );
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $pageData );
+				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
 		$outputTitle = '';

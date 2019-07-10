@@ -353,7 +353,9 @@ class LoopStructure {
 		return $lsTitle;
 	}
 
-	// Check structure- and glossary pages for objects
+	/**
+	* Check structure- and glossary pages for objects
+ 	*/
 	public function hasObjects( $type ) {
 		$objects = LoopObjectIndex::getObjectsOfType( $type );
 		$structureItems = $this->getStructureItems();

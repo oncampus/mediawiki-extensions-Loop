@@ -127,7 +127,14 @@ class LoopXml {
 		return $xml;
 	}
 
-	public static function articleFromId2xml( $articleId ) {
+	
+	/**
+	 * Converts article to XML code
+	 * @param Int $articleId: 
+	 * @param Array $modifiers: 
+	 * 		"glossary" => true; removes <meta>-tag for pdf
+	 */
+	public static function articleFromId2xml( $articleId, $modifiers = null ) {
 
 		global $wgLanguageCode;
 		$langParts = mb_split("-", $wgLanguageCode);
@@ -147,11 +154,24 @@ class LoopXml {
 		$wiki2xml = new wiki2xml ();
 		$xml = "<article ";
 		$xml .= "id=\"article" . $articleId . "\" ";
+
+		if ( isset( $modifiers["glossary"] ) ) {
+			if ( $modifiers["glossary"] ) {
+				$xml .= "title=\"" . $title->mTextform . "\"";
+			}
+		} 
+
 		$xml .= ">\n";
 		
-		$xml .= "<meta>\n";
-		$xml .= "\t<lang>".$langParts[0]."</lang>\n";
-		$xml .= "</meta>\n";
+		if ( isset( $modifiers["glossary"] ) ) {
+			if ( $modifiers["glossary"] ) {
+				# no meta
+			}
+		} else {
+			$xml .= "<meta>\n";
+			$xml .= "\t<lang>".$langParts[0]."</lang>\n";
+			$xml .= "</meta>\n";
+		}
 
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
@@ -338,7 +358,7 @@ class LoopXml {
 		if ( !empty( $articles ) ) {
 			foreach ( $articles as $articleId ) {
 				#dd($articleId);
-				$return .= self::articleFromId2xml( $articleId );
+				$return .= self::articleFromId2xml( $articleId, array( "glossary" => true ) );
 			}
 		}
 

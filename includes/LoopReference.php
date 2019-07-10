@@ -59,8 +59,9 @@ class LoopReference {
 				$linkTitle .= $parser->recursiveTagParse ( $input, $frame );
 				if ( $wgLoopObjectNumbering ) {
 					if ( $lsi ) {
+						$pageData = array( "structure", $lsi, $loopStructure );
 						$linkTitleAttr = wfMessage ( $objectData["index"].'-name-short' )->inContentLanguage ()->text () . " ";
-						$linkTitleAttr .= LoopObject::getObjectNumberingOutput($refId, $lsi, $loopStructure, null, $objectData );
+						$linkTitleAttr .= LoopObject::getObjectNumberingOutput($refId, $pageData, null, $objectData );
 						$linkTitleAttr .= " ".$objectData["title"];
 					}
 				}
@@ -68,7 +69,9 @@ class LoopReference {
 				$linkTitle .= wfMessage ( $objectData["index"].'-name-short' )->inContentLanguage ()->text () . " ";
 				if ( $wgLoopObjectNumbering ) {
 					if ( $lsi ) {
-						$linkTitle .= LoopObject::getObjectNumberingOutput($refId, $lsi, $loopStructure, null, $objectData );
+						
+						$pageData = array( "structure", $lsi, $loopStructure );
+						$linkTitle .= LoopObject::getObjectNumberingOutput($refId, $pageData, null, $objectData );
 					}
 				}
 				if ( $showTitle ) {

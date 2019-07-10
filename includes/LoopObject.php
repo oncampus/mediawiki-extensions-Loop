@@ -261,11 +261,13 @@ class LoopObject {
 				
 				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 				if ( $lsi ) {
-					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
+					$pageData = array( "structure", $lsi, $loopStructure );
+					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $pageData, $previousObjects);
 				}
 			} elseif ( $ns == NS_GLOSSARY ) {
+				$pageData = array( "glossary", $this->mArticleId );
 				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $this->mArticleId );
-				$numberText = " "  . wfMessage( 'loop-glossary-objectnumber-prefix' )->text() . LoopObject::getObjectNumberingOutputForGlossary( $this->mId, $this->mArticleId, $previousObjects);
+				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
 		$outputTitle = '';
@@ -1148,7 +1150,8 @@ class LoopObject {
 				$i = 0;
 				foreach ( $matches[0] as $objectmarker ) {
 					$objectid = $matches[2][$i];
-					$numbering = self::getObjectNumberingOutput($objectid, $lsi, $loopStructure, $previousObjects);
+					$pageData = array( "structure", $lsi, $loopStructure );
+					$numbering = self::getObjectNumberingOutput($objectid, $pageData, $previousObjects);
 					
 					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
 					$i++;
@@ -1159,9 +1162,10 @@ class LoopObject {
 				#dd($previousObjects);
 				foreach ( $matches[0] as $objectmarker ) {
 					$objectid = $matches[2][$i];
-					$numbering = self::getObjectNumberingOutputForGlossary( $objectid, $article, $previousObjects );
+					$pageData = array( "glossary", $article );
+					$numbering = self::getObjectNumberingOutput( $objectid, $pageData, $previousObjects );
 					#dd($numbering);
-					$text = preg_replace ( "/" . $objectmarker . "/", wfMessage("loop-glossary-objectnumber-prefix")->text() . $numbering, $text );
+					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
 					#dd($text);
 					$i++;
 				} 
@@ -1176,19 +1180,38 @@ class LoopObject {
 		
 		return true;
 	}
-
-	public static function getObjectNumberingOutput($objectid, $lsi, $loopStructure, $previousObjects = null, $objectData = null ) {
+	/**
+	 * Outputs the given object's numbering
+	 * @param String $objectId
+	 * @param Array $pageData = [
+	 * 					0 => "structure" or "glossary"
+	 * 					1 => LoopStructureItem or $articleId
+	 * 					2 => LoopStructure or empty
+	 * 					]
+	 * @param Array $previousObjects
+	 * @param Array $objectData
+	 */
+	public static function getObjectNumberingOutput($objectid, Array $pageData, $previousObjects = null, $objectData = null ) {
 
 		global $wgLoopNumberingType;
+		$typeOfPage = $pageData[0];
+
 		if ( $previousObjects == null ) {
-			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			if ( $typeOfPage == "structure" ) {
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $pageData[1], $pageData[2] ); // $lsi, $loopStructure
+			} else {
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $pageData[1] );
+			}
 		}
 		if ( $objectData == null ) {
 			$objectData = LoopObjectIndex::getObjectData( $objectid );
 		}
 
 		if ( $objectData["refId"] == $objectid ) {
-			if ( $wgLoopNumberingType == "chapter" ) {
+
+			if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
+					
+				$lsi = $pageData[1];
 
 				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
 
@@ -1203,41 +1226,19 @@ class LoopObject {
 				}
 				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 				
-			} elseif ( $wgLoopNumberingType == "ongoing" ) {
+			} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
 				$tmpPreviousObjects = 0;
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
 				}
-				
-				return ( $tmpPreviousObjects + $objectData["nthoftype"] );
+				$prefix = '';
+				if ( $typeOfPage == "glossary" ) {
+					$prefix = wfMessage("loop-glossary-objectnumber-prefix")->text();
+				}
+				return $prefix . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 					
 			} 
 		}
-	}
-
-	
-	public static function getObjectNumberingOutputForGlossary($objectid, $article, $previousObjects = null, $objectData = null ) {
-
-		if ( $previousObjects == null ) {
-			$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $article );
-		}
-		if ( $objectData == null ) {
-			$objectData = LoopObjectIndex::getObjectData( $objectid );
-		}
-
-		if ( $objectData["refId"] == $objectid ) {
-			$tmpPreviousObjects = 0;
-			if ( isset($previousObjects[$objectData["index"]]) ) {
-				$tmpPreviousObjects = $previousObjects[$objectData["index"]];
-				
-			}
-			
-			return ( $tmpPreviousObjects + $objectData["nthoftype"] );
-				
-		} else {
-			return false;
-		}
-		
 	}
 }
 ?>
