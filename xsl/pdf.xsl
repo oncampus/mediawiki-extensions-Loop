@@ -438,10 +438,10 @@
 					<fo:table-column column-number="2">
 						<xsl:choose> 
 							<xsl:when test="ancestor::extension[@extension_name='loop_area']">
-								<xsl:attribute name="column-width">105mm</xsl:attribute>
+								<xsl:attribute name="column-width">145mm</xsl:attribute>
 							</xsl:when>
 							<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
-								<xsl:attribute name="column-width">105mm</xsl:attribute>
+								<xsl:attribute name="column-width">145mm</xsl:attribute>
 							</xsl:when>
 							<xsl:otherwise>
 								<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
@@ -453,10 +453,10 @@
 							<fo:table-cell number-columns-spanned="2">
 								<xsl:choose> 
 									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
-										<xsl:attribute name="width">105mm</xsl:attribute>
+										<xsl:attribute name="width">145mm</xsl:attribute>
 									</xsl:when>
 									<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
-										<xsl:attribute name="width">105mm</xsl:attribute>
+										<xsl:attribute name="width">145mm</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
 										<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
@@ -1378,7 +1378,7 @@
 		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
 			<fo:table-column column-number="1" column-width="10mm" />
 			<fo:table-column column-number="2" column-width="6mm" margin-right="-10mm"/>
-			<fo:table-column column-number="3" column-width="150mm"/>
+			<fo:table-column column-number="3" column-width="146mm"/>
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" >
