@@ -118,7 +118,7 @@ class LoopXml {
 		$xml .= 'toclevel="'.$structureItem->getTocLevel().'" ';
 		$xml .= 'tocnumber="'.$structureItem->getTocNumber().'" ';
 		#$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText()).'" ';		
-		$xml .= 'toctext="'.$structureItem->getTocText().'" ';
+		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
@@ -154,7 +154,7 @@ class LoopXml {
 		$wiki2xml = new wiki2xml ();
 		$xml = "<article ";
 		$xml .= "id=\"article" . $articleId . "\" ";
-		$xml .= "title=\"" . $title->mTextform . "\"";
+		$xml .= "title=\"" . htmlspecialchars($title->mTextform, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
 		$xml .= ">\n";
 		
 		if ( isset( $modifiers["glossary"] ) ) {
@@ -184,7 +184,8 @@ class LoopXml {
 			$toc_xml .= 'toclevel="'.$child->getTocLevel().'" ';
 			$toc_xml .= 'tocnumber="'.$child->getTocNumber().'" ';
 			#$toc_xml .= 'toctext="'.htmlspecialchars($child->getTocText()).'" ';
-			$toc_xml .= 'toctext="'.$child->getTocText().'" ';
+			
+			$toc_xml .= 'toctext="'.htmlspecialchars($child->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 			$toc_xml .= ">";
 				
 			if ($subchilds = $child->getDirectChildItems()) {
@@ -197,7 +198,7 @@ class LoopXml {
 		$toc_xml .= "</chapter>";
 	
 		if ($structureItem->getTocLevel() == 0) {
-			$toc_xml = "<chapter>\n<page id=\"article".$structureItem->getArticle()."\" toclevel=\"".$structureItem->getTocLevel()."\" tocnumber=\"".$structureItem->getTocNumber()."\" toctext=\"".htmlspecialchars($structureItem->getTocText())."\" >".$toc_xml."</page></chapter>";
+			$toc_xml = "<chapter>\n<page id=\"article".$structureItem->getArticle()."\" toclevel=\"".$structureItem->getTocLevel()."\" tocnumber=\"".$structureItem->getTocNumber()."\" toctext=\"".htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8')."\" >".$toc_xml."</page></chapter>";
 		}
 	
 		return $toc_xml;
