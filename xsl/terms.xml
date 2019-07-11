@@ -97,11 +97,12 @@
 	<msg name="word_looparea_websource" lang="en">websource</msg>
 	<msg name="word_looparea_citation" lang="en">citation</msg>
 	<msg name="word_spoiler_defaulttitle" lang="en">Solution</msg>
-	<msg name="phrase_syntaxhighlight" lang="en">In the online version, there is source code with syntax highlights at this point. </msg>
+	<msg name="phrase_syntaxhighlight" lang="en">Here is source code with syntax highlights. </msg>
 	<msg name="phrase_looparea_start" lang="en"></msg> <!--Here begins the page area</msg>-->
 	<msg name="phrase_looparea_end" lang="en"></msg> <!--Here ends the page area</msg>-->
 	<msg name="phrase_spoiler_start" lang="en">Here begins hidden content.</msg>
 	<msg name="phrase_spoiler_end" lang="en">Here ends the hidden content.</msg>
+	<msg name="word_glossary" lang="en">Glossary</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -163,11 +164,12 @@
 	<msg name="word_looparea_experiment" lang="de">Experiment</msg>
 	<msg name="word_looparea_citation" lang="de">Zitat</msg>	
 	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
-	<msg name="phrase_syntaxhighlight" lang="de">An dieser Stelle befindet sich online Sourcecode mit Syntaxhighlights. </msg>
+	<msg name="phrase_syntaxhighlight" lang="de">An dieser Stelle befindet sich Sourcecode mit Syntaxhighlights. </msg>
 	<msg name="phrase_looparea_start" lang="de"></msg> <!--Hier beginnt der Seitenbereich</msg>-->
 	<msg name="phrase_looparea_end" lang="de"></msg> <!--Hier endet der Seitenbereich</msg>-->
 	<msg name="phrase_spoiler_start" lang="de">Hier beginnt versteckter Inhalt.</msg>
 	<msg name="phrase_spoiler_end" lang="de">Hier endet der versteckte Inhalt.</msg>
+	<msg name="word_glossary" lang="de">Glossar</msg>
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>
@@ -227,10 +229,11 @@
 	<msg name="word_looparea_experiment" lang="sv">Experiment</msg>
 	<msg name="word_looparea_citation" lang="sv">Citat</msg>	
 	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> 
-	<msg name="phrase_syntaxhighlight" lang="sv">Online finns source code med syntaxhighlights här. </msg>
+	<msg name="phrase_syntaxhighlight" lang="sv">Här är source code med syntaxhighlights. </msg>
 	<msg name="phrase_looparea_start" lang="sv"></msg> <!-- Här börjar sidintervallet</msg>-->
 	<msg name="phrase_looparea_end" lang="sv"></msg> <!--slutar sidintervallet</msg>-->
 	<msg name="phrase_spoiler_start" lang="sv">Här börjar doldt innehåll.</msg>
 	<msg name="phrase_spoiler_end" lang="sv">Här slutar dolda innehållet.</msg>
+	<msg name="word_glossary" lang="sv">Ordlista</msg>
 	
 </terms> 

@@ -11,7 +11,7 @@ $specialPageAliases = array();
 $specialPageAliases['en'] = array(
 	'LoopStructure' => array( 'Table of Contents' ),
 	'LoopStructureEdit' => array( 'Edit TOC' ),
-	'LoopSettings' => array( 'Loop settings' ),
+	'LoopSettings' => array( 'Loop settings', 'Loop inställningar', 'Loop Einstellungen' ),
 	'PurgeCache' => array( 'Purge Cache' ),
 	'LoopExport' => array( 'Loop Export' ),
 	'LoopFigures' => array( 'List of figures' ),
@@ -19,13 +19,17 @@ $specialPageAliases['en'] = array(
 	'LoopListings' => array( 'List of listings' ),
 	'LoopMedia' => array( 'List of media' ),
 	'LoopTables' => array( 'List of tables' ),
-	'LoopTasks' => array( 'List of tasks' )
+	'LoopTasks' => array( 'List of tasks' ),
+	'LoopLiterature' => array( 'Bibliography' ),
+	'LoopLiteratureEdit' => array( 'Edit literature' ),
+	'LoopLiteratureImport' => array( 'Import literature' ),
+	'LoopGlossary' => array( 'Glossary' )
 	);
 
 $specialPageAliases['de'] = array(
 	'LoopStructure' => array( 'Inhaltsverzeichnis' ),
 	'LoopStructureEdit' => array( 'Inhaltsverzeichnis bearbeiten' ),
-	'LoopSettings' => array( 'Loop Einstellungen' ),
+	'LoopSettings' => array( 'Loop Einstellungen', 'Loop settings', 'Loop inställningar' ),
 	'PurgeCache' => array( 'Cache Leeren' ),
 	'LoopExport' => array( 'Loop Export' ),
 	'LoopFigures' => array( 'Abbildungsverzeichnis' ),
@@ -33,13 +37,17 @@ $specialPageAliases['de'] = array(
 	'LoopListings' => array( 'Listingverzeichnis' ),
 	'LoopMedia' => array( 'Medienverzeichnis' ),
 	'LoopTables' => array( 'Tabellenverzeichnis' ),
-	'LoopTasks' => array( 'Aufgabenverzeichnis' )
+	'LoopTasks' => array( 'Aufgabenverzeichnis' ),
+	'LoopLiterature' => array( 'Literaturverzeichnis' ),
+	'LoopLiteratureEdit' => array( 'Literatur bearbeiten' ),
+	'LoopLiteratureImport' => array( 'Literatur importieren' ),
+	'LoopGlossary' => array( 'Glossar', 'Glossary' )
 	);
 	
 $specialPageAliases['sv'] = array(
 	'LoopStructure' => array( 'Innehåll' ),
 	'LoopStructureEdit' => array( 'Regidera innehåll' ),
-	'LoopSettings' => array( 'Loop inställningar' ),
+	'LoopSettings' => array( 'Loop inställningar', 'Loop Einstellungen', 'Loop settings' ),
 	'PurgeCache' => array( 'Rensa cache' ),
 	'LoopExport' => array( 'Loop Export' ),
 	'LoopFigures' => array( 'Figurförteckning' ),
@@ -47,7 +55,11 @@ $specialPageAliases['sv'] = array(
 	'LoopListings' => array( 'Listningförteckning' ),
 	'LoopMedia' => array( 'Medieförteckning' ),
 	'LoopTables' => array( 'Tabellförteckning' ),
-	'LoopTasks' => array( 'Uppgiftförteckning' )
+	'LoopTasks' => array( 'Uppgiftförteckning' ),
+	'LoopLiterature' => array( 'Bibliografi' ),
+	'LoopLiteratureEdit' => array( 'Regidera litteraturen' ),
+	'LoopLiteratureImport' => array( 'Importera litteraturen' ),
+	'LoopGlossary' => array( 'Glossary', 'Ordlista' )
 	);
 
 

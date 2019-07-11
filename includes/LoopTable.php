@@ -81,24 +81,23 @@ class SpecialLoopTables extends SpecialPage {
 		$parser->Options ( $parserOptions );		
 		
 		$tables = array ();
-		$items = $loopStructure->getStructureItems();
+		$structureItems = $loopStructure->getStructureItems();
+		$glossaryItems = LoopGlossary::getGlossaryPages();
 		$table_number = 1;
-		
+		$articleIds = array();
 		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
+		$table_tags = LoopObjectIndex::getObjectsOfType ( 'loop_table' );
 
-		foreach ( $items as $item ) {
+		foreach ( $structureItems as $structureItem ) {
+			$articleIds[ $structureItem->article ] = NS_MAIN;
+		}
+		foreach ( $glossaryItems as $glossaryItem ) {
+			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+		}
+
+		foreach ( $articleIds as $article => $ns ) {
 			
-			$article_id = $item->getArticle ();
-			$title = Title::newFromID ( $article_id );
-			$rev = Revision::newFromTitle ( $title );
-			$content = $rev->getContent ();
-			$table_tags = array ();
-			
-			$parser->clearState();
-			$parser->setTitle ( $title );
-			
-			
-			$table_tags = LoopObjectIndex::getObjectsOfType ( 'loop_table' );
+			$article_id = $article;
 			
 			if ( isset( $table_tags[$article_id] ) ) {
 				foreach ( $table_tags[$article_id] as $table_tag ) {
@@ -115,7 +114,7 @@ class SpecialLoopTables extends SpecialPage {
 					}
 					$table->setArticleId ( $article_id );
 					
-					$out->addHtml ( $table->renderForSpecialpage () );
+					$out->addHtml ( $table->renderForSpecialpage ( $ns ) );
 				}
 			}
 		}

@@ -231,9 +231,8 @@ class LoopObject {
 	 *
 	 * @return string
 	 */
-	public function renderForSpecialpage() {
+	public function renderForSpecialpage( $ns ) {
 		global $wgLoopObjectNumbering, $wgLoopNumberingType;
-		
 		$objectClass = get_class( $this );
 		switch ( $objectClass ) {
 			case "LoopFormula":
@@ -254,20 +253,21 @@ class LoopObject {
 		}
 		#dd($numbering, $type);
 		$numberText = '';
-		if ( $wgLoopObjectNumbering == true ) {
-		
-			$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
-				
-			if ( $lsi ) {
-					
+		if ( $wgLoopObjectNumbering == 1 ) {
+			if ( $ns == NS_MAIN || !isset( $ns ) ) {
 				$loopStructure = new LoopStructure();
 				$loopStructure->loadStructureItems();
-				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
 				
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 				if ( $lsi ) {
-					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
+					$pageData = array( "structure", $lsi, $loopStructure );
+					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $pageData, $previousObjects);
 				}
-					
+			} elseif ( $ns == NS_GLOSSARY ) {
+				$pageData = array( "glossary", $this->mArticleId );
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $this->mArticleId );
+				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
 		$outputTitle = '';
@@ -276,10 +276,13 @@ class LoopObject {
 		} elseif ($this->mTitle) {
 			$outputTitle = $this->getTitle();
 		}
-
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		#$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
-		$html .= '<td scope="col" class="pl-1 pr-1"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		$html .= '<td scope="col" class="pl-1 pr-1">';
+		if ( $type = 'loop_media' ) {
+			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
+		}
+		#$html .=$this->mMediaType;
+		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
 		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/><span>';
 		
 		if ($this->mDescriptionFullyParsed) {
@@ -291,8 +294,17 @@ class LoopObject {
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
-		if ($lsi) {
+		if ( $lsi ) {
 			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
+			
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$html .= $linkRenderer->makeLink( 
+				$linkTitle, 
+				new HtmlArmor( $linktext ),
+				array()
+				) . '<br/>';
+		} elseif ( $ns == NS_GLOSSARY ) {
+			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
 			
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
@@ -806,9 +818,9 @@ class LoopObject {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				# In Loop Upgrade process, use user Administrator for edits and review.
+				# In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
 				$user = null;
-				$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => false, 'create'=> false, 'validate' => false ] );
+				$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
 				if ( $systemUser->getId() == $userId ) {
 					$user = $systemUser;
 				}
@@ -837,7 +849,7 @@ class LoopObject {
 		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-		$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => false, 'create'=> false, 'validate' => false ] );
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
 		
 		if ( isset($fwp) ) {
 			$stableRevId = $fwp->getStable();
@@ -898,7 +910,8 @@ class LoopObject {
 		if ($content == null) {
 			$content = $wikiPage->getContent();
 		}
-		if ( $title->getNamespace() == NS_MAIN ) {
+		#dd($title->getNamespace());
+		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 				
 			# on edit, delete all objects of that page from db. 
 			$loopObjectIndex = new LoopObjectIndex();
@@ -971,7 +984,9 @@ class LoopObject {
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
 				
 				if ( $lsi ) {
-					self::removeStructureCache( $title );
+					self::updateStructurePageTouched( $title );
+				} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
+					LoopGlossary::updateGlossaryPageTouched();
 				}
 				if ( $contentText !== $newContentText ) {
 					
@@ -1034,7 +1049,7 @@ class LoopObject {
 	 * Updates pagetouched data for all pages after given title, or all if there is no title
 	 * @param Title $title
 	 */
-	public static function removeStructureCache($title = null) {
+	public static function updateStructurePageTouched($title = null) {
 		// Reset Cache for following pages in every LoopStructure
 		$cond = "";
 		// if a title is given, each page after given one is updated
@@ -1107,9 +1122,7 @@ class LoopObject {
 				}
 			}
 		}
-		
 		#dd($fwp->getStable(), $fwp->getRevision()->getId(), $showNumbers);
-		
 		$count = array();
 		foreach (self::$mObjectTypes as $objectType) {
 			$count[$objectType] = 0; 
@@ -1123,6 +1136,9 @@ class LoopObject {
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 			#$allObjects = LoopObjectIndex::getAllObjects( $loopStructure );
 			
+		} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
+			$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $article );
+			
 		}
 		foreach ( self::$mObjectTypes as $objectType ) {
 			
@@ -1134,9 +1150,23 @@ class LoopObject {
 				$i = 0;
 				foreach ( $matches[0] as $objectmarker ) {
 					$objectid = $matches[2][$i];
-					$numbering = self::getObjectNumberingOutput($objectid, $lsi, $loopStructure, $previousObjects);
+					$pageData = array( "structure", $lsi, $loopStructure );
+					$numbering = self::getObjectNumberingOutput($objectid, $pageData, $previousObjects);
 					
 					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
+					$i++;
+				} 
+
+			} elseif ( $title->getNamespace() == NS_GLOSSARY && $wgLoopObjectNumbering == 1 && $showNumbers ) {
+				$i = 0;
+				#dd($previousObjects);
+				foreach ( $matches[0] as $objectmarker ) {
+					$objectid = $matches[2][$i];
+					$pageData = array( "glossary", $article );
+					$numbering = self::getObjectNumberingOutput( $objectid, $pageData, $previousObjects );
+					#dd($numbering);
+					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
+					#dd($text);
 					$i++;
 				} 
 
@@ -1146,22 +1176,42 @@ class LoopObject {
 				}
 			}	
 		}
+	
 		
 		return true;
 	}
-
-	public static function getObjectNumberingOutput($objectid, $lsi, $loopStructure, $previousObjects = null, $objectData = null ) {
+	/**
+	 * Outputs the given object's numbering
+	 * @param String $objectId
+	 * @param Array $pageData = [
+	 * 					0 => "structure" or "glossary"
+	 * 					1 => LoopStructureItem or $articleId
+	 * 					2 => LoopStructure or empty
+	 * 					]
+	 * @param Array $previousObjects
+	 * @param Array $objectData
+	 */
+	public static function getObjectNumberingOutput($objectid, Array $pageData, $previousObjects = null, $objectData = null ) {
 
 		global $wgLoopNumberingType;
+		$typeOfPage = $pageData[0];
+
 		if ( $previousObjects == null ) {
-			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+			if ( $typeOfPage == "structure" ) {
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $pageData[1], $pageData[2] ); // $lsi, $loopStructure
+			} else {
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $pageData[1] );
+			}
 		}
 		if ( $objectData == null ) {
-			$objectData = LoopObjectIndex::getObjectData($objectid, $loopStructure);
+			$objectData = LoopObjectIndex::getObjectData( $objectid );
 		}
 
 		if ( $objectData["refId"] == $objectid ) {
-			if ( $wgLoopNumberingType == "chapter" ) {
+
+			if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
+					
+				$lsi = $pageData[1];
 
 				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
 
@@ -1176,13 +1226,16 @@ class LoopObject {
 				}
 				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 				
-			} elseif ( $wgLoopNumberingType == "ongoing" ) {
+			} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
 				$tmpPreviousObjects = 0;
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
 				}
-				
-				return ( $tmpPreviousObjects + $objectData["nthoftype"] );
+				$prefix = '';
+				if ( $typeOfPage == "glossary" ) {
+					$prefix = wfMessage("loop-glossary-objectnumber-prefix")->text();
+				}
+				return $prefix . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 					
 			} 
 		}

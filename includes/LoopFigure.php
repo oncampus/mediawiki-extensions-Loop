@@ -136,7 +136,7 @@ class LoopFigure extends LoopObject{
 	 * 
 	 * @return string
 	 */
-	public function renderForSpecialpage() {
+	public function renderForSpecialpage( $ns = null ) {
 		global $wgLoopObjectNumbering;
 
 		$html = '<tr scope="row" class="ml-1 pb-3">';
@@ -156,14 +156,20 @@ class LoopFigure extends LoopObject{
 		$html .= '</td>';
 		$numberText = '';
 		if ( $wgLoopObjectNumbering == 1 ) {
-			
-			$loopStructure = new LoopStructure();
-			$loopStructure->loadStructureItems();
-			$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
-			
-			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
-			if ( $lsi ) {
-				$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $lsi, $loopStructure, $previousObjects);
+			if ( $ns == NS_MAIN || !isset( $ns ) ) {
+				$loopStructure = new LoopStructure();
+				$loopStructure->loadStructureItems();
+				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
+				
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
+				if ( $lsi ) {
+					$pageData = array( "structure", $lsi, $loopStructure );
+					$numberText = " " . LoopObject::getObjectNumberingOutput($this->mId, $pageData, $previousObjects);
+				}
+			} elseif ( $ns == NS_GLOSSARY ) {
+				$pageData = array( "glossary", $this->mArticleId );
+				$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $pageData );
+				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
 		$outputTitle = '';
@@ -187,6 +193,15 @@ class LoopFigure extends LoopObject{
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
 		if ($lsi) {
 			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
+			
+			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$html .= $linkRenderer->makeLink( 
+				$linkTitle, 
+				new HtmlArmor( $linktext ),
+				array()
+				) . '<br/>';
+		} elseif ( $ns == NS_GLOSSARY ) {
+			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
 			
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
@@ -244,38 +259,39 @@ class SpecialLoopFigures extends SpecialPage {
 		$parser->Options ( $parserOptions );		
 		
 		$figures = array ();
-		$items = $loopStructure->getStructureItems();
+		$structureItems = $loopStructure->getStructureItems();
+		$glossaryItems = LoopGlossary::getGlossaryPages();
 		$figure_number = 1;
+		$articleIds = array();
 		$out->addHtml ( '<table class="table table-hover list_of_figures list_of_objects">' );
-		
 		$figure_tags = LoopObjectIndex::getObjectsOfType ( 'loop_figure' );
+		
+		foreach ( $structureItems as $structureItem ) {
+			$articleIds[ $structureItem->article ] = NS_MAIN;
+		}
+		foreach ( $glossaryItems as $glossaryItem ) {
+			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+		}
 
-		foreach ( $items as $item ) {
-			
-			$article_id = $item->article;
-			$title = Title::newFromID ( $article_id );
-
+		foreach ( $articleIds as $article => $ns ) {
+			$article_id = $article;
 			if ( isset( $figure_tags[$article_id] ) ) {
-
 				foreach ( $figure_tags[$article_id] as $figure_tag ) {
-					
-						$figure = new LoopFigure();
-						$figure->init($figure_tag["thumb"], $figure_tag["args"]);
-						
-						$figure->parse();
+					$figure = new LoopFigure();
+					$figure->init($figure_tag["thumb"], $figure_tag["args"]);
+					$figure->parse();
+					$figure->setNumber ( $figure_tag["nthoftype"] );
+					$figure->setArticleId ( $article_id );
 
-						$figure->setNumber ( $figure_tag["nthoftype"] );
-						$figure->setArticleId ( $article_id );
-
-						preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
-						if (isset($thumbFile[1])) {
-							$figure->setFile($thumbFile[1]);
-						}
-
-						$out->addHtml ( $figure->renderForSpecialpage () );
+					preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
+					if (isset($thumbFile[1])) {
+						$figure->setFile($thumbFile[1]);
+					}
+					$out->addHtml ( $figure->renderForSpecialpage ( $ns ) );
 				}
 			}
 		}
+
 		$out->addHtml ( '</table>' );
 	}
 	protected function getGroupName() {

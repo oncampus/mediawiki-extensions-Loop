@@ -127,4 +127,6 @@
 	<xsl:variable name="phrase_spoiler_start"  select="functx:get_term_name('phrase_spoiler_start')" />
 	<xsl:variable name="phrase_spoiler_end"  select="functx:get_term_name('phrase_spoiler_end')" />
 
+	<xsl:variable name="word_glossary"  select="functx:get_term_name('word_glossary')" />
+
 </xsl:stylesheet>

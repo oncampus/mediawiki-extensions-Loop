@@ -56,15 +56,17 @@
 	"loopsettings-tab-footer": "Footer",
 	"loopsettings-tab-appearance": "Appearance",
 	"loopsettings-url-imprint-privacy-hint": "Please enter a full URL, including http:// OR a page title from this LOOP.",
+	"loopsettings-url-hint": "Please enter a full URL, including http://",
 	"loopsettings-skin-style-label": "Skin-Style",
-	"loopsettings-error": "An error occurred trying to save",
+	"loopsettings-error": "An error occurred trying to save",	
+	"loopsettings-tab-content": "Content settings",
 	"loopsettings-numbering": "Automatic numbering",
 	"loopsettings-numbering-objects-label": "Activate numbering of LOOP-objects, e.g. figures",
 	"loopsettings-numbering-type-ongoing-label": "Ongoing numbering - e.g. '''Fig. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Numbering per chapter - e.g. '''Fig. 3.12'''",
 
-	"loopexport-specialpage-title" : "Export",
-	"loopexport": "Export",
+	"loopexport-specialpage-title" : "Loop Export",
+	"loopexport": "Loop Export",
 	"loopexport-audio-chapter": "Ch.",
 	"loopexport-audio-filename": "Audiobook",
 	"loopexport-offline-filename": "offline_version",
@@ -192,6 +194,10 @@
 	"looplistings": "List of listings",
 	"loopformulas": "List of tasks",
 	"looptasks": "List of tasks",
+
+	"loopliterature": "Bibliography",
+	"loopliteratureedit": "Edit literature",
+	"loopliteratureimport": "Import literature",
 	
 	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
@@ -201,5 +207,10 @@
 	"loopreference-error-unknown-titleoption" : "The reference's show title option (title) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
-	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2"	
+	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
+
+	"loop-glossary-namespace": "Glossary",
+	"loop-glossary-objectnumber-prefix": "G-",
+	"loopglossary": "Glossary",
+	"loop-glossary-empty": "The glossary is still empty. Add an entry by creating a page like ''[[Glossary:Term]]''."
 }

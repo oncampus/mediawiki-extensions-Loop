@@ -65,8 +65,8 @@
 	"loopsettings-numbering-type-ongoing-label": "Durchlaufende Nummerierung - z.B. '''Abb. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Nummerierung nach Kapiteln - z.B. '''Abb. 3.12'''",
 
-	"loopexport-specialpage-title": "Export",
-	"loopexport": "Export",
+	"loopexport-specialpage-title": "Loop Exportieren",
+	"loopexport": "Loop Exportieren",
 	"loopexport-audio-chapter": "Kap.",
 	"loopexport-audio-filename": "Hoerbuch",
 	"loopexport-offline-filename": "Offlineversion",
@@ -195,6 +195,10 @@
 	"loopformulas": "Formelverzeichnis",
 	"looptasks": "Aufgabenverzeichnis",
 
+	"loopliterature": "Literaturverzeichnis",
+	"loopliteratureedit": "Literatur bearbeiten",
+	"loopliteratureimport": "Literatur importieren",
+
 	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
@@ -203,5 +207,10 @@
 	"loopreference-error-unknown-titleoption" : "Die Referenz besitzt für den Parameter Titelanzeige (title) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
-	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX"
+	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
+
+	"loop-glossary-namespace": "Glossar",
+	"loop-glossary-objectnumber-prefix": "G-",
+	"loopglossary": "Glossar",
+	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen."
 }
