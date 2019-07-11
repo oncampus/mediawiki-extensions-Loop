@@ -12,12 +12,23 @@ class LoopGlossary {
 	
 	public static function getShowGlossary() {
 		
+		global $wgOut;
+
 		$showGlossary = false;
+		
+		$user = $wgOut->getUser();
+		$editMode = $user->getOption( 'LoopEditMode', false, true );
 
-		$glossaryItems = self::getGlossaryPages();
-
-		if ( $glossaryItems ) {
+		if ( $editMode ) {
+			
 			$showGlossary = true;
+
+		} else {
+			$glossaryItems = self::getGlossaryPages();
+	
+			if ( $glossaryItems ) {
+				$showGlossary = true;
+			}
 		}
 
 		return $showGlossary;
@@ -90,7 +101,7 @@ class SpecialLoopGlossary extends SpecialPage {
 		$out = $this->getOutput();
 
 		$out->setPageTitle(wfMessage('loopglossary'));
-		$html = '<h1>' . wfMessage('loopglossary') . '</h1>' ;
+		$html = '';
 		
 		$glossaryItems = LoopGlossary::getGlossaryPages();
 		
