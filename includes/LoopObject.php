@@ -818,9 +818,9 @@ class LoopObject {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				# In Loop Upgrade process, use user Administrator for edits and review.
+				# In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
 				$user = null;
-				$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => false, 'create'=> false, 'validate' => false ] );
+				$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
 				if ( $systemUser->getId() == $userId ) {
 					$user = $systemUser;
 				}
@@ -849,7 +849,7 @@ class LoopObject {
 		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-		$systemUser = User::newSystemUser( 'Administrator', [ 'steal' => false, 'create'=> false, 'validate' => false ] );
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
 		
 		if ( isset($fwp) ) {
 			$stableRevId = $fwp->getStable();
