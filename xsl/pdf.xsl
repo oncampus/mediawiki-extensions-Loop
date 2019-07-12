@@ -1375,8 +1375,8 @@
 
 	<!-- Loop Print-->
 	<xsl:template match="extension[@extension_name='loop_print']">
-		<fo:block font-family="{$font_family}" border="dashed 0.4mm {$accent_color}" border-bottom="0" padding="2mm">
-			<xsl:text>Inhalt der Druckversion</xsl:text> <!-- todo: Translations -->
+		<fo:block font-family="{$font_family}" border="dashed 0.4mm {$accent_color}" border-bottom="0" padding="1mm 2mm">
+			<xsl:text>Inhalt der Druckversion. ToDo: Wie Gestaltung?</xsl:text> <!-- todo: Translations -->
 		</fo:block>
 		<fo:block border="dashed 0.4mm {$accent_color}" padding="2mm">
 			<xsl:apply-templates></xsl:apply-templates>
