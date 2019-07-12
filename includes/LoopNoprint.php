@@ -30,9 +30,7 @@ class LoopNoprint {
 	}
 	*/
 
-	static function renderLoopNoprint( $input, array $args, Parser $parser, PPFrame $frame ) {
-		//global $wgStylePath, $wgParser;
-		
+	static function renderLoopNoprint( $input, array $args, Parser $parser, PPFrame $frame ) {		
 		$return='';
 		$noprint_id=uniqid();
 		$return.='<div class="noprintarea" id="'.$noprint_id.'">';

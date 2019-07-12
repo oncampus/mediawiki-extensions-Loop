@@ -1267,6 +1267,21 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- Loop Print-->
+	<xsl:template match="extension[@extension_name='loop_print']">
+		<fo:block font-family="{$font_family}" border="dashed 0.4mm {$accent_color}" border-bottom="0" padding="2mm">
+			<xsl:text>Inhalt der Druckversion</xsl:text> <!-- todo: Translations -->
+		</fo:block>
+		<fo:block border="dashed 0.4mm {$accent_color}" padding="2mm">
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+	
+	<!-- Loop NoPrint-->
+	<xsl:template match="extension[@extension_name='loop_noprint']">
+		<fo:block></fo:block>				
+	</xsl:template>
+
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
 		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
