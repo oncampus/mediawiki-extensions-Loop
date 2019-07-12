@@ -83,21 +83,23 @@ class SpecialLoopFormulas extends SpecialPage {
 		$parser->Options ( $parserOptions );		
 		
 		$formulas = array ();
-		$items = $loopStructure->getStructureItems();
+		$structureItems = $loopStructure->getStructureItems();
+		$glossaryItems = LoopGlossary::getGlossaryPages();
 		$formula_number = 1;
+		$articleIds = array();
 		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
-		foreach ( $items as $item ) {
+		$formula_tags = LoopObjectIndex::getObjectsOfType ( 'loop_formula' );
+
+		foreach ( $structureItems as $structureItem ) {
+			$articleIds[ $structureItem->article ] = NS_MAIN;
+		}
+		foreach ( $glossaryItems as $glossaryItem ) {
+			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+		}
+
+		foreach ( $articleIds as $article => $ns ) {
 			
-			$article_id = $item->getArticle ();
-			$title = Title::newFromID ( $article_id );
-			$rev = Revision::newFromTitle ( $title );
-			$content = $rev->getContent ();
-			$formula_tags = array ();
-			
-			$parser->clearState();
-			$parser->setTitle ( $title );
-			
-			$formula_tags = LoopObjectIndex::getObjectsOfType ( 'loop_formula' );
+			$article_id = $article;
 			
 			if ( isset( $formula_tags[$article_id] ) ) {
 				foreach ( $formula_tags[$article_id] as $formula_tag ) {
@@ -113,7 +115,7 @@ class SpecialLoopFormulas extends SpecialPage {
 					}
 					$formula->setArticleId ( $article_id );
 					
-					$out->addHtml ( $formula->renderForSpecialpage () );
+					$out->addHtml ( $formula->renderForSpecialpage ( $ns ) );
 				}
 			}
 		}

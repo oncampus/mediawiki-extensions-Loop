@@ -54,7 +54,8 @@ class SpecialPurgeCache extends SpecialPage {
 					
 			$exportPath = $wgUploadDirectory . "/export/";
 			SpecialPurgeCache::deleteAll($exportPath);
-			LoopObject::removeStructureCache();
+			LoopObject::updateStructurePageTouched();
+			LoopGlossary::updateGlossaryPageTouched();
 		}
 		return true;
 	}

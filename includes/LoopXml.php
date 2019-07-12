@@ -2,7 +2,6 @@
 class LoopXml {
 	
 	/**
-	 * Add indexable item to the database
 	 * @param LoopStructure $loopStructure: 
 	 * @param Array $modifiers: 
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
@@ -46,6 +45,13 @@ class LoopXml {
 		
 		$xml .= "</loop_objects>\n";
 		
+	
+		$xml .= "<glossary>\n";
+		
+		$xml .= self::glossary2xml ();
+		
+		$xml .= "</glossary>\n";
+		
 		$xml .= "</loop>";
 		#dd($xml);
 		return $xml;
@@ -71,6 +77,12 @@ class LoopXml {
 	    return $xml;
 	}
 	
+	/**
+	 * Converts structure items to XML code
+	 * @param LoopStructureItem $structureItem: 
+	 * @param Array $modifiers: 
+	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
+	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
 		#$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ( Revision::RAW )->getNativeData ();
 		
@@ -78,13 +90,20 @@ class LoopXml {
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
-			$stableRev = $structureItem->getArticle ();
+			$stableRev = intval($articleId);
+			$wp = WikiPage::factory ( $title );
+			$content = $wp->getContent ()->getNativeData ();
+		} else {
+			$content = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
 		}
-		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
-		
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
 		#dd();
+
+		# modify content for resolving space issues with syntaxhighlight in pdf
+		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/U', "$1$2$3\n$4", $content);
+		
+		#dd($content);
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
@@ -99,7 +118,7 @@ class LoopXml {
 		$xml .= 'toclevel="'.$structureItem->getTocLevel().'" ';
 		$xml .= 'tocnumber="'.$structureItem->getTocNumber().'" ';
 		#$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText()).'" ';		
-		$xml .= 'toctext="'.$structureItem->getTocText().'" ';
+		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
@@ -108,7 +127,14 @@ class LoopXml {
 		return $xml;
 	}
 
-	public static function articleFromId2xml( $articleId ) {
+	
+	/**
+	 * Converts article to XML code
+	 * @param Int $articleId: 
+	 * @param Array $modifiers: 
+	 * 		"glossary" => true; removes <meta>-tag for pdf
+	 */
+	public static function articleFromId2xml( $articleId, $modifiers = null ) {
 
 		global $wgLanguageCode;
 		$langParts = mb_split("-", $wgLanguageCode);
@@ -117,19 +143,29 @@ class LoopXml {
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
-			$stableRev = $articleId;
+			$stableRev = intval($articleId);
+			$wp = WikiPage::factory ( $title );
+			$content = $wp->getContent ()->getNativeData ();
+		} else {
+			$content = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
 		}
-		$content = Revision::newFromId( $stableRev )->getContent (  )->getNativeData ();
 		$content = html_entity_decode($content);
 		
 		$wiki2xml = new wiki2xml ();
 		$xml = "<article ";
 		$xml .= "id=\"article" . $articleId . "\" ";
+		$xml .= "title=\"" . htmlspecialchars($title->mTextform, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
 		$xml .= ">\n";
 		
-		$xml .= "<meta>\n";
-		$xml .= "\t<lang>".$langParts[0]."</lang>\n";
-		$xml .= "</meta>\n";
+		if ( isset( $modifiers["glossary"] ) ) {
+			if ( $modifiers["glossary"] ) {
+				# no meta
+			}
+		} else {
+			$xml .= "<meta>\n";
+			$xml .= "\t<lang>".$langParts[0]."</lang>\n";
+			$xml .= "</meta>\n";
+		}
 
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
@@ -148,7 +184,8 @@ class LoopXml {
 			$toc_xml .= 'toclevel="'.$child->getTocLevel().'" ';
 			$toc_xml .= 'tocnumber="'.$child->getTocNumber().'" ';
 			#$toc_xml .= 'toctext="'.htmlspecialchars($child->getTocText()).'" ';
-			$toc_xml .= 'toctext="'.$child->getTocText().'" ';
+			
+			$toc_xml .= 'toctext="'.htmlspecialchars($child->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 			$toc_xml .= ">";
 				
 			if ($subchilds = $child->getDirectChildItems()) {
@@ -161,7 +198,7 @@ class LoopXml {
 		$toc_xml .= "</chapter>";
 	
 		if ($structureItem->getTocLevel() == 0) {
-			$toc_xml = "<chapter>\n<page id=\"article".$structureItem->getArticle()."\" toclevel=\"".$structureItem->getTocLevel()."\" tocnumber=\"".$structureItem->getTocNumber()."\" toctext=\"".htmlspecialchars($structureItem->getTocText())."\" >".$toc_xml."</page></chapter>";
+			$toc_xml = "<chapter>\n<page id=\"article".$structureItem->getArticle()."\" toclevel=\"".$structureItem->getTocLevel()."\" tocnumber=\"".$structureItem->getTocNumber()."\" toctext=\"".htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8')."\" >".$toc_xml."</page></chapter>";
 		}
 	
 		return $toc_xml;
@@ -306,6 +343,22 @@ class LoopXml {
 	
 	
 	}	
+
+	
+	public static function glossary2xml( ) {
+
+		$articles = LoopGlossary::getGlossaryPages( "idArray" );
+		$return = '';
+
+		if ( !empty( $articles ) ) {
+			foreach ( $articles as $articleId ) {
+				#dd($articleId);
+				$return .= self::articleFromId2xml( $articleId, array( "glossary" => true ) );
+			}
+		}
+
+		return $return;
+	}
 	
 	
 }

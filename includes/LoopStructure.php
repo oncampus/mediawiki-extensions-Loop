@@ -283,7 +283,7 @@ class LoopStructure {
 			$structureItem->addToDatabase();
 		}
 		
-		LoopObject::removeStructureCache();
+		LoopObject::updateStructurePageTouched();
 	}
 
 	/**
@@ -291,7 +291,7 @@ class LoopStructure {
 	 */
 	public function deleteItems() {
 
-		LoopObject::removeStructureCache(); # update page_touched on structure pages. 
+		LoopObject::updateStructurePageTouched(); # update page_touched on structure pages. 
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(
@@ -353,8 +353,11 @@ class LoopStructure {
 		return $lsTitle;
 	}
 
+	/**
+	* Check structure- and glossary pages for objects
+ 	*/
 	public function hasObjects( $type ) {
-		$objects = LoopObjectIndex::getObjectsOfType ( $type );
+		$objects = LoopObjectIndex::getObjectsOfType( $type );
 		$structureItems = $this->getStructureItems();
 
 		foreach ( $structureItems as $item ) {
@@ -363,10 +366,15 @@ class LoopStructure {
 			}
 		}
 
+		$glossaryItems = LoopGlossary::getGlossaryPages( "idArray" );
+		foreach ( $glossaryItems as $item ) {
+			if ( isset ( $objects[$item] ) ) {
+				return true;
+			}
+		}
+
 		return false;
 	}
-
-
 }
 
 /**

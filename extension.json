@@ -16,7 +16,8 @@
 		"MediaWiki": ">= 1.32.0",
 		"extensions": {
 			"WikiEditor": "*",
-			"Math": "*"
+			"Math": "*",
+			"SyntaxHighlight": "*"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -64,7 +65,13 @@
 		"LoopTask": "includes/LoopTask.php",
 		"SpecialLoopTasks": "includes/LoopTask.php",
 		"LoopReference": "includes/LoopReference.php",
-		"LoopCode": "includes/LoopCode.php"
+		"LoopCode": "includes/LoopCode.php",
+		"LoopLiterature": "includes/LoopLiterature.php",
+		"SpecialLoopLiterature": "includes/SpecialLoopLiterature.php",
+		"SpecialLoopLiteratureEdit": "includes/SpecialLoopLiterature.php",
+		"SpecialLoopLiteratureImport": "includes/SpecialLoopLiterature.php",
+		"LoopGlossary": "includes/LoopGlossary.php",
+		"SpecialLoopGlossary": "includes/LoopGlossary.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -83,7 +90,8 @@
 			"LoopNoprint::onParserSetup",
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
-			"LoopCode::onParserSetup"
+			"LoopCode::onParserSetup",
+			"LoopLiterature::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -114,7 +122,11 @@
 		"LoopListings": "SpecialLoopListings",
 		"LoopMedia": "SpecialLoopMedia",
 		"LoopTables": "SpecialLoopTables",
-		"LoopTasks": "SpecialLoopTasks"
+		"LoopTasks": "SpecialLoopTasks",
+		"LoopLiterature": "SpecialLoopLiterature",
+		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
+		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
+		"LoopGlossary": "SpecialLoopGlossary"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -150,7 +162,8 @@
 			"createtalk": false,
 			"createpage": false,
 			"writeapi": false,
-			"loop-view-special-pages": false
+			"loop-view-special-pages": false,
+			"loop-edit-literature": false
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -163,7 +176,8 @@
 			"loop-settings-edit": false,
 			"loop-pageaudio": true,
 			"createpage": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": false
 		},
 		"sysop": {
 			"loop-toc-edit": true,
@@ -182,7 +196,8 @@
 			"unreviewedpages": true,
 			"review": true,
 			"autoreview": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -214,7 +229,8 @@
 			"delete": true,
 			"undelete": true,
 			"protect": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -246,7 +262,8 @@
 			"delete": true,
 			"undelete": true,
 			"protect": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -275,7 +292,8 @@
 			"delete": true,
 			"undelete": true,
 			"protect": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -287,7 +305,8 @@
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"purge": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": false
 		},
 		"student_edit": {
 			"edit": true,
@@ -306,7 +325,8 @@
 			"deletedtext": true,
 			"deletedhistory": true,
 			"browsearchive": true,
-			"loop-view-special-pages": true
+			"loop-view-special-pages": true,
+			"loop-edit-literature": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -316,7 +336,8 @@
 			"loop-export-html": false,
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
-			"loop-settings-edit": false
+			"loop-settings-edit": false,
+			"loop-edit-literature": false
 		}
 	},
 	"DefaultUserOptions": {
@@ -394,7 +415,8 @@
 		"loop-rendermode",
 		"loop-settings-edit",
 		"loop-view-export-log",
-		"loop-view-special-pages"
+		"loop-view-special-pages",
+		"loop-edit-literature"
 	],
 	"MessagesDirs": {
 		"Loop": [
@@ -585,6 +607,14 @@
     },
     "LogActionsHandlers": {
         "loopexport/*": "LogFormatter"
-    },
+	},
+	"namespaces": [
+		{
+			"id": 3000,
+			"constant": "NS_GLOSSARY",
+			"name": "loop-glossary-namespace",
+			"protection": "edit"
+		}
+	],
 	"manifest_version": 2
 }

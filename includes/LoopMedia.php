@@ -157,21 +157,23 @@ class SpecialLoopMedia extends SpecialPage {
 		$parser->Options ( $parserOptions );		
 		
 		$medias = array ();
-		$items = $loopStructure->getStructureItems();
+		$structureItems = $loopStructure->getStructureItems();
+		$glossaryItems = LoopGlossary::getGlossaryPages();
 		$media_number = 1;
+			$articleIds = array();
 		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
-		foreach ( $items as $item ) {
+		$media_tags = LoopObjectIndex::getObjectsOfType ( 'loop_media' );
+		
+		foreach ( $structureItems as $structureItem ) {
+			$articleIds[ $structureItem->article ] = NS_MAIN;
+		}
+		foreach ( $glossaryItems as $glossaryItem ) {
+			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+		}
+
+		foreach ( $articleIds as $article => $ns ) {
 			
-			$article_id = $item->getArticle ();
-			$title = Title::newFromID ( $article_id );
-			$rev = Revision::newFromTitle ( $title );
-			$content = $rev->getContent ();
-			$media_tags = array ();
-			
-			$parser->clearState();
-			$parser->setTitle ( $title );
-			
-			$media_tags = LoopObjectIndex::getObjectsOfType ( 'loop_media' );
+			$article_id = $article;
 			
 			if ( isset( $media_tags[$article_id] ) ) {
 			foreach ( $media_tags[$article_id] as $media_tag ) {
@@ -187,7 +189,7 @@ class SpecialLoopMedia extends SpecialPage {
 				}
 				$media->setArticleId ( $article_id );
 				
-				$out->addHtml ( $media->renderForSpecialpage () );
+				$out->addHtml ( $media->renderForSpecialpage ( $ns ) );
 				}
 			}
 		}

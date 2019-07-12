@@ -74,7 +74,7 @@
 		</fo:root>
 	</xsl:template>
 	
-		<xsl:template name="page-sequence-appendix">
+	<xsl:template name="page-sequence-appendix">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
@@ -132,7 +132,6 @@
 
 			</fo:flow>
 		</fo:page-sequence>
-		<!-- 	
 		<xsl:if test="$glossary_exists='1'">
 		<fo:page-sequence master-reference="full-page" id="glossary_sequence">
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
@@ -144,8 +143,9 @@
 			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
 				<xsl:call-template name="page-content-glossary"></xsl:call-template>
 			</fo:flow>
-		</fo:page-sequence>	            	
+		</fo:page-sequence>	         	
         </xsl:if>			
+		<!-- 	   
 		<xsl:if test="$index_exists='1'">
 		<fo:page-sequence master-reference="full-page-2column" id="index_sequence">
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
@@ -161,6 +161,43 @@
         </xsl:if>       
 	 	-->
 	</xsl:template>			
+	
+	
+	<xsl:template name="page-content-glossary">
+		<!-- <xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
+		
+		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1')">
+			<fo:block break-before="page"></fo:block>
+		</xsl:if>		 -->
+		<fo:block>
+			<fo:marker marker-class-name="page-title-left">
+				<xsl:value-of select="$word_appendix"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block>
+			<fo:marker marker-class-name="page-title-right">
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+				<xsl:value-of select="$word_glossary"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block id="glossary" keep-with-next="always" margin-bottom="10mm">
+			<xsl:call-template name="font_head"></xsl:call-template>
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+			<xsl:value-of select="$word_glossary"></xsl:value-of>
+		</fo:block>
+		<xsl:apply-templates select="//*/glossary/article"></xsl:apply-templates>
+	</xsl:template>		
 	
 	<xsl:template name="page-content-appendix">
 		<fo:block id="appendix"></fo:block>
@@ -367,24 +404,74 @@
 				</fo:inline>
 			</fo:block>		
 		</xsl:if>
+		<xsl:if test="$glossary_exists='1'">
+			<fo:block text-align-last="justify">
+				<xsl:call-template name="font_normal"></xsl:call-template>
+				<fo:basic-link color="black">
+					<xsl:attribute name="internal-destination">glossary</xsl:attribute>
+					<xsl:call-template name="appendix_number">
+						<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
+					</xsl:call-template>					
+					<xsl:text> </xsl:text><xsl:value-of select="$word_glossary"></xsl:value-of>
+				</fo:basic-link>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"></fo:leader>
+					<fo:page-number-citation>
+						<xsl:attribute name="ref-id">glossary</xsl:attribute>
+					</fo:page-number-citation>
+				</fo:inline>
+			</fo:block>		
+		</xsl:if>
 	</xsl:template>		
 	
 	<!-- LOOP_OBJECTS -->
 	<xsl:template name="loop_object">
 		<xsl:param name="object"></xsl:param>
 		<xsl:variable name="objectid" select="@id"></xsl:variable>
-		
-		<fo:float>
 			<fo:block>
-				<fo:table table-layout="auto" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse" padding-start="0pt" padding-end="0pt" padding-top="4mm" padding-bottom="4mm"  padding-right="0pt" >
+				<xsl:if test="ancestor::extension[@extension_name='loop_area']">
+					<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+				</xsl:if>
+				<fo:table table-layout="fixed" content-width="150mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse" padding-start="0pt" padding-end="0pt" padding-top="4mm" padding-bottom="4mm"  padding-right="0pt">
 					<xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute>
-					<fo:table-column column-number="1" column-width="0.4mm"/><fo:table-column/>
-					<fo:table-column column-number="2" /><fo:table-column/>
+					<fo:table-column column-number="1" column-width="0.4mm"/>
+					<fo:table-column column-number="2">
+						<xsl:choose> 
+							<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+								<xsl:attribute name="column-width">145mm</xsl:attribute>
+							</xsl:when>
+							<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
+								<xsl:attribute name="column-width">145mm</xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+							</xsl:otherwise>
+						</xsl:choose> 
+					</fo:table-column>
 					<fo:table-body>		
 						<fo:table-row keep-together.within-column="auto">
 							<fo:table-cell number-columns-spanned="2">
-								<fo:block  text-align="left" >
-									<xsl:apply-templates/> 
+								<xsl:choose> 
+									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+										<xsl:attribute name="width">145mm</xsl:attribute>
+									</xsl:when>
+									<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
+										<xsl:attribute name="width">145mm</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+									</xsl:otherwise>
+								</xsl:choose> 
+								<fo:block text-align="left" margin-bottom="1mm">
+									<xsl:choose> 
+										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+											<xsl:attribute name="margin-left">13mm</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+										</xsl:otherwise>
+									</xsl:choose> 
+									<xsl:apply-templates mode="loop_object"/> 
 								</fo:block>
 							</fo:table-cell>	
 						</fo:table-row>
@@ -392,13 +479,23 @@
 							<fo:table-row keep-together.within-column="auto" >
 								<fo:table-cell width="0.4mm" background-color="{$accent_color}">
 								</fo:table-cell>
-								<fo:table-cell  text-align="left" padding-left="1mm" padding-right="2mm">
+								<fo:table-cell width="150mm" text-align="left" padding-right="2mm">
+								<xsl:choose> 
+									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+										<xsl:attribute name="padding-left">13mm</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:attribute name="padding-left">1mm</xsl:attribute>
+									</xsl:otherwise>
+								</xsl:choose> 
+									<xsl:if test="ancestor::extension[@extension_name='spoiler']">
+										<xsl:attribute name="padding-left">2mm</xsl:attribute>
+									</xsl:if>
 									<xsl:call-template name="font_object_title"></xsl:call-template>
-		
 									<fo:block text-align="left">
-									<xsl:if test="ancestor::*[@extension_name='loop_area']">
-										<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
-									</xsl:if>	
+									<xsl:if test="ancestor::extension[@extension_name='loop_area']">
+										<xsl:attribute name="margin-left">1mm</xsl:attribute>
+									</xsl:if>
 									<xsl:if test="count($object[@render]) = 0 or $object[@render!='title']">						
 										<xsl:choose>
 											<xsl:when test="$object[@extension_name='loop_figure']">
@@ -506,16 +603,16 @@
 											</xsl:when>
 											<xsl:otherwise>
 												<xsl:value-of select="$object/@title"></xsl:value-of>	
+												<!-- <xsl:attribute name="padding-top">5mm</xsl:attribute> -->
 											</xsl:otherwise>
 										</xsl:choose>
 									</fo:block>
-		
 									<xsl:if test="count($object[@render]) = 0 or $object[@render!='title']">	
 										<xsl:if test="($object/@description) or ($object/descendant::extension[@extension_name='loop_description'])">
 											<fo:block text-align="left">
-												<xsl:if test="ancestor::*[@extension_name='loop_area']">
+												<!-- <xsl:if test="ancestor::extension[@extension_name='loop_area']">
 													<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
-												</xsl:if>
+												</xsl:if> -->
 												<xsl:choose>
 													<xsl:when test="$object/descendant::extension[@extension_name='loop_description']">
 														<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_description']" mode="loop_object"></xsl:apply-templates>
@@ -526,11 +623,11 @@
 												</xsl:choose>
 											</fo:block>		
 										</xsl:if>
-										
+
 										<xsl:if test="($object/@copyright) or ($object/descendant::extension[@extension_name='loop_copyright'])">
 											<fo:block text-align="left">
-												<xsl:if test="ancestor::*[@extension_name='loop_area']">
-													<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
+												<xsl:if test="ancestor::extension[@extension_name='loop_area']">
+													<!-- <xsl:attribute name="margin-left">15.5mm</xsl:attribute> -->
 												</xsl:if>
 												<xsl:choose>
 													<xsl:when test="$object/descendant::extension[@extension_name='loop_copyright']">
@@ -549,7 +646,6 @@
 					</fo:table-body>
 				</fo:table>
 			</fo:block>
-		</fo:float>
 	</xsl:template>
 	
 	<xsl:template name="page-content-list-of-objects">
@@ -914,6 +1010,15 @@
 			<xsl:when test="@toclevel=''">
 				<xsl:apply-templates></xsl:apply-templates>
 			</xsl:when>
+			<xsl:when test="@title">
+				<fo:block margin-bottom="12mm">
+					<fo:block keep-with-next.within-page="always">
+						<xsl:call-template name="font_subhead"></xsl:call-template>
+						<xsl:value-of select="@title"></xsl:value-of>
+					</fo:block>
+					<xsl:apply-templates></xsl:apply-templates>
+				</fo:block>
+			</xsl:when>
 			<xsl:otherwise>
 				<fo:block >
 					<xsl:attribute name="id">
@@ -1230,10 +1335,11 @@
 		
 
 	<!-- Loop Spoiler -->
-	<xsl:template match="extension[@extension_name='spoiler']">
+	<xsl:template name="spoiler">
 		<fo:block keep-together.within-page="always">
 			<fo:block font-weight="bold">
 				<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
+
 					<xsl:attribute name="background-color"><xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
 					<xsl:attribute name="color">#ffffff</xsl:attribute>					
 					<xsl:choose>
@@ -1249,10 +1355,10 @@
 					</xsl:choose>
 				</fo:inline>			
 		</fo:block>
-		<fo:table keep-together.within-column="always" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
+		<fo:table keep-together.within-column="always" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}"> <!--  -->
 			<fo:table-body>
 				<fo:table-row>
-					<fo:table-cell width="1500mm">
+					<fo:table-cell width="140mm">
 						<xsl:attribute name="padding-top">2mm</xsl:attribute>
 						<xsl:attribute name="padding-left">3mm</xsl:attribute>
 						<xsl:attribute name="padding-right">3mm</xsl:attribute>
@@ -1287,7 +1393,7 @@
 		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
 			<fo:table-column column-number="1" column-width="10mm" />
 			<fo:table-column column-number="2" column-width="6mm" margin-right="-10mm"/>
-			<fo:table-column column-number="3" column-width="150mm"/>
+			<fo:table-column column-number="3" column-width="146mm"/>
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" >
@@ -1490,7 +1596,7 @@
 							</xsl:otherwise>
 						</xsl:choose> -->							
 						<xsl:attribute name="src" ><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
-						<xsl:attribute name="content-width" ><xsl:value-of select="@imagewidth"></xsl:value-of></xsl:attribute>
+						<xsl:attribute name="max-width">145mm</xsl:attribute>
 					</fo:external-graphic>
 				</fo:block>
 			</xsl:if>
@@ -1506,6 +1612,9 @@
 				<xsl:apply-templates></xsl:apply-templates>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_copyright'">
+				<xsl:apply-templates></xsl:apply-templates>
+			</xsl:when>			
+			<xsl:when test="@extension_name='loop_task'">
 				<xsl:apply-templates></xsl:apply-templates>
 			</xsl:when>			
 			<xsl:when test="@extension_name='loop_spoiler_text'">
@@ -1601,12 +1710,26 @@
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
+			
+			<xsl:when test="@extension_name='syntaxhighlight'">
+				<fo:inline>
+					<xsl:apply-templates select="php:function('xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
+					<!-- <xsl:copy-of select="php:function('xsl_transform_syntaxhighlight', .)"></xsl:copy-of> -->
+				</fo:inline>
+			</xsl:when>
+			<xsl:when test="@extension_name='loop_spoiler'">
+				<xsl:call-template name="spoiler"></xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@extension_name='spoiler'">
+				<xsl:call-template name="spoiler"></xsl:call-template>
+			</xsl:when>
+
 			<xsl:otherwise>
 			</xsl:otherwise>
 		</xsl:choose>	
 	</xsl:template>
 	
-		<xsl:template name="glossary_exists">
+	<xsl:template name="glossary_exists">
 		<xsl:choose>
 			<xsl:when test="//*/glossary/article">
 				<xsl:text>1</xsl:text>
@@ -1705,7 +1828,7 @@
 		</xsl:choose>
 	</xsl:template>		
 	
-		<xsl:template name="appendix_number">
+	<xsl:template name="appendix_number">
 		<xsl:param name="content"></xsl:param>
 		
 		<xsl:variable name="c_bibliography" ><xsl:call-template name="cite_exists"></xsl:call-template></xsl:variable>	
@@ -1782,7 +1905,9 @@
 			<xsl:when test="@extension_name='loop_copyright'">
 				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
 			</xsl:when>		
-				
+			<xsl:when test="@extension_name='loop_task'">
+				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
+			</xsl:when>		
 		</xsl:choose>
 	</xsl:template>	
 
@@ -1853,5 +1978,115 @@
 		</fo:basic-link>
 
 	</xsl:template>
+
+	
+	<xsl:template match="xhtml:code">
+	
+		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
+			<xsl:apply-templates select="php:function('xsl_transform_code', .)" mode="syntaxhighlight"></xsl:apply-templates>
+			<!-- <xsl:apply-templates></xsl:apply-templates> -->
+		</fo:block>
+
+	</xsl:template>
+	
+	<xsl:template match="pre" mode="syntaxhighlight">
+		<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="div" mode="syntaxhighlight">
+		<fo:block linefeed-treatment="preserve" white-space-collapse="false" hyphenation-character=" " white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
+			<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>	
+	
+
+	<xsl:template match="span" mode="syntaxhighlight">
+			<fo:wrapper width="50mm" wrap-option="wrap">
+		<xsl:choose>
+			<xsl:when test="@class='lineno'">
+				<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
+			</xsl:when>
+			
+<xsl:when test="@class='nbsp'"><fo:inline white-space="pre"><xsl:value-of select="."></xsl:value-of></fo:inline></xsl:when>
+<xsl:when test="@class='p'"><fo:inline><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='n'"><fo:inline><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='hll'"><fo:inline background-color="#ffffcc"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+
+<xsl:when test="@class='c'"><fo:inline color="#408080"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='err'"><fo:inline border-bottom="1px solid #FF0000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='k'"><fo:inline color="#008000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='o'"><fo:inline color="#666666 "><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='cm'"><fo:inline color="#408080" font-style="italic"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='cp'"><fo:inline color="#BC7A00"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='c1'"><fo:inline color="#408080" font-style="italic"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='cs'"><fo:inline color="#408080" font-style="italic"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gd'"><fo:inline color="#A00000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='ge'"><fo:inline font-style="italic"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gr'"><fo:inline color="#FF0000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gh'"><fo:inline color="#000080" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gi'"><fo:inline color="#00A000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='go'"><fo:inline color="#888888"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gp'"><fo:inline color="#000080" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gs'"><fo:inline font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gu'"><fo:inline color="#800080" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='gt'"><fo:inline color="#0044DD"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='kc'"><fo:inline color="#008000" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='kd'"><fo:inline color="#008000" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='kn'"><fo:inline color="#008000" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='kp'"><fo:inline color="#008000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='kr'"><fo:inline color="#008000" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='kt'"><fo:inline color="#B00040"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='m'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='s'"><fo:inline color="#BA2121"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='na'"><fo:inline color="#7D9029"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nb'"><fo:inline color="#008000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nc'"><fo:inline color="#0000FF" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='no'"><fo:inline color="#880000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nd'"><fo:inline color="#AA22FF"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='ni'"><fo:inline color="#999999" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='ne'"><fo:inline color="#D2413A" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nf'"><fo:inline color="#0000FF"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nl'"><fo:inline color="#A0A000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nn'"><fo:inline color="#0000FF" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nt'"><fo:inline color="#008000" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='nv'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='ow'"><fo:inline color="#AA22FF" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='w'"><fo:inline color="#bbbbbb"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='mb'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='mf'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='mh'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='mi'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='mo'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='sb'"><fo:inline color="#BA2121"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='sc'"><fo:inline color="#BA2121"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='sd'"><fo:inline color="#BA2121" font-style="italic"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when><!-- ; font-style: italic } /* Literal.String.Doc */ -->
+<xsl:when test="@class='s2'"><fo:inline color="#BA2121"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='se'"><fo:inline color="#BB6622" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when><!-- ; font-weight: bold } /* Literal.String.Escape */ -->
+<xsl:when test="@class='sh'"><fo:inline color="#BA2121"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='si'"><fo:inline color="#BB6688" font-weight="bold"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when><!-- ; font-weight: bold } /* Literal.String.Interpol */ -->
+<xsl:when test="@class='sx'"><fo:inline color="#008000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='sr'"><fo:inline color="#BB6688"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='s1'"><fo:inline color="#BA2121"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='ss'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='bp'"><fo:inline color="#008000"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='vc'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='vg'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='vi'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+<xsl:when test="@class='il'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+			
+<xsl:when test="@class='x'"><fo:inline ><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>			
+			
+			
+			
+			<xsl:otherwise>
+			
+				<!-- C<xsl:value-of select="@class"></xsl:value-of>D<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates> -->
+				<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
+			</xsl:otherwise>
+		</xsl:choose>
+		
+				</fo:wrapper>
+	</xsl:template>
+	
+	
 	
 </xsl:stylesheet>

@@ -42,10 +42,15 @@
 				</xsl:attribute>
 			
 				<xsl:element name="p">
-				
-					<xsl:value-of select="$word_chapter"/>
-					<xsl:text> </xsl:text>
-					<xsl:value-of select="@tocnumber"></xsl:value-of>
+					<xsl:choose>
+						<xsl:when test="@tocnumber=''">
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$word_chapter"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="@tocnumber"></xsl:value-of>
+						</xsl:otherwise>
+					</xsl:choose>
 					
 					<xsl:element name="break">
 						<xsl:attribute name="strength">
@@ -53,7 +58,12 @@
 						</xsl:attribute>
 					</xsl:element>
 
-					<xsl:value-of select="@toctext"></xsl:value-of>
+					<xsl:if test="@toctext">
+						<xsl:value-of select="@toctext"></xsl:value-of>
+					</xsl:if>
+					<xsl:if test="@title">
+						<xsl:value-of select="@title"></xsl:value-of>
+					</xsl:if>
 					
 					<xsl:element name="break">
 						<xsl:attribute name="time">
@@ -122,7 +132,7 @@
 			</xsl:when>
 
 			<xsl:when test="@extension_name='loop_area'">
-				<xsl:apply-templates/>
+				<xsl:call-template name="loop_area"> </xsl:call-template>
 			</xsl:when>
 
 			<xsl:when test="@extension_name='math'">
@@ -143,6 +153,26 @@
 				<xsl:apply-templates/>
 			</xsl:when>	
 
+			<xsl:when test="@extension_name='syntaxhighlight'">
+				<xsl:call-template name="syntaxhighlight"></xsl:call-template>
+			</xsl:when>	
+
+			<xsl:when test="@extension_name='loop_spoiler'">
+				<xsl:call-template name="loop_spoiler">
+                	<xsl:with-param name="object">
+						<xsl:copy-of select="."></xsl:copy-of>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>	
+
+			<xsl:when test="@extension_name='spoiler'">
+				<xsl:call-template name="loop_spoiler">
+                	<xsl:with-param name="object">
+						<xsl:copy-of select="."></xsl:copy-of>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>	
+
 			
 		</xsl:choose>	
 		<!--
@@ -154,6 +184,70 @@
 		-->
 	</xsl:template>
 	
+	
+	<xsl:template name="loop_area">
+
+		<xsl:variable name="looparea_type">
+		<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+			<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$word_looparea_learningobjectives"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='arrangement'"><xsl:value-of select="$word_looparea_arrangement"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='example'"><xsl:value-of select="$word_looparea_example"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='reflection'"><xsl:value-of select="$word_looparea_reflection"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='notice'"><xsl:value-of select="$word_looparea_notice"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='important'"><xsl:value-of select="$word_looparea_important"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='annotation'"><xsl:value-of select="$word_looparea_annotation"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='definition'"><xsl:value-of select="$word_looparea_definition"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='formula'"><xsl:value-of select="$word_looparea_formula"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='markedsentence'"><xsl:value-of select="$word_looparea_markedsentence"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='sourcecode'"><xsl:value-of select="$word_looparea_sourcecode"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='summary'"><xsl:value-of select="$word_looparea_summary"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='indentation'"><xsl:value-of select="$word_looparea_indentation"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='norm'"><xsl:value-of select="$word_looparea_norm"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='law'"><xsl:value-of select="$word_looparea_law"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='question'"><xsl:value-of select="$word_looparea_question"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='practice'"><xsl:value-of select="$word_looparea_practice"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='exercise'"><xsl:value-of select="$word_looparea_exercise"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='websource'"><xsl:value-of select="$word_looparea_websource"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='experiment'"><xsl:value-of select="$word_looparea_experiment"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
+			<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:if>
+			</xsl:otherwise> <!-- todo: error msg? -->
+		</xsl:choose>
+	</xsl:variable>
+<!-- 			
+	<xsl:value-of select="$phrase_looparea_start"></xsl:value-of>
+	<xsl:text> </xsl:text> -->
+	<xsl:element name="break">
+		<xsl:attribute name="strength">
+			<xsl:text>strong</xsl:text>
+		</xsl:attribute>
+	</xsl:element>
+	<xsl:value-of select="$looparea_type"></xsl:value-of>
+	<xsl:element name="break">
+		<xsl:attribute name="strength">
+			<xsl:text>strong</xsl:text>
+		</xsl:attribute>
+	</xsl:element>
+	<xsl:apply-templates/>
+	<xsl:element name="break">
+		<xsl:attribute name="strength">
+			<xsl:text>strong</xsl:text>
+		</xsl:attribute>
+	</xsl:element>
+	<!-- <xsl:value-of select="$phrase_looparea_end"></xsl:value-of>
+	<xsl:text> </xsl:text>
+	<xsl:value-of select="$looparea_type"></xsl:value-of>
+	<xsl:element name="break">
+		<xsl:attribute name="strength">
+			<xsl:text>strong</xsl:text>
+		</xsl:attribute>
+	</xsl:element> -->
+	</xsl:template>
+
 	<xsl:template name="math">
 		<xsl:param name="object"></xsl:param>
 		<xsl:text> </xsl:text>
@@ -178,6 +272,65 @@
 
 		<xsl:text> </xsl:text>
 
+	</xsl:template>
+
+	<xsl:template name="syntaxhighlight">
+		<xsl:value-of select="$phrase_syntaxhighlight"></xsl:value-of>
+			<xsl:element name="break">
+				<xsl:attribute name="strength">
+					<xsl:text>medium</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="loop_spoiler">
+		<xsl:param name="object"></xsl:param>
+
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>medium</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		
+		<xsl:choose>
+			<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
+				<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
+			</xsl:when>
+			<xsl:when test="@text">
+				<xsl:value-of select="@text"></xsl:value-of>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
+			</xsl:otherwise>
+		</xsl:choose>	
+
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+
+		<xsl:text> </xsl:text>
+		<xsl:value-of select="$phrase_spoiler_start"></xsl:value-of>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		<xsl:text> </xsl:text>
+		<xsl:apply-templates/>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+		<xsl:value-of select="$phrase_spoiler_end"></xsl:value-of>
+		<xsl:text> </xsl:text>
+		<xsl:element name="break">
+			<xsl:attribute name="strength">
+				<xsl:text>strong</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
 	</xsl:template>
 
 
@@ -257,7 +410,7 @@
 		</xsl:element>
 		<xsl:element name="break">
 			<xsl:attribute name="time">
-				<xsl:text>1200ms</xsl:text>
+				<xsl:text>700ms</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
 		<xsl:choose>
@@ -445,6 +598,9 @@
 			</xsl:when>
 			<xsl:when test="extension[@extension_name='loop_area']">
         		<func:result>3</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='syntaxhighlight']">
+        		<func:result>2</func:result>
 			</xsl:when>
 
 			<xsl:otherwise>

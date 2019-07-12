@@ -322,7 +322,7 @@ class LoopHtml{
         );
 
         $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
-        $skinFolder = "resources/styles/$skinStyle/img/";
+        $skinFolder = "resources/styles/less/skins/$skinStyle/img/";
         $skinFiles = scandir("skins/Loop/$skinFolder");
         $skinFiles = array_slice($skinFiles, 2);
         
