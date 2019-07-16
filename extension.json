@@ -139,6 +139,14 @@
 				"oojs-ui-widgets",
 				"mediawiki.Upload.Dialog"
 			]
+		},
+		"ext.loop-literature-edit.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/SpecialLoopLiteratureEdit.js"
+			],
+			"dependencies": [
+			]
 		}
 	},
 	"TrackingCategories": [
@@ -591,6 +599,10 @@
 		"LoopSpoilerDefaultType": {
 			"value": "default",
 			"description" : "Setting default type for loop spoiler"
+		},
+		"LoopLiteratureCiteType": {
+			"value": "harvard",
+			"description" : "Setting default type citiations of literature"
 		}
 
 	},
