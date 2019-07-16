@@ -175,7 +175,7 @@ class LoopSettings {
      * Puts request content into array
      *
      * @param Request $request 
-     * @return Array $newLoopSettings
+     * @return Bool
      */
 
     public function getLoopSettingsFromRequest ( $request ) {
@@ -329,7 +329,7 @@ class SpecialLoopSettings extends SpecialPage {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$user = $this->getUser();
 		$out = $this->getOutput();
-		$html = '<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
+		$html = '';#<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
 		
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
@@ -352,9 +352,9 @@ class SpecialLoopSettings extends SpecialPage {
 			
 			$currentLoopSettings = new LoopSettings();
 			
-			if( ! empty( $requestToken ) ) {
+			if ( ! empty( $requestToken ) ) {
 
-				if( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
+				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
 				
 				$currentLoopSettings->getLoopSettingsFromRequest( $request );
 				
