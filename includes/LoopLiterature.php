@@ -12,8 +12,9 @@ class LoopLiterature {
 
 	public $literatureTypes;
 
+    public $id;
     public $key;
-    public $literatureType;
+    public $itemType;
     public $address;
     public $author;
     public $booktitle;
@@ -32,73 +33,74 @@ class LoopLiterature {
     public $publisher;
     public $school;
     public $series;
-    public $title;
-    public $youtubeLink;
+    public $itemtitle;
     public $type;
     public $url;
     public $volume;
     public $year;
+    public $errors;
 
 	public function __construct() {
 
 		$this->literatureTypes = array(
 			"article" => array(
-				"required" => array( "author", "title", "journal", "year" ),
+				"required" => array( "author", "itemtitle", "journal", "year" ),
 				"optional" => array( "volume", "number", "pages", "month", "note", "url" )
 			),
 			"book" => array(
-				"required" => array( "author", "editor", "title", "publisher", "year" ),
+				"required" => array( "author", "editor", "itemtitle", "publisher", "year" ),
 				"optional" => array( "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url" )
 			),
 			"booklet" => array(
-				"required" => array( "title" ),
+				"required" => array( "itemtitle" ),
 				"optional" => array( "author", "howpublished", "address", "month", "year", "note", "url" )
 			),
 			"conference" => array(
-				"required" => array( "author", "title", "booktitle", "year" ),
+				"required" => array( "author", "itemtitle", "booktitle", "year" ),
 				"optional" => array( "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" )
 			),
 			"inbook" => array(
-				"required" => array( "author", "editor", "title", "chapter", "pages", "publisher", "year" ),
+				"required" => array( "author", "editor", "itemtitle", "chapter", "pages", "publisher", "year" ),
 				"optional" => array( "volume", "number", "series", "type", "address", "edition", "month", "note", "url" )
 			),
 			"incollection" => array(
-				"required" => array( "author", "title", "booktitle", "publisher", "year" ),
+				"required" => array( "author", "itemtitle", "booktitle", "publisher", "year" ),
 				"optional" => array( "editor", "volume", "number", "series", "type", "chapter", "pages", "address", "edition", "month", "note", "url" )
 			),
 			"inproceedings" => array(
-				"required" => array( "author", "title", "booktitle", "year" ),
+				"required" => array( "author", "itemtitle", "booktitle", "year" ),
 				"optional" => array( "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" )
 			),
 			"manual" => array(
-				"required" => array( "address", "title", "year" ),
+				"required" => array( "address", "itemtitle", "year" ),
 				"optional" => array( "author", "organization", "edition", "month", "note", "url" )
 			),
 			"mastersthesis" => array(
-				"required" => array( "author", "title", "school", "year" ),
+				"required" => array( "author", "itemtitle", "school", "year" ),
 				"optional" => array( "type", "address", "month", "note", "url" )
 			),
 			"misc" => array(
 				"required" => array(),
-				"optional" => array( "author", "title", "howpublished", "month", "year", "note", "url" )
+				"optional" => array( "author", "itemtitle", "howpublished", "month", "year", "note", "url" )
 			),
 			"phdthesis" => array(
-				"required" => array( "author", "title", "school", "year" ),
+				"required" => array( "author", "itemtitle", "school", "year" ),
 				"optional" => array( "type", "address", "month", "note", "url" )
 			),
 			"proceedings" => array(
-				"required" => array( "title", "year" ),
+				"required" => array( "itemtitle", "year" ),
 				"optional" => array( "editor", "volume", "number", "series", "address", "month", "organization", "publisher", "note", "url" )
 			),
 			"techreport" => array(
-				"required" => array( "author", "title", "institution", "year" ),
+				"required" => array( "author", "itemtitle", "institution", "year" ),
 				"optional" => array( "type", "note", "number", "address", "month", "url" )
 			),
 			"unpublished" => array(
-				"required" => array( "author", "title", "note" ),
+				"required" => array( "author", "itemtitle", "note" ),
 				"optional" => array( "month", "year", "url" )
 			)
 		);
+		$this->errors = array();
 		return true;
 	}
 
@@ -114,52 +116,41 @@ class LoopLiterature {
      * @return bool true
      */
     function addToDatabase() {
-		dd("addtodatabase");
+		#dd("addtodatabase");
 
-        $this->dbkeys = array(
-            'lit_key' => $this->key,
-            'lit_literatureType' => $this->literatureType,
-            'lit_address' => $this->address,
-            'lit_author' => $this->author,
-            'lit_booktitle' => $this->booktitle,
-            'lit_chapter' => $this->chapter,
-            'lit_edition' => $this->edition,
-            'lit_editor' => $this->editor,
-            'lit_howpublished' => $this->howpublished,
-            'lit_institution' => $this->institution,
-            'lit_isbn' => $this->isbn,
-            'lit_journal' => $this->journal,
-            'lit_month' => $this->month,
-            'lit_note' => $this->note,
-            'lit_number' => $this->number,
-            'lit_organization' => $this->organization,
-            'lit_pages' => $this->pages,
-            'lit_publisher' => $this->publisher,
-            'lit_school' => $this->school,
-            'lit_series' => $this->series,
-            'lit_title' => $this->title,
-            'lit_type' => $this->type,
-            'lit_url' => $this->url,
-            'lit_volume' => $this->volume,
-            'lit_year' => $this->year
-        );
-        
-        $dbw = wfGetDB( DB_MASTER );
-
-		#$dbw->delete(
-		#	'loop_settings',
-		#	'lit_structure = 0', # TODO Structure support
-		#	__METHOD__
-        #);
-        
-        foreach ( $this->dbkeys as $dbk => $val ) {
-            $dbw->insert(
-                'loop_literature_items',
-                array(
-                    $dbk => $val
-                )
-            );
-        }
+		$dbw = wfGetDB( DB_MASTER );
+		
+		$dbw->insert(
+			'loop_literature_items',
+				array(
+				'lit_itemkey' => $this->key,
+				'lit_itemtype' => $this->itemType,
+				'lit_address' => $this->address,
+				'lit_author' => $this->author,
+				'lit_booktitle' => $this->booktitle,
+				'lit_chapter' => $this->chapter,
+				'lit_edition' => $this->edition,
+				'lit_editor' => $this->editor,
+				'lit_howpublished' => $this->howpublished,
+				'lit_institution' => $this->institution,
+				'lit_isbn' => $this->isbn,
+				'lit_journal' => $this->journal,
+				'lit_month' => $this->month,
+				'lit_note' => $this->note,
+				'lit_number' => $this->number,
+				'lit_organization' => $this->organization,
+				'lit_pages' => $this->pages,
+				'lit_publisher' => $this->publisher,
+				'lit_school' => $this->school,
+				'lit_series' => $this->series,
+				'lit_title' => $this->itemtitle,
+				'lit_type' => $this->type,
+				'lit_url' => $this->url,
+				'lit_volume' => $this->volume,
+				'lit_year' => $this->year
+			)
+		);
+		
 
         return true;
 	}
@@ -173,93 +164,330 @@ class LoopLiterature {
     public function getLiteratureFromRequest ( $request ) {
 
 		$key = $request->getText( 'key' );
-		$itemType = $request->getText( 'key' );
+		$itemType = $request->getText( 'itemType' );
 		
-		if ( ! empty ( $key ) && ! empty ( $itemType ) ) {
+		if ( ! empty ( $key ) ) {
+			
+		 	if ( ! empty ( $itemType ) ) {
+				$loopLiterature = new LoopLiterature();
+				$loopLiteratureItem = $loopLiterature->loadLiteratureItem( $key );
+				if ( ! $loopLiteratureItem ) {
+					$this->key = $key;
 
-			$exists = self::loadLiteratureItem( $key );
-			if ( ! $exists ) {
-				$this->key = $key;
+					#dd($itemType, array_key_exists( $itemType, $this->literatureTypes ), $request);
+					if ( array_key_exists( strtolower( $itemType ), $this->literatureTypes ) ) {
 
-				
-				if ( array_key_exists( $itemType, $this->literatureTypes ) ) {
+						$this->itemType = strtolower( $itemType );
 
-					dd("hi");
+						foreach ( $this->literatureTypes[$this->itemType] as $required => $array ) {
 
-				}
-
-
-
-
+							foreach ( $array as $field ) {
+								if ( ! empty ( $request->getText( $field ) ) ) {
+									$value = $request->getText( $field );
+									$valid = self::checkDataValidity( $field, $value );
+									if ( $valid ) {
+										switch ( $field ) {
+											case "address":
+												$this->address = $value;
+												break;
+											case "author":
+												$this->author = $value;
+												break;
+											case "booktitle":
+												$this->booktitle = $value;
+												break;
+											case "chapter":
+												$this->chapter = intval($value);
+												break;
+											case "edition":
+												$this->edition = intval($value);
+												break;
+											case "editor":
+												$this->editor = $value;
+												break;
+											case "howpublished":
+												$this->howpublished = $value;
+												break;
+											case "institution":
+												$this->institution = $value;
+												break;
+											case "isbn":
+												$this->isbn = intval($value);
+												break;
+											case "journal":
+												$this->address = $value;
+												break;
+											case "month":
+												$this->month = $value;
+												break;
+											case "note":
+												$this->note = $value;
+												break;
+											case "number":
+												$this->number = intval($value);
+												break;
+											case "organization":
+												$this->organization = $value;
+												break;
+											case "pages":
+												$this->pages = $value;
+												break;
+											case "publisher":
+												$this->publisher = $value;
+												break;
+											case "school":
+												$this->school = $value;
+												break;
+											case "series":
+												$this->series = $value;
+												break;
+											case "itemtitle":
+												$this->itemtitle = $value;
+												break;
+											case "type":
+												$this->type = $value;
+												break;
+											case "url":
+												$this->url = $value;
+												break;
+											case "volume":
+												$this->volume = $value;
+												break;
+											case "year":
+												$this->year = intval($value);
+												break;
+										}
+									} else {
+										$this->errors[] = wfMessage( "loopliterature-error-invalidentry", wfMessage("loopliterature-label-".$field) );
+									}
+								} elseif ( $required == "required" )  {
+									$this->errors[] = wfMessage( "loopliterature-error-missingrequired", wfMessage("loopliterature-label-".$field) );
+								}
+							}
+						}
+					} else {
+						$this->errors[] = wfMessage( "loopliterature-error-unknowntype", $itemType );
+					}
+				} else {
+					$this->errors[] = wfMessage( "loopliterature-error-dublicatekey", $key );
+				} 
+			} else {
+				$this->errors[] = wfMessage( "loopliterature-error-missingrequired",  wfMessage("loopliterature-label-itemType") );
 			}
+		} else {
+			$this->errors[] = wfMessage( "loopliterature-error-missingkey" );
 		}
-
-		return true;
+		#dd("hi",$this);
+		return $this;
 	}
 	
+	public static function checkDataValidity( $key, $val ) {
+		
+		switch ( $key ) {
+			case "year":
+				$int_val = intval($val);
+				if ( strlen( $val ) == 4 && is_numeric( $val ) ) {
+					return true;
+				} else { return false; }
+				
+			case "chapter":
+				$int_val = intval($val);
+				if ( is_numeric( $val ) ) {
+					return true;
+				} else { return false; }
+				
+			case "edition":
+				$int_val = intval($val);
+				if ( is_numeric( $val ) ) {
+					return true;
+				} else { return false; }
+				
+			case "number":
+				$int_val = intval($val);
+				if ( is_numeric( $val ) ) {
+					return true;
+				} else { return false; }
+				
+			case "isbn":
+				$int_val = intval($val);
+				if ( is_numeric( $val ) && ( strlen( $val ) == 10 || strlen( $val ) == 13 ) ) {
+					return true;
+				} else { return false; }
+				
+			case "note":
+				if ( ! strpos($val, '<script>') ) {
+					return true;
+				} else {
+					return false;
+				}
+				
+			default:
+				if ( strlen( $val ) <= 255 && ! strpos($val, '<script>') ) {
+					return true;
+				} else { return false; }
+				
+		#check for text
+		}
+	}
+
+
     /**
-     * Loads literature item from DB
+     * Loads all literature items from DB
+	 * @param Array $dada = null
+	 * 			"keys" -> will only return keys
      */
-    public static function loadLiteratureItem( $key ) {
+    public static function getAllLiteratureItems( $data = null ) {
 
         $dbr = wfGetDB( DB_REPLICA );
-        /*
+        
         $res = $dbr->select(
             'loop_literature_items',
             array(
-                'lset_structure',
-                'lset_property',
-                'lset_value',
+				'lit_itemkey',
+				'lit_itemtype',
+				'lit_address',
+				'lit_author',
+				'lit_booktitle',
+				'lit_chapter',
+				'lit_edition',
+				'lit_editor',
+				'lit_howpublished',
+				'lit_institution',
+				'lit_isbn',
+				'lit_journal',
+				'lit_month',
+				'lit_note',
+				'lit_number',
+				'lit_organization',
+				'lit_pages',
+				'lit_publisher',
+				'lit_school',
+				'lit_series',
+				'lit_title',
+				'lit_type',
+				'lit_url',
+				'lit_volume',
+				'lit_year'
+            ),
+            array(),
+            __METHOD__
+        );
+
+		$return = array();
+
+        foreach ( $res as $row ) {
+			
+			if ( isset ( $data["key"] ) ) {
+				$return[] = $row->lit_itemkey;
+			} else {
+				$return[$row->lit_itemkey] = array();
+				$return[$row->lit_itemkey]["itemtype"] = $row->lit_itemtype;
+				$return[$row->lit_itemkey]["address"] = $row->lit_address;
+				$return[$row->lit_itemkey]["author"] = $row->lit_author;
+				$return[$row->lit_itemkey]["booktitle"] = $row->lit_booktitle;
+				$return[$row->lit_itemkey]["chapter"] = $row->lit_chapter;
+				$return[$row->lit_itemkey]["edition"] = $row->lit_edition;
+				$return[$row->lit_itemkey]["editor"] = $row->lit_editor;
+				$return[$row->lit_itemkey]["howpublished"] = $row->lit_howpublished;
+				$return[$row->lit_itemkey]["institution"] = $row->lit_institution;
+				$return[$row->lit_itemkey]["isbn"] = $row->lit_isbn;
+				$return[$row->lit_itemkey]["journal"] = $row->lit_journal;
+				$return[$row->lit_itemkey]["month"] = $row->lit_month;
+				$return[$row->lit_itemkey]["note"] = $row->lit_note;
+				$return[$row->lit_itemkey]["number"] = $row->lit_number;
+				$return[$row->lit_itemkey]["organization"] = $row->lit_organization;
+				$return[$row->lit_itemkey]["pages"] = $row->lit_pages;
+				$return[$row->lit_itemkey]["publisher"] = $row->lit_publisher;
+				$return[$row->lit_itemkey]["school"] = $row->lit_school;
+				$return[$row->lit_itemkey]["series"] = $row->lit_series;
+				$return[$row->lit_itemkey]["itemtitle"] = $row->lit_title;
+				$return[$row->lit_itemkey]["type"] = $row->lit_type;
+				$return[$row->lit_itemkey]["url"] = $row->lit_url;
+				$return[$row->lit_itemkey]["volume"] = $row->lit_volume;
+				$return[$row->lit_itemkey]["year"] = $row->lit_year;
+					
+			}
+		}
+		return $return;
+	}
+
+    /**
+     * Loads literature item from DB
+     */
+    public function loadLiteratureItem( $key ) {
+
+        $dbr = wfGetDB( DB_REPLICA );
+        
+        $res = $dbr->select(
+            'loop_literature_items',
+            array(
+				'lit_itemkey',
+				'lit_itemtype',
+				'lit_address',
+				'lit_author',
+				'lit_booktitle',
+				'lit_chapter',
+				'lit_edition',
+				'lit_editor',
+				'lit_howpublished',
+				'lit_institution',
+				'lit_isbn',
+				'lit_journal',
+				'lit_month',
+				'lit_note',
+				'lit_number',
+				'lit_organization',
+				'lit_pages',
+				'lit_publisher',
+				'lit_school',
+				'lit_series',
+				'lit_title',
+				'lit_type',
+				'lit_url',
+				'lit_volume',
+				'lit_year'
             ),
             array(
-                 'lset_key = "' . $key .'"' # TODO Structure support
+                 'lit_itemkey = "' . $key .'"' 
             ),
             __METHOD__
         );
 
+		$itemExists = false;
         foreach ( $res as $row ) {
-            $data[$row->lset_property] = $row->lset_value;
-        }
+			$itemExists = true;
+			
+			$this->itemkey = $row->lit_itemkey;
+			$this->itemtype = $row->lit_itemtype;
+			$this->address = $row->lit_address;
+			$this->author = $row->lit_author;
+			$this->booktitle = $row->lit_booktitle;
+			$this->chapter = $row->lit_chapter;
+			$this->edition = $row->lit_edition;
+			$this->editor = $row->lit_editor;
+			$this->howpublished = $row->lit_howpublished;
+			$this->institution = $row->lit_institution;
+			$this->isbn = $row->lit_isbn;
+			$this->journal = $row->lit_journal;
+			$this->month = $row->lit_month;
+			$this->note = $row->lit_note;
+			$this->number = $row->lit_number;
+			$this->organization = $row->lit_organization;
+			$this->pages = $row->lit_pages;
+			$this->publisher = $row->lit_publisher;
+			$this->school = $row->lit_school;
+			$this->series = $row->lit_series;
+			$this->itemtitle = $row->lit_title;
+			$this->type = $row->lit_type;
+			$this->url = $row->lit_url;
+			$this->volume = $row->lit_volume;
+			$this->year = $row->lit_year;
 
-        global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
-
-        $this->oncampusLink = $wgOncampusLink;
-        $this->languageCode = $wgLanguageCode;
-        $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
-        $this->imprintLink = $wgImprintLink;
-        $this->privacyLink = $wgPrivacyLink;
-        $this->numberingObjects = $wgLoopObjectNumbering;
-        $this->numberingType = $wgLoopNumberingType;
-        
-        if ( isset( $row->lset_structure ) ) {
-            $this->imprintLink = $data['lset_imprintlink'];
-            $this->privacyLink = $data['lset_privacylink'];
-            $this->oncampusLink = $data['lset_oncampuslink'];
-            $this->rightsText = $data['lset_rightstext'];
-            $this->rightsType = $data['lset_rightstype'];
-            $this->rightsUrl = $data['lset_rightsurl'];
-            $this->rightsIcon = $data['lset_rightsicon'];
-            $this->customLogo = $data['lset_customlogo'];
-            $this->customLogoFileName = $data['lset_customlogofilename'];
-            $this->customLogoFilePath = $data['lset_customlogofilepath'];
-            $this->languageCode = $data['lset_languagecode'];
-            $this->extraFooter = $data['lset_extrafooter'];
-            $this->skinStyle = $data['lset_skinstyle'];
-            $this->facebookIcon = $data['lset_facebookicon'];
-            $this->facebookLink = $data['lset_facebooklink'];
-            $this->twitterIcon = $data['lset_twittericon'];
-            $this->twitterLink = $data['lset_twitterlink'];
-            $this->youtubeIcon = $data['lset_youtubeicon'];
-            $this->youtubeLink = $data['lset_youtubelink'];
-            $this->githubIcon = $data['lset_githubicon'];
-            $this->githubLink = $data['lset_githublink'];
-            $this->instagramIcon = $data['lset_instagramicon'];
-            $this->instagramLink = $data['lset_instagramlink'];
-            $this->numberingObjects = $data['lset_numberingobjects'];
-            $this->numberingType = $data['lset_numberingtype'];
-        }
-        */
-        return false;
+		}
+		if ( ! $itemExists ) {
+			return false;
+		}
+        return true;
         
 	}
 	
@@ -323,10 +551,6 @@ class SpecialLoopLiterature extends SpecialPage {
 
 		}
 
-
-
-
-
 		$out->addHTML( $html );
 
     }
@@ -361,23 +585,49 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$saltedToken = $user->getEditToken( $wgSecretKey, $request );
 			$requestToken = $request->getText( 't' );
 
-			$out->setPageTitle(wfMessage('loopliteratureedit'));
+			$out->setPageTitle(wfMessage('loopliteratureedit')->text());
 			$out->addModules( 'ext.loop-literature-edit.js' );
 
+			$html = '';
+			
 			if ( ! empty( $requestToken ) ) {
 
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
 
 					$loopLiterature = new LoopLiterature;
 					$loopLiterature->getLiteratureFromRequest( $request );
-					$loopLiterature->addToDatabase();
+					#dd("hiiii", $loopLiterature);
+					if ( empty ( $loopLiterature->errors ) ) {
+						#dd("no errors",  $loopLiterature);
+						$loopLiterature->addToDatabase();
+
+						$html .= '<div class="alert alert-success" role="alert">' . wfMessage("loopliterature-alert-saved", $loopLiterature->key ) . '</div>';
+
+					} else {
+						$errorMsgs = wfMessage("loopliterature-error-notsaved")."<br>";
+						foreach( $loopLiterature->errors as $error ) { 
+							
+							$errorMsgs .= $error . '<br>';
+							
+						}
+						$html .= '<div class="alert alert-danger" role="alert" id="literature-error">' . $errorMsgs . '</div>';
+						
+					}
+					#if (  )
 				}
 
 			}
+			$existingKeys = LoopLiterature::getAllLiteratureItems( array("key" => true ) );
+			#dd();
+			$html .= "<script>\n";
+			$keyString = '';
+			foreach ( $existingKeys as $key ) {
+				$keyString .= '"'.$key.'", ';
+			} 
+			$html .= '$existingKeys = [' . $keyString . ']';
+			$html .= "</script>";
 
-			$html = '';
-
-			$typesOfEntries = array( "article", "book", "booklet", "conference", "inbook", "incollection", "inproceedings", "manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished");
+			$typesOfLiterature = array( "article", "book", "booklet", "conference", "inbook", "incollection", "inproceedings", "manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished");
 			$fieldData = array (
 				'address' => array ( 'max-length' => 255 ), 
 				'author' => array ( 'max-length' => 255 ), 
@@ -389,14 +639,14 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				'institution' => array ( 'max-length' => 255 ), 
 				'isbn' => array ( 'type' => 'number', 'min-length' => 10, 'max-length' => 13 ), 
 				'journal' => array ( 'max-length' => 255 ), 
-				'note' => array ( 'max-length' => 255 ), 
+				'note' => array ( ), 
 				'number' => array ( 'type' => 'number', 'max-length' => 255 ), 
 				'organization' => array ( 'max-length' => 255 ), 
 				'pages' => array ( 'max-length' => 255 ), 
 				'publisher' => array ( 'max-length' => 255 ), 
 				'school' => array ( 'max-length' => 255 ), 
 				'series' => array ( 'max-length' => 255 ), 
-				'title' => array ( 'max-length' => 255 ), 
+				'itemtitle' => array ( 'max-length' => 255 ), 
 				'type' => array ( 'max-length' => 255 ), 
 				'url' => array ( 'type' => 'url', 'max-length' => 255 ), 
 				'volume' => array ( 'max-length' => 255 ), 
@@ -404,14 +654,15 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				'year' => array ('type' => 'number', 'length' => 4 )
 				);
 
+
 			$html .= '<form id="literature-entry">';
 			$html .= '<div class="form-group">';
 
 			$html .= '<div class="form-row">';
-			$html .= '<label for="entryType" class="font-weight-bold">'.wfMessage('loopliterature-label-entrytype')->text().'</label>';
-			$html .= '<select id="entryType" class="form-control form-control-lg">';
+			$html .= '<label for="itemType" class="font-weight-bold">'.wfMessage('loopliterature-label-itemType')->text().'</label>';
+			$html .= '<select id="itemType" name="itemType" class="form-control form-control-lg">';
 			$i = 0;
-			foreach( $typesOfEntries as $option ) {
+			foreach( $typesOfLiterature as $option ) {
 				$selected = ( $i == 0 ) ? "selected" : "";
 				$i++;
 				$html .= '<option '.$selected.' value="'.$option.'">';
@@ -422,12 +673,13 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= '</div>';
 
 			$articleData = array(
-				"required" => array( "author", "title", "journal", "year" ),
+				"required" => array( "author", "itemtitle", "journal", "year" ),
 				"optional" => array( "volume", "number", "pages", "month", "note", "url" )
 			);
 
 			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="key">'.wfMessage('loopliterature-label-key')->text().'</label>';
-			$requiredObjects .= '<input  class="form-control" id="key" name="key" max-length="255" required/></div>';
+			$requiredObjects .= '<input  class="form-control" id="key" name="key" max-length="255" required/>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'.wfMessage("loopliterature-error-keyalreadyexists")->text().'</div></div>';
 			$optionalObjects = '';
 			$otherObjects = '';
 
@@ -469,7 +721,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= '</div>';
 
 			$html .= '<input type="hidden" name="t" id="loopliterature-token" value="' . $saltedToken . '"></input>';
-			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="loopsettings-submit" value="' . $this->msg( 'submit' ) . '"></input>';
+			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="loopliterature-submit" value="' . $this->msg( 'submit' ) . '"></input>';
 			
 
 			$html .= '</form>';

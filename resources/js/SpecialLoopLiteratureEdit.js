@@ -1,65 +1,72 @@
 $( document ).ready( function () {
 
+    // fill out fields from url parameters if the entry was not saved
+    if ( $('#literature-error').length > 0 ) {
+        $('.literature-field input').each( function () {
+            $id = $(this).attr("id");
+            $(this).val(decodeURIComponent( getUrlParam( $id )));
+        })
+    }
     $literatureTypesJSON = {
         "article": {
-            "required": [ "key", "author", "title", "journal", "year" ],
+            "required": [ "key", "author", "itemtitle", "journal", "year" ],
             "optional": [ "volume", "number", "pages", "month", "note", "url" ]
         },
         "book": {
-            "required": [ "key", "author", "editor", "title", "publisher", "year" ],
+            "required": [ "key", "author", "editor", "itemtitle", "publisher", "year" ],
             "optional": [ "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url" ]
         },
         "booklet": {
-            "required": [ "key", "title" ],
+            "required": [ "key", "itemtitle" ],
             "optional": [ "author", "howpublished", "address", "month", "year", "note", "url" ]
         },
         "conference": {
-            "required": [ "key", "author", "title", "booktitle", "year" ],
+            "required": [ "key", "author", "itemtitle", "booktitle", "year" ],
             "optional": [ "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" ]
         },
         "inbook": {
-            "required": [ "key", "author", "editor", "title", "chapter", "pages", "publisher", "year" ],
+            "required": [ "key", "author", "editor", "itemtitle", "chapter", "pages", "publisher", "year" ],
             "optional": [ "volume", "number", "series", "type", "address", "edition", "month", "note", "url" ]
         },
         "incollection": {
-            "required": [ "key", "author", "title", "booktitle", "publisher", "year" ],
+            "required": [ "key", "author", "itemtitle", "booktitle", "publisher", "year" ],
             "optional": [ "editor", "volume", "number", "series", "type", "chapter", "pages", "address", "edition", "month", "note", "url" ]
         },
         "inproceedings": {
-            "required": [ "key", "author", "title", "booktitle", "year" ],
+            "required": [ "key", "author", "itemtitle", "booktitle", "year" ],
             "optional": [ "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" ]
         },
         "manual": {
-            "required": [ "key", "address", "title", "year" ],
+            "required": [ "key", "address", "itemtitle", "year" ],
             "optional": [ "author", "organization", "edition", "month", "note", "url" ]
         },
         "mastersthesis": {
-            "required": [ "key", "author", "title", "school", "year" ],
+            "required": [ "key", "author", "itemtitle", "school", "year" ],
             "optional": [ "type", "address", "month", "note", "url" ]
         },
         "misc": {
             "required": [ "key" ],
-            "optional": [ "author", "title", "howpublished", "month", "year", "note", "url" ]
+            "optional": [ "author", "itemtitle", "howpublished", "month", "year", "note", "url" ]
         },
         "phdthesis": {
-            "required": [ "key", "author", "title", "school", "year" ],
+            "required": [ "key", "author", "itemtitle", "school", "year" ],
             "optional": [ "type", "address", "month", "note", "url" ]
         },
         "proceedings": {
-            "required": [ "key", "title", "year" ],
-            "optional": [ "editor", "volum", "number", "series", "address", "month", "organization", "publisher", "note", "url" ]
+            "required": [ "key", "itemtitle", "year" ],
+            "optional": [ "editor", "volume", "number", "series", "address", "month", "organization", "publisher", "note", "url" ]
         },
         "techreport": {
-            "required": [ "key", "author", "title", "institution", "year" ],
+            "required": [ "key", "author", "itemtitle", "institution", "year" ],
             "optional": [ "type", "note", "number", "address", "month", "url" ]
         },
         "unpublished": {
-            "required": [ "key", "author", "title", "note" ],
+            "required": [ "key", "author", "itemtitle", "note" ],
             "optional": [ "month", "year", "url" ]
         }
     };
-    
-    $('#entryType').on("change", function() {
+
+    $('#itemType').on("change", function() {
         $type = $(this).val();
         $typeFields = $literatureTypesJSON[ $type ];
         $('#required-row .literature-field').each( function () {
@@ -105,6 +112,18 @@ $( document ).ready( function () {
         }
     })
 
+    
+    $('#key').on("change keyup click", function() {
+        $val = $(this).val();
+        if ( jQuery.inArray( $val, $existingKeys ) >= 0 ) {
+            $("#keymsg").show()
+            $("#loopliterature-submit").prop("disabled", true)
+        } else {
+            $("#keymsg").hide()
+            $("#loopliterature-submit").prop("disabled", false)
+        }
+    })
+    
     function doOptional( $this ) {
         $this.removeClass("d-none");
         $this.find("input").prop("required", false);
@@ -120,4 +139,14 @@ $( document ).ready( function () {
         $this.find("input").prop("required", true);
         $this.find("input").prop("disabled", false);
     }
+    // returns parameter value
+    function getUrlParam ( $param ){
+        $results = new RegExp('[\?&]' + $param + '=([^&#]*)').exec( window.location.href );
+        if ( $results != null ) {
+            return $results[1];
+        } else {
+            return '';
+        }
+    }
+    
 })
