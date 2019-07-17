@@ -102,7 +102,7 @@
 	"purgecache-purged": "Message after purging",
 	"purgecache-button": "Button label for purging",
 	"right-purgecache": "Right for PurgeCache",
-	"purgecache-no-permission": "Error message when the user has no permission to view page",
+	"specialpage-no-permission": "Error message when the user has no permission to view page",
 	
 	"log-export-generated": "Log entry message for export files that have been generated at request",
 	"log-export-reused": "Log entry message for export files that have been reused",

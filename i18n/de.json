@@ -102,7 +102,7 @@
 	"purgecache-purged": "Der Cache wurde gelöscht.",
 	"purgecache-button": "Löschen",
 	"right-purgecache": "OBJECTCACHE-Tabelle löschen",
-	"purgecache-no-permission": "Sie haben nicht die Berechtigung, den Inhalt dieser Seite zu sehen.",
+	"specialpage-no-permission": "Sie haben nicht die Berechtigung, den Inhalt dieser Seite zu sehen.",
 	
 	"log-export-generated": "neu generiert",
 	"log-export-reused": "wiederverwendet",
@@ -251,6 +251,7 @@
 	"loopliterature-error-dublicatekey": "Der Zitatschlüssel '''$1''' ist bereits vorhanden.",
 	"loopliterature-error-missingkey": "Es wurde kein Zitatschlüssel angegeben.",
 	"loopliterature-error-keyalreadyexists": "Der Zitatschlüssel ist bereits vorhanden. Bitte wählen Sie einen anderen.",
+	"loopliterature-error-keyunknown": "Der Zitatschlüssel nicht vorhanden. Bitte legen Sie den Literatureintrag an.",
 	
 
 	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",

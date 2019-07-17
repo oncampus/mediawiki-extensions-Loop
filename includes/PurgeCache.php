@@ -41,7 +41,7 @@ class SpecialPurgeCache extends SpecialPage {
 				$out->addHTML( $this->makeForm() );
 			}
 		} else {
-			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'purgecache-no-permission' ) . '</div>';
+			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
 			$out->addHTML( $html );
 		}
 	}
