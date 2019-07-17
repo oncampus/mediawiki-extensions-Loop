@@ -933,7 +933,7 @@ class LoopObject {
 					$objects[$objectType] = 0;
 				}
 				$object_tags = array ();
-				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight' ); # don't save ids when in here
+				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
@@ -972,7 +972,7 @@ class LoopObject {
 							} else {
 								# create new id
 								$newRef = uniqid();
-								$newContentText = self::setReferenceId( $newContentText, $newRef ); 
+								$newContentText = self::setReferenceId( $newContentText, $newRef, 'objects' ); 
 								$tmpLoopObjectIndex->refId = $newRef; 
 							}
 							if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
@@ -1011,10 +1011,10 @@ class LoopObject {
 	 * @param string $text
 	 * @param string $id
 	 */
-	public static function setReferenceId( $text, $id ) {
+	public static function setReferenceId( $text, $id, $type ) {
 		$changedText = false;
 		$text = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
-		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight'); # don't set ids when in these tags 
+		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags 
 		
 		$dom = new DOMDocument("1.0", 'utf-8');
 		@$dom->loadHTML( $text, LIBXML_HTML_NODEFDTD );
@@ -1022,11 +1022,14 @@ class LoopObject {
 		$xpath = new DOMXPath( $dom );
 		
 		$objectTags = array();
-		foreach (self::$mObjectTypes as $objectTag) {
-			$objectTags[] = '//'.$objectTag;
+		if ( $type == "objects" ) {
+			foreach (self::$mObjectTypes as $objectTag) {
+				$objectTags[] = '//'.$objectTag;
+			}
+		} elseif ( $type == 'cite' ) {
+			$objectTags[] = '//cite';
 		}
 		$query = implode(' | ', $objectTags);
-		
 		$nodes = $xpath->query( $query );
 		$changed = false;
 		foreach ( $nodes as $node ) {

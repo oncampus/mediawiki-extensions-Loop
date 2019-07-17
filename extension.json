@@ -65,6 +65,7 @@
 		"LoopReference": "includes/LoopReference.php",
 		"LoopCode": "includes/LoopCode.php",
 		"LoopLiterature": "includes/LoopLiterature.php",
+		"LoopLiteratureReference": "includes/LoopLiterature.php",
 		"SpecialLoopLiterature": "includes/LoopLiterature.php",
 		"SpecialLoopLiteratureEdit": "includes/LoopLiterature.php",
 		"SpecialLoopLiteratureImport": "includes/LoopLiterature.php",
@@ -101,7 +102,10 @@
 		"ParserMakeImageParams":[
 			"LoopHooks::onParserMakeImageParams"
 		],
-		"LinksUpdateConstructed": "LoopObject::onLinksUpdateConstructed",
+		"LinksUpdateConstructed": [
+			"LoopObject::onLinksUpdateConstructed",
+			"LoopLiterature::onLinksUpdateConstructed"
+		],
 		"ArticleDeleteComplete": "LoopObject::onArticleDeleteComplete",
 		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange",
 		"AfterClearStable":"LoopObject::onAfterClearStable",

@@ -110,7 +110,6 @@ class LoopLiterature {
 		return true;
 	}	
 	
-	
     /**
      * Add literature entry to the database
      * @return bool true
@@ -525,7 +524,7 @@ class LoopLiterature {
 		
 		if ( ! $loopLiteratureItem ) {
 			
-			$e = new LoopException( wfMessage( 'loopobject-error-unknown-renderoption' )->text() );
+			$e = new LoopException( wfMessage( 'loopliterature-error-keyunknown' )->text() );
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			
 			return $e;
@@ -554,7 +553,425 @@ class LoopLiterature {
 	static function renderLoopLiterature( $input, array $args, Parser $parser, PPFrame $frame ) {
 		return true;
 	}
+
+	/**
+	 * Checks revision status after saving content and starts db writing function in case of stable revision.
+	 * Attached to LinksUpdateConstructed hook.
+	 * @param LinksUpdate $linksUpdate
+	 */
+	public static function onLinksUpdateConstructed( $linksUpdate ) { 
+		$title = $linksUpdate->getTitle();
+		$wikiPage = WikiPage::factory( $title );
+		$latestRevId = $title->getLatestRevID();
+		if ( isset($title->flaggedRevsArticle) ) {
+			$stableRevId = $title->flaggedRevsArticle;
+			$stableRevId = $stableRevId->getStable();
+
+			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
+				self::doIndexLoopLiteratureReferences( $wikiPage, $title );
+			}
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Adds literature references to db. Called by onLinksUpdateConstructed and onAfterStabilizeChange (custom Hook)
+	 * @param WikiPage $wikiPage
+	 * @param Title $title
+	 * @param Content $content
+	 */
+	public static function doIndexLoopLiteratureReferences( &$wikiPage, $title, $content = null, $user = null ) {
+		
+		if ($content == null) {
+			$content = $wikiPage->getContent();
+		}
+		
+		#dd("HALLO1", $title,$content);
+		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
+			$loopLiteratureReference = new LoopLiteratureReference();
+			LoopLiteratureReference::removeAllPageItemsFromDb ( $title->getArticleID() );
+			$contentText = ContentHandler::getContentText( $content );
+			$parser = new Parser();
+
+			# check if loop_object in page content
+			$has_reference = false;
+			if ( substr_count ( $contentText, 'cite' ) >= 1 ) {
+				$has_reference = true;
+			}
+			if ( $has_reference ) {
+				$references = array();
+				#foreach (self::$mObjectTypes as $objectType) {
+				#	$objects[$objectType] = 0;
+				#}
+				$object_tags = array ();
+				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
+				$extractTags = array_merge( array('cite'), $forbiddenTags );
+				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
+				$newContentText = $contentText;
+				
+				$items = 0;
+				foreach ( $object_tags as $object ) {
+					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
+						$tmpLoopLiteratureReference = new LoopLiteratureReference();
+						$items++;
+						$tmpLoopLiteratureReference->nthItem = $items;
+						$tmpLoopLiteratureReference->pageId = $title->getArticleID();
+						$tmpLoopLiteratureReference->key = $object[1];
+						
+						if ( isset( $object[2]["id"] ) ) {
+							if ( $tmpLoopLiteratureReference->checkDublicates( $object[2]["id"] ) ) {
+								$tmpLoopLiteratureReference->refId = $object[2]["id"];
+							} else {
+								# dublicate id must be replaced
+								$newRef = uniqid();
+								$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+								$tmpLoopLiteratureReference->refId = $newRef; 
+							}
+						} else {
+							# create new id
+							$newRef = uniqid();
+							$newContentText = LoopObject::setReferenceId( $newContentText, $newRef, 'cite' ); 
+							$tmpLoopLiteratureReference->refId = $newRef; 
+						}
+						$tmpLoopLiteratureReference->addToDatabase();
+						#dd($object, $tmpLoopLiteratureReference);
+					}
+				}
+				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
+				
+				if ( $lsi ) {
+					LoopObject::updateStructurePageTouched( $title );
+				} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
+					LoopGlossary::updateGlossaryPageTouched();
+				}
+				if ( $contentText !== $newContentText ) {
+					
+					$fwp = new FlaggableWikiPage ( $title );
+					$stableRev = $fwp->getStable();
+					if ( $stableRev == 0 ) {
+						$stableRev = $wikiPage->getRevision()->getId();
+					} 
+
+					$summary = '';
+					$content = $content->getContentHandler()->unserializeContent( $newContentText );
+					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
+				}	
+			}
+		}
+	}
+
+	
+	/**
+	 * Outputs the given object's numbering
+	 * @param String $objectId
+	 * @param Array $pageData = [
+	 * 					0 => "structure" or "glossary"
+	 * 					1 => LoopStructureItem or $articleId
+	 * 					2 => LoopStructure or empty
+	 * 					]
+	 * @param Array $previousObjects
+	 * @param Array $objectData
+	 */
+	public static function getLiteratureNumberingOutput($objectid, Array $pageData, $previousObjects = null, $objectData = null ) {
+
+		#dd($objectid);
+		$typeOfPage = $pageData[0];
+
+		if ( $previousObjects == null ) {
+			if ( $typeOfPage == "structure" ) {
+				$previousObjects = LoopLiteratureReference::getLiteratureNumberingsForPage ( $pageData[1], $pageData[2] ); // $lsi, $loopStructure
+			} else {
+				$previousObjects = LoopLiteratureReference::getLiteratureNumberingsForGlossaryPage ( $pageData[1] );
+			}
+		}
+		#dd($previousObjects);
+		if ( $objectData == null ) {
+			$objectData = LoopLiteratureReference::getItemData( $objectid );
+		}
+		#dd($objectData);
+		if ( $objectData["refId"] == $objectid ) {
+
+			$tmpPreviousObjects = 0;
+			if ( isset($previousObjects) ) {
+				$tmpPreviousObjects = $previousObjects['cite'];
+			}
+			$prefix = '';
+			if ( $typeOfPage == "glossary" ) {
+				$prefix = wfMessage("loop-glossary-objectnumber-prefix")->text();
+			}
+			return $prefix . ( $tmpPreviousObjects + $objectData["nthItem"] );
+					
+			
+		}
+	}
+
+}
+
+class LoopLiteratureReference {
+
+	public $key;
+	public $pageId;
+	public $refId; 
+	public $nthItem;
+
+	/**
+	 * Add literature reference item to the database
+	 * @return bool true
+	 */
+	public function addToDatabase() {
+		$dbw = wfGetDB( DB_MASTER );
+		
+        $dbw->insert(
+            'loop_literature_references',
+            array(
+                'llr_itemkey' => $this->key,
+                'llr_pageid' => $this->pageId,
+                'llr_refid' => $this->refId,
+                'llr_nthitem' => $this->nthItem
+            ),
+            __METHOD__
+		);
+        $this->id = $dbw->insertId();
+		
+        return true;
+
+	}
+	
+	// deletes all literature references of a page
+    public static function removeAllPageItemsFromDb ( $article ) {
+		$dbr = wfGetDB( DB_MASTER );
+		$dbr->delete(
+			'loop_literature_references',
+			'llr_pageid = ' . $article,
+			__METHOD__
+		);
+
+        return true;
+	}
+
+	public static function getItemData( $refId ) { 
+        
+        $dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'loop_literature_references',
+			array(
+                'llr_itemkey',
+                'llr_pageid',
+                'llr_refid',
+                'llr_nthitem'
+			),
+			array(
+				'llr_refid = "' . $refId .'"'
+			),
+			__METHOD__
+		);
+		
+		foreach( $res as $row ) {
+
+            $return = array(
+                'refId' => $row->llr_refid,
+                'articleId' => $row->llr_pageid,
+                'key' => $row->llr_itemkey,
+                'nthItem' => $row->llr_nthitem,
+            );
+
+			return $return;
+
+		}
+		# id unknown
+		return false;
+
+	}
+	
+	public function checkDublicates( $refId ) {
+		
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'loop_literature_references',
+			array(
+                'llr_refid'
+			),
+			array(
+				'llr_refid = "' . $refId .'"'
+			),
+			__METHOD__
+		);
+		
+		foreach( $res as $row ) {
+            # if res has rows, 
+			# given refId is already in use. 
+			return false;
+
+		}
+		# id is unique in index
+		return true;
+    }
+	
+	
+    // returns structure literature items with numberings in the table
+    public static function getAllItems ( $loopStructure ) {
+        
+        global $wgLoopLiteratureCiteType;
+        
+        $dbr = wfGetDB( DB_REPLICA );
+        
+        $res = $dbr->select(
+            'loop_literature_references',
+            array(
+                'llr_itemkey',
+                'llr_pageid',
+                'llr_refid',
+                'llr_nthitem'
+            ),
+            array(
+            ),
+            __METHOD__
+            );
+        
+        $objects = array();
+        
+        $loopStructureItems = $loopStructure->getStructureItems();
+        
+        foreach ( $loopStructureItems as $loopStructureItem ) {
+            $previousObjects[ $loopStructureItem->article ] = self::getLiteratureNumberingsForPage( $loopStructureItem, $loopStructure );
+        }
+        
+		$glossaryItems = LoopGlossary::getGlossaryPages("idArray");
+        foreach ( $glossaryItems as $glossaryItem ) {
+            $previousObjects[ $glossaryItem ] = self::getLiteratureNumberingsForGlossaryPage( $glossaryItem );
+        }
+        #dd($previousObjects);
+        foreach( $res as $row ) {
+            
+            $numberText = '';
+            
+            if ( $wgLoopLiteratureCiteType == true ) {
+                
+                $objectData = array(
+					'refId' => $row->llr_refid,
+					'articleId' => $row->llr_pageid,
+					'key' => $row->llr_itemkey,
+					'nthItem' => $row->llr_nthitem,
+                );
+                
+                $lsi = LoopStructureItem::newFromIds($row->llr_pageid);
+                if ( $lsi ) {
+                    $pageData = array( "structure", $lsi, $loopStructure );
+                    $numberText = LoopLiterature::getLiteratureNumberingOutput( $row->llr_refid, $pageData, $previousObjects[ $row->llr_pageid ], $objectData );
+                } elseif ( isset ( $previousObjects[ $row->llr_pageid ] ) ) {
+					$pageData = array( "glossary", $row->llr_pageid );
+					$numberText = LoopLiterature::getLiteratureNumberingOutput( $row->llr_refid, $pageData, $previousObjects[ $row->llr_pageid ], $objectData );
+                }
+            }
+        
+            $objects[$row->llr_refid] = array(
+                'refId' => $row->llr_refid,
+                'articleId' => $row->llr_pageid,
+                'key' => $row->llr_itemkey,
+                'nthItem' => $row->llr_nthitem,
+                "objectnumber" => $numberText
+            );
+        }
+        #dd($objects);
+        return $objects;
+    }
+	
+	// returns number of literature items in structure before the given structureItem
+    public static function getLiteratureNumberingsForPage ( LoopStructureItem $lsi, LoopStructure $loopStructure ) {
+
+		$objects = array('cite');
+		$return = array('cite' => 0);
+		#foreach (LoopObject::$mObjectTypes as $objectType) {
+		#	$objects[$objectType] = array(); 
+		#	$return[$objectType] = 0; 
+		##}
+
+		$dbr = wfGetDB( DB_REPLICA );
+
+		$res = $dbr->select(
+			'loop_literature_references',
+			array(
+                'llr_itemkey',
+                'llr_pageid',
+                'llr_refid',
+                'llr_nthitem'
+			),
+			"*",
+			__METHOD__
+		);
+		foreach( $res as $row ) {
+			$objects['cite'][$row->llr_pageid] = array();
+			$objects['cite'][$row->llr_pageid][] = $row->llr_refid;
+		}
+
+		$structureItems = $loopStructure->getStructureItems();
+		foreach ( $structureItems as $item ) {
+			$tmpId = $item->article;
+			if (  $item->sequence < $lsi->sequence  ) {
+				foreach( $objects as $objectType => $page ) {
+					// dd($objects, $objectType);
+					if ( isset( $page[$tmpId] ) ) {
+						$return[$objectType] += sizeof($page[$tmpId]);
+					}
+				}
+			}
+		}
+		
+        return $return;
+    }
     
+	// returns number of objects in glossary pages before current glossary page
+    public static function getLiteratureNumberingsForGlossaryPage ( $articleId ) {
+       /* $glossaryItems = LoopGlossary::getGlossaryPages();
+        $data = array();
+        $return = array();
+        $pageHasObjects = false;
+        if ( !empty ($glossaryItems) ) {
+            foreach ( $glossaryItems as $sequence => $item ) {
+                $tmpArticleId = $item->getArticleID();
+                $data[$sequence] = array( $tmpArticleId );
+                if ( $tmpArticleId == $articleId ) {
+                    $pageHasObjects = true;
+                    break;
+                }
+            }
+        }
+        if ( $pageHasObjects ) {
+            
+			$objects = array('cite');
+			$return = array('cite' => 0 ); 
+            
+            $dbr = wfGetDB( DB_REPLICA );
+
+            $res = $dbr->select(
+                'loop_literature_references',
+                array(
+					'llr_itemkey',
+					'llr_pageid',
+					'llr_refid',
+					'llr_nthitem'
+                ),
+                "*",
+                __METHOD__
+            );
+            foreach ( $res as $row ) {
+                $objects['cite'][$row->llr_pageid][] = $row->llr_refid;
+            }
+
+            foreach ( $data as $pos => $tmpId ) {
+                foreach( $objects as $objectType => $page ) {
+					#dd($objects, $objectType,  $page );
+                    if ( $tmpId[0] != $articleId ) {
+                        if ( array_key_exists( $tmpId[0], $page ) ) {
+                            $return[$objectType] += sizeof($page[$tmpId[0]]);
+                        }  
+                    }
+                }
+            }
+        }
+        return $return;*/
+    }
 }
 
 class SpecialLoopLiterature extends SpecialPage {
@@ -579,6 +996,12 @@ class SpecialLoopLiterature extends SpecialPage {
 				array("class"=>"aToc")
 				
 			);
+			
+			$loopStructure = new LoopStructure();
+			$loopStructure->loadStructureItems();
+
+			$allItems = LoopLiteratureReference::getAllItems( $loopStructure );
+			dd($allItems);
 		}
 
 		$out->addHTML( $html );
