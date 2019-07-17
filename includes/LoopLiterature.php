@@ -457,8 +457,8 @@ class LoopLiterature {
         foreach ( $res as $row ) {
 			$itemExists = true;
 			
-			$this->itemkey = $row->lit_itemkey;
-			$this->itemtype = $row->lit_itemtype;
+			$this->key = $row->lit_itemkey;
+			$this->itemType = $row->lit_itemtype;
 			$this->address = $row->lit_address;
 			$this->author = $row->lit_author;
 			$this->booktitle = $row->lit_booktitle;
@@ -516,8 +516,41 @@ class LoopLiterature {
 	}
 
 	static function renderCite( $input, array $args, Parser $parser, PPFrame $frame ) {
-		return true;
+
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+
+		$loopLiterature = new LoopLiterature();
+		$loopLiteratureItem = $loopLiterature->loadLiteratureItem( $input );
+		
+		
+		if ( ! $loopLiteratureItem ) {
+			
+			$e = new LoopException( wfMessage( 'loopobject-error-unknown-renderoption' )->text() );
+			$parser->addTrackingCategory( 'loop-tracking-category-error' );
+			
+			return $e;
+		} else {
+			$text = '';
+			#dd();
+			if ( isset( $loopLiterature->author ) ) {
+				$text.= $loopLiterature->author;
+			} elseif ( isset( $loopLiterature->itemTitle )) {
+				$text.= $loopLiterature->itemTitle;
+			}
+			if ( isset( $loopLiterature->year ) ) {
+				$text .= " " . $loopLiterature->year;
+			}
+			$html = $linkRenderer->makeLink( 
+				new TitleValue( NS_SPECIAL, 'LoopLiterature' ), 
+				new HtmlArmor( $text ),
+				array( "data-target" => $input ) # target id will be added in hook
+			);
+
+		}
+
+		return $html;
 	}
+
 	static function renderLoopLiterature( $input, array $args, Parser $parser, PPFrame $frame ) {
 		return true;
 	}
@@ -533,11 +566,10 @@ class SpecialLoopLiterature extends SpecialPage {
 	public function execute( $sub ) {
 		$user = $this->getUser();
 
-		
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$out = $this->getOutput();
-		$out->setPageTitle(wfMessage('loopliterature'));
+		$out->setPageTitle($this->msg('loopliterature'));
 		$html = '';
 
 		if ( $user->isAllowed('loop-edit-literature') ) {
@@ -547,8 +579,6 @@ class SpecialLoopLiterature extends SpecialPage {
 				array("class"=>"aToc")
 				
 			);
-
-
 		}
 
 		$out->addHTML( $html );
@@ -575,17 +605,17 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 		global $wgSecretKey;
 		$user = $this->getUser();
+		$out = $this->getOutput();
 
 		if ( $user->isAllowed('loop-edit-literature') ) {
 
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
-			$out = $this->getOutput();
 			$request = $this->getRequest();
 
 			$saltedToken = $user->getEditToken( $wgSecretKey, $request );
 			$requestToken = $request->getText( 't' );
 
-			$out->setPageTitle(wfMessage('loopliteratureedit')->text());
+			$out->setPageTitle($this->msg('loopliteratureedit')->text());
 			$out->addModules( 'ext.loop-literature-edit.js' );
 
 			$html = '';
@@ -601,10 +631,10 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 						#dd("no errors",  $loopLiterature);
 						$loopLiterature->addToDatabase();
 
-						$html .= '<div class="alert alert-success" role="alert">' . wfMessage("loopliterature-alert-saved", $loopLiterature->key ) . '</div>';
+						$html .= '<div class="alert alert-success" role="alert">' . $this->msg("loopliterature-alert-saved", $loopLiterature->key ) . '</div>';
 
 					} else {
-						$errorMsgs = wfMessage("loopliterature-error-notsaved")."<br>";
+						$errorMsgs = $this->msg("loopliterature-error-notsaved")."<br>";
 						foreach( $loopLiterature->errors as $error ) { 
 							
 							$errorMsgs .= $error . '<br>';
@@ -659,27 +689,27 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= '<div class="form-group">';
 
 			$html .= '<div class="form-row">';
-			$html .= '<label for="itemType" class="font-weight-bold">'.wfMessage('loopliterature-label-itemType')->text().'</label>';
+			$html .= '<label for="itemType" class="font-weight-bold">'.$this->msg('loopliterature-label-itemType')->text().'</label>';
 			$html .= '<select id="itemType" name="itemType" class="form-control form-control-lg">';
 			$i = 0;
 			foreach( $typesOfLiterature as $option ) {
-				$selected = ( $i == 0 ) ? "selected" : "";
+				$selected = ( $i == 1 ) ? "selected" : ""; #1 => book
 				$i++;
 				$html .= '<option '.$selected.' value="'.$option.'">';
-				$html .= wfMessage('loopliterature-entry-'.$option)->text();
+				$html .= $this->msg('loopliterature-entry-'.$option)->text();
 				$html .= '</option>';
 			}
 			$html .= '</select>';
 			$html .= '</div>';
 
 			$articleData = array(
-				"required" => array( "author", "itemtitle", "journal", "year" ),
-				"optional" => array( "volume", "number", "pages", "month", "note", "url" )
+				"required" => array( "author", "editor", "itemtitle", "publisher", "year" ),
+				"optional" => array( "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url" )
 			);
 
-			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="key">'.wfMessage('loopliterature-label-key')->text().'</label>';
+			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="key">'.$this->msg('loopliterature-label-key')->text().'</label>';
 			$requiredObjects .= '<input  class="form-control" id="key" name="key" max-length="255" required/>';
-			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'.wfMessage("loopliterature-error-keyalreadyexists")->text().'</div></div>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'.$this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
 			$optionalObjects = '';
 			$otherObjects = '';
 
@@ -692,7 +722,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 				$fieldHtml = '';
 				$fieldHtml .= '<div class="literature-field col-6'.$visibility.'">';
-				$fieldHtml .= '<label for="'.$field.'">'.wfMessage('loopliterature-label-'.$field)->text().'</label>';
+				$fieldHtml .= '<label for="'.$field.'">'.$this->msg('loopliterature-label-'.$field)->text().'</label>';
 
 				$attributes = '';
 				foreach ( $arr as $key => $val ) {
@@ -714,8 +744,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 					$otherObjects .= $fieldHtml;
 				} 
 			}
-			$html .= '<div class="form-row border pb-3 mt-3" id="required-row"><h4 class="w-100 pt-2 pl-2">'.wfMessage('loopliterature-label-required')->text().'</h4>'.$requiredObjects.'</div>';
-			$html .= '<div class="form-row border pb-3 mt-3" id="optional-row"><h4 class="w-100 pt-2 pl-2">'.wfMessage('loopliterature-label-optional')->text().'</h4>'.$optionalObjects.'</div>';
+			$html .= '<div class="form-row border pb-3 mt-3" id="required-row"><h4 class="w-100 pt-2 pl-2">'.$this->msg('loopliterature-label-required')->text().'</h4>'.$requiredObjects.'</div>';
+			$html .= '<div class="form-row border pb-3 mt-3" id="optional-row"><h4 class="w-100 pt-2 pl-2">'.$this->msg('loopliterature-label-optional')->text().'</h4>'.$optionalObjects.'</div>';
 			$html .= '<div class="form-row" id="disabled-row">'.$otherObjects.'</div>';
 
 			$html .= '</div>';
@@ -726,6 +756,9 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 			$html .= '</form>';
 
+			$out->addHTML( $html );
+		} else {
+			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
 			$out->addHTML( $html );
 		}
     }
@@ -749,7 +782,7 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 	public function execute( $sub ) {
 		$user = $this->getUser();
 		$out = $this->getOutput();
-		$out->setPageTitle(wfMessage('loopliteratureimport'));
+		$out->setPageTitle($this->msg('loopliteratureimport'));
 
 		if ( $user->isAllowed('loop-edit-literature') ) {
 			
