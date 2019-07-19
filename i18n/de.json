@@ -214,6 +214,13 @@
 	"loopliterature-entry-techreport": "Techreport",
 	"loopliterature-entry-unpublished": "Unveröffentlicht",
 
+	"loopliterature-text-noyear": "o. J.",
+	"loopliterature-text-publisher": "Hrsg.",
+	"loopliterature-text-inpublisher": "In $1 (Hrsg.)",
+	"loopliterature-text-pages": "{{PLURAL:$1|S.|S.}}",
+	"loopliterature-text-url": "Abgerufen von",
+	"loopliterature-text-notreferenced": "Die folgenden Einträge sind vorhanden, aber nicht referenziert und nur im Bearbeitungsmodus sichtbar",
+
 	"loopliterature-label-addentry": "Literatureintrag anlegen",
 	"loopliterature-label-required": "Pflichtangaben",
 	"loopliterature-label-optional": "Freiwillige Angaben",
@@ -230,7 +237,7 @@
 	"loopliterature-label-isbn": "ISBN",
 	"loopliterature-label-journal": "Journal",
 	"loopliterature-label-month": "Monat",
-	"loopliterature-label-note": "Notiz",
+	"loopliterature-label-note": "Notiz (Nur im Bearbeitungsmodus sichtbar)",
 	"loopliterature-label-number": "Nummer",
 	"loopliterature-label-organization": "Organisation",
 	"loopliterature-label-pages": "Seiten",

@@ -210,7 +210,6 @@ class LoopObjectIndex {
 				$tmpId = $item->article;
 				if (  $item->sequence < $lsi->sequence  ) {
 					foreach( $objects as $objectType => $page ) {
-                        dd($objects, $objectType,  $page );
 						if ( isset( $page[$tmpId] ) ) {
 							$return[$objectType] += sizeof($page[$tmpId]);
 						}

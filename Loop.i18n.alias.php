@@ -39,7 +39,7 @@ $specialPageAliases['de'] = array(
 	'LoopTables' => array( 'Tabellenverzeichnis' ),
 	'LoopTasks' => array( 'Aufgabenverzeichnis' ),
 	'LoopLiterature' => array( 'Literaturverzeichnis' ),
-	'LoopLiteratureEdit' => array( 'Literatur bearbeiten' ),
+	'LoopLiteratureEdit' => array( 'Literatureintrag bearbeiten' ),
 	'LoopLiteratureImport' => array( 'Literatur importieren' ),
 	'LoopGlossary' => array( 'Glossar', 'Glossary' )
 	);

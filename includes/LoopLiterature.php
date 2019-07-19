@@ -283,18 +283,6 @@ class LoopLiterature {
 	public static function checkDataValidity( $key, $val ) {
 		
 		switch ( $key ) {
-			case "year":
-				$int_val = intval($val);
-				if ( strlen( $val ) == 4 && is_numeric( $val ) ) {
-					return true;
-				} else { return false; }
-				
-			case "chapter":
-				$int_val = intval($val);
-				if ( is_numeric( $val ) ) {
-					return true;
-				} else { return false; }
-				
 			case "edition":
 				$int_val = intval($val);
 				if ( is_numeric( $val ) ) {
@@ -309,7 +297,7 @@ class LoopLiterature {
 				
 			case "isbn":
 				$int_val = intval($val);
-				if ( is_numeric( $val ) && ( strlen( $val ) == 10 || strlen( $val ) == 13 ) ) {
+				if ( strlen( $val ) == 10 || strlen( $val ) == 17 ) {
 					return true;
 				} else { return false; }
 				
@@ -452,9 +440,9 @@ class LoopLiterature {
             __METHOD__
         );
 
-		$itemExists = false;
+		$item = false;
         foreach ( $res as $row ) {
-			$itemExists = true;
+			$item = true;
 			
 			$this->key = $row->lit_itemkey;
 			$this->itemType = $row->lit_itemtype;
@@ -483,7 +471,7 @@ class LoopLiterature {
 			$this->year = $row->lit_year;
 
 		}
-		if ( ! $itemExists ) {
+		if ( ! $item ) {
 			return false;
 		}
         return true;
@@ -706,6 +694,229 @@ class LoopLiterature {
 		}
 	}
 
+	 // returns all literature items from table
+	 public static function getAllItems ( $returnType = null ) {
+        
+        $dbr = wfGetDB( DB_REPLICA );
+        
+        $res = $dbr->select(
+            'loop_literature_items',
+            array(
+				'lit_itemkey',
+				'lit_itemtype',
+				'lit_address',
+				'lit_author',
+				'lit_booktitle',
+				'lit_chapter',
+				'lit_edition',
+				'lit_editor',
+				'lit_howpublished',
+				'lit_institution',
+				'lit_isbn',
+				'lit_journal',
+				'lit_month',
+				'lit_note',
+				'lit_number',
+				'lit_organization',
+				'lit_pages',
+				'lit_publisher',
+				'lit_school',
+				'lit_series',
+				'lit_title',
+				'lit_type',
+				'lit_url',
+				'lit_volume',
+				'lit_year'
+            ),
+            array(),
+            __METHOD__
+        );
+
+        foreach ( $res as $row ) {
+		
+			if ( $returnType == "array" ) {
+				$items[$row->lit_itemkey] = array(
+					"itemType" => $row->lit_itemtype,
+					"address" => $row->lit_address,
+					"author" => $row->lit_author,
+					"booktitle" => $row->lit_booktitle,
+					"chapter" => $row->lit_chapter,
+					"edition" => $row->lit_edition,
+					"editor" => $row->lit_editor,
+					"howpublished" => $row->lit_howpublished,
+					"institution" => $row->lit_institution,
+					"isbn" => $row->lit_isbn,
+					"journal" => $row->lit_journal,
+					"month" => $row->lit_month,
+					"note" => $row->lit_note,
+					"number" => $row->lit_number,
+					"organization" => $row->lit_organization,
+					"pages" => $row->lit_pages,
+					"publisher" => $row->lit_publisher,
+					"school" => $row->lit_school,
+					"series" => $row->lit_series,
+					"itemtitle" => $row->lit_title,
+					"type" => $row->lit_type,
+					"url" => $row->lit_url,
+					"volume" => $row->lit_volume,
+					"year" => $row->lit_year,
+				);
+			} else {
+				
+				$tmpLiterature = new LoopLiterature;
+				$tmpLiterature->key =  $row->lit_itemkey;
+				$tmpLiterature->itemType =  $row->lit_itemtype;
+				$tmpLiterature->address =  $row->lit_address;
+				$tmpLiterature->author =  $row->lit_author;
+				$tmpLiterature->booktitle =  $row->lit_booktitle;
+				$tmpLiterature->chapter =  $row->lit_chapter;
+				$tmpLiterature->edition =  $row->lit_edition;
+				$tmpLiterature->editor =  $row->lit_editor;
+				$tmpLiterature->howpublished =  $row->lit_howpublished;
+				$tmpLiterature->institution =  $row->lit_institution;
+				$tmpLiterature->isbn =  $row->lit_isbn;
+				$tmpLiterature->journal =  $row->lit_journal;
+				$tmpLiterature->month =  $row->lit_month;
+				$tmpLiterature->note =  $row->lit_note;
+				$tmpLiterature->number =  $row->lit_number;
+				$tmpLiterature->organization =  $row->lit_organization;
+				$tmpLiterature->pages =  $row->lit_pages;
+				$tmpLiterature->publisher =  $row->lit_publisher;
+				$tmpLiterature->school =  $row->lit_school;
+				$tmpLiterature->series =  $row->lit_series;
+				$tmpLiterature->itemtitle =  $row->lit_title;
+				$tmpLiterature->type =  $row->lit_type;
+				$tmpLiterature->url =  $row->lit_url;
+				$tmpLiterature->volume =  $row->lit_volume;
+				$tmpLiterature->year =  $row->lit_year;
+				
+				$items[$row->lit_itemkey] = $tmpLiterature;
+			}
+        }
+        return $items;
+	}
+	
+	/**
+	 * @param LoopLiterature $li entry to render
+	 * @param Array $ref data about the reference
+	 */
+	public static function renderLiteratureForSpecialPage( $li, $ref = null ) {
+
+		global $wgLoopLiteratureCiteType;
+
+		$return = '';
+
+		if ( $wgLoopLiteratureCiteType == 'harvard' ) {
+			
+			
+			# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
+			if ( $li->author ) {
+				$return .= $li->author.". ";
+			} elseif ( $li->itemtitle ) {
+				$return .= "<i>".$li->itemtitle."</i>. ";
+			}
+
+			if ( $li->editor ) { # short, only (Hrsg.). if different from author, it will be mentioned later
+				if ( $li->author == $li->editor ) {
+					$return .= "(".wfMessage("loopliterature-text-publisher")->text()."). ";
+				}
+			} 
+
+			if ( $li->year ) {
+				$monthText = "";
+				if ( $li->month ) {
+					$monthText = $li->month . " ";
+				}
+				if ( $li->itemType == "unpublished" ) {
+					$return .= "(".$monthText.$li->year.", ".wfMessage("loopliterature-text-unpublished")->text()."). ";
+				} else {
+					$return .= "(".$monthText.$li->year."). ";
+				}
+			} elseif ( $li->itemType == "unpublished" ) {
+				$return .= "(".wfMessage("loopliterature-text-unpublished")->text()."). ";
+			} else {
+				$return .= "(".wfMessage("loopliterature-text-noyear")->text()."). ";
+			}
+			
+			if ( $li->chapter ) {
+				$return .= $li->chapter.". ";
+			} 
+			if ( $li->editor ) {
+				if ( $li->author != $li->editor ) {
+					$return .= wfMessage("loopliterature-text-inpublisher", $li->editor)->text() . ", ";
+				}
+			} 
+
+			if ( $li->author && $li->itemtitle ) {
+				if ( $li->itemType == "article" ) {
+					$return .= $li->itemtitle;
+				} else {
+					$return .= "<i>".$li->itemtitle."</i>";
+				}
+				if ( ! $li->volume || ! $li->type || ! $li->edtion || ! $li->pages || ! $li->howpublished || ! $li->series ) {
+					$return .= ". ";
+				} else {
+					$return .= " ";
+				}
+			}
+
+			if ( $li->booktitle ) {
+				$return .= $li->booktitle . ". ";
+			}
+
+			if ( $li->pages ) {
+				if ( ! strpos( $li->pages , ',' ) && ! strpos( $li->pages , '-' )  && ! strpos( $li->pages , ' ' ) ) {
+					$plural = 2;
+				} else {
+					$plural = 1;
+				}
+				$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() .$li->pages."). ";
+			} 
+
+			if ( $li->series ) {
+				$return .= "(".$li->series."). ";
+			} 
+			if ( $li->type ) {
+				$return .= "(".$li->type."). ";
+			} 
+			if ( $li->volume ) {
+				$return .= "(".$li->volume."). ";
+			} 
+			if ( $li->edition ) {
+				$return .= "(".$li->edition."). ";
+			} 
+			if ( $li->howpublished ) {
+				$return .= "(".$li->howpublished."). ";
+			} 
+			
+
+			if ( $li->publisher ) {
+				$return .= $li->publisher.". ";
+			} elseif ( $li->journal ) {
+				$return .= "<i>".$li->journal.".</i> ";
+			}
+
+			if ( $li->institution ) {
+				$return .= $li->institution.". ";
+			} 
+			if ( $li->school ) {
+				$return .= $li->school.". ";
+			} 
+			if ( $li->isbn ) {
+				$return .= "ISBN: " . $li->isbn.". ";
+			} 
+			if ( $li->url ) {
+				$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
+			} 
+
+		}
+
+
+
+		return $return;
+	}
+
+
 }
 
 class LoopLiteratureReference {
@@ -865,7 +1076,7 @@ class LoopLiteratureReference {
                 }
             }
         
-            $objects[$row->llr_refid] = array(
+            $objects[$row->llr_pageid][$row->llr_refid] = array(
                 'refId' => $row->llr_refid,
                 'articleId' => $row->llr_pageid,
                 'key' => $row->llr_itemkey,
@@ -923,7 +1134,7 @@ class LoopLiteratureReference {
     
 	// returns number of objects in glossary pages before current glossary page
     public static function getLiteratureNumberingsForGlossaryPage ( $articleId ) {
-       /* $glossaryItems = LoopGlossary::getGlossaryPages();
+       $glossaryItems = LoopGlossary::getGlossaryPages();
         $data = array();
         $return = array();
         $pageHasObjects = false;
@@ -939,7 +1150,7 @@ class LoopLiteratureReference {
         }
         if ( $pageHasObjects ) {
             
-			$objects = array('cite');
+			$objects = array();
 			$return = array('cite' => 0 ); 
             
             $dbr = wfGetDB( DB_REPLICA );
@@ -958,10 +1169,8 @@ class LoopLiteratureReference {
             foreach ( $res as $row ) {
                 $objects['cite'][$row->llr_pageid][] = $row->llr_refid;
             }
-
             foreach ( $data as $pos => $tmpId ) {
                 foreach( $objects as $objectType => $page ) {
-					#dd($objects, $objectType,  $page );
                     if ( $tmpId[0] != $articleId ) {
                         if ( array_key_exists( $tmpId[0], $page ) ) {
                             $return[$objectType] += sizeof($page[$tmpId[0]]);
@@ -970,7 +1179,7 @@ class LoopLiteratureReference {
                 }
             }
         }
-        return $return;*/
+        return $return;
     }
 }
 
@@ -981,31 +1190,89 @@ class SpecialLoopLiterature extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
-		$user = $this->getUser();
 
+		global $wgLoopLiteratureCiteType;
+		$user = $this->getUser();
+		$editMode = $user->getOption( 'LoopEditMode', false, true );
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$out = $this->getOutput();
 		$out->setPageTitle($this->msg('loopliterature'));
-		$html = '';
+		$html = '<div class="bibliography ml-4">';
 
 		if ( $user->isAllowed('loop-edit-literature') ) {
 			$html .= $linkRenderer->makeLink(
 				new TitleValue( NS_SPECIAL, 'LoopLiteratureEdit' ),
-				new HtmlArmor( $this->getSkin()->msg( "loopliteratureedit" ) ),
-				array("class"=>"aToc")
+				new HtmlArmor( $this->getSkin()->msg( "loopliterature-label-addentry" ) ),
+				array("class" => "aToc")
 				
 			);
-			
-			$loopStructure = new LoopStructure();
-			$loopStructure->loadStructureItems();
-
-			$allItems = LoopLiteratureReference::getAllItems( $loopStructure );
-			dd($allItems);
 		}
 
-		$out->addHTML( $html );
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 
+		$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
+		$allItems = LoopLiterature::getAllItems();
+
+		foreach ( $allReferences as $pageId => $pageReferences ) {
+			
+			foreach ( $pageReferences as $refId => $referenceData) {
+				$html .= '<p class="literature-entry">';
+				#dd( $allItems, $pageId, $pageReferences, $refId, $data );
+				if ( isset( $allItems[$referenceData["key"]] ) ) {
+					$literatureItem = $allItems[$referenceData["key"]];
+					$html .= LoopLiterature::renderLiteratureForSpecialPage($literatureItem, $referenceData);
+					#$literatureItem["author"];
+					if ( $editMode && $user->isAllowed('loop-edit-literature') ) {
+						$html .= $linkRenderer->makelink( 
+							new TitleValue( 
+								NS_SPECIAL, 
+								'LoopLiteratureEdit' 
+							), 
+							new HtmlArmor( '<span class="ic ic-edit"></span>' ), 
+							array( 'title' => $this->getSkin()->msg( "loopliteratureedit" )->text() ),
+							array( 'edit' => $referenceData["key"] )
+						);
+					}
+					if ( $wgLoopLiteratureCiteType == "harvard" ) {
+						unset($allItems[$referenceData["key"]]);
+						#dd($refId);
+					}
+				}
+				
+				$html .= '</p>';
+			}
+		}
+		#dd($allItems);
+		if ( $editMode && $wgLoopLiteratureCiteType == "harvard" ) {
+
+			$html .= "<hr class='mr-4'/>";
+			foreach ( $allItems as $item ) {
+				$html .= "<p>";
+				$html .= LoopLiterature::renderLiteratureForSpecialPage($item);
+				
+				if ( $editMode && $user->isAllowed('loop-edit-literature') ) {
+					$html .= $linkRenderer->makelink( 
+						new TitleValue( 
+							NS_SPECIAL, 
+							'LoopLiteratureEdit' 
+						), 
+						new HtmlArmor( '<span class="ic ic-edit"></span>' ), 
+						array( 'title' => $this->getSkin()->msg( "loopliteratureedit" )->text() ),
+						array( 'edit' => $referenceData["key"] )
+					);
+				}
+
+				$html .= '</p>';
+					
+			}
+		
+			#dd($allItems, $allReferences);
+		}
+		$html .= '</div>';
+		$out->addHTML( $html );
+		
     }
 
 	/**
@@ -1085,12 +1352,12 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				'address' => array ( 'max-length' => 255 ), 
 				'author' => array ( 'max-length' => 255 ), 
 				'booktitle' => array ( 'max-length' => 255 ), 
-				'chapter' => array ( 'type' => 'number' ), 
+				'chapter' => array ( 'max-length' => 255 ), 
 				'edition' => array ( 'type' => 'number', ), 
 				'editor' => array ( 'max-length' => 255 ), 
 				'howpublished' => array ( 'max-length' => 255 ), 
 				'institution' => array ( 'max-length' => 255 ), 
-				'isbn' => array ( 'type' => 'number', 'min-length' => 10, 'max-length' => 13 ), 
+				'isbn' => array ( 'min-length' => 10, 'max-length' => 17 ), 
 				'journal' => array ( 'max-length' => 255 ), 
 				'note' => array ( ), 
 				'number' => array ( 'type' => 'number', 'max-length' => 255 ), 
@@ -1104,7 +1371,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				'url' => array ( 'type' => 'url', 'max-length' => 255 ), 
 				'volume' => array ( 'max-length' => 255 ), 
 				'month' => array ( 'max-length' => 255 ), 
-				'year' => array ('type' => 'number', 'length' => 4 )
+				'year' => array ( 'max-length' => 255 )
 				);
 
 
@@ -1132,7 +1399,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="key">'.$this->msg('loopliterature-label-key')->text().'</label>';
 			$requiredObjects .= '<input  class="form-control" id="key" name="key" max-length="255" required/>';
-			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'.$this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'.$this->msg("loopliterature-error-keyalready")->text().'</div></div>';
 			$optionalObjects = '';
 			$otherObjects = '';
 

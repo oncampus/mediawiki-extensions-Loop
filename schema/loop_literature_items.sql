@@ -4,12 +4,12 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_literature_items (
   `lit_address` varchar(255),
   `lit_author` varchar(255),
   `lit_booktitle` varchar(255),
-  `lit_chapter` int(10),
+  `lit_chapter` varchar(255),
   `lit_edition` int(10),
   `lit_editor` varchar(255),
   `lit_howpublished` varchar(255),
   `lit_institution` varchar(255),
-  `lit_isbn` bigint(10),
+  `lit_isbn` varchar(255),
   `lit_journal` varchar(255),
   `lit_month` varchar(255),
   `lit_note` varchar(255),
@@ -23,6 +23,6 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_literature_items (
   `lit_type` varchar(255),
   `lit_url` varchar(255),
   `lit_volume` varchar(255),
-  `lit_year` int(10),
+  `lit_year` varchar(255),
   PRIMARY KEY (lit_itemkey)
 ) /*$wgDBTableOptions*/;
