@@ -9,8 +9,14 @@ $( document ).ready( function () {
             $(this).val( decodeURIComponent( param ) );
         })
         $('#itemType').val( decodeURIComponent( getUrlParam( 'itemType' )) )
-        //console.log(getUrlParam( 'itemtitle' ), decodeURIComponent( getUrlParam( 'itemtitle' )));
         updateFields( getUrlParam( 'itemType' ) )
+        checkKeyValue()
+    }
+    if ( getUrlParam( 'edit' ) != '' ) {
+        $('.literature-field input').each( function () {
+            $id = $(this).attr("id");
+            $(this).val( $editValues[$id] );
+        })
         checkKeyValue()
     }
 

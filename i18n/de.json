@@ -220,6 +220,7 @@
 	"loopliterature-text-pages": "{{PLURAL:$1|S.|S.}}",
 	"loopliterature-text-url": "Abgerufen von",
 	"loopliterature-text-notreferenced": "Die folgenden Einträge sind erstellt worden, wurden aber nicht referenziert und sind nur im Bearbeitungsmodus sichtbar",
+	"loopliterature-text-note": "Notiz",
 
 	"loopliterature-label-addentry": "Literatureintrag anlegen",
 	"loopliterature-label-deleteentry": "Literatureintrag löschen",
@@ -247,7 +248,7 @@
 	"loopliterature-label-publisher": "Verlag",
 	"loopliterature-label-school": "Schule",
 	"loopliterature-label-series": "Reihe",
-	"loopliterature-label-itemtitle": "Titel",
+	"loopliterature-label-itemTitle": "Titel",
 	"loopliterature-label-type": "Typ",
 	"loopliterature-label-url": "URL",
 	"loopliterature-label-volume": "Band",
@@ -264,7 +265,7 @@
 	"loopliterature-error-dublicatekey": "Der Zitatschlüssel '''$1''' ist bereits vorhanden.",
 	"loopliterature-error-missingkey": "Es wurde kein Zitatschlüssel angegeben.",
 	"loopliterature-error-keyalreadyexists": "Der Zitatschlüssel ist bereits vorhanden. Bitte wählen Sie einen anderen oder überschreiben Sie die Daten.",
-	"loopliterature-error-keyunknown": "Der Zitatschlüssel nicht vorhanden. Bitte legen Sie den Literatureintrag an.",
+	"loopliterature-error-keyunknown": "Der Zitatschlüssel '''$1''' ist nicht vorhanden. Bitte legen Sie den Literatureintrag an.",
 	
 
 	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
@@ -277,6 +278,7 @@
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
+	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glossar",
