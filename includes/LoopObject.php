@@ -841,31 +841,6 @@ class LoopObject {
 	}
 
 	/**
-	 * Custom hook called when updating LOOP
-	 * @param Title $title
-	 */
-	public static function onLoopUpdateSavePage( $title ) {
-		
-		$latestRevId = $title->getLatestRevID();
-		$wikiPage = WikiPage::factory($title);
-		$fwp = new FlaggableWikiPage ( $title );
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
-		
-		if ( isset($fwp) ) {
-			$stableRevId = $fwp->getStable();
-
-			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				self::doIndexLoopObjects( $wikiPage, $title, null, $systemUser );
-			} else {
-				$revision = $wikiPage->getRevision();
-				$content = $revision->getContent();
-				self::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * When deleting a page, remove all Object entries from DB.
 	 * Attached to ArticleDeleteComplete hook.
 	 */

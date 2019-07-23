@@ -24,11 +24,12 @@ class LoopUpdater {
 			Loop::setupLoopPages();
 		}
 
-		# LOOP1 to LOOP2 migration process
+		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
 		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
 			
 			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => false, 'create'=> true, 'validate' => true ] ); #beobachten, ob das Anlegen hier ausreicht
 			$systemUser->addGroup("sysop");
+			self::migrateLiterature();
 			self::saveAllWikiPages();
 			self::migrateGlossary();
 			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', dirname( __FILE__ ) . '/loopstructure_delete.sql', true ) );
@@ -37,6 +38,10 @@ class LoopUpdater {
 		return true;
 	}
 
+	/**
+	 * Re-saves every wikipage in main namespace
+	 * Rendering will be updated; IDs will be given etc
+	 */
 	public static function saveAllWikiPages() {
 		
 		global $wgOut;
@@ -67,6 +72,10 @@ class LoopUpdater {
 		}
 	}
 
+	/**
+	 * Migrates LOOP 1 glossary category and pages to new namespace 
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
 	public static function migrateGlossary() {
 
         $glossary = Category::newFromName("Glossar");
@@ -106,7 +115,93 @@ class LoopUpdater {
 		}
 		
 		$glossaryCategoryWikiPage = WikiPage::factory( Title::newFromText( "Glossar", NS_CATEGORY ));
-		$glossaryCategoryWikiPage->doDeleteArticle( 'Moved to Special:Glossary' );
+		$glossaryCategoryWikiPage->doDeleteArticle( 'Moved to Special:Glossary / Spezial:Glossar' );
 	}
+
+	
+	/**
+	 * Custom hook called when updating LOOP
+	 * - Indexes given LOOP-Objects on page
+	 * 
+	 * @param Title $title
+	 */
+	public static function onLoopUpdateSavePage( $title ) {
+		
+		$latestRevId = $title->getLatestRevID();
+		$wikiPage = WikiPage::factory($title);
+		$fwp = new FlaggableWikiPage ( $title );
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+		
+		if ( isset( $fwp ) ) {
+			$stableRevId = $fwp->getStable();
+
+			if ( $latestRevId == $stableRevId || $stableRevId == null ) { # page is stable or does not have any stable version
+				LoopObject::doIndexLoopObjects( $wikiPage, $title, null, $systemUser );
+			} else {
+				$revision = $wikiPage->getRevision();
+				$content = $revision->getContent();
+				LoopObject::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
+			}
+		}
+		return true;
+	}
+
+	
+	/**
+	 * Migrates LOOP 1 bibliography page "Literatur" and adds given entries to database
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
+	public static function migrateLiterature() {
+		
+		$title = Title::newFromText( "Literatur" );
+		$wikiPage = WikiPage::factory( $title );
+		$oldFlaggableWikiPage = new FlaggableWikiPage ( $title );
+		$stableRev = $oldFlaggableWikiPage->getStable();
+		if ( $stableRev == 0 ) {
+			$stableRev = intval( $title->mArticleID );
+			$contentText = $oldWikiPage->getContent ()->getNativeData ();
+		} else {
+			$contentText = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
+		}
+		
+		$parser = new Parser();
+		$biblio_tags = array ();
+		$parser->extractTagsAndParams( array( 'biblio' ), $contentText, $biblio_tags );
+
+		if ( !empty ( $biblio_tags ) ) {
+			error_log("Migrating bibliography");
+			foreach ( $biblio_tags as $biblio ) {
+				$rows = explode( "\n", $biblio[1] );
+				
+				foreach ( $rows as $row ) {
+					if ( !empty ( $row ) ) {
+						$output_array = array();
+						preg_match('/(#{1})(.{1,})(\s{1,})(.*\z)/U', $row, $output_array);
+						$key = $output_array[2];
+						$text = $output_array[4];
+						$text = str_replace( "isbn=", "ISBN: ", $text);
+						#dd($output_array);
+
+						$existingLiterature = new LoopLiterature();
+						$existingLiterature->loadLiteratureItem( $key );
+						if ( empty( $existingLiterature->itemKey ) ) {
+							$li = new LoopLiterature();
+							$li->itemKey = $key;
+							$li->itemType = "LOOP1";
+							$li->author = str_replace( "+", " ", $key);
+							$li->note = $text;
+							$li->addToDatabase();
+						}
+					}
+				}
+			}
+			$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+			$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "namespace-special" )->inContentLanguage()->text() . ":" . wfMessage( "loopliterature" )->inContentLanguage()->text() . "]]" );
+			$wikiPage->doEditContent( $newRedirectContent, 'Redirect to new bibliography', EDIT_UPDATE, false, $user );	
+		}
+
+		return true;
+	}
+
 }
 ?>

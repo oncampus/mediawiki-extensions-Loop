@@ -770,7 +770,7 @@ class LoopLiterature {
 				$items[$row->lit_itemkey] = $tmpLiterature;
 			}
 		}
-		dd($items);
+		#dd($items);
         return $items;
 	}
 	
