@@ -778,7 +778,7 @@ class LoopLiterature {
 	 * @param LoopLiterature $li entry to render
 	 * @param Array $ref data about the reference
 	 */
-	public static function renderLiteratureForSpecialPage( $li, $ref = null ) {
+	public static function renderLiteratureElement( $li, $ref = null ) {
 
 		global $wgOut, $wgLoopLiteratureCiteType;
 
@@ -1223,8 +1223,6 @@ class SpecialLoopLiterature extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
-		LoopUpdater::migrateLiterature();
-
 		global $wgLoopLiteratureCiteType;
 		$user = $this->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
@@ -1266,7 +1264,7 @@ class SpecialLoopLiterature extends SpecialPage {
 				#dd( $allItems, $pageId, $pageReferences, $refId, $data );
 				if ( isset( $allItems[$referenceData["itemKey"]] ) ) {
 					$literatureItem = $allItems[$referenceData["itemKey"]];
-					$html .= LoopLiterature::renderLiteratureForSpecialPage($literatureItem, $referenceData);
+					$html .= LoopLiterature::renderLiteratureElement($literatureItem, $referenceData);
 					#$literatureItem["author"];
 					if ( $wgLoopLiteratureCiteType == "harvard" ) {
 						unset($allItems[$referenceData["itemKey"]]);
@@ -1286,7 +1284,7 @@ class SpecialLoopLiterature extends SpecialPage {
 
 			foreach ( $allItems as $item ) {
 				$html .= '<p class="literature-entry">';
-				$html .= LoopLiterature::renderLiteratureForSpecialPage($item);
+				$html .= LoopLiterature::renderLiteratureElement($item);
 				$html .= '</p>';
 					
 			}
@@ -1331,16 +1329,19 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			if ( $editKey ) {
 				$editLiteratureItem = new LoopLiterature;
 				$editLiteratureItem->loadLiteratureItem( $editKey );
-				$html .= '<script>$editValues = new Array;';
-				$html .= '$editValues = {';
+				$html .= '<script>var editValues = new Array;';
+				$html .= 'editValues = {';
 				$itemArray = get_object_vars($editLiteratureItem);
 				foreach ( $itemArray as $key => $val ) {
 					if ( $key != "literatureTypes" && $key != "errors" && isset($val) ) {
+						$val = str_replace('"', "&quot;", $val);
 						$html .= ''.$key.': "'.$val.'",';
 					}
 				}
 				#dd($html);
 				$html .= '}</script>';
+			} else {
+				$html .= '<script>var editValues = new Array;</script>';
 			}
 
 			$saltedToken = $user->getEditToken( $wgSecretKey, $request );

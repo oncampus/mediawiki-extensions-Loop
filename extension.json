@@ -154,7 +154,8 @@
 		}
 	},
 	"TrackingCategories": [
-		"loop-tracking-category-error"
+		"loop-tracking-category-error",
+		"looplegacy-tracking-category"
 	],
 	"GroupPermissions": {
 		"*": {

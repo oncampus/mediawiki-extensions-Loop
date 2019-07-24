@@ -15,7 +15,10 @@ $( document ).ready( function () {
     if ( getUrlParam( 'edit' ) != '' ) {
         $('.literature-field input').each( function () {
             $id = $(this).attr("id");
-            $(this).val( $editValues[$id] );
+            $val = editValues[$id];
+            if ( $val !== undefined ) {
+                $(this).val( $val.replace(/&quot;/g, '"') );
+            }
         })
         checkKeyValue()
     }
@@ -23,6 +26,7 @@ $( document ).ready( function () {
     $('#itemType').on("change", function() {
         $type = $(this).val();
         updateFields( $type ) 
+        checkKeyValue()
     })
 
     function updateFields( $type ) {
