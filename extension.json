@@ -149,9 +149,7 @@
 		"ext.loop-literature-edit.js": {
 			"position": "bottom",
 			"scripts": [
-				"resources/js/SpecialLoopLiteratureEdit.js"
-			],
-			"dependencies": [
+				"resources/js/loop.LiteratureEdit.js"
 			]
 		}
 	},
