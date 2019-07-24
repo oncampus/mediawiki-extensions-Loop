@@ -133,11 +133,15 @@
 	 */
 	public static function setupLoopPages() {
 		
-		global $wgOut;
-
-		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->text(), NS_CATEGORY ));
+		$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+			
+		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
-		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $wgOut->getUser() );
+		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $user );
+
+		$loopLegacyPage = WikiPage::factory( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
+		$loopLegacyPageContent = new WikitextContent( wfMessage( 'looplegacy-tracking-category-desc' )->inContentLanguage()->text() );
+		$loopLegacyPage->doEditContent( $loopLegacyPageContent, '', EDIT_NEW, false, $user );
 
 	}
 

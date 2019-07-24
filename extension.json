@@ -70,7 +70,8 @@
 		"SpecialLoopLiteratureEdit": "includes/LoopLiterature.php",
 		"SpecialLoopLiteratureImport": "includes/LoopLiterature.php",
 		"LoopGlossary": "includes/LoopGlossary.php",
-		"SpecialLoopGlossary": "includes/LoopGlossary.php"
+		"SpecialLoopGlossary": "includes/LoopGlossary.php",
+		"LoopLegacy": "includes/LoopLegacy.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -88,7 +89,8 @@
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
-			"LoopLiterature::onParserSetup"
+			"LoopLiterature::onParserSetup",
+			"LoopLegacy::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
