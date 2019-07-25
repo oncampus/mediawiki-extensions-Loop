@@ -194,7 +194,7 @@ class LoopUpdater {
 								$li->note = $text;
 								$li->addToDatabase();
 							}
-							$newTagContent .= $key . "\n";
+							$newTagContent .=  "#" . $key . "\n";
 							
 						}
 					}
