@@ -66,6 +66,9 @@
 	"loopsettings-numbering-objects-label": "Nummerierung von allen LOOP-Objekten aktivieren, z.B. Abbildungen",
 	"loopsettings-numbering-type-ongoing-label": "Durchlaufende Nummerierung - z.B. '''Abb. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Nummerierung nach Kapiteln - z.B. '''Abb. 3.12'''",
+	"loopsettings-citation-style": "Zitierstil",
+	"loopsettings-citation-style-harvard-label": "'''Harvard''', Anzeige im Fließtext z.B. Müller 2002",
+	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', Anzeige mit durchlaufender Nummerierung, z.B. ²",
 
 	"loopexport-specialpage-title": "Loop Exportieren",
 	"loopexport": "Loop Exportieren",

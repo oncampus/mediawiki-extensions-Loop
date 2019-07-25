@@ -870,128 +870,128 @@ class LoopLiterature {
 			#dd($li, $ref);
 		}
 			# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
-			if ( $li->author ) {
-				$return .= $li->author.". ";
-			} elseif ( $li->itemTitle ) {
-				if ( $li->itemType == "LOOP1" ) {
-					$return .= $li->itemTitle.". ";
-				} else {
-					$return .= "<i>".$li->itemTitle."</i>. ";
-				}
+		if ( $li->author ) {
+			$return .= $li->author.". ";
+		} elseif ( $li->itemTitle ) {
+			if ( $li->itemType == "LOOP1" ) {
+				$return .= $li->itemTitle.". ";
+			} else {
+				$return .= "<i>".$li->itemTitle."</i>. ";
 			}
+		}
 
-			if ( $li->editor ) { # short, only (Hrsg.). if different from author, it will be mentioned later
-				if ( $li->author == $li->editor ) {
-					$return .= "(".wfMessage("loopliterature-text-publisher")->text()."). ";
-				}
-			} 
-
-			if ( $li->year ) {
-				$monthText = "";
-				if ( $li->month ) {
-					$monthText = $li->month . " ";
-				}
-				if ( $li->itemType == "unpublished" ) {
-					$return .= "(".$monthText.$li->year.", ".wfMessage("loopliterature-text-unpublished")->text()."). ";
-				} else {
-					$return .= "(".$monthText.$li->year."). ";
-				}
-			} elseif ( $li->itemType == "unpublished" ) {
-				$return .= "(".wfMessage("loopliterature-text-unpublished")->text()."). ";
-			} elseif ( $li->itemType != "LOOP1" ) { #legacy loop 1
-				$return .= "(".wfMessage("loopliterature-text-noyear")->text()."). ";
+		if ( $li->editor ) { # short, only (Hrsg.). if different from author, it will be mentioned later
+			if ( $li->author == $li->editor ) {
+				$return .= "(".wfMessage("loopliterature-text-publisher")->text()."). ";
 			}
-			
-			if ( $li->chapter ) {
-				$return .= $li->chapter.". ";
-			} 
-			if ( $li->editor ) {
-				if ( $li->author != $li->editor ) {
-					$return .= wfMessage("loopliterature-text-inpublisher", $li->editor)->text() . ", ";
-				}
-			} 
+		} 
 
-			if ( $li->author && $li->itemTitle ) {
-				if ( $li->itemType == "article" ) {
-					$return .= $li->itemTitle;
-				} else {
-					$return .= "<i>".$li->itemTitle."</i>";
-				}
-				if ( ! $li->volume || ! $li->type || ! $li->edtion || ! $li->pages || ! $li->howpublished || ! $li->series ) {
-					$return .= ". ";
-				} else {
-					$return .= " ";
-				}
+		if ( $li->year ) {
+			$monthText = "";
+			if ( $li->month ) {
+				$monthText = $li->month . " ";
 			}
-
-			if ( $li->booktitle ) {
-				$return .= $li->booktitle . ". ";
+			if ( $li->itemType == "unpublished" ) {
+				$return .= "(".$monthText.$li->year.", ".wfMessage("loopliterature-text-unpublished")->text()."). ";
+			} else {
+				$return .= "(".$monthText.$li->year."). ";
 			}
-
-			if ( $li->pages ) {
-				if ( ! strpos( $li->pages , ',' ) && ! strpos( $li->pages , '-' )  && ! strpos( $li->pages , ' ' ) ) {
-					$plural = 2;
-				} else {
-					$plural = 1;
-				}
-				$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() .$li->pages."). ";
-			} 
-
-			if ( $li->journal ) {
-				$return .= $li->journal. ". ";
-			} 
-			if ( $li->series ) {
-				$return .= "(".$li->series."). ";
-			} 
-			if ( $li->type ) {
-				$return .= "(".$li->type."). ";
-			} 
-			if ( $li->volume ) {
-				$return .= "(".$li->volume."). ";
-			} 
-			if ( $li->edition ) {
-				$return .= "(".$li->edition."). ";
-			} 
-			if ( $li->howpublished ) {
-				$return .= "(".$li->howpublished."). ";
-			} 
-			if ( $li->number ) {
-				$return .= "(".$li->number."). ";
-			} 
-			
-
-			if ( $li->publisher ) {
-				$return .= $li->publisher.". ";
-			} elseif ( $li->journal ) {
-				$return .= "<i>".$li->journal.".</i> ";
+		} elseif ( $li->itemType == "unpublished" ) {
+			$return .= "(".wfMessage("loopliterature-text-unpublished")->text()."). ";
+		} elseif ( $li->itemType != "LOOP1" ) { #legacy loop 1
+			$return .= "(".wfMessage("loopliterature-text-noyear")->text()."). ";
+		}
+		
+		if ( $li->chapter ) {
+			$return .= $li->chapter.". ";
+		} 
+		if ( $li->editor ) {
+			if ( $li->author != $li->editor ) {
+				$return .= wfMessage("loopliterature-text-inpublisher", $li->editor)->text() . ", ";
 			}
+		} 
 
-			if ( $li->institution ) {
-				$return .= $li->institution.". ";
-			} 
-			if ( $li->school ) {
-				$return .= $li->school.". ";
-			} 
-			if ( $li->isbn ) {
-				$return .= "ISBN: " . $li->isbn.". ";
-			} 
-			if ( $li->doi ) {
-				$return .= "DOI: " . $li->doi.". ";
-			} 
-			if ( $li->url ) {
-				$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
-			} 
-			if ( $li->address ) {
-				$return .= $li->address.". ";
-			} 
-
-			if ( $li->note && $editMode && $li->itemType != "LOOP1" ) {
-				$return .= '<span class="literature-itemkey font-italic text-black-50">'.wfMessage("loopliterature-text-note")->text() . ": " . $li->note.'. </span>';
-			} 
-
-			if ( $li->itemType == "LOOP1" && $li->note ) {
-				$return .= $li->note . " ";
+		if ( $li->author && $li->itemTitle ) {
+			if ( $li->itemType == "article" ) {
+				$return .= $li->itemTitle;
+			} else {
+				$return .= "<i>".$li->itemTitle."</i>";
 			}
+			if ( ! $li->volume || ! $li->type || ! $li->edtion || ! $li->pages || ! $li->howpublished || ! $li->series ) {
+				$return .= ". ";
+			} else {
+				$return .= " ";
+			}
+		}
+
+		if ( $li->booktitle ) {
+			$return .= $li->booktitle . ". ";
+		}
+
+		if ( $li->pages ) {
+			if ( ! strpos( $li->pages , ',' ) && ! strpos( $li->pages , '-' )  && ! strpos( $li->pages , ' ' ) ) {
+				$plural = 2;
+			} else {
+				$plural = 1;
+			}
+			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() .$li->pages."). ";
+		} 
+
+		if ( $li->journal ) {
+			$return .= $li->journal. ". ";
+		} 
+		if ( $li->series ) {
+			$return .= "(".$li->series."). ";
+		} 
+		if ( $li->type ) {
+			$return .= "(".$li->type."). ";
+		} 
+		if ( $li->volume ) {
+			$return .= "(".$li->volume."). ";
+		} 
+		if ( $li->edition ) {
+			$return .= "(".$li->edition."). ";
+		} 
+		if ( $li->howpublished ) {
+			$return .= "(".$li->howpublished."). ";
+		} 
+		if ( $li->number ) {
+			$return .= "(".$li->number."). ";
+		} 
+		
+
+		if ( $li->publisher ) {
+			$return .= $li->publisher.". ";
+		} elseif ( $li->journal ) {
+			$return .= "<i>".$li->journal.".</i> ";
+		}
+
+		if ( $li->institution ) {
+			$return .= $li->institution.". ";
+		} 
+		if ( $li->school ) {
+			$return .= $li->school.". ";
+		} 
+		if ( $li->isbn ) {
+			$return .= "ISBN: " . $li->isbn.". ";
+		} 
+		if ( $li->doi ) {
+			$return .= "DOI: " . $li->doi.". ";
+		} 
+		if ( $li->url ) {
+			$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
+		} 
+		if ( $li->address ) {
+			$return .= $li->address.". ";
+		} 
+
+		if ( $li->note && $editMode && $li->itemType != "LOOP1" ) {
+			$return .= '<span class="literature-itemkey font-italic text-black-50">'.wfMessage("loopliterature-text-note")->text() . ": " . $li->note.'. </span>';
+		} 
+
+		if ( $li->itemType == "LOOP1" && $li->note ) {
+			$return .= $li->note . " ";
+		}
 
 		#}
 
@@ -1302,6 +1302,7 @@ class SpecialLoopLiterature extends SpecialPage {
 
 	public function execute( $sub ) {
 		global $wgLoopLiteratureCiteType;
+
 		$user = $this->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
@@ -1334,7 +1335,7 @@ class SpecialLoopLiterature extends SpecialPage {
 
 		$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
 		$allItems = LoopLiterature::getAllItems();
-#dd($allReferences );
+		
 		$htmlElements = array();
 		foreach ( $allReferences as $pageId => $pageReferences ) {
 			#dd();
@@ -1356,9 +1357,11 @@ class SpecialLoopLiterature extends SpecialPage {
 					$literatureItem = $allItems[$referenceData["itemKey"]];
 					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement($literatureItem, $referenceData);
 					#$literatureItem["author"];
-					if ( $wgLoopLiteratureCiteType == "harvard" ) {
-						unset($allItems[$referenceData["itemKey"]]);
-					}
+					#if ( $wgLoopLiteratureCiteType == "harvard" ) {
+					#	unset($allItems[$referenceData["itemKey"]]);
+					#} else {
+					$referencedItems[] = $referenceData["itemKey"];
+					#}
 					$htmlElements[$orderkey] .= '</p>';
 				}
 			}
@@ -1373,18 +1376,22 @@ class SpecialLoopLiterature extends SpecialPage {
 			$html .= "<hr class='mr-4'/>";
 			$html .= "<p class='font-weight-bold' id='literature-unreferenced'>".$this->msg( "loopliterature-text-notreferenced" ).":</p>";
 
-
 			foreach ( $allItems as $item ) {
-				
-				if ( $item->author ) {
-					$orderkey = ucfirst($item->author);
-				} elseif ( $item->itemTitle ) {
-					$orderkey = ucfirst($item->itemTitle);
+				if ( ! in_array( $item->itemKey, $referencedItems ) ) {
+					#dd( $item->itemKey, $referencedItems );
+					if ( $item->author ) {
+						$orderkey = ucfirst($item->author);
+					} elseif ( $item->itemTitle ) {
+						$orderkey = ucfirst($item->itemTitle);
+					}
+	
+					$htmlElements[$orderkey] = '<p class="literature-entry">';
+					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement($item);
+					$htmlElements[$orderkey] .= '</p>';
+				} else {
+					
+				#dd( $item->itemKey, $referencedItems );
 				}
-
-				$htmlElements[$orderkey] = '<p class="literature-entry">';
-				$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement($item);
-				$htmlElements[$orderkey] .= '</p>';
 					
 			}
 			ksort( $htmlElements, SORT_STRING );

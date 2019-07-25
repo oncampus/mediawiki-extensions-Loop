@@ -31,6 +31,7 @@ class LoopSettings {
     public $instagramLink;
     public $numberingObjects;
     public $numberingType;
+    public $citationStyle;
 
     /**
      * Add settings to the database
@@ -63,7 +64,8 @@ class LoopSettings {
             'lset_instagramicon' => $this->instagramIcon,
             'lset_instagramlink' => $this->instagramLink,
             'lset_numberingobjects' => $this->numberingObjects,
-            'lset_numberingtype' => $this->numberingType
+            'lset_numberingtype' => $this->numberingType,
+            'lset_citationstyle' => $this->citationStyle
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -114,7 +116,8 @@ class LoopSettings {
             $data[$row->lset_property] = $row->lset_value;
         }
 
-        global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgLanguageCode;
+        global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgOncampusLink, $wgLanguageCode, $wgLoopObjectNumbering, 
+        $wgLoopNumberingType, $wgLoopLiteratureCiteType;
 
         $this->oncampusLink = $wgOncampusLink;
         $this->languageCode = $wgLanguageCode;
@@ -123,6 +126,7 @@ class LoopSettings {
         $this->privacyLink = $wgPrivacyLink;
         $this->numberingObjects = $wgLoopObjectNumbering;
         $this->numberingType = $wgLoopNumberingType;
+        $this->citationStyle = $wgLoopLiteratureCiteType;
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = $data['lset_imprintlink'];
@@ -150,6 +154,7 @@ class LoopSettings {
             $this->instagramLink = $data['lset_instagramlink'];
             $this->numberingObjects = $data['lset_numberingobjects'];
             $this->numberingType = $data['lset_numberingtype'];
+            $this->citationStyle = $data['lset_citationstyle'];
         }
         
         return true;
@@ -309,6 +314,17 @@ class LoopSettings {
             }
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
+        }
+
+        # citation style
+        if ( ! empty ( $request->getText( 'citation-style' ) ) ) { 
+            if ( $request->getText( 'citation-style' ) == "vancouver" ) { 
+                $this->citationStyle = "vancouver";
+            } else { 
+                $this->citationStyle = "harvard";
+            } 
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-citation-style-label' ) );
         }
 
         $this->addToDatabase();
@@ -578,6 +594,7 @@ class SpecialLoopSettings extends SpecialPage {
 				 */	
 				$html .= '<div class="tab-pane fade" id="nav-content" role="tabpanel" aria-labelledby="nav-content-tab">';
 
+                   # $html .= '<div class="form-row">';
 					$html .= '<h3>' . $this->msg( 'loopsettings-numbering' ) . '</h3>';
 
 					$html .= '<input type="checkbox" name="numbering-objects" id="numbering-objects" value="numberingObjects" ' . ( $currentLoopSettings->numberingObjects == true ? 'checked' : '' ) .'>
@@ -588,7 +605,19 @@ class SpecialLoopSettings extends SpecialPage {
 
 					$html .= '<input type="radio" name="numbering-type" id="chapter" value="chapter" ' . ( $currentLoopSettings->numberingType == "chapter" ? 'checked' : '' ) .'>
 					<label for="chapter">' . $this->msg( 'loopsettings-numbering-type-chapter-label' ) . '</label><br>';
-			
+                    $html .= '<br>';
+
+                    #$html .= '<div class="form-row">';
+                    $html .= '<h3>' . $this->msg( "loopsettings-citation-style" ) . '</h3>';
+                    $html .= '<input type="radio" name="citation-style" id="harvard" value="harvard" ' . ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>
+					<label for="harvard">' . $this->msg( 'loopsettings-citation-style-harvard-label' ) . '</label><br>';
+
+					$html .= '<input type="radio" name="citation-style" id="vancouver" value="vancouver" ' . ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>
+					<label for="vancouver">' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label><br>';
+                   
+                    #$html .= '</div>';
+            
+
 
 				$html .= '</div>'; // end of content-tab
 				
