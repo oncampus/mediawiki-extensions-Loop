@@ -1,4 +1,12 @@
 <?php
+/**
+  * @description Display printing area with <loop_print> tag.
+  * @author Dustin Neß <dustin.ness@th-luebeck.de>
+  */
+
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( "This file cannot be run standalone.\n" );
+}
 
 class LoopPrint {
 	
@@ -12,13 +20,24 @@ class LoopPrint {
 		$user = $wgOut->getUser();
 		$loopeditmode = $user->getOption( 'LoopEditMode' ,false, true );	
 
-		$html = '';
-		if ( $loopeditmode ) {
-			$html .= '<div class="loopprint-container">';
-			$html .= '<span class="loopprint-tag"><span class="ic-print-area"></span>Druckbereich</span>'; // Todo: translation
-			$html .= '<div class="loopprint-content">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
-			$html .= '</div>';		
+		$wgOut->getOutput()->addModules( 'loop.printtag.js' );
+
+		$btnIcon = '<span class="ic-print-area"></span>';
+		
+		$btnId = uniqid();
+		$btnTrue = '';
+		if ( isset( $args['button'] ) ) {
+			if($args['button'] == true) {
+				$btnTrue = 'loopprint-button';
+			}
 		}
+
+		if(!$loopeditmode) $btnTrue = 'loopprint-button';
+
+		$html = '<div class="loopprint-container '. $btnTrue .'">';
+		$html .= '<span class="loopprint-tag '. $btnId.'">' . $btnIcon . '</span>';
+		$html .= '<div class="loopprint-content" id="'. $btnId .'">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
+		$html .= '</div>';		
 
 		return $html;
 	}

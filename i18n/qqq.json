@@ -170,6 +170,8 @@
 
 	"loopspoiler-default-title": "default label for spoiler button",
 	
+	"loopprint-printversion": "default label for print version button",
+
 	"loop_figure-name": "Prepend title of loop_figure",
 	"loop_figure-name-short": "Prepend title of loop_figure (short)",
 	"loop_table-name": "Prepend title of loop_table",

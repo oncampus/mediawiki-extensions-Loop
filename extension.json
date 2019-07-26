@@ -143,6 +143,24 @@
 				"oojs-ui-widgets",
 				"mediawiki.Upload.Dialog"
 			]
+		},
+		"loop.printtag.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.printtag.js"
+			],
+			"messages": [
+				"loopprint-printingarea"
+			]
+		},
+		"loop.spoiler.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.spoiler.js"
+			],
+			"messages": [
+				"loopspoiler-default-title"
+			]
 		}
 	},
 	"TrackingCategories": [

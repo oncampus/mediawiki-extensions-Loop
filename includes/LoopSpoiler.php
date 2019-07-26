@@ -1,4 +1,8 @@
 <?php
+/**
+  * @description Inline and block spoiler. <loop_spoiler> tag.
+  * @author Dustin Neß <dustin.ness@th-luebeck.de>
+  */
 
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
@@ -58,6 +62,10 @@ class LoopSpoiler {
 	}
 
 	public static function renderLoopSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
+		global $wgOut;
+		$wgOut->getOutput()->addModules( 'loop.spoiler.js' );
+		
+
 		try {		
 			$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
 			$spoiler->setContent( $parser->recursiveTagParse( $input ) );
@@ -77,9 +85,9 @@ class LoopSpoiler {
 			$content = substr( $content, 0, -1 );
 		}
 	
-		$return = '<span class="btn loopspoiler loopspoiler_type_'.$this->getType().'" onclick="$(\'#'.$this->getId().'\').toggle(); $(this).toggleClass(\'spoileractive\'); return false;" >'.$this->getBtnText().'</span>';
-		$return .= '<div id="'.$this->getId().'" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType().'">';
-		$return .= '<div class="loopspoiler_content">'.$content.'</div>';
+		$return = '<span class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '">'.$this->getBtnText() . '</span>';
+		$return .= '<div id="'.$this->getId() . '" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType() . '">';
+		$return .= '<div class="loopspoiler_content">' . $content . '</div>';
 		$return .= "\n</div>";
 		
 		return $return;

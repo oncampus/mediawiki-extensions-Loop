@@ -16,6 +16,7 @@
 	<msg name="icon_animation">&#xe954;</msg>
 	<msg name="icon_simulation">&#xe93f;</msg>
 	<msg name="icon_dragdrop">&#xe90c;</msg>
+	<msg name="icon_print">&#xe935;</msg>
 
 	<msg name="icon_timerequirement">&#xe94c;</msg>
 	<msg name="icon_learningobjectives">&#xe924;</msg>
