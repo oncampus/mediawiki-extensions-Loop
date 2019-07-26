@@ -1,8 +1,8 @@
 <?php
+
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
 }
-
 
 class LoopNoprint {
 	var $input='';
@@ -11,25 +11,9 @@ class LoopNoprint {
     public static function onParserSetup( Parser $parser) {
         $parser->setHook( 'loop_noprint', 'LoopNoprint::renderLoopNoprint' );
 
-        /*global $wgParser, $wgTitle, $wgParserConf, $wgUser;
-		
-		$this->input=$input;
-		$this->args=$args;		*/
-		
 		return true;
     }
     
-    /*
-	function LoopNoprint($input,$args) {
-		global $wgParser, $wgTitle, $wgParserConf, $wgUser;
-		
-		$this->input=$input;
-		$this->args=$args;		
-		
-		return true;
-	}
-	*/
-
 	static function renderLoopNoprint( $input, array $args, Parser $parser, PPFrame $frame ) {		
 		$return='';
 		$noprint_id=uniqid();
