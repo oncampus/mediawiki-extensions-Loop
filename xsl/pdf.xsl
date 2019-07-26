@@ -1373,6 +1373,23 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- Loop Print-->
+	<xsl:template match="extension[@extension_name='loop_print']">
+		<fo:block >
+			<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="center" padding-bottom="2mm">
+				<xsl:value-of select="$icon_print"></xsl:value-of>
+			</fo:block>
+			<fo:block  padding="2mm" border-bottom="dashed 0.4mm {$accent_color}" border-top="dashed 0.4mm {$accent_color}">
+				<xsl:apply-templates></xsl:apply-templates>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+	
+	<!-- Loop NoPrint-->
+	<xsl:template match="extension[@extension_name='loop_noprint']">
+		<fo:block></fo:block>				
+	</xsl:template>
+
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
 		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >

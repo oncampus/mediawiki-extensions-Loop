@@ -1456,7 +1456,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$requestToken = $request->getText( 't' );
 
 			$out->setPageTitle($this->msg('loopliteratureedit')->text());
-			$out->addModules( 'ext.loop-literature-edit.js' );
+			$out->addModules( 'loop.special.literature-edit.js' );
 
 			
 			if ( ! empty( $requestToken ) ) {

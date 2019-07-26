@@ -35,6 +35,8 @@
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
 		"LoopArea": "includes/LoopArea.php",
+		"LoopPrint": "includes/LoopPrint.php",
+		"LoopNoprint": "includes/LoopNoprint.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -86,6 +88,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
+			"LoopPrint::onParserSetup",
+			"LoopNoprint::onParserSetup",
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
@@ -135,10 +139,10 @@
 		"remoteExtPath": "Loop"
 	},
 	"ResourceModules": {
-		"ext.loop-settings.js": {
+		"loop.special.settings.js": {
 			"position": "bottom",
 			"scripts": [
-				"resources/js/SpecialLoopSettings.js"
+				"resources/js/loop.special.settings.js"
 			],
 			"dependencies": [
 				"oojs-ui-core",
@@ -146,10 +150,28 @@
 				"mediawiki.Upload.Dialog"
 			]
 		},
-		"ext.loop-literature-edit.js": {
+		"loop.special.literature-edit.js": {
 			"position": "bottom",
 			"scripts": [
-				"resources/js/loop.LiteratureEdit.js"
+				"resources/js/loop.special.literatureedit.js"
+			]
+		},
+		"loop.printtag.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.printtag.js"
+			],
+			"messages": [
+				"loopprint-printingarea"
+			]
+		},
+		"loop.spoiler.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.spoiler.js"
+			],
+			"messages": [
+				"loopspoiler-default-title"
 			]
 		}
 	},
