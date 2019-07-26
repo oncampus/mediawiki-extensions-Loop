@@ -90,7 +90,7 @@ class LoopXml {
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
-			$stableRev = intval($articleId);
+			$stableRev = intval($title->mArticleID);
 			$wp = WikiPage::factory ( $title );
 			$content = $wp->getContent ()->getNativeData ();
 		} else {

@@ -13,7 +13,8 @@
 	extension-element-prefixes="func php str" 
 	xmlns:functx="http://www.functx.com"
 	xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
-	xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions">
+	xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml">
 	
 	<xsl:import href="terms.xsl"></xsl:import>	
 	
@@ -167,6 +168,13 @@
 
 			<xsl:when test="@extension_name='spoiler'">
 				<xsl:call-template name="loop_spoiler">
+                	<xsl:with-param name="object">
+						<xsl:copy-of select="."></xsl:copy-of>
+					</xsl:with-param>
+				</xsl:call-template>
+			</xsl:when>	
+			<xsl:when test="@extension_name='cite'">
+				<xsl:call-template name="cite">
                 	<xsl:with-param name="object">
 						<xsl:copy-of select="."></xsl:copy-of>
 					</xsl:with-param>
@@ -575,6 +583,19 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="xhtml:cite">
+		
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>700ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+
+		
+		<xsl:apply-templates/>
+
+	</xsl:template>
+
 	<func:function name="functx:select_voice">
 	
 		<xsl:choose>
@@ -600,6 +621,9 @@
         		<func:result>3</func:result>
 			</xsl:when>
 			<xsl:when test="extension[@extension_name='syntaxhighlight']">
+        		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='cite']">
         		<func:result>2</func:result>
 			</xsl:when>
 
