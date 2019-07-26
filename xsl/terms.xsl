@@ -28,7 +28,7 @@
 	<xsl:variable name="icon_animation" select="functx:get_icon('icon_animation')" />
 	<xsl:variable name="icon_simulation" select="functx:get_icon('icon_simulation')" />
 	<xsl:variable name="icon_dragdrop" select="functx:get_icon('icon_dragdrop')" />
-
+	<xsl:variable name="icon_print" select="functx:get_icon('icon_print')" />
 
 	<xsl:variable name="icon_timerequirement" select="functx:get_icon('icon_timerequirement')" />
 	<xsl:variable name="icon_learningobjectives" select="functx:get_icon('icon_learningobjectives')" />

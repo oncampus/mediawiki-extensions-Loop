@@ -35,6 +35,8 @@
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
 		"LoopArea": "includes/LoopArea.php",
+		"LoopPrint": "includes/LoopPrint.php",
+		"LoopNoprint": "includes/LoopNoprint.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
 		"LoopExportXml": "includes/LoopExport.php",
@@ -84,6 +86,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
+			"LoopPrint::onParserSetup",
+			"LoopNoprint::onParserSetup",
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
@@ -138,6 +142,24 @@
 				"oojs-ui-core",
 				"oojs-ui-widgets",
 				"mediawiki.Upload.Dialog"
+			]
+		},
+		"loop.printtag.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.printtag.js"
+			],
+			"messages": [
+				"loopprint-printingarea"
+			]
+		},
+		"loop.spoiler.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.spoiler.js"
+			],
+			"messages": [
+				"loopspoiler-default-title"
 			]
 		}
 	},
