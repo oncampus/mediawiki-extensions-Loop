@@ -1378,8 +1378,6 @@
 		<fo:block >
 			<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="center" padding-bottom="2mm">
 				<xsl:value-of select="$icon_print"></xsl:value-of>
-				<xsl:text>
-				</xsl:text>
 			</fo:block>
 			<fo:block  padding="2mm" border-bottom="dashed 0.4mm {$accent_color}" border-top="dashed 0.4mm {$accent_color}">
 				<xsl:apply-templates></xsl:apply-templates>
