@@ -17,13 +17,15 @@ class LoopUpdater {
 	 * @return bool true
 	 */
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
+		global $IP;
+		$schemaPath = $IP . '/extensions/Loop/schema/';
 
-		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_items', dirname( __FILE__ ) . '/loop_structure_items.sql', true ));
-		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_properties', dirname( __FILE__ ) . '/loop_structure_properties.sql', true ) );
-		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', dirname( __FILE__ ) . '/loop_settings.sql', true ) );
-		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', dirname( __FILE__ ) . '/loop_object_index.sql', true ) );
-		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', dirname( __FILE__ ) . '/loop_literature_items.sql', true ) );
-		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', dirname( __FILE__ ) . '/loop_literature_references.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_items', $schemaPath . 'loop_structure_items.sql', true ));
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_properties', $schemaPath . 'loop_structure_properties.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_settings', $schemaPath . 'loop_settings.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', $schemaPath . 'loop_object_index.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', $schemaPath . 'loop_literature_items.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		
 		$dbr = wfGetDB( DB_REPLICA );
 
@@ -34,11 +36,13 @@ class LoopUpdater {
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
 		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
 			
-			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => false, 'create'=> true, 'validate' => true ] ); #beobachten, ob das Anlegen hier ausreicht
-			$systemUser->addGroup("sysop");
+			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] ); #beobachten, ob das Anlegen hier ausreicht
+			if ( $systemUser ) { #why is system user null sometimes? #TODO
+				$systemUser->addGroup("sysop");
+			}
 			self::saveAllWikiPages();
 			self::migrateGlossary();
-			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', dirname( __FILE__ ) . '/loopstructure_delete.sql', true ) );
+			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
 		}
 		
 		return true;
