@@ -383,7 +383,7 @@ class LoopMp3 {
 	private static function transformToSsml ( $wiki_xml ) {
 		global $IP, $wgUploadDirectory;
 		
-		require_once ($IP."/extensions/Loop/xsl/LoopXsl.php");
+		#require_once ($IP."/extensions/Loop/xsl/LoopXsl.php");
 		
 		try {
 			

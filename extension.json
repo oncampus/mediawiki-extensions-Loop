@@ -30,6 +30,7 @@
 		"LoopStructureItem": "includes/LoopStructure.php",
 		"SpecialLoopStructure": "includes/LoopStructure.php",
 		"SpecialLoopStructureEdit": "includes/LoopStructure.php",
+		"LoopXsl": "includes/LoopXsl.php",
 		"LoopXml": "includes/LoopXml.php",
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
