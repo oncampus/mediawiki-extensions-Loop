@@ -173,12 +173,9 @@
 					</xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>	
-			<xsl:when test="@extension_name='cite'">
-				<xsl:call-template name="cite">
-                	<xsl:with-param name="object">
-						<xsl:copy-of select="."></xsl:copy-of>
-					</xsl:with-param>
-				</xsl:call-template>
+			<xsl:when test="@extension_name='loop_literature'">
+				<xsl:call-template name="loop_literature"/>
+				
 			</xsl:when>	
 
 			
@@ -575,25 +572,31 @@
 							<xsl:text>strong</xsl:text>
 						</xsl:attribute>
 					</xsl:element>
-
 				</xsl:element>
-				
-
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="xhtml:cite">
-		
-		<xsl:element name="break">
-			<xsl:attribute name="time">
-				<xsl:text>700ms</xsl:text>
-			</xsl:attribute>
-		</xsl:element>
+		<xsl:if test="php:function('LoopXsl::xsl_transform_cite_ssml', .)!=''">
+			<xsl:element name="break">
+				<xsl:attribute name="time">
+					<xsl:text>700ms</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
+			<xsl:value-of select="php:function('LoopXsl::xsl_transform_cite_ssml', .)"></xsl:value-of>
+			<xsl:element name="break">
+				<xsl:attribute name="time">
+					<xsl:text>700ms</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
+		</xsl:if>
 
-		
-		<xsl:apply-templates/>
+	</xsl:template>
 
+	<xsl:template name="loop_literature">
+		<xsl:value-of select="$phrase_literature_list"/>
+		<xsl:text> </xsl:text>
 	</xsl:template>
 
 	<func:function name="functx:select_voice">
@@ -623,7 +626,7 @@
 			<xsl:when test="extension[@extension_name='syntaxhighlight']">
         		<func:result>2</func:result>
 			</xsl:when>
-			<xsl:when test="extension[@extension_name='cite']">
+			<xsl:when test="extension[@extension_name='loop_literature']">
         		<func:result>2</func:result>
 			</xsl:when>
 

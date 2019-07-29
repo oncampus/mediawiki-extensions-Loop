@@ -104,6 +104,7 @@
 	<msg name="phrase_spoiler_start" lang="en">Here begins hidden content.</msg>
 	<msg name="phrase_spoiler_end" lang="en">Here ends the hidden content.</msg>
 	<msg name="word_glossary" lang="en">Glossary</msg>
+	<msg name="phrase_literature_list" lang="en">Here is a list of literature.</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -171,6 +172,8 @@
 	<msg name="phrase_spoiler_start" lang="de">Hier beginnt versteckter Inhalt.</msg>
 	<msg name="phrase_spoiler_end" lang="de">Hier endet der versteckte Inhalt.</msg>
 	<msg name="word_glossary" lang="de">Glossar</msg>
+	<msg name="phrase_literature_list" lang="de">An dieser Stelle befindet sich eine Literaturauflistung.</msg>
+
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>
@@ -236,5 +239,6 @@
 	<msg name="phrase_spoiler_start" lang="sv">Här börjar doldt innehåll.</msg>
 	<msg name="phrase_spoiler_end" lang="sv">Här slutar dolda innehållet.</msg>
 	<msg name="word_glossary" lang="sv">Ordlista</msg>
+	<msg name="phrase_literature_list" lang="sv">Här är en list av litteratur.</msg>
 	
 </terms> 

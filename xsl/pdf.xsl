@@ -851,9 +851,9 @@
 										<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 									</xsl:attribute>
 									<fo:block>
-									<xsl:if test="php:function('xsl_transform_imagepath', descendant::link/target)!=''">
+									<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)!=''">
 										<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
-											<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
+											<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
 										</fo:external-graphic>
 									</xsl:if>
 									</fo:block>
@@ -1373,23 +1373,6 @@
 		</fo:block>
 	</xsl:template>
 
-	<!-- Loop Print-->
-	<xsl:template match="extension[@extension_name='loop_print']">
-		<fo:block >
-			<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="center" padding-bottom="2mm">
-				<xsl:value-of select="$icon_print"></xsl:value-of>
-			</fo:block>
-			<fo:block  padding="2mm" border-bottom="dashed 0.4mm {$accent_color}" border-top="dashed 0.4mm {$accent_color}">
-				<xsl:apply-templates></xsl:apply-templates>
-			</fo:block>
-		</fo:block>
-	</xsl:template>
-	
-	<!-- Loop NoPrint-->
-	<xsl:template match="extension[@extension_name='loop_noprint']">
-		<fo:block></fo:block>				
-	</xsl:template>
-
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
 		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
@@ -1431,9 +1414,9 @@
 									<xsl:if test="@icon">
 										<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
 									
-										<xsl:if test="php:function('xsl_transform_imagepath', $iconfilename)!=''">
+										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)!=''">
 											<fo:external-graphic scaling="uniform" content-width="scale-to-fit" max-width="13mm" max-height="13mm">
-												<xsl:attribute name="src"><xsl:value-of select="php:function('xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
+												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
 											</fo:external-graphic>
 										</xsl:if>
 
@@ -1533,10 +1516,10 @@
 	</xsl:template>			
 
 	<xsl:template match="link">
-		<xsl:apply-templates select="php:function('LoopXml::transform_link', .)"></xsl:apply-templates>
+		<xsl:apply-templates select="php:function('LoopXsl::LoopXml::transform_link', .)"></xsl:apply-templates>
 	</xsl:template> 
 	<xsl:template match="link" mode="loop_object">
-		<xsl:apply-templates select="php:function('LoopXml::transform_link', .)"></xsl:apply-templates>
+		<xsl:apply-templates select="php:function('LoopXsl::LoopXml::transform_link', .)"></xsl:apply-templates>
 	</xsl:template> 
 	
 	<xsl:template match="php_link">
@@ -1704,7 +1687,7 @@
 			</xsl:when>
 			<xsl:when test="@extension_name='math'">
 				<fo:instream-foreign-object>
-					<xsl:copy-of select="php:function('xsl_transform_math', .)"></xsl:copy-of>  
+					<xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of>  
 				</fo:instream-foreign-object>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_reference'">
@@ -1715,8 +1698,8 @@
 			
 			<xsl:when test="@extension_name='syntaxhighlight'">
 				<fo:inline>
-					<xsl:apply-templates select="php:function('xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
-					<!-- <xsl:copy-of select="php:function('xsl_transform_syntaxhighlight', .)"></xsl:copy-of> -->
+					<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
+					<!-- <xsl:copy-of select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)"></xsl:copy-of> -->
 				</fo:inline>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_spoiler'">
@@ -1985,7 +1968,7 @@
 	<xsl:template match="xhtml:code">
 	
 		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
-			<xsl:apply-templates select="php:function('xsl_transform_code', .)" mode="syntaxhighlight"></xsl:apply-templates>
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_code', .)" mode="syntaxhighlight"></xsl:apply-templates>
 			<!-- <xsl:apply-templates></xsl:apply-templates> -->
 		</fo:block>
 
