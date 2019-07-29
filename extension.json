@@ -4,16 +4,16 @@
 	"type": "other",
 	"author": [
 		"Marc Vorreiter",
-		"Kevin Berg",
 		"Dennis Krohn",
-    "Dustin Neß"
+		"Kevin Berg",
+    	"Dustin Neß"
 	],
 	"version": "2.0.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.32.0",
+		"MediaWiki": ">= 1.33.0",
 		"extensions": {
 			"WikiEditor": "*",
 			"Math": "*",
@@ -25,7 +25,7 @@
 		"Loop": "includes/Loop.php",
 		"LoopHooks": "includes/Loop.hooks.php",
 		"LoopSpoiler": "includes/LoopSpoiler.php",
-		"LoopUpdater": "schema/LoopUpdater.php",
+		"LoopUpdater": "includes/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
 		"SpecialLoopStructure": "includes/LoopStructure.php",

@@ -1,4 +1,13 @@
 <?php
+/**
+  * @description Exports LOOP to XML
+  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
+  */
+  
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( "This file cannot be run standalone.\n" );
+}
+
 class LoopXml {
 	
 	/**
@@ -84,7 +93,6 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
-		#$content = WikiPage::newFromID ( $structureItem->getArticle () )->getContent ( Revision::RAW )->getNativeData ();
 		
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
@@ -92,9 +100,9 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($title->mArticleID);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getNativeData ();
+			$content = $wp->getContent ()->getText(); # todo DEPRECATED
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
+			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); # todo DEPRECATED
 		}
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
@@ -145,9 +153,9 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($articleId);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getNativeData ();
+			$content = $wp->getContent ()->getText(); # todo DEPRECATED
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getNativeData ();
+			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); # todo DEPRECATED
 		}
 		$content = html_entity_decode($content);
 		

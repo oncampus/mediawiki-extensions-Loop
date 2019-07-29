@@ -1,4 +1,15 @@
-<?php class Loop {
+<?php 
+
+/**
+  * @description Handles general functions and settings
+  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
+  */
+  
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( "This file cannot be run standalone.\n" );
+}
+
+class Loop {
 
 	/**
 	 * Save changes in LoopEditMode and LoopRenderMode
@@ -32,7 +43,7 @@
 		
 	public static function onExtensionLoad() {
 
-		if ( ! defined( 'FLAGGED_REVISIONS' ) ) {
+		if ( ! defined( 'FLAGGED_REVISIONS' ) ) { 
 			exit( "FlaggedRevs must be installed to run LOOP" );
 		}
 
@@ -45,8 +56,10 @@
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType;
 		
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => false, 'create'=> true, 'validate' => true ] ); 
-		$systemUser->addGroup("sysop");
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] ); 
+		if ( $systemUser ) { #why is system user null sometimes? #TODO
+			$systemUser->addGroup("sysop");
+		}
 		
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
