@@ -164,7 +164,7 @@
 	
 	
 	<xsl:template name="page-content-glossary">
-		<!-- <xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
@@ -173,7 +173,7 @@
 		
 		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1')">
 			<fo:block break-before="page"></fo:block>
-		</xsl:if>		 -->
+		</xsl:if>	
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
 				<xsl:value-of select="$word_appendix"></xsl:value-of>
@@ -1372,6 +1372,24 @@
 		</fo:table>
 		</fo:block>
 	</xsl:template>
+	
+	<!-- Loop Print-->
+	<xsl:template match="extension[@extension_name='loop_print']">
+		<fo:block >
+			<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="center" padding-bottom="2mm">
+				<xsl:value-of select="$icon_print"></xsl:value-of>
+			</fo:block>
+			<fo:block  padding="2mm" border-bottom="dashed 0.4mm {$accent_color}" border-top="dashed 0.4mm {$accent_color}">
+				<xsl:apply-templates></xsl:apply-templates>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+
+	<!-- Loop NoPrint-->
+	<xsl:template match="extension[@extension_name='loop_noprint']">
+		<fo:block></fo:block>				
+	</xsl:template>
+	
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
@@ -1516,10 +1534,10 @@
 	</xsl:template>			
 
 	<xsl:template match="link">
-		<xsl:apply-templates select="php:function('LoopXsl::LoopXml::transform_link', .)"></xsl:apply-templates>
+		<xsl:apply-templates select="php:function('LoopXml::transform_link', .)"></xsl:apply-templates>
 	</xsl:template> 
 	<xsl:template match="link" mode="loop_object">
-		<xsl:apply-templates select="php:function('LoopXsl::LoopXml::transform_link', .)"></xsl:apply-templates>
+		<xsl:apply-templates select="php:function('LoopXml::transform_link', .)"></xsl:apply-templates>
 	</xsl:template> 
 	
 	<xsl:template match="php_link">
@@ -1530,9 +1548,9 @@
 		<fo:basic-link>
 			<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
 			<fo:inline text-decoration="underline"><xsl:value-of select="."></xsl:value-of></fo:inline>
-			<xsl:text> </xsl:text>
+			<xsl:text> </xsl:text><!-- 
 			<fo:inline ><fo:external-graphic scaling="uniform" content-height="scale-to-fit" content-width="2mm" src="/opt/www/loop.oncampus.de/mediawiki/skins/loop/images/print/www_link.png"></fo:external-graphic></fo:inline>
-		</fo:basic-link>
+ -->		</fo:basic-link>
 	</xsl:template>	
 
 	<xsl:template match="php_link_internal">
@@ -1973,6 +1991,47 @@
 		</fo:block>
 
 	</xsl:template>
+	
+	<xsl:template match="xhtml:cite">
+		<xsl:variable name="citetext">
+			<xsl:value-of select="."></xsl:value-of>
+		</xsl:variable>
+		<fo:basic-link >
+			<!--<xsl:attribute name="internal-destination">bibliography</xsl:attribute>  --> 
+			<fo:inline text-decoration="underline" font-style="italic">
+				<xsl:choose>
+					<xsl:when test="php:function('LoopXsl::xsl_transform_cite', .)=''">
+						<xsl:value-of select="translate($citetext,'+',' ')"></xsl:value-of>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="vertical-align">super</xsl:attribute>
+						<xsl:attribute name="font-size">0.8em</xsl:attribute>
+						<xsl:value-of select="php:function('LoopXsl::xsl_transform_cite', .)"></xsl:value-of>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:inline>
+			<xsl:text> </xsl:text>		
+			<!-- <fo:inline><fo:external-graphic scaling="uniform" content-height="scale-to-fit" content-width="3mm" src="/opt/www/loop.oncampus.de/mediawiki/skins/loop/images/print/literature.png"></fo:external-graphic></fo:inline> -->
+		</fo:basic-link>
+		<fo:inline font-style="italic">
+		
+			<xsl:choose>
+				<xsl:when test="@pages">
+					<xsl:text>, </xsl:text>	
+					<xsl:value-of select="$word_cite_pages"></xsl:value-of>
+					<xsl:value-of select="@pages"></xsl:value-of>
+					<xsl:text> </xsl:text>	
+				</xsl:when>
+				<xsl:when test="@page">
+					<xsl:text>, </xsl:text>	
+					<xsl:value-of select="$word_cite_page"></xsl:value-of>
+					<xsl:value-of select="@page"></xsl:value-of>
+					<xsl:text> </xsl:text>	
+				</xsl:when>
+			</xsl:choose>
+				
+		</fo:inline>
+	</xsl:template>	
 	
 	<xsl:template match="pre" mode="syntaxhighlight">
 		<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>

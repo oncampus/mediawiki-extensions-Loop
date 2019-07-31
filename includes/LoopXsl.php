@@ -1,5 +1,14 @@
 <?php 
 
+/**
+ * @description Transforms XML to XSLT-compatible content
+ * @author Dennis Krohn <dennis.krohn@th-luebeck.de>, Dustin Neﬂ <dustin.ness@th-luebeck.de>
+ */
+
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
+
 class LoopXsl {
 
 	/**
@@ -8,7 +17,7 @@ class LoopXsl {
 	 * @param DomNode $input
 	 * @return String $return
 	 */
-	public static function xsl_transform_imagepath($input) {
+    public static function xsl_transform_imagepath($input) {
 		$imagepath='';
 		if (is_array($input)) {
 			if (isset($input[0])) {
@@ -247,35 +256,53 @@ class LoopXsl {
 	}
 	
 	public static function xsl_transform_cite_ssml( $input ) {
-
-		global $wgLoopLiteratureCiteType;
-		
-		$input_object=$input[0];
-		$return = '';
-		$citeContent = $input_object->textContent;
-		if ( $wgLoopLiteratureCiteType == "vancouver" ) {
-			$loopStructure = new LoopStructure();
-			$loopStructure->loadStructureItems();
-			$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
-			$itemData = LoopLiteratureReference::getItemData( $input_object->getAttribute( "id" ) );
-			$id = $input_object->getAttribute( "id" );
-			$objectNumber = $allReferences[$itemData["articleId"][$id]];
-			$return .= $objectNumber;
-		} elseif ( $wgLoopLiteratureCiteType == "harvard" ) {
-			$return .= str_replace("+", " ", $citeContent);
-			if ( !empty ( $input_object->getAttribute( "page" ) ) ) {
-				$return .= ", " . wfMessage("loopliterature-text-pages-speech", 1)->text() ." ". $input_object->getAttribute( "page" ) . " ";
-			} elseif ( !empty ( $input_object->getAttribute( "pages" ) ) ) {
-				$pages =  $input_object->getAttribute( "pages" );
-				$pages = str_replace("-", " ".wfMessage("loopliterature-text-pages-to-speech")->text()." ", $pages );
-				$pages = str_replace(",", " ".wfMessage("loopliterature-text-pages-and-speech")->text()." ", $pages );
-				$return .= ", " . wfMessage("loopliterature-text-pages-speech", 2)->text() ." ". $pages . " ";
-			} 
-		} else {
-			return false;
-		}
-
-		return $return;
+	    global $wgLoopLiteratureCiteType;
+	    
+	    $input_object=$input[0];
+	    $return = '';
+	    $citeContent = $input_object->textContent;
+	    if ( $wgLoopLiteratureCiteType == "vancouver" ) {
+	        $loopStructure = new LoopStructure();
+	        $loopStructure->loadStructureItems();
+	        $allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
+	        $itemData = LoopLiteratureReference::getItemData( $input_object->getAttribute( "id" ) );
+	        $id = $input_object->getAttribute( "id" );
+	        $objectNumber = $allReferences[$itemData["articleId"]][$id]["objectnumber"];
+	        $return .= $objectNumber;
+	    } elseif ( $wgLoopLiteratureCiteType == "harvard" ) {
+	        $return .= str_replace("+", " ", $citeContent);
+	        if ( !empty ( $input_object->getAttribute( "page" ) ) ) {
+	            $return .= ", " . wfMessage("loopliterature-text-pages-speech", 1)->text() ." ". $input_object->getAttribute( "page" ) . " ";
+	        } elseif ( !empty ( $input_object->getAttribute( "pages" ) ) ) {
+	            $pages =  $input_object->getAttribute( "pages" );
+	            $pages = str_replace("-", " ".wfMessage("loopliterature-text-pages-to-speech")->text()." ", $pages );
+	            $pages = str_replace(",", " ".wfMessage("loopliterature-text-pages-and-speech")->text()." ", $pages );
+	            $return .= ", " . wfMessage("loopliterature-text-pages-speech", 2)->text() ." ". $pages . " ";
+	        }
+	    } else {
+	        return false;
+	    }
+	    
+	    return $return;
+	}
+	public static function xsl_transform_cite( $input ) {
+	    global $wgLoopLiteratureCiteType;
+	    
+	    $input_object=$input[0];
+	    $return = '';
+	    $citeContent = $input_object->textContent;
+	    if ( $wgLoopLiteratureCiteType == "vancouver" ) {
+	        $loopStructure = new LoopStructure();
+	        $loopStructure->loadStructureItems();
+	        $allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
+	        $itemData = LoopLiteratureReference::getItemData( $input_object->getAttribute( "id" ) );
+	        $id = $input_object->getAttribute( "id" );
+	        #dd($id, $allReferences, $itemData, $itemData["articleId"], $allReferences[$itemData["articleId"]][$id]["objectnumber"]);
+	        $objectNumber = $allReferences[$itemData["articleId"]][$id]["objectnumber"];
+	        $return .= $objectNumber;
+	    }
+	    #dd($return);
+	    return $return;
 	}
 
 	

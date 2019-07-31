@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * @description All hooks for LOOP that don't fit into more specific classes
+ * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
+ */
+
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
+
 class LoopHooks {
 
 	/**
@@ -55,6 +65,7 @@ class LoopHooks {
 	 */
 	public static function onSpecialPageinitList ( &$specialPages ) {
 		global $wgOut;
+		/* # causes session error in 1.33!
 		$user = $wgOut->getUser();
 		if ( ! $user->isAllowed( "loop-view-special-pages" ) ) {
 
@@ -80,6 +91,7 @@ class LoopHooks {
 				unset( $specialPages[$page] );
 			}
 		}
+		*/
 		return true;
 	}
 
