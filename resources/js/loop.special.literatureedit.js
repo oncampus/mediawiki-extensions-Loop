@@ -33,59 +33,59 @@ $( document ).ready( function () {
 
         $literatureTypesJSON = {
             "article": {
-                "required": [ "itemKey", "author", "itemtitle", "journal", "year" ],
-                "optional": [ "volume", "number", "pages", "month", "note", "url" ]
+                "required": [ "itemKey", "author", "itemTitle", "journal", "year" ],
+                "optional": [ "volume", "number", "pages", "month", "note", "url", "doi" ]
             },
             "book": {
-                "required": [ "itemKey", "author", "editor", "itemtitle", "publisher", "year" ],
-                "optional": [ "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url" ]
+                "required": [ "itemKey", "author", "editor", "itemTitle", "publisher", "year" ],
+                "optional": [ "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url", "doi" ]
             },
             "booklet": {
-                "required": [ "itemKey", "itemtitle" ],
-                "optional": [ "author", "howpublished", "address", "month", "year", "note", "url" ]
+                "required": [ "itemKey", "itemTitle" ],
+                "optional": [ "author", "howpublished", "address", "month", "year", "note", "url", "doi", "doi"  ]
             },
             "conference": {
-                "required": [ "itemKey", "author", "itemtitle", "booktitle", "year" ],
+                "required": [ "itemKey", "author", "itemTitle", "booktitle", "year" ],
                 "optional": [ "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" ]
             },
             "inbook": {
-                "required": [ "itemKey", "author", "editor", "itemtitle", "chapter", "pages", "publisher", "year" ],
-                "optional": [ "volume", "number", "series", "type", "address", "edition", "month", "note", "url" ]
+                "required": [ "itemKey", "author", "editor", "itemTitle", "chapter", "pages", "publisher", "year" ],
+                "optional": [ "volume", "number", "series", "type", "address", "edition", "month", "note", "url", "doi" ]
             },
             "incollection": {
-                "required": [ "itemKey", "author", "itemtitle", "booktitle", "publisher", "year" ],
-                "optional": [ "editor", "volume", "number", "series", "type", "chapter", "pages", "address", "edition", "month", "note", "url" ]
+                "required": [ "itemKey", "author", "itemTitle", "booktitle", "publisher", "year" ],
+                "optional": [ "editor", "volume", "number", "series", "type", "chapter", "pages", "address", "edition", "month", "note", "url", "doi" ]
             },
             "inproceedings": {
-                "required": [ "itemKey", "author", "itemtitle", "booktitle", "year" ],
-                "optional": [ "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" ]
+                "required": [ "itemKey", "author", "itemTitle", "booktitle", "year" ],
+                "optional": [ "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url", "doi" ]
             },
             "manual": {
-                "required": [ "itemKey", "address", "itemtitle", "year" ],
-                "optional": [ "author", "organization", "edition", "month", "note", "url" ]
+                "required": [ "itemKey", "address", "itemTitle", "year" ],
+                "optional": [ "author", "organization", "edition", "month", "note", "url", "doi" ]
             },
             "mastersthesis": {
-                "required": [ "itemKey", "author", "itemtitle", "school", "year" ],
+                "required": [ "itemKey", "author", "itemTitle", "school", "year" ],
                 "optional": [ "type", "address", "month", "note", "url" ]
             },
             "misc": {
                 "required": [ "itemKey" ],
-                "optional": [ "author", "itemtitle", "howpublished", "month", "year", "note", "url" ]
+                "optional": [ "author", "itemTitle", "howpublished", "month", "year", "note", "url", "doi" ]
             },
             "phdthesis": {
-                "required": [ "itemKey", "author", "itemtitle", "school", "year" ],
+                "required": [ "itemKey", "author", "itemTitle", "school", "year" ],
                 "optional": [ "type", "address", "month", "note", "url" ]
             },
             "proceedings": {
-                "required": [ "itemKey", "itemtitle", "year" ],
-                "optional": [ "editor", "volume", "number", "series", "address", "month", "organization", "publisher", "note", "url" ]
+                "required": [ "itemKey", "itemTitle", "year" ],
+                "optional": [ "editor", "volume", "number", "series", "address", "month", "organization", "publisher", "note", "url", "doi" ]
             },
             "techreport": {
-                "required": [ "itemKey", "author", "itemtitle", "institution", "year" ],
-                "optional": [ "type", "note", "number", "address", "month", "url" ]
+                "required": [ "itemKey", "author", "itemTitle", "institution", "year" ],
+                "optional": [ "type", "note", "number", "address", "month", "url", "doi" ]
             },
             "unpublished": {
-                "required": [ "itemKey", "author", "itemtitle", "note" ],
+                "required": [ "itemKey", "author", "itemTitle", "note" ],
                 "optional": [ "month", "year", "url" ]
             }
         };

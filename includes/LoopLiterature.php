@@ -70,11 +70,11 @@ class LoopLiterature {
 			),
 			"inproceedings" => array(
 				"required" => array( "author", "itemTitle", "booktitle", "year" ),
-				"optional" => array( "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url" )
+			    "optional" => array( "editor", "volume", "number", "series", "pages", "address", "month", "organization", "publisher", "note", "url", "doi" )
 			),
 			"manual" => array(
 				"required" => array( "address", "itemTitle", "year" ),
-				"optional" => array( "author", "organization", "edition", "month", "note", "url" )
+			    "optional" => array( "author", "organization", "edition", "month", "note", "url", "doi" )
 			),
 			"mastersthesis" => array(
 				"required" => array( "author", "itemTitle", "school", "year" ),
@@ -90,11 +90,11 @@ class LoopLiterature {
 			),
 			"proceedings" => array(
 				"required" => array( "itemTitle", "year" ),
-				"optional" => array( "editor", "volume", "number", "series", "address", "month", "organization", "publisher", "note", "url" )
+			    "optional" => array( "editor", "volume", "number", "series", "address", "month", "organization", "publisher", "note", "url", "doi" )
 			),
 			"techreport" => array(
 				"required" => array( "author", "itemTitle", "institution", "year" ),
-				"optional" => array( "type", "note", "number", "address", "month", "url" )
+			    "optional" => array( "type", "note", "number", "address", "month", "url", "doi" )
 			),
 			"unpublished" => array(
 				"required" => array( "author", "itemTitle", "note" ),
@@ -859,10 +859,14 @@ class LoopLiterature {
 	public static function renderLiteratureElement( $li, $ref = null, $type = 'html' ) {
 
 		global $wgOut, $wgLoopLiteratureCiteType;
+		if ( !isset( $ref ) ) {
+		    $ref = array();
+		}
 
 		$user = $wgOut->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true); #required for readable links
 
 		$return = '';
 		if ($type == "html") {
@@ -873,7 +877,7 @@ class LoopLiterature {
 		    $italicEnd = "</italics>";
 		}
 
-		if ( $wgLoopLiteratureCiteType == 'vancouver' && $ref ) {
+		if ( $wgLoopLiteratureCiteType == 'vancouver' && ! empty ( $ref ) ) {
 		    if ( $type == 'html' ) {
 		        $return .= "<span class='literature-vancouver-number'>". $ref["objectnumber"].". </span>";
 		    } else {
@@ -882,10 +886,10 @@ class LoopLiterature {
 		}
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
 		if ( $li->author ) {
-			$return .= $li->author.". ";
+			$return .= $li->author." ";
 		} elseif ( $li->itemTitle ) {
 			if ( $li->itemType == "LOOP1" ) {
-				$return .= $li->itemTitle.". ";
+				$return .= $li->itemTitle." ";
 			} else {
 				$return .= $italic. $li->itemTitle. $italicEnd . ". ";
 			}
@@ -1350,6 +1354,7 @@ class SpecialLoopLiterature extends SpecialPage {
         
         $allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
         $allItems = LoopLiterature::getAllItems();
+        $allItemsCopy = $allItems;
         $return = '';
         $elements = array();
         foreach ( $allReferences as $pageId => $pageReferences ) {
@@ -1368,7 +1373,10 @@ class SpecialLoopLiterature extends SpecialPage {
                         $orderkey = ucfirst($referenceData["objectnumber"]);
                     }
                     $literatureItem = $allItems[$referenceData["itemKey"]];
-                    $referencedItems[] = $referenceData["itemKey"];
+                    #dd($allItemsCopy[$referenceData["itemKey"]]);
+                    if ( isset( $allItemsCopy[$referenceData["itemKey"]] ) ) {
+                        unset( $allItemsCopy[$referenceData["itemKey"]] );
+                    }
                     if ( $type == "html" ) {
                         $elements[$orderkey] = '<p class="literature-entry" id="'. $referenceData["itemKey"].'">';
                         $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type );
@@ -1385,29 +1393,21 @@ class SpecialLoopLiterature extends SpecialPage {
         foreach ( $elements as $element ) {
             $return .= $element;
         }
-        #dd($allItems);
-        if ( $editMode && ! empty ( $allItems ) && $type == "html" ) {
+        if ( $editMode && ! empty( $allItemsCopy ) && $type == "html" ) {
             $elements = array();
             $return .= "<hr class='mr-4'/>";
             $return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" ).":</p>";
             
-            foreach ( $allItems as $item ) {
-                if ( ! in_array( $item->itemKey, $referencedItems ) ) {
-                    #dd( $item->itemKey, $referencedItems );
-                    if ( $item->author ) {
-                        $orderkey = ucfirst($item->author);
-                    } elseif ( $item->itemTitle ) {
-                        $orderkey = ucfirst($item->itemTitle);
-                    }
-                    
-                    $elements[$orderkey] = '<p class="literature-entry">';
-                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item);
-                    $elements[$orderkey] .= '</p>';
-                } else {
-                    
-                    #dd( $item->itemKey, $referencedItems );
+            foreach ( $allItemsCopy as $item ) {
+                if ( $item->author ) {
+                    $orderkey = ucfirst($item->author);
+                } elseif ( $item->itemTitle ) {
+                    $orderkey = ucfirst($item->itemTitle);
                 }
                 
+                $elements[$orderkey] = '<p class="literature-entry">';
+                $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item, array());
+                $elements[$orderkey] .= '</p>';
             }
             ksort( $elements, SORT_STRING );
             foreach ( $elements as $element ) {
@@ -1443,7 +1443,6 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 		if ( $user->isAllowed('loop-edit-literature') ) {
 
 			$html = '';
-
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$request = $this->getRequest();
 			$editKey = $request->getText( 'edit' );
@@ -1539,7 +1538,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				);
 
 
-			$html .= '<form id="literature-entry">';
+			$html .= '<form class="needs-validation mw-editform mt-3 mb-3" id="literature-entry-form"  enctype="multipart/form-data">';
 			$html .= '<div class="form-group">';
 
 			$html .= '<div class="form-row">';
@@ -1548,7 +1547,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			
 			foreach( $typesOfLiterature as $option ) {
 				
-				if ( $editKey ) {
+			    if ( $editKey && empty( $requestToken ) ) {
 					if ( $editLiteratureItem->itemType == "LOOP1" ) {
 						$selected = ( $option == "misc" ) ? "selected" : "";
 					} else {
@@ -1565,7 +1564,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= '</div>';
 
 			$loopLiterature = new LoopLiterature;
-			if ( $editKey ) {
+			if ( $editKey && empty( $requestToken ) ) {
 				if ( $editLiteratureItem->itemType == "LOOP1" ) {
 					$presetData = $loopLiterature->literatureTypes["misc"];
 				} else {
