@@ -590,7 +590,55 @@ class LoopLiterature {
 		$return .= ( isset($args) ) ? '</div>' : '';
 		return $return;
 	}
-#todo other hooks!
+	
+	/**
+	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
+	 * @param Title $title
+	 * @param Content $content
+	 */
+	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
+	    
+	    $latestRevId = $title->getLatestRevID();
+	    $wikiPage = WikiPage::factory($title);
+	    $fwp = new FlaggableWikiPage ( $title );
+	    
+	    if ( isset($fwp) ) {
+	        $stableRevId = $fwp->getStable();
+	        
+	        if ( $latestRevId == $stableRevId || $stableRevId == null ) {
+	            # In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
+	            $user = null;
+	            $systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+	            if ( $systemUser->getId() == $userId ) {
+	                $user = $systemUser;
+	            }
+	            
+	            self::doIndexLoopLiteratureReferences( $wikiPage, $title, $content, $user );
+	        }
+	    }
+	    return true;
+	}
+	/**
+	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion()
+	 * @param Title $title
+	 */
+	public static function onAfterClearStable( $title ) {
+	    $wikiPage = WikiPage::factory($title);
+	    self::doIndexLoopLiteratureReferences( $wikiPage, $title );
+	    return true;
+	}
+	
+	/**
+	 * When deleting a page, remove all Reference entries from DB.
+	 * Attached to ArticleDeleteComplete hook.
+	 */
+	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ) {
+	    
+	    LoopLiteratureReference::removeAllPageItemsFromDb ( $id );
+	    
+	    return true;
+	}
+	
 	/**
 	 * Checks revision status after saving content and starts db writing function in case of stable revision.
 	 * Attached to LinksUpdateConstructed hook.
@@ -624,7 +672,6 @@ class LoopLiterature {
 			$content = $wikiPage->getContent();
 		}
 		
-		#dd("HALLO1", $title,$content);
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 			$loopLiteratureReference = new LoopLiteratureReference();
 			LoopLiteratureReference::removeAllPageItemsFromDb ( $title->getArticleID() );
@@ -638,9 +685,6 @@ class LoopLiterature {
 			}
 			if ( $has_reference ) {
 				$references = array();
-				#foreach (self::$mObjectTypes as $objectType) {
-				#	$objects[$objectType] = 0;
-				#}
 				$object_tags = array ();
 				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( array('cite'), $forbiddenTags );
@@ -672,7 +716,6 @@ class LoopLiterature {
 							$tmpLoopLiteratureReference->refId = $newRef; 
 						}
 						$tmpLoopLiteratureReference->addToDatabase();
-						#dd($object, $tmpLoopLiteratureReference);
 					}
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
@@ -712,7 +755,6 @@ class LoopLiterature {
 	 */
 	public static function getLiteratureNumberingOutput($objectid, Array $pageData, $previousObjects = null, $objectData = null ) {
 
-		#dd($objectid);
 		$typeOfPage = $pageData[0];
 
 		if ( $previousObjects == null ) {
@@ -722,11 +764,9 @@ class LoopLiterature {
 				$previousObjects = LoopLiteratureReference::getLiteratureNumberingsForGlossaryPage ( $pageData[1] );
 			}
 		}
-		#dd($previousObjects);
 		if ( $objectData == null ) {
 			$objectData = LoopLiteratureReference::getItemData( $objectid );
 		}
-		#dd($objectData);
 		if ( $objectData["refId"] == $objectid ) {
 
 			$tmpPreviousObjects = 0;
@@ -848,7 +888,6 @@ class LoopLiterature {
 				$items[$row->lit_itemkey] = $tmpLiterature;
 			}
 		}
-		#dd($items);
         return $items;
 	}
 	
@@ -1176,7 +1215,6 @@ class LoopLiteratureReference {
         foreach ( $glossaryItems as $glossaryItem ) {
             $previousObjects[ $glossaryItem ] = self::getLiteratureNumberingsForGlossaryPage( $glossaryItem );
         }
-        #dd($previousObjects);
         foreach( $res as $row ) {
             
             $numberText = '';
@@ -1208,7 +1246,6 @@ class LoopLiteratureReference {
                 "objectnumber" => $numberText
             );
         }
-        #dd($objects);
         return $objects;
     }
 	
@@ -1217,10 +1254,6 @@ class LoopLiteratureReference {
 
 		$objects = array('cite');
 		$return = array('cite' => 0);
-		#foreach (LoopObject::$mObjectTypes as $objectType) {
-		#	$objects[$objectType] = array(); 
-		#	$return[$objectType] = 0; 
-		##}
 
 		$dbr = wfGetDB( DB_REPLICA );
 
@@ -1245,7 +1278,6 @@ class LoopLiteratureReference {
 			$tmpId = $item->article;
 			if (  $item->sequence < $lsi->sequence  ) {
 				foreach( $objects as $objectType => $page ) {
-					// dd($objects, $objectType);
 					if ( isset( $page[$tmpId] ) ) {
 						$return[$objectType] += sizeof($page[$tmpId]);
 					}
@@ -1358,9 +1390,7 @@ class SpecialLoopLiterature extends SpecialPage {
         $return = '';
         $elements = array();
         foreach ( $allReferences as $pageId => $pageReferences ) {
-            #dd();
             foreach ( $pageReferences as $refId => $referenceData) {
-                #$orderkey = ( $allItems[$referenceData["itemKey"]]->author ) ? $allItems[$referenceData["itemKey"]]->author : $allItems[$referenceData["itemKey"]]->itemTitle;
                 if ( isset ( $allItems[$referenceData["itemKey"]] ) ) {
                     if ( $wgLoopLiteratureCiteType == 'harvard') {
                         if ( $allItems[$referenceData["itemKey"]]->author ) {
@@ -1373,7 +1403,6 @@ class SpecialLoopLiterature extends SpecialPage {
                         $orderkey = ucfirst($referenceData["objectnumber"]);
                     }
                     $literatureItem = $allItems[$referenceData["itemKey"]];
-                    #dd($allItemsCopy[$referenceData["itemKey"]]);
                     if ( isset( $allItemsCopy[$referenceData["itemKey"]] ) ) {
                         unset( $allItemsCopy[$referenceData["itemKey"]] );
                     }
@@ -1459,7 +1488,6 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 						$html .= ''. $key.': "'. $val.'",';
 					}
 				}
-				#dd($html);
 				$html .= '}</script>';
 			} else {
 				$html .= '<script>var editValues = new Array;</script>';
@@ -1478,9 +1506,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 					$loopLiterature = new LoopLiterature;
 					$loopLiterature->getLiteratureFromRequest( $request );
-					#dd("hiiii", $loopLiterature);
 					if ( empty ( $loopLiterature->errors ) ) {
-						#dd("no errors",  $loopLiterature);
+					    
 						$loopLiterature->addToDatabase();
 
 						$html .= '<div class="alert alert-success" role="alert">' . $this->msg("loopliterature-alert-saved", $loopLiterature->itemKey ) . '</div>';
@@ -1495,12 +1522,10 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 						$html .= '<div class="alert alert-danger" role="alert" id="literature-error">' . $errorMsgs . '</div>';
 						
 					}
-					#if (  )
 				}
 
 			}
 			$existingKeys = LoopLiterature::getAllLiteratureItems( array("itemKey" => true ) );
-			#dd();
 			$html .= "<script>\n";
 			$keyString = '';
 			foreach ( $existingKeys as $key ) {
@@ -1573,12 +1598,6 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			} else {
 				$presetData = $loopLiterature->literatureTypes["book"];
 			}
-			#dd($presetData);
-			#array(
-			#	"required" => array( "author", "editor", "itemTitle", "publisher", "year" ),
-			#	"optional" => array( "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url" )
-			#);
-
 			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
 			$requiredObjects .= '<input  class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
 			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
@@ -1589,7 +1608,6 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$optionalObjects = '';
 			$otherObjects = '';
 
-			#dd($fieldData);
 			foreach( $fieldData as $field => $arr ) {
 				$required = ( in_array( $field, $presetData["required"] ) ) ? "required" : "";
 				$optional = ( in_array( $field, $presetData["optional"] ) ) ? true : false;
@@ -1605,11 +1623,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 					if ( gettype ( $val ) == "string" ) {
 						$attributes .= $key . '=\'' . $val . '\' ';
 					}
-					#dd($key, $val, $attributes);
 				}
-				#dd($attributes);
 				$type = ( isset( $arr["type"] ) ) ? $arr["type"] : "text";
-				#$i++;
 				$fieldHtml .= '<input  class="form-control" id="'. $field.'" name="'. $field.'" ' . $attributes . ' '. $required.' '. $disabled.'/>';
 				$fieldHtml .= '</div>';
 

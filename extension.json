@@ -113,9 +113,18 @@
 			"LoopObject::onLinksUpdateConstructed",
 			"LoopLiterature::onLinksUpdateConstructed"
 		],
-		"ArticleDeleteComplete": "LoopObject::onArticleDeleteComplete",
-		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange",
-		"AfterClearStable":"LoopObject::onAfterClearStable",
+		"ArticleDeleteComplete": [
+			"LoopObject::onArticleDeleteComplete",
+			"LoopLiterature::onArticleDeleteComplete"
+		],
+		"AfterStabilizeChange": [
+			"LoopObject::onAfterStabilizeChange",
+			"LoopLiterature::onAfterStabilizeChange"
+		],
+		"AfterClearStable": [
+			"LoopObject::onAfterClearStable",
+			"LoopLiterature::onAfterClearStable"
+		],
 		"LoopUpdateSavePage":"LoopUpdater::onLoopUpdateSavePage"
 	},
 	"SpecialPages": {
