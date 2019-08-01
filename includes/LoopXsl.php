@@ -297,13 +297,32 @@ class LoopXsl {
 	        $allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
 	        $itemData = LoopLiteratureReference::getItemData( $input_object->getAttribute( "id" ) );
 	        $id = $input_object->getAttribute( "id" );
-	        #dd($id, $allReferences, $itemData, $itemData["articleId"], $allReferences[$itemData["articleId"]][$id]["objectnumber"]);
 	        $objectNumber = $allReferences[$itemData["articleId"]][$id]["objectnumber"];
 	        $return .= $objectNumber;
 	    }
-	    #dd($return);
 	    return $return;
 	}
-
+	
+	public static function xsl_get_bibliography( $input ) {
+	    global $wgLoopLiteratureCiteType;
+	    
+	    $input_object = $input[0];
+	    
+	    if ( empty ( $input_object ) ) {
+	        $xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
+	        $dom = new DOMDocument( "1.0", "utf-8" );
+	        $dom->loadXML($xml);
+	    } else {
+	        $dom = new DOMDocument( "1.0", "utf-8" );
+	        $dom->appendChild($dom->importNode($input_object, true));
+	        $tags = $dom->getElementsByTagName ("extension"); 
+	        $input = $tags[0]->nodeValue;
+	        $xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
+	        $dom = new DOMDocument( "1.0", "utf-8" );
+	        $dom->loadXML($xml);
+	    }
+	    return $dom;
+	}
+	
 	
 }

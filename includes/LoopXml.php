@@ -100,9 +100,9 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($title->mArticleID);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getText(); # todo DEPRECATED
+			$content = $wp->getContent ()->getText(); 
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); # todo DEPRECATED
+			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); 
 		}
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
@@ -153,9 +153,9 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($articleId);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getText(); # todo DEPRECATED
+			$content = $wp->getContent ()->getText(); 
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); # todo DEPRECATED
+			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); 
 		}
 		$content = html_entity_decode($content);
 		

@@ -94,38 +94,36 @@
 			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
 				<xsl:call-template name="page-content-appendix"></xsl:call-template>
 				
-				<!-- 
 				<xsl:if test="$cite_exists='1'">
 						<xsl:call-template name="page-content-bibliography"></xsl:call-template>
-				</xsl:if>				
-				-->
+				</xsl:if>
 				<xsl:if test="$figure_exists='1'">
-						<xsl:call-template name="page-content-list-of-objects">
+					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_figure</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
 				<xsl:if test="$table_exists='1'">
-						<xsl:call-template name="page-content-list-of-objects">
+					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_table</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
 				<xsl:if test="$media_exists='1'">
-						<xsl:call-template name="page-content-list-of-objects">
+					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_media</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
 				<xsl:if test="$formula_exists='1'">
-						<xsl:call-template name="page-content-list-of-objects">
+					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_formula</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
 				<xsl:if test="$listing_exists='1'">
-						<xsl:call-template name="page-content-list-of-objects">
+					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_listing</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>            
 				<xsl:if test="$task_exists='1'">
-						<xsl:call-template name="page-content-list-of-objects">
+					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_task</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
@@ -173,7 +171,7 @@
 		
 		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1')">
 			<fo:block break-before="page"></fo:block>
-		</xsl:if>	
+		</xsl:if>	 
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
 				<xsl:value-of select="$word_appendix"></xsl:value-of>
@@ -293,6 +291,24 @@
 			<fo:block>
 				<xsl:call-template name="font_subsubhead"></xsl:call-template>
 				<xsl:value-of select="$word_appendix"></xsl:value-of>
+			</fo:block>		
+		</xsl:if>	
+		<xsl:if test="$cite_exists='1'">
+			<fo:block text-align-last="justify">
+				<xsl:call-template name="font_normal"></xsl:call-template>
+				<fo:basic-link color="black">
+					<xsl:attribute name="internal-destination">bibliography</xsl:attribute>
+					<xsl:call-template name="appendix_number">
+						<xsl:with-param name="content" select="'bibliography'"></xsl:with-param>
+					</xsl:call-template> 				
+					<xsl:text> </xsl:text><xsl:value-of select="$word_bibliography"></xsl:value-of>
+				</fo:basic-link>
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"></fo:leader>
+					<fo:page-number-citation>
+						<xsl:attribute name="ref-id">bibliography</xsl:attribute>
+					</fo:page-number-citation>
+				</fo:inline>
 			</fo:block>		
 		</xsl:if>		
 		
@@ -422,7 +438,51 @@
 				</fo:inline>
 			</fo:block>		
 		</xsl:if>
+		
 	</xsl:template>		
+	
+	
+	
+	<!-- Bibliography -->
+	
+	<xsl:template name="bibliography" mode="bibliography">
+		<xsl:apply-templates mode="bibliography"/>
+	</xsl:template>
+	
+	<xsl:template name="page-content-bibliography">
+		<fo:block>
+			<fo:marker marker-class-name="page-title-left">
+				<xsl:value-of select="$word_appendix"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block>
+			<fo:marker marker-class-name="page-title-right">
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'bibliography'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+				<xsl:value-of select="$word_bibliography"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block id="bibliography" keep-with-next="always">
+			<xsl:call-template name="font_head"></xsl:call-template>
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'bibliography'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+			<xsl:value-of select="$word_bibliography"></xsl:value-of>
+		</fo:block>
+		<fo:block>
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_get_bibliography', '')" mode="bibliography"></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>		
+	
+	<xsl:template name="loop_literature">
+		<fo:block>
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_get_bibliography', .)" mode="bibliography"></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+	
 	
 	<!-- LOOP_OBJECTS -->
 	<xsl:template name="loop_object">
@@ -1231,6 +1291,13 @@
 		</fo:block>
 	</xsl:template>
 	
+	<xsl:template match="paragraph" mode="bibliography">
+		<fo:block margin-bottom="5pt" text-indent="-5mm" line-height="20mm" margin-left="5mm">
+			<xsl:call-template name="font_normal"></xsl:call-template>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+	
 	<xsl:template match="preblock" >
 		<xsl:apply-templates></xsl:apply-templates>
 	</xsl:template>
@@ -1328,6 +1395,11 @@
 	</xsl:template>	
 
 	<xsl:template match="italics">
+		<fo:inline font-style="italic">
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:inline>
+	</xsl:template>	
+	<xsl:template match="italics" mode="bibliography">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
@@ -1726,6 +1798,9 @@
 			<xsl:when test="@extension_name='spoiler'">
 				<xsl:call-template name="spoiler"></xsl:call-template>
 			</xsl:when>
+			<xsl:when test="@extension_name='loop_literature'">
+				<xsl:call-template name="loop_literature"></xsl:call-template>
+			</xsl:when>
 
 			<xsl:otherwise>
 			</xsl:otherwise>
@@ -1997,7 +2072,7 @@
 			<xsl:value-of select="."></xsl:value-of>
 		</xsl:variable>
 		<fo:basic-link >
-			<!--<xsl:attribute name="internal-destination">bibliography</xsl:attribute>  --> 
+			<xsl:attribute name="internal-destination">bibliography</xsl:attribute>
 			<fo:inline text-decoration="underline" font-style="italic">
 				<xsl:choose>
 					<xsl:when test="php:function('LoopXsl::xsl_transform_cite', .)=''">
@@ -2011,8 +2086,7 @@
 				</xsl:choose>
 			</fo:inline>
 			<xsl:text> </xsl:text>		
-			<!-- <fo:inline><fo:external-graphic scaling="uniform" content-height="scale-to-fit" content-width="3mm" src="/opt/www/loop.oncampus.de/mediawiki/skins/loop/images/print/literature.png"></fo:external-graphic></fo:inline> -->
-		</fo:basic-link>
+			</fo:basic-link>
 		<fo:inline font-style="italic">
 		
 			<xsl:choose>

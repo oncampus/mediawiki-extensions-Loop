@@ -220,10 +220,10 @@ class LoopLiterature {
 												break;
 										}
 									} else {
-										$this->errors[] = wfMessage( "loopliterature-error-invalidentry", wfMessage("loopliterature-label-".$field) );
+										$this->errors[] = wfMessage( "loopliterature-error-invalidentry", wfMessage("loopliterature-label-". $field) );
 									}
 								} elseif ( $required == "required" )  {
-									$this->errors[] = wfMessage( "loopliterature-error-missingrequired", wfMessage("loopliterature-label-".$field) );
+									$this->errors[] = wfMessage( "loopliterature-error-missingrequired", wfMessage("loopliterature-label-". $field) );
 								}
 							}
 						}
@@ -516,7 +516,7 @@ class LoopLiterature {
 				#$reference = LoopLiteratureReference::getItemData( $args["id"] );
 				#dd( $allReferences[$articleId][$refId]["objectnumber"] );
 				
-				$text = "<sup>".$objectNumber."</sup>";
+				$text = "<sup>". $objectNumber."</sup>";
 
 				$html = $linkRenderer->makeLink( 
 					new TitleValue( NS_SPECIAL, 'LoopLiterature' ), 
@@ -532,7 +532,8 @@ class LoopLiterature {
 		return $html;
 	}
 
-	static function renderLoopLiterature( $input, array $args, Parser $parser, PPFrame $frame ) {
+	# renders loop_literature. if only input is set, the output is rendered as xml.
+	public static function renderLoopLiterature( $input, array $args = null, Parser $parser = null, PPFrame $frame = null ) {
 
 		global $wgLoopLiteratureCiteType; 
 
@@ -550,7 +551,7 @@ class LoopLiterature {
 				}
 			}
 		}
-		$html = '<div class="loop-literature mb-1 ml-4">';
+		$return = ( isset($args) ) ? '<div class="loop-literature mb-1 ml-4">' : '';
 		if ( !empty ( $keys ) ) {
 			$htmlElements = array();
 			#$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
@@ -564,16 +565,16 @@ class LoopLiterature {
 					} elseif ( $allItems[$key]->itemTitle ) {
 						$orderkey = ucfirst($allItems[$key]->itemTitle);
 					}
-					$htmlElements[$orderkey] = '<p class="literature-entry mb-2" id="'.$key.'">';
-
 					$literatureItem = $allItems[$key];
-					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement($literatureItem);
-					#$literatureItem["author"];
+					$htmlElements[$orderkey] = ( isset($args) ) ? '<p class="literature-entry mb-2" id="'. $key.'">' : '<paragraph>';
+					$type = ( isset($args) ) ? 'html' : 'xml';
+					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, null, $type );
+					$htmlElements[$orderkey] .= ( isset($args) ) ? '</p>' : '</paragraph>';
+					
 					if ( $wgLoopLiteratureCiteType == "harvard" ) {
 						unset($allItems[$key]);
 					}
-					$htmlElements[$orderkey] .= '</p>';
-				} else {
+				} elseif ( isset( $parser ) ) {
 					$htmlElements[$key] = new LoopException( wfMessage( 'loopliterature-error-keyunknown', $key )->text() );
 					$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			
@@ -583,11 +584,11 @@ class LoopLiterature {
 				ksort( $htmlElements, SORT_STRING );
 			}
 			foreach ( $htmlElements as $element ) {
-				$html .= $element;
+				$return .= $element;
 			}
 		}
-		$html .= '</div>';
-		return $html;
+		$return .= ( isset($args) ) ? '</div>' : '';
+		return $return;
 	}
 #todo other hooks!
 	/**
@@ -661,7 +662,7 @@ class LoopLiterature {
 							} else {
 								# dublicate id must be replaced
 								$newRef = uniqid();
-								$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
+								$newContentText = preg_replace('/(id="'. $object[2]["id"].'")/', 'id="'. $newRef.'"'  , $newContentText, 1 );
 								$tmpLoopLiteratureReference->refId = $newRef; 
 							}
 						} else {
@@ -855,7 +856,7 @@ class LoopLiterature {
 	 * @param LoopLiterature $li entry to render
 	 * @param Array $ref data about the reference
 	 */
-	public static function renderLiteratureElement( $li, $ref = null ) {
+	public static function renderLiteratureElement( $li, $ref = null, $type = 'html' ) {
 
 		global $wgOut, $wgLoopLiteratureCiteType;
 
@@ -864,19 +865,29 @@ class LoopLiterature {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 
 		$return = '';
+		if ($type == "html") {
+		    $italic = "<i>";
+		    $italicEnd = "</i>";
+		} else { #xml
+		    $italic = "<italics>";
+		    $italicEnd = "</italics>";
+		}
 
 		if ( $wgLoopLiteratureCiteType == 'vancouver' && $ref ) {
-			$return .= "<span class='literature-vancouver-number'>".$ref["objectnumber"].". </span>";
-			#dd($li, $ref);
+		    if ( $type == 'html' ) {
+		        $return .= "<span class='literature-vancouver-number'>". $ref["objectnumber"].". </span>";
+		    } else {
+		        $return .= $ref["objectnumber"].". ";
+		    }
 		}
-			# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
+		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
 		if ( $li->author ) {
 			$return .= $li->author.". ";
 		} elseif ( $li->itemTitle ) {
 			if ( $li->itemType == "LOOP1" ) {
 				$return .= $li->itemTitle.". ";
 			} else {
-				$return .= "<i>".$li->itemTitle."</i>. ";
+				$return .= $italic. $li->itemTitle. $italicEnd . ". ";
 			}
 		}
 
@@ -892,9 +903,9 @@ class LoopLiterature {
 				$monthText = $li->month . " ";
 			}
 			if ( $li->itemType == "unpublished" ) {
-				$return .= "(".$monthText.$li->year.", ".wfMessage("loopliterature-text-unpublished")->text()."). ";
+				$return .= "(". $monthText. $li->year.", ".wfMessage("loopliterature-text-unpublished")->text()."). ";
 			} else {
-				$return .= "(".$monthText.$li->year."). ";
+				$return .= "(". $monthText. $li->year."). ";
 			}
 		} elseif ( $li->itemType == "unpublished" ) {
 			$return .= "(".wfMessage("loopliterature-text-unpublished")->text()."). ";
@@ -915,7 +926,7 @@ class LoopLiterature {
 			if ( $li->itemType == "article" ) {
 				$return .= $li->itemTitle;
 			} else {
-				$return .= "<i>".$li->itemTitle."</i>";
+				$return .= $italic. $li->itemTitle. $italicEnd;
 			}
 			if ( ! $li->volume || ! $li->type || ! $li->edtion || ! $li->pages || ! $li->howpublished || ! $li->series ) {
 				$return .= ". ";
@@ -934,36 +945,36 @@ class LoopLiterature {
 			} else {
 				$plural = 1;
 			}
-			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() .$li->pages."). ";
+			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . $li->pages."). ";
 		} 
 
 		if ( $li->journal ) {
 			$return .= $li->journal. ". ";
 		} 
 		if ( $li->series ) {
-			$return .= "(".$li->series."). ";
+			$return .= "(". $li->series."). ";
 		} 
 		if ( $li->type ) {
-			$return .= "(".$li->type."). ";
+			$return .= "(". $li->type."). ";
 		} 
 		if ( $li->volume ) {
-			$return .= "(".$li->volume."). ";
+			$return .= "(". $li->volume."). ";
 		} 
 		if ( $li->edition ) {
-			$return .= "(".$li->edition."). ";
+			$return .= "(". $li->edition."). ";
 		} 
 		if ( $li->howpublished ) {
-			$return .= "(".$li->howpublished."). ";
+			$return .= "(". $li->howpublished."). ";
 		} 
 		if ( $li->number ) {
-			$return .= "(".$li->number."). ";
+			$return .= "(". $li->number."). ";
 		} 
 		
 
 		if ( $li->publisher ) {
 			$return .= $li->publisher.". ";
 		} elseif ( $li->journal ) {
-			$return .= "<i>".$li->journal.".</i> ";
+			$return .= $italic. $li->journal.".". $italicEnd." ";
 		}
 
 		if ( $li->institution ) {
@@ -985,18 +996,16 @@ class LoopLiterature {
 			$return .= $li->address.". ";
 		} 
 
-		if ( $li->note && $editMode && $li->itemType != "LOOP1" ) {
+		if ( $li->note && $editMode && $li->itemType != "LOOP1" && $type == 'html' ) {
 			$return .= '<span class="literature-itemkey font-italic text-black-50">'.wfMessage("loopliterature-text-note")->text() . ": " . $li->note.'. </span>';
 		} 
 
-		if ( $li->itemType == "LOOP1" && $li->note ) {
+		if ( $li->itemType == "LOOP1" && $li->note && $type == 'html' ) {
 			$return .= $li->note . " ";
 		}
 
-		#}
-
-		if ( $editMode ) {
-			$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'.$li->itemKey.' </span>';
+		if ( $editMode && isset ( $ref ) && $type == 'html' ) {
+			$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
 
 			if ( $user->isAllowed('loop-edit-literature') ) {
 				$return .= $linkRenderer->makelink( 
@@ -1314,7 +1323,7 @@ class SpecialLoopLiterature extends SpecialPage {
 		$deleteKey = $request->getText( 'delete' );
 		if ( $deleteKey ) {
 			LoopLiterature::removeFromDatabase($deleteKey);
-			$html .= '<div class="alert alert-success">'.$this->msg("loopliterature-alert-deleted", $deleteKey).'</div>';
+			$html .= '<div class="alert alert-success">'. $this->msg("loopliterature-alert-deleted", $deleteKey).'</div>';
 		}
 
 		if ( $user->isAllowed('loop-edit-literature') &&  $editMode ) {
@@ -1327,81 +1336,86 @@ class SpecialLoopLiterature extends SpecialPage {
 		}
 
 		$html .= '<div class="bibliography ml-4">';
-		
-
-
-		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
-
-		$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
-		$allItems = LoopLiterature::getAllItems();
-		
-		$htmlElements = array();
-		foreach ( $allReferences as $pageId => $pageReferences ) {
-			#dd();
-			foreach ( $pageReferences as $refId => $referenceData) {
-				#$orderkey = ( $allItems[$referenceData["itemKey"]]->author ) ? $allItems[$referenceData["itemKey"]]->author : $allItems[$referenceData["itemKey"]]->itemTitle;
-				if ( isset ( $allItems[$referenceData["itemKey"]] ) ) {
-					if ( $wgLoopLiteratureCiteType == 'harvard') {
-						if ( $allItems[$referenceData["itemKey"]]->author ) {
-							$orderkey = ucfirst($allItems[$referenceData["itemKey"]]->author);
-		
-						} elseif ( $allItems[$referenceData["itemKey"]]->itemTitle ) {
-							$orderkey = ucfirst($allItems[$referenceData["itemKey"]]->itemTitle);
-						}
-					} else {
-						$orderkey = ucfirst($referenceData["objectnumber"]);
-					}
-					$htmlElements[$orderkey] = '<p class="literature-entry" id="'.$referenceData["itemKey"].'">';
-
-					$literatureItem = $allItems[$referenceData["itemKey"]];
-					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement($literatureItem, $referenceData);
-					#$literatureItem["author"];
-					#if ( $wgLoopLiteratureCiteType == "harvard" ) {
-					#	unset($allItems[$referenceData["itemKey"]]);
-					#} else {
-					$referencedItems[] = $referenceData["itemKey"];
-					#}
-					$htmlElements[$orderkey] .= '</p>';
-				}
-			}
-		}
-		ksort( $htmlElements, SORT_STRING );
-		foreach ( $htmlElements as $element ) {
-			$html .= $element;
-		}
-		#dd($allItems);
-		if ( $editMode && ! empty ( $allItems ) ) {
-			$htmlElements = array();
-			$html .= "<hr class='mr-4'/>";
-			$html .= "<p class='font-weight-bold' id='literature-unreferenced'>".$this->msg( "loopliterature-text-notreferenced" ).":</p>";
-
-			foreach ( $allItems as $item ) {
-				if ( ! in_array( $item->itemKey, $referencedItems ) ) {
-					#dd( $item->itemKey, $referencedItems );
-					if ( $item->author ) {
-						$orderkey = ucfirst($item->author);
-					} elseif ( $item->itemTitle ) {
-						$orderkey = ucfirst($item->itemTitle);
-					}
-	
-					$htmlElements[$orderkey] = '<p class="literature-entry">';
-					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement($item);
-					$htmlElements[$orderkey] .= '</p>';
-				} else {
-					
-				#dd( $item->itemKey, $referencedItems );
-				}
-					
-			}
-			ksort( $htmlElements, SORT_STRING );
-			foreach ( $htmlElements as $element ) {
-				$html .= $element;
-			}
-		}
+		$html .= self::renderBibliography("html", $editMode );
 		$html .= '</div>';
 		$out->addHTML( $html );
 		
+    }
+    
+    public static function renderBibliography( $type, $editMode = false ) {
+        
+        global $wgLoopLiteratureCiteType;
+        $loopStructure = new LoopStructure();
+        $loopStructure->loadStructureItems();
+        
+        $allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
+        $allItems = LoopLiterature::getAllItems();
+        $return = '';
+        $elements = array();
+        foreach ( $allReferences as $pageId => $pageReferences ) {
+            #dd();
+            foreach ( $pageReferences as $refId => $referenceData) {
+                #$orderkey = ( $allItems[$referenceData["itemKey"]]->author ) ? $allItems[$referenceData["itemKey"]]->author : $allItems[$referenceData["itemKey"]]->itemTitle;
+                if ( isset ( $allItems[$referenceData["itemKey"]] ) ) {
+                    if ( $wgLoopLiteratureCiteType == 'harvard') {
+                        if ( $allItems[$referenceData["itemKey"]]->author ) {
+                            $orderkey = ucfirst($allItems[$referenceData["itemKey"]]->author);
+                            
+                        } elseif ( $allItems[$referenceData["itemKey"]]->itemTitle ) {
+                            $orderkey = ucfirst($allItems[$referenceData["itemKey"]]->itemTitle);
+                        }
+                    } else {
+                        $orderkey = ucfirst($referenceData["objectnumber"]);
+                    }
+                    $literatureItem = $allItems[$referenceData["itemKey"]];
+                    $referencedItems[] = $referenceData["itemKey"];
+                    if ( $type == "html" ) {
+                        $elements[$orderkey] = '<p class="literature-entry" id="'. $referenceData["itemKey"].'">';
+                        $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type );
+                        $elements[$orderkey] .= '</p>';
+                    } else {
+                        $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
+                        $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type );
+                        $elements[$orderkey] .= '</paragraph>';
+                    }
+                }
+            }
+        }
+        ksort( $elements, SORT_STRING );
+        foreach ( $elements as $element ) {
+            $return .= $element;
+        }
+        #dd($allItems);
+        if ( $editMode && ! empty ( $allItems ) && $type == "html" ) {
+            $elements = array();
+            $return .= "<hr class='mr-4'/>";
+            $return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" ).":</p>";
+            
+            foreach ( $allItems as $item ) {
+                if ( ! in_array( $item->itemKey, $referencedItems ) ) {
+                    #dd( $item->itemKey, $referencedItems );
+                    if ( $item->author ) {
+                        $orderkey = ucfirst($item->author);
+                    } elseif ( $item->itemTitle ) {
+                        $orderkey = ucfirst($item->itemTitle);
+                    }
+                    
+                    $elements[$orderkey] = '<p class="literature-entry">';
+                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item);
+                    $elements[$orderkey] .= '</p>';
+                } else {
+                    
+                    #dd( $item->itemKey, $referencedItems );
+                }
+                
+            }
+            ksort( $elements, SORT_STRING );
+            foreach ( $elements as $element ) {
+                $return .= $element;
+            }
+        }
+        #dd($return);
+        return $return;
     }
 
 	/**
@@ -1443,7 +1457,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				foreach ( $itemArray as $key => $val ) {
 					if ( $key != "literatureTypes" && $key != "errors" && isset($val) ) {
 						$val = str_replace('"', "&quot;", $val);
-						$html .= ''.$key.': "'.$val.'",';
+						$html .= ''. $key.': "'. $val.'",';
 					}
 				}
 				#dd($html);
@@ -1491,7 +1505,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= "<script>\n";
 			$keyString = '';
 			foreach ( $existingKeys as $key ) {
-				$keyString .= '"'.$key.'", ';
+				$keyString .= '"'. $key.'", ';
 			} 
 			$html .= '$existingKeys = [' . $keyString . ']';
 			$html .= "</script>";
@@ -1529,7 +1543,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= '<div class="form-group">';
 
 			$html .= '<div class="form-row">';
-			$html .= '<label for="itemType" class="font-weight-bold">'.$this->msg('loopliterature-label-itemType')->text().'</label>';
+			$html .= '<label for="itemType" class="font-weight-bold">'. $this->msg('loopliterature-label-itemType')->text().'</label>';
 			$html .= '<select id="itemType" name="itemType" class="form-control form-control-lg">';
 			
 			foreach( $typesOfLiterature as $option ) {
@@ -1543,8 +1557,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				} else {
 					$selected = ( $option == "book" ) ? "selected" : ""; 
 				}
-				$html .= '<option '.$selected.' value="'.$option.'">';
-				$html .= $this->msg('loopliterature-entry-'.$option)->text();
+				$html .= '<option '. $selected.' value="'. $option.'">';
+				$html .= $this->msg('loopliterature-entry-'. $option)->text();
 				$html .= '</option>';
 			}
 			$html .= '</select>';
@@ -1566,12 +1580,12 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			#	"optional" => array( "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url" )
 			#);
 
-			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="itemKey">'.$this->msg('loopliterature-label-key')->text().'</label>';
+			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
 			$requiredObjects .= '<input  class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
-			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'.$this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
 			$requiredObjects .= '<div class="col-12 mb-1' . ( $editKey ? '"' :  ' d-none"' ). '>';
 			$requiredObjects .= '<input class="mr-2" type="checkbox" id="overwrite" name="overwrite" value="true"' . ( $editKey ? " required checked" : " disabled" ) . '/>';
-			$requiredObjects .= '<label for="overwrite">'.$this->msg("loopliterature-label-overwrite")->text().'</label></div>';
+			$requiredObjects .= '<label for="overwrite">'. $this->msg("loopliterature-label-overwrite")->text().'</label></div>';
 
 			$optionalObjects = '';
 			$otherObjects = '';
@@ -1584,8 +1598,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				$visibility = ( empty($disabled) )  ? "" : " d-none";
 
 				$fieldHtml = '';
-				$fieldHtml .= '<div class="literature-field col-6'.$visibility.'">';
-				$fieldHtml .= '<label for="'.$field.'">'.$this->msg('loopliterature-label-'.$field)->text().'</label>';
+				$fieldHtml .= '<div class="literature-field col-6'. $visibility.'">';
+				$fieldHtml .= '<label for="'. $field.'">'. $this->msg('loopliterature-label-'. $field)->text().'</label>';
 
 				$attributes = '';
 				foreach ( $arr as $key => $val ) {
@@ -1597,7 +1611,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				#dd($attributes);
 				$type = ( isset( $arr["type"] ) ) ? $arr["type"] : "text";
 				#$i++;
-				$fieldHtml .= '<input  class="form-control" id="'.$field.'" name="'.$field.'" ' . $attributes . ' '.$required.' '.$disabled.'/>';
+				$fieldHtml .= '<input  class="form-control" id="'. $field.'" name="'. $field.'" ' . $attributes . ' '. $required.' '. $disabled.'/>';
 				$fieldHtml .= '</div>';
 
 				if ( $required == "required" ) {
@@ -1608,9 +1622,9 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 					$otherObjects .= $fieldHtml;
 				} 
 			}
-			$html .= '<div class="form-row border pb-3 mt-3" id="required-row"><h4 class="w-100 pt-2 pl-2">'.$this->msg('loopliterature-label-required')->text().'</h4>'.$requiredObjects.'</div>';
-			$html .= '<div class="form-row border pb-3 mt-3" id="optional-row"><h4 class="w-100 pt-2 pl-2">'.$this->msg('loopliterature-label-optional')->text().'</h4>'.$optionalObjects.'</div>';
-			$html .= '<div class="form-row" id="disabled-row">'.$otherObjects.'</div>';
+			$html .= '<div class="form-row border pb-3 mt-3" id="required-row"><h4 class="w-100 pt-2 pl-2">'. $this->msg('loopliterature-label-required')->text().'</h4>'. $requiredObjects.'</div>';
+			$html .= '<div class="form-row border pb-3 mt-3" id="optional-row"><h4 class="w-100 pt-2 pl-2">'. $this->msg('loopliterature-label-optional')->text().'</h4>'. $optionalObjects.'</div>';
+			$html .= '<div class="form-row" id="disabled-row">'. $otherObjects.'</div>';
 
 			$html .= '</div>';
 
