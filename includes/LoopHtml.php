@@ -57,14 +57,20 @@ class LoopHtml{
                 LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
             }
 
-            # Create toc file
-            $tocPage = Title::newFromText( 'Special:LoopStructure' );
-            LoopHtml::writeSpecialPageToFile( $tocPage, "", $exportSkin );
+            # Create special page files
+            $specialPages = array ('LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks');
+            foreach( $specialPages as $page ) {
+                var_dump($page);
+                $tmpTitle = Title::newFromText( $page, NS_SPECIAL );
+                LoopHtml::writeSpecialPageToFile( $tmpTitle, "", $exportSkin );
+            }
+            $glossaryTitle = Title::newFromText( wfMessage("loopglossary")->text(), NS_GLOSSARY );
+            LoopHtml::writeSpecialPageToFile( $glossaryTitle, "", $exportSkin );
 
             foreach($loopStructureItems as $loopStructureItem) {
 
                 $articleId = $loopStructureItem->getArticle();
-
+                var_dump($articleId);
                 if( isset( $articleId ) && is_numeric( $articleId )) {
 
                     $title = Title::newFromID( $articleId );
@@ -216,6 +222,10 @@ class LoopHtml{
         
     }
 
+    private function loadResources() {
+
+        
+    }
      /**
      * Replaces resources provided by resource loader
      * @param string $html
@@ -294,8 +304,28 @@ class LoopHtml{
                 "targetpath" => "resources/js/",
                 "link" => "script"
             ),
+            "loopprint.js" => array(
+                "srcpath" => $wgServer . "/mediawiki/extensions/Loop/resources/js/loop.printtag.js",
+                "targetpath" => "resources/js/",
+                "link" => "script"
+            ),
+            "loopspoiler.js" => array(
+                "srcpath" => $wgServer . "/mediawiki/extensions/Loop/resources/js/loop.spoiler.js",
+                "targetpath" => "resources/js/",
+                "link" => "script"
+            ),
             "shared.css" => array(
                 "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/shared.css",
+                "targetpath" => "resources/styles/",
+                "link" => "style"
+            ),
+            "syntaxhighlight.generated.css" => array(
+                "srcpath" => $wgServer."/mediawiki/extensions/SyntaxHighlight_GeSHi/modules/pygments.generated.css",
+                "targetpath" => "resources/styles/",
+                "link" => "style"
+            ),
+            "syntaxhighlight.wrapper.css" => array(
+                "srcpath" => $wgServer."/mediawiki/extensions/SyntaxHighlight_GeSHi/modules/pygments.wrapper.css",
                 "targetpath" => "resources/styles/",
                 "link" => "style"
             ),
@@ -366,6 +396,8 @@ class LoopHtml{
                 }
             }
         }
+                
+        
 
         $headElements = $doc->getElementsByTagName('head');
 
@@ -373,8 +405,11 @@ class LoopHtml{
         # writes file in it's targetpath and links it on output page.
         foreach( $resources as $file => $data ) {
             $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
-            
-            $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
+            if ( ! is_file($this->exportDirectory.$data["targetpath"].$file) ) {
+                #dd( is_file($this->exportDirectory.$data["targetpath"].$file),$this->exportDirectory.$data["targetpath"].$file );
+                #var_dump($data["srcpath"]);
+                $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
+            }
             
             if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
@@ -468,7 +503,11 @@ class LoopHtml{
         foreach($urls as $url) {
 
             if( ! in_array( $url, $this->requestedUrls ) ) {
-                $content = file_get_contents( $url );
+                if ( is_file( $url ) ) { 
+                    $content = file_get_contents( $url );
+                } else {
+                    $content = '';
+                }
                 $this->requestedUrls[ $url ] = $content;
             }
 
