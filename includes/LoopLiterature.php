@@ -468,6 +468,7 @@ class LoopLiterature {
 	static function renderCite( $input, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgLoopLiteratureCiteType;
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true); #required for readable links
 
 		$loopLiterature = new LoopLiterature();
 		$loopLiteratureItem = $loopLiterature->loadLiteratureItem( $input );
@@ -1243,7 +1244,7 @@ class LoopLiteratureReference {
                 'articleId' => $row->llr_pageid,
                 'itemKey' => $row->llr_itemkey,
                 'nthItem' => $row->llr_nthitem,
-                "objectnumber" => $numberText
+                'objectnumber' => $numberText
             );
         }
         return $objects;
@@ -1288,7 +1289,7 @@ class LoopLiteratureReference {
         return $return;
     }
     
-	// returns number of objects in glossary pages before current glossary page
+	// returns number of literature items in glossary pages before current glossary page
     public static function getLiteratureNumberingsForGlossaryPage ( $articleId ) {
        $glossaryItems = LoopGlossary::getGlossaryPages();
         $data = array();
@@ -1347,35 +1348,39 @@ class SpecialLoopLiterature extends SpecialPage {
 
 	public function execute( $sub ) {
 		global $wgLoopLiteratureCiteType;
-
 		$user = $this->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
-		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$out = $this->getOutput();
 		$out->setPageTitle($this->msg('loopliterature'));
 		$request = $this->getRequest();
-		$html = '';
-
 		$deleteKey = $request->getText( 'delete' );
-		if ( $deleteKey ) {
-			LoopLiterature::removeFromDatabase($deleteKey);
-			$html .= '<div class="alert alert-success">'. $this->msg("loopliterature-alert-deleted", $deleteKey).'</div>';
-		}
-
-		if ( $user->isAllowed('loop-edit-literature') &&  $editMode ) {
-			$html .= $linkRenderer->makeLink(
-				new TitleValue( NS_SPECIAL, 'LoopLiteratureEdit' ),
-				new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive">' . $this->msg( "loopliterature-label-addentry" ) . "</div>" ),
-				array()
-				
-			);
-		}
-
-		$html .= '<div class="bibliography ml-4">';
-		$html .= self::renderBibliography("html", $editMode );
-		$html .= '</div>';
+		
+		$html = self::renderLoopLiteratureSpecialPage( $deleteKey, $editMode, $user );
 		$out->addHTML( $html );
 		
+    }
+    public static function renderLoopLiteratureSpecialPage( $deleteKey = null, $editMode = false, $user = null ) {
+        
+        $html = '';
+        if ( $deleteKey ) {
+            LoopLiterature::removeFromDatabase( $deleteKey );
+            $html .= '<div class="alert alert-success">' . wfMessage( "loopliterature-alert-deleted", $deleteKey ) . '</div>';
+        }
+        if ( $user ) {
+            if ( $user->isAllowed('loop-edit-literature') && $editMode ) {
+                $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+                $linkRenderer->setForceArticlePath(true); #required for readable links
+                $html .= $linkRenderer->makeLink(
+                    new TitleValue( NS_SPECIAL, 'LoopLiteratureEdit' ),
+                    new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive">' . wfMessage( "loopliterature-label-addentry" ) . "</div>" ),
+                    array()
+                    );
+            }
+        }
+        $html .= '<div class="bibliography ml-4">';
+        $html .= self::renderBibliography("html", $editMode );
+        $html .= '</div>';
+        return $html;
     }
     
     public static function renderBibliography( $type, $editMode = false ) {
@@ -1473,6 +1478,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 			$html = '';
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+			$linkRenderer->setForceArticlePath(true); #required for readable links
 			$request = $this->getRequest();
 			$editKey = $request->getText( 'edit' );
 			http_build_query(array());
@@ -1598,7 +1604,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			} else {
 				$presetData = $loopLiterature->literatureTypes["book"];
 			}
-			$requiredObjects = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
+			$requiredObjects  = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
 			$requiredObjects .= '<input  class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
 			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
 			$requiredObjects .= '<div class="col-12 mb-1' . ( $editKey ? '"' :  ' d-none"' ). '>';
@@ -1678,7 +1684,8 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 
 		if ( $user->isAllowed('loop-edit-literature') ) {
 			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		    $linkRenderer->setForceArticlePath(true); #required for readable links
 			$out = $this->getOutput();
 
 			$html = "Hello world!";

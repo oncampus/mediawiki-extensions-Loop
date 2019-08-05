@@ -58,19 +58,14 @@ class LoopHtml{
             }
 
             # Create special page files
-            $specialPages = array ('LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks');
+            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary' );
             foreach( $specialPages as $page ) {
-                var_dump($page);
                 $tmpTitle = Title::newFromText( $page, NS_SPECIAL );
                 LoopHtml::writeSpecialPageToFile( $tmpTitle, "", $exportSkin );
             }
-            $glossaryTitle = Title::newFromText( wfMessage("loopglossary")->text(), NS_GLOSSARY );
-            LoopHtml::writeSpecialPageToFile( $glossaryTitle, "", $exportSkin );
-
             foreach($loopStructureItems as $loopStructureItem) {
 
                 $articleId = $loopStructureItem->getArticle();
-                var_dump($articleId);
                 if( isset( $articleId ) && is_numeric( $articleId )) {
 
                     $title = Title::newFromID( $articleId );
@@ -152,16 +147,48 @@ class LoopHtml{
      */   
     private static function writeSpecialPageToFile( $specialPage, $prependHref, $exportSkin ) {
 
-        $loopStructure = new LoopStructure;
-        $loopStructure->loadStructureItems();
-
-        $text = $loopStructure->render();
-        $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
+       # $loopStructure = new LoopStructure;
+        #$loopStructure->loadStructureItems();
+        #$text = $loopStructure->render();
+        
+        global $wgExtensionMessagesFiles, $wgLanguageCode;
+        require($wgExtensionMessagesFiles["LoopAlias"]);
+        
+        if ( $wgLanguageCode == "de-formal" ) {
+            $wgLanguageCode = "de";
+        }
+        #$spage = new SpecialLoopLiterature;
+        #$spage->execute(null)->getOutput();
+        #$specialPage->mTextform = "hallo";
+        #dd($specialPage);
+       # dd($specialPageAliases[$wgLanguageCode]["LoopFormulas"][0]);
+        #if ( isset ( $specialPageAliases[$wgLanguageCode][$specialPage->mTextform] ) ) {
+        $tmpTextform = $specialPageAliases[$wgLanguageCode][$specialPage->mTextform][0];
+        $specialPage->mTextform = $tmpTextform;
+        $tmpFileName = $tmpTextform.'.html';
+        #} else {
+        #    $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
+        #}
+        #$content = '';
+        switch ( $specialPage->mTextform ) {
+            case "LoopLiterature":
+                $content = SpecialLoopLiterature::renderLoopLiteratureSpecialPage();
+                break;
+            default:
+                $content = '';
+        }
+        #} else {dd(
+        #    $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
+        #}
+        #var_dump($tmpFileName, $specialPage->mTextform, $specialPageAliases[$wgLanguageCode]);
+        #dd($specialPage->mUrlform, $specialPageAliases[$wgLanguageCode][$specialPage->mTextform][0]);
+        #$tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
         $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
     
         $exportSkin->getContext()->setTitle( $specialPage );
-        $exportSkin->getContext()->getOutput()->mBodytext = $text;
-
+        $exportSkin->getContext()->getOutput()->setPageTitle($specialPage);
+        $exportSkin->getContext()->getOutput()->mBodytext = $content;
+        #dd($text, $specialPage, $exportSkin->getContext()->getOutput()->mBodytext, $exportSkin, $specialPage);
         # get html with skin object
         ob_start();
         $exportSkin->outputPage();
@@ -434,7 +461,7 @@ class LoopHtml{
     }
 
      /**
-     * Replaces internal link href by class "internal-link" and template links.
+     * Replaces internal link href by class "local-link" and template links.
      * @param string $html
      * @param string $prependHref for start file 
      * 
@@ -503,11 +530,12 @@ class LoopHtml{
         foreach($urls as $url) {
 
             if( ! in_array( $url, $this->requestedUrls ) ) {
-                if ( is_file( $url ) ) { 
-                    $content = file_get_contents( $url );
-                } else {
-                    $content = '';
-                }
+                #if ( is_file( $url ) ) { 
+                $content = file_get_contents( $url );
+                #} else {
+                #    dd($urls, $url, $this->requestedUrls);
+                #    $content = '';
+                #}
                 $this->requestedUrls[ $url ] = $content;
             }
 
