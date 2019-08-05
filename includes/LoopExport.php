@@ -334,6 +334,7 @@ class SpecialLoopExport extends SpecialPage {
 		global $wgText2SpeechServiceUrl, $wgText2Speech, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true);
 
 		$user = $this->getUser();
 		$config = $this->getConfig();

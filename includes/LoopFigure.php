@@ -191,10 +191,11 @@ class LoopFigure extends LoopObject{
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true);
 		if ($lsi) {
 			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
 			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
 				new HtmlArmor( $linktext ),
@@ -202,8 +203,6 @@ class LoopFigure extends LoopObject{
 				) . '<br/>';
 		} elseif ( $ns == NS_GLOSSARY ) {
 			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
-			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
 				new HtmlArmor( $linktext ),

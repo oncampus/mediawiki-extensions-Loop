@@ -342,7 +342,8 @@ class SpecialLoopSettings extends SpecialPage {
 	}
 	function execute( $sub ) {
 		
-		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+	    $linkRenderer->setForceArticlePath(true);
 		$user = $this->getUser();
 		$out = $this->getOutput();
 		$html = '';#<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';

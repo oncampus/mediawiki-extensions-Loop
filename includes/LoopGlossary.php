@@ -96,7 +96,8 @@ class SpecialLoopGlossary extends SpecialPage {
 
 	public function execute( $sub ) {
 		
-		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+	    $linkRenderer->setForceArticlePath(true);
 		$user = $this->getUser();
 		$out = $this->getOutput();
 
