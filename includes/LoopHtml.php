@@ -1,4 +1,12 @@
 <?php
+/**
+ * Exports LOOP to HTML offline version
+ * @author Dennis Krohn @krohnden
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
+
 
 class LoopHtml{
 
@@ -58,7 +66,7 @@ class LoopHtml{
             }
 
             # Create special page files
-            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary' );
+            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary' ); # todo LoopIndex
             foreach( $specialPages as $page ) {
                 $tmpTitle = Title::newFromText( $page, NS_SPECIAL );
                 LoopHtml::writeSpecialPageToFile( $tmpTitle, "", $exportSkin );
@@ -74,7 +82,10 @@ class LoopHtml{
                 }
 
             }
-
+            $glossaryPages = LoopGlossary::getGlossaryPages();
+            foreach( $glossaryPages as $title ) {
+                LoopHtml::writeArticleToFile( $title, "", $exportSkin );
+            }
             if ( filter_var( htmlspecialchars_decode( $loopSettings->imprintLink ), FILTER_VALIDATE_URL ) == false ) {
                 $imprintTitle = Title::newFromText( $loopSettings->imprintLink );
                 if ( ! empty ( $imprintTitle->mTextform ) ) {
@@ -151,38 +162,45 @@ class LoopHtml{
         #$loopStructure->loadStructureItems();
         #$text = $loopStructure->render();
         
-        global $wgExtensionMessagesFiles, $wgLanguageCode;
-        require($wgExtensionMessagesFiles["LoopAlias"]);
+       # global $wgExtensionMessagesFiles, $wgLanguageCode;
         
-        if ( $wgLanguageCode == "de-formal" ) {
-            $wgLanguageCode = "de";
-        }
-        #$spage = new SpecialLoopLiterature;
-        #$spage->execute(null)->getOutput();
-        #$specialPage->mTextform = "hallo";
-        #dd($specialPage);
-       # dd($specialPageAliases[$wgLanguageCode]["LoopFormulas"][0]);
-        #if ( isset ( $specialPageAliases[$wgLanguageCode][$specialPage->mTextform] ) ) {
-        $tmpTextform = $specialPageAliases[$wgLanguageCode][$specialPage->mTextform][0];
-        $specialPage->mTextform = $tmpTextform;
+        $tmpTextform = wfMessage( strtolower( $specialPage->mTextform ) )->text();
+        #dd($tmpTextform, $specialPage);
+        #$specialPage->mTextform = $tmpTextform;
         $tmpFileName = $tmpTextform.'.html';
-        #} else {
-        #    $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
-        #}
-        #$content = '';
         switch ( $specialPage->mTextform ) {
             case "LoopLiterature":
                 $content = SpecialLoopLiterature::renderLoopLiteratureSpecialPage();
                 break;
+            case "LoopGlossary":
+                $content = SpecialLoopGlossary::renderLoopGlossarySpecialPage();
+                break;
+            case "LoopFigures":
+                $content = SpecialLoopFigures::renderLoopFigureSpecialPage();
+                break;
+            case "LoopFormulas":
+                $content = SpecialLoopFormulas::renderLoopFormulaSpecialPage();
+                break;
+            case "LoopListings":
+                $content = SpecialLoopListings::renderLoopListingSpecialPage();
+                break;
+            case "LoopMedia":
+                $content = SpecialLoopMedia::renderLoopMediaSpecialPage();
+                break;
+            case "LoopTables":
+                $content = SpecialLoopTables::renderLoopTableSpecialPage();
+                break;
+            case "LoopTasks":
+                $content = SpecialLoopTasks::renderLoopTaskSpecialPage();
+                break;
+            case "LoopStructure":
+                $content = SpecialLoopStructure::renderLoopStructureSpecialPage();
+                break;
             default:
+                dd($specialPage);
                 $content = '';
         }
-        #} else {dd(
-        #    $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
-        #}
-        #var_dump($tmpFileName, $specialPage->mTextform, $specialPageAliases[$wgLanguageCode]);
-        #dd($specialPage->mUrlform, $specialPageAliases[$wgLanguageCode][$specialPage->mTextform][0]);
-        #$tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
+        
         $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
     
         $exportSkin->getContext()->setTitle( $specialPage );
@@ -223,8 +241,13 @@ class LoopHtml{
         
         # regular articles are in ZIP/files/ folder, start article in ZIP/
         if ( $prependHref == "" ) {
-            $tmpFileName = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');
-            $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
+            if ( $title->getNamespace() == NS_MAIN ) {
+                $tmpFileName = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');
+                $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
+            } elseif( $title->getNamespace() == NS_GLOSSARY ) {
+                $tmpFileName = LoopHtml::getInstance()->resolveUrl( wfMessage("loop-glossary-namespace")->text() . ":" . $title->mTextform, '.html');
+                $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
+            }
         } else {
             $htmlFileName = LoopHtml::getInstance()->startDirectory.$title->mUrlform.'.html'; # TODO name start file
         } 
@@ -334,12 +357,12 @@ class LoopHtml{
             "loopprint.js" => array(
                 "srcpath" => $wgServer . "/mediawiki/extensions/Loop/resources/js/loop.printtag.js",
                 "targetpath" => "resources/js/",
-                "link" => "script"
+                "link" => "script-btm"
             ),
             "loopspoiler.js" => array(
                 "srcpath" => $wgServer . "/mediawiki/extensions/Loop/resources/js/loop.spoiler.js",
                 "targetpath" => "resources/js/",
-                "link" => "script"
+                "link" => "script-btm"
             ),
             "shared.css" => array(
                 "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/shared.css",
@@ -425,8 +448,9 @@ class LoopHtml{
         }
                 
         
-
+        
         $headElements = $doc->getElementsByTagName('head');
+        $bodyElements = $doc->getElementsByTagName('body');
 
         # request contents for all entries in $resources array,
         # writes file in it's targetpath and links it on output page.
@@ -443,12 +467,17 @@ class LoopHtml{
                     $tmpNode = $doc->createElement("link");
                     $tmpNode->setAttribute('href', $prependHref.$data["targetpath"] . $file );
                     $tmpNode->setAttribute('rel', "stylesheet" );
+                    $headElements[0]->appendChild( $tmpNode );
                 } else if ( $data["link"] == "script" ) {
                     $tmpNode = $doc->createElement("script");
                     $tmpNode->setAttribute('src', $prependHref.$data["targetpath"] . $file );
-                }
-                foreach( $headElements as $headElement) {
-                    $headElement->appendChild( $tmpNode );
+                    $headElements[0]->appendChild( $tmpNode );
+                } 
+               
+                if ( $data["link"] == "script-btm" ) {
+                    $tmpNode = $doc->createElement("script");
+                    $tmpNode->setAttribute('src', $prependHref.$data["targetpath"] . $file );
+                    $bodyElements[0]->appendChild( $tmpNode );
                 }
             }
 

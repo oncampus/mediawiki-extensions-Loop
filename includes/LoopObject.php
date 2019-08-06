@@ -1,4 +1,13 @@
-<?php 
+<?php
+/**
+ * @description Renders LOOP objects
+ * @ingroup Extensions
+ * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Logger\LoggerFactory;
 

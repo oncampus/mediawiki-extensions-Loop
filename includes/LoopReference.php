@@ -21,6 +21,7 @@ class LoopReference {
 		global $wgLoopObjectNumbering;
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true);
 
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();

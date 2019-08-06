@@ -1362,20 +1362,27 @@ class SpecialLoopLiterature extends SpecialPage {
     public static function renderLoopLiteratureSpecialPage( $deleteKey = null, $editMode = false, $user = null ) {
         
         $html = '';
-        if ( $deleteKey ) {
-            LoopLiterature::removeFromDatabase( $deleteKey );
-            $html .= '<div class="alert alert-success">' . wfMessage( "loopliterature-alert-deleted", $deleteKey ) . '</div>';
-        }
+        
+        $html .= '<h1>';
+        $html .= wfMessage( 'loopliterature' )->text();
+        
         if ( $user ) {
             if ( $user->isAllowed('loop-edit-literature') && $editMode ) {
                 $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
                 $linkRenderer->setForceArticlePath(true); #required for readable links
                 $html .= $linkRenderer->makeLink(
                     new TitleValue( NS_SPECIAL, 'LoopLiteratureEdit' ),
-                    new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive">' . wfMessage( "loopliterature-label-addentry" ) . "</div>" ),
+                    new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive float-right mt-1">' . wfMessage( "loopliterature-label-addentry" ) . "</div>" ),
                     array()
                     );
             }
+        }
+        
+        $html .= '</h1>';
+        
+        if ( $deleteKey ) {
+            LoopLiterature::removeFromDatabase( $deleteKey );
+            $html .= '<div class="alert alert-success">' . wfMessage( "loopliterature-alert-deleted", $deleteKey ) . '</div>';
         }
         $html .= '<div class="bibliography ml-4">';
         $html .= self::renderBibliography("html", $editMode );
@@ -1427,11 +1434,17 @@ class SpecialLoopLiterature extends SpecialPage {
         foreach ( $elements as $element ) {
             $return .= $element;
         }
-        if ( $editMode && ! empty( $allItemsCopy ) && $type == "html" ) {
+        if ( ! empty( $allItemsCopy ) ) {
             $elements = array();
-            $return .= "<hr class='mr-4'/>";
-            $return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" ).":</p>";
             
+            if ( $type == "html" ) {
+            $return .= "<hr class='mr-4'/>";
+            $return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" )."</p>";
+            
+            } else {
+                $return .= "<paragraph><bold>".wfMessage( "loopliterature-text-notreferenced" )."</bold></paragraph>";
+                
+            }
             foreach ( $allItemsCopy as $item ) {
                 if ( $item->author ) {
                     $orderkey = ucfirst($item->author);
@@ -1439,9 +1452,16 @@ class SpecialLoopLiterature extends SpecialPage {
                     $orderkey = ucfirst($item->itemTitle);
                 }
                 
-                $elements[$orderkey] = '<p class="literature-entry">';
-                $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item, array());
-                $elements[$orderkey] .= '</p>';
+                if ( $type == "html" ) {
+                    $elements[$orderkey] = '<p class="literature-entry">';
+                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item, array());
+                    $elements[$orderkey] .= '</p>';
+                } else {
+                    $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
+                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item, array());
+                    $elements[$orderkey] .= '</paragraph>';
+                }
+                
             }
             ksort( $elements, SORT_STRING );
             foreach ( $elements as $element ) {

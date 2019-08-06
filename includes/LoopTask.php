@@ -1,10 +1,13 @@
 <?php
 /**
- * A parser extension that adds the tag <loop_task> to mark content as task and provide a table of tasks
- *
+ * @description A parser extension that adds the tag <loop_task> to mark content as task and provide a table of tasks
  * @ingroup Extensions
- *
+ * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 class LoopTask extends LoopObject{
 	
 	public static $mTag = 'loop_task';
@@ -65,65 +68,68 @@ class SpecialLoopTasks extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf, $wgLoopNumberingType;
-		
-		$config = $this->getConfig ();
-		$request = $this->getRequest ();
-		
+	    
 		$out = $this->getOutput ();
-		
 		$out->setPageTitle ( $this->msg ( 'looptasks-specialpage-title' ) );
+		$html = self::renderLoopTaskSpecialPage();
+		$out->addHtml ( $html );
 		
-		$out->addHtml ( '<h1>' );
-		$out->addWikiMsg ( 'looptasks-specialpage-title' );
-		$out->addHtml ( '</h1>' );
-		
-		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
-		
-		$parser = new Parser ( $wgParserConf );
-		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
-		$parser->Options ( $parserOptions );		
-		
-		$tasks = array ();
-		$structureItems = $loopStructure->getStructureItems();
-		$glossaryItems = LoopGlossary::getGlossaryPages();
-		$task_number = 1;
-		$articleIds = array();
-		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
-		$task_tags = LoopObjectIndex::getObjectsOfType ( 'loop_task' );
-
-		foreach ( $structureItems as $structureItem ) {
-			$articleIds[ $structureItem->article ] = NS_MAIN;
-		}
-		foreach ( $glossaryItems as $glossaryItem ) {
-			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
-		}
-
-		foreach ( $articleIds as $article => $ns ) {
-			
-			$article_id = $article;
-
-			if ( isset( $task_tags[$article_id] ) ) {
-				foreach ( $task_tags[$article_id] as $task_tag ) {
-
-					$task = new LoopTask();
-					$task->init($task_tag["thumb"], $task_tag["args"]);
-					
-					$task->parse();
-					if ( $wgLoopNumberingType == "chapter" ) {
-						$task->setNumber ( $task_tag["nthoftype"] );
-					} elseif ( $wgLoopNumberingType == "ongoing" ) {
-						$task->setNumber ( $task_number );
-						$task_number ++;
-					}
-					$task->setArticleId ( $article_id );
-					
-					$out->addHtml ( $task->renderForSpecialpage ( $ns ) );
-				}
-			}
-		}
-		$out->addHtml ( '</table>' );
+	}
+	
+	public static function renderLoopTaskSpecialPage() {
+	    global $wgParserConf, $wgLoopNumberingType;
+	    
+	    $html = '<h1>';
+	    $html .= wfMessage( 'looptasks-specialpage-title' )->text();
+	    $html .= '</h1>';
+	    
+	    $loopStructure = new LoopStructure();
+	    $loopStructure->loadStructureItems();
+	    
+	    $parser = new Parser ( $wgParserConf );
+	    $parserOptions = new ParserOptions();
+	    $parser->Options ( $parserOptions );
+	    
+	    $tasks = array ();
+	    $structureItems = $loopStructure->getStructureItems();
+	    $glossaryItems = LoopGlossary::getGlossaryPages();
+	    $task_number = 1;
+	    $articleIds = array();
+	    $html .= '<table class="table table-hover list_of_objects">';
+	    $task_tags = LoopObjectIndex::getObjectsOfType ( 'loop_task' );
+	    
+	    foreach ( $structureItems as $structureItem ) {
+	        $articleIds[ $structureItem->article ] = NS_MAIN;
+	    }
+	    foreach ( $glossaryItems as $glossaryItem ) {
+	        $articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+	    }
+	    
+	    foreach ( $articleIds as $article => $ns ) {
+	        
+	        $article_id = $article;
+	        
+	        if ( isset( $task_tags[$article_id] ) ) {
+	            foreach ( $task_tags[$article_id] as $task_tag ) {
+	                
+	                $task = new LoopTask();
+	                $task->init($task_tag["thumb"], $task_tag["args"]);
+	                
+	                $task->parse();
+	                if ( $wgLoopNumberingType == "chapter" ) {
+	                    $task->setNumber ( $task_tag["nthoftype"] );
+	                } elseif ( $wgLoopNumberingType == "ongoing" ) {
+	                    $task->setNumber ( $task_number );
+	                    $task_number ++;
+	                }
+	                $task->setArticleId ( $article_id );
+	                
+	                $html .= $task->renderForSpecialpage ( $ns );
+	            }
+	        }
+	    }
+	    $html .= '</table>';
+	    return $html;
 	}
 
 	protected function getGroupName() {

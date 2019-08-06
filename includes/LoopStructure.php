@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * Class representing a book structure and other meta information
+ * @author Kevin Berg @bedoke <kevin-dominick.berg@th-luebeck.de>
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
+
 use MediaWiki\MediaWikiServices;
 
-/**
- * Class representing a bookstructure and other metainformation
- *
- */
 
 class LoopStructure {
 
@@ -821,51 +826,55 @@ class SpecialLoopStructure extends SpecialPage {
 		$this->setHeaders();
 		$out = $this->getOutput();
 		$out->setPageTitle( $this->msg( 'loopstructure-specialpage-title' ) );
-
-		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
-
 		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
+		
+		$html = self::renderLoopStructureSpecialPage( $loopEditMode, $loopRenderMode, $user );
+		$out->addHtml( $html );
 
-		$out->addHtml(Html::openElement(
-				'h1',
-				array(
-					'id' => 'loopstructure-h1'
-				)
-			)
-			. $this->msg( 'loopstructure-specialpage-title' )->parse()
-		);
-
-		if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
-
-			# show link to the edit page if user is permitted
-
-			$out->addHtml(
-				Html::rawElement(
-					'a',
-					array(
-						'href' => Title::newFromText( 'Special:LoopStructureEdit' )->getFullURL(),
-						'id' => 'edittoclink',
-						'class' => 'ml-2'
-					),
-					'<i class="ic ic-edit"></i>'
-				)
-			);
-		}
-
-		$out->addHtml(Html::closeElement(
-					'h1'
-				)
-				. Html::rawElement(
-				'div',
-				array(
-					'style' => 'white-space: pre;'
-				),
-				$loopStructure->render()
-			)
-		);
-
+	}
+	
+	public static function renderLoopStructureSpecialPage( $loopEditMode = false, $loopRenderMode = 'default', $user = null ) {
+	    $html = '';
+	    $loopStructure = new LoopStructure();
+	    $loopStructure->loadStructureItems();
+	    
+	    $html .= Html::openElement(
+	        'h1',
+	        array(
+	            'id' => 'loopstructure-h1'
+	        )
+	        )
+	        . wfMessage( 'loopstructure-specialpage-title' )->parse();
+	    
+	    if ( $user ) {
+    	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
+    	        
+    	        # show link to the edit page if user is permitted
+    	        
+    	        $html .= Html::rawElement(
+    	                'a',
+    	                array(
+    	                    'href' => Title::newFromText( 'Special:LoopStructureEdit' )->getFullURL(),
+    	                    'id' => 'edittoclink',
+    	                    'class' => 'ml-2'
+    	                ),
+    	                '<i class="ic ic-edit"></i>'
+    	                );
+    	    }
+	    }
+	    
+	    $html .= Html::closeElement(
+	        'h1'
+	        )
+	        . Html::rawElement(
+	            'div',
+	            array(
+	                'style' => 'white-space: pre;'
+	            ),
+	            $loopStructure->render()
+	            );
+	    return $html;
 	}
 
 	/**
