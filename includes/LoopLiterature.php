@@ -498,7 +498,8 @@ class LoopLiterature {
 					new HtmlArmor( $text ),
 					array( 
 						"title" => str_replace( "+" , " " , $input ),
-						"data-target" => $input # target id will be added in hook
+						"data-target" => $input, # target id will be added in hook
+						"class" => "literature-link"
 					) 
 				);
 				if ( isset( $args["page"] ) ) {
@@ -524,7 +525,8 @@ class LoopLiterature {
 					new HtmlArmor( $text ),
 					array( 
 						"title" => str_replace( "+" , " " , $input ),
-						"data-target" => $refId # target id will be added in hook
+					    "data-target" => $refId, # target id will be added in hook
+					    "class" => "literature-link"
 					) 
 				);
 			}
