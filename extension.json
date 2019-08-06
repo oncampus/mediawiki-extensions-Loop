@@ -103,9 +103,6 @@
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
 		],
-		"HtmlPageLinkRendererEnd": [
-			"LoopHooks::onHtmlPageLinkRendererEnd"
-		],
 		"ParserMakeImageParams":[
 			"LoopHooks::onParserMakeImageParams"
 		],
