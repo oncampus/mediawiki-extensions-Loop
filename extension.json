@@ -163,7 +163,7 @@
 				"resources/js/loop.special.literatureedit.js"
 			]
 		},
-		"loop.printtag.js": {
+		"loop.print.js": {
 			"position": "bottom",
 			"scripts": [
 				"resources/js/loop.printtag.js"

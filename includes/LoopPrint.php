@@ -18,10 +18,8 @@ class LoopPrint {
 	static function renderLoopPrint( $input, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgOut;
 		$user = $wgOut->getUser();
-		$loopeditmode = $user->getOption( 'LoopEditMode' ,false, true );	
-
-		$wgOut->getOutput()->addModules( 'loop.printtag.js' );
-
+		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
+		$parser->getOutput()->addModules( 'loop.print.js' );
 		$btnIcon = '<span class="ic-print-area"></span>';
 		
 		$btnId = uniqid();
@@ -35,7 +33,7 @@ class LoopPrint {
 		if(!$loopeditmode) $btnTrue = 'loopprint-button';
 
 		$html = '<div class="loopprint-container '. $btnTrue .'">';
-		$html .= '<span class="loopprint-tag '. $btnId.'">' . $btnIcon . '</span>';
+		$html .= '<span class="loopprint-tag '. $btnId.'" data-title="'.wfMessage('loopprint-printingarea')->text().'">' . $btnIcon . '</span>';
 		$html .= '<div class="loopprint-content" id="'. $btnId .'">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
 		$html .= '</div>';		
 

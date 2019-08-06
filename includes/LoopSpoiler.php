@@ -62,8 +62,7 @@ class LoopSpoiler {
 	}
 
 	public static function renderLoopSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgOut;
-		$wgOut->getOutput()->addModules( 'loop.spoiler.js' );
+		$parser->getOutput()->addModules( 'loop.spoiler.js' );
 		
 
 		try {		
