@@ -318,7 +318,8 @@ class LoopHtml{
         $requestUrls = $this->requestContent( $requestUrls );
         foreach ( $requestUrls as $url => $content ) {
             # Undoing MW's absolute paths in CSS files
-            $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
+            $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content); #css replacement links
+            $content = preg_replace('/(\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
             $this->writeFile( "resources/styles/", $fileName, $content );
         }
@@ -458,11 +459,11 @@ class LoopHtml{
         # writes file in it's targetpath and links it on output page.
         foreach( $resources as $file => $data ) {
             $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
-            if ( ! is_file($this->exportDirectory.$data["targetpath"].$file) ) {
+            #if ( ! is_file($this->exportDirectory.$data["targetpath"].$file) ) {
                 #dd( is_file($this->exportDirectory.$data["targetpath"].$file),$this->exportDirectory.$data["targetpath"].$file );
                 #var_dump($data["srcpath"]);
                 $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
-            }
+            #}
             
             if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
@@ -555,7 +556,7 @@ class LoopHtml{
      * Requests urls and returns an array.
      * @Return Array ($url => $content)
      */
-    private function requestContent (Array $urls) : Array {
+    function requestContent (Array $urls) : Array {
         $tmpContent = array();
 
         foreach($urls as $url) {
@@ -620,10 +621,11 @@ class LoopHtml{
      * 
      * @Return true
      */   
-    private function writeFile( $pathAddendum, $fileName, $content ) {
+    function writeFile( $pathAddendum, $fileName, $content ) {
         
         if ( ! file_exists( $this->exportDirectory.$pathAddendum ) ) { # folder creation
             mkdir( $this->exportDirectory.$pathAddendum, 0775, true );
+            error_log($this->exportDirectory.$pathAddendum);
         }
         if ( ! file_exists( $this->exportDirectory.$pathAddendum.$fileName ) ) {
             file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
@@ -660,6 +662,7 @@ class LoopHtml{
                 $imageData["name"][$wgServer . $tmpSrc] = $tmpTitle[2];
                 $imageData["suffix"][$wgServer . $tmpSrc] = $tmpTitle[4];
                 $newSrc = $prependHref."resources/images/" . $this->resolveUrl($tmpTitle[2], '.'.$tmpTitle[4] );
+                #dd($tmpTitle[2],$newSrc, $imageData["content"]);
                 $element->setAttribute( 'src', $newSrc );
             }
             if ( $imageData["name"] && $imageData["suffix"] ) {

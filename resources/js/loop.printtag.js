@@ -2,7 +2,6 @@
   * @description Script for <loop_print> tag (includes/LoopPrint.php)
   * @author Dustin Neß <dustin.ness@th-luebeck.de>
   */
-console.log("hi")
 $('.loopprint-tag').click(function() {
     if($(this).parent('.loopprint-button').length <= 0) return;
 

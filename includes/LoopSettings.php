@@ -610,11 +610,11 @@ class SpecialLoopSettings extends SpecialPage {
 
                     #$html .= '<div class="form-row">';
                     $html .= '<h3>' . $this->msg( "loopsettings-citation-style" ) . '</h3>';
-                    $html .= '<input type="radio" name="citation-style" id="harvard" value="harvard" ' . ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>
-					<label for="harvard">' . $this->msg( 'loopsettings-citation-style-harvard-label' ) . '</label><br>';
+                    $html .= '<input type="radio" name="citation-style" id="harvard" value="harvard" disabled checked>'; #.' ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>
+                    $html .= '<label for="harvard"> ' . $this->msg( 'loopsettings-citation-style-harvard-label' ) . '</label><br>';
 
-					$html .= '<input type="radio" name="citation-style" id="vancouver" value="vancouver" ' . ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>
-					<label for="vancouver">' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label><br>';
+					$html .= '<input type="radio" name="citation-style" id="vancouver" value="vancouver" disabled>'; #. ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>
+					$html .= '<label for="vancouver"> ' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label><br>';
                    
                     #$html .= '</div>';
             
