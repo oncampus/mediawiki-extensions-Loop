@@ -32,16 +32,17 @@ class LoopUpdater {
 		if ( $dbr->tableExists( 'loop_structure_items' ) ) {
 			Loop::setupLoopPages();
 		}
-
+		
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+		if ( $systemUser ) { #why is system user null sometimes? #TODO
+			$systemUser->addGroup("sysop");
+		}
+		
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
 		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
-			
-			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] ); #beobachten, ob das Anlegen hier ausreicht
-			if ( $systemUser ) { #why is system user null sometimes? #TODO
-				$systemUser->addGroup("sysop");
-			}
 			self::saveAllWikiPages();
 			self::migrateGlossary();
+			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_structure_items', $schemaPath . 'loopstructure_migrate.sql', true ));
 			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
 		}
 		

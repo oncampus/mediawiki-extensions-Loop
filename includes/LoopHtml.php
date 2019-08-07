@@ -231,7 +231,9 @@ class LoopHtml{
      * @Return string html
      */   
     private static function writeArticleToFile( $title, $prependHref, $exportSkin ) {
-
+        if ( getType( $title ) == "string" ) {
+            $title = Title::newFromId($title);
+        }
         $wikiPage = WikiPage::factory( $title );
         $revision = $wikiPage->getRevision();
         $content = $revision->getContent( Revision::RAW );

@@ -455,11 +455,11 @@ class LoopLiterature {
 			$showLiterature = true;
 
 		} else {
-			#$literatureItems = self::getLiteratureItems();
+		    $literatureItems = self::getAllItems();
 	
-			#if ( $literatureItems ) {
+			if ( $literatureItems ) {
 				$showLiterature = true;
-			#}
+			}
 		}
 
 		return $showLiterature;
