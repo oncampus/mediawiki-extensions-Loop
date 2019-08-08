@@ -161,6 +161,11 @@ $( document ).ready( function () {
             $("#overwrite").prop("disabled", true)
             $("#overwrite").parent().addClass("d-none")
         }
+        if ( $val.includes("#") ) {
+            $('#keymsg2').show()
+        } else {
+            $("#keymsg2").hide()
+        }
     }
     
     function doOptional( $this ) {

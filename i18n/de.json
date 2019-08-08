@@ -273,6 +273,7 @@
 	"loopliterature-error-missingrequired": "Die Pflichtangabe '''$1''' wurde nicht ausgefüllt.",
 	"loopliterature-error-unknowntype": "Die Art des Eintrags '''$1''' ist nicht bekannt.",
 	"loopliterature-error-dublicatekey": "Der Zitatschlüssel '''$1''' ist bereits vorhanden.",
+	"loopliterature-error-invalidkey": "Der Zitatschlüssel '''$1''' ist nicht gültig. Folgende Zeichen sind nicht erlaubt: '''#'''",
 	"loopliterature-error-missingkey": "Es wurde kein Zitatschlüssel angegeben.",
 	"loopliterature-error-keyalreadyexists": "Der Zitatschlüssel ist bereits vorhanden. Bitte wählen Sie einen anderen oder überschreiben Sie die Daten.",
 	"loopliterature-error-keyunknown": "Der Zitatschlüssel '''$1''' ist nicht vorhanden. Bitte [[Special:LoopLiteratureEdit| legen Sie den Literatureintrag an]]. ",

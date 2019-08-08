@@ -190,47 +190,51 @@ class LoopLiterature {
 					if ( $request->getText( 'overwrite' ) == true ) {
 						self::removeFromDatabase ( $key );
 					}
-					$this->itemKey = $key;
+					$valid = self::checkDataValidity( "itemkey", $key );
+					if ( $valid ) { 
+						$this->itemKey = $key; 
+					
+						if ( array_key_exists( strtolower( $itemType ), $this->literatureTypes ) ) {
+							$this->itemType = strtolower( $itemType );
 
-					#dd($itemType, array_key_exists( $itemType, $this->literatureTypes ), $request);
-					if ( array_key_exists( strtolower( $itemType ), $this->literatureTypes ) ) {
-						$this->itemType = strtolower( $itemType );
+							foreach ( $this->literatureTypes[$this->itemType] as $required => $array ) {
 
-						foreach ( $this->literatureTypes[$this->itemType] as $required => $array ) {
+								foreach ( $array as $field ) {
+									if ( ! empty ( $request->getText( $field ) ) ) {
+										$value = $request->getText( $field );
+										$valid = self::checkDataValidity( $field, $value );
+										if ( $valid ) {
+											switch ( $field ) {
+												case "itemTitle":
+													$this->itemTitle = $value;
+													break;
+												case "edition":
+													$this->edition = intval($value);
+													break;
+												case "number":
+												$this->number = intval($value);
+												break;
+												case "url":
+													$this->url = $value;
+													break;
 
-							foreach ( $array as $field ) {
-								if ( ! empty ( $request->getText( $field ) ) ) {
-									$value = $request->getText( $field );
-									$valid = self::checkDataValidity( $field, $value );
-									if ( $valid ) {
-										switch ( $field ) {
-											case "itemTitle":
-												$this->itemTitle = $value;
-												break;
-											case "edition":
-												$this->edition = intval($value);
-												break;
-											case "number":
-											$this->number = intval($value);
-											break;
-											case "url":
-												$this->url = $value;
-												break;
-
-											default:
-												$this->$field = $value;	
-												break;
+												default:
+													$this->$field = $value;	
+													break;
+											}
+										} else {
+											$this->errors[] = wfMessage( "loopliterature-error-invalidentry", wfMessage("loopliterature-label-". $field) );
 										}
-									} else {
-										$this->errors[] = wfMessage( "loopliterature-error-invalidentry", wfMessage("loopliterature-label-". $field) );
+									} elseif ( $required == "required" )  {
+										$this->errors[] = wfMessage( "loopliterature-error-missingrequired", wfMessage("loopliterature-label-". $field) );
 									}
-								} elseif ( $required == "required" )  {
-									$this->errors[] = wfMessage( "loopliterature-error-missingrequired", wfMessage("loopliterature-label-". $field) );
 								}
 							}
+						} else {
+							$this->errors[] = wfMessage( "loopliterature-error-unknowntype", $itemType );
 						}
 					} else {
-						$this->errors[] = wfMessage( "loopliterature-error-unknowntype", $itemType );
+						$this->errors[] = wfMessage( "loopliterature-error-invalidkey", $key );
 					}
 				} else {
 					$this->errors[] = wfMessage( "loopliterature-error-dublicatekey", $key );
@@ -248,6 +252,10 @@ class LoopLiterature {
 	public static function checkDataValidity( $key, $val ) {
 		
 		switch ( $key ) {
+			case "itemkey":
+				if ( strpos( "#", $val ) < 0 ) {
+					return true;
+				} else { return false; }
 			case "edition":
 				$int_val = intval($val);
 				if ( is_numeric( $val ) ) {
@@ -575,7 +583,7 @@ class LoopLiterature {
 					} else {
 					    $ref = null;
 					}
-					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $ref, $type );
+					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $ref, $type, "loop_literature" );
 					$htmlElements[$orderkey] .= ( isset($args) ) ? '</p>' : '</paragraph>';
 					
 					if ( $wgLoopLiteratureCiteType == "harvard" ) {
@@ -901,12 +909,14 @@ class LoopLiterature {
 	/**
 	 * @param LoopLiterature $li entry to render
 	 * @param Array $ref data about the reference
+	 * @param String $type 'html' or 'xml'
+	 * @param Mixed $tag 'loop_literature' or false for adding edit links
 	 */
-	public static function renderLiteratureElement( $li, $ref = null, $type = 'html' ) {
+	public static function renderLiteratureElement( $li, $ref = null, $type = 'html', $tag = false ) {
 
 		global $wgOut, $wgLoopLiteratureCiteType;
 		if ( !isset( $ref ) ) {
-		    $ref = array();
+		    #$ref = array();
 		}
 
 		$user = $wgOut->getUser();
@@ -923,7 +933,7 @@ class LoopLiterature {
 		    $italicEnd = "</italics>";
 		}
 
-		if ( $wgLoopLiteratureCiteType == 'vancouver' && ! empty ( $ref ) ) {
+		if ( $wgLoopLiteratureCiteType == 'vancouver' && isset ( $ref ) ) {
 		    if ( $type == 'html' ) {
 		        $return .= "<span class='literature-vancouver-number'>". $ref["objectnumber"].". </span>";
 		    } else {
@@ -1054,8 +1064,8 @@ class LoopLiterature {
 			$return .= $li->note . " ";
 		}
         #dd(empty($ref));
-		$return .= empty($ref);
-		if ( ( $editMode && $ref  && $type == 'html' ) ) {
+		$return .= $tag;
+		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
 			$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
 
 			if ( $user->isAllowed('loop-edit-literature') ) {
@@ -1392,7 +1402,7 @@ class SpecialLoopLiterature extends SpecialPage {
             $html .= '<div class="alert alert-success">' . wfMessage( "loopliterature-alert-deleted", $deleteKey ) . '</div>';
         }
         $html .= '<div class="bibliography ml-4">';
-        $html .= self::renderBibliography("html", $editMode );
+        $html .= self::renderBibliography( "html", $editMode );
         $html .= '</div>';
         return $html;
     }
@@ -1461,11 +1471,11 @@ class SpecialLoopLiterature extends SpecialPage {
                 
                 if ( $type == "html" ) {
                     $elements[$orderkey] = '<p class="literature-entry">';
-                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item, array());
+                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $item, array() );
                     $elements[$orderkey] .= '</p>';
                 } else {
                     $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
-                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement($item, array());
+                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $item, array() );
                     $elements[$orderkey] .= '</paragraph>';
                 }
                 
@@ -1633,7 +1643,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			}
 			$requiredObjects  = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
 			$requiredObjects .= '<input  class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
-			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg2">'. $this->msg("loopliterature-error-invalidkey", " ").'</div></div>';
 			$requiredObjects .= '<div class="col-12 mb-1' . ( $editKey ? '"' :  ' d-none"' ). '>';
 			$requiredObjects .= '<input class="mr-2" type="checkbox" id="overwrite" name="overwrite" value="true"' . ( $editKey ? " required checked" : " disabled" ) . '/>';
 			$requiredObjects .= '<label for="overwrite">'. $this->msg("loopliterature-label-overwrite")->text().'</label></div>';
