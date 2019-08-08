@@ -1,6 +1,7 @@
 <?php
 /**
   * @description Display printing area with <loop_print> tag.
+  * @ingroup Extensions
   * @author Dustin Neß <dustin.ness@th-luebeck.de>
   */
 

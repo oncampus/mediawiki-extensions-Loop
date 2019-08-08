@@ -1,9 +1,11 @@
 <?php
 /**
- * @author Dennis Krohn @krohnden
+ * @description Adds Literature support for LOOP - <cite> and <loop_literature> tags. Replaces BiblioPlus
+ * @ingroup Extensions
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
 if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
+    die( "This file cannot be run standalone.\n" );
 }
 
 use MediaWiki\MediaWikiServices;
@@ -540,17 +542,14 @@ class LoopLiterature {
 
 		global $wgLoopLiteratureCiteType; 
 
-		$lines = str_replace( "\n", " ", $input );
+		$lines = str_replace( "#", "\n", $input );
 		$lines = str_replace( "\t", " ", $lines );
 		$keys = array();
 		if ( ! empty ( $lines ) ) {
-			$words = explode ( " ", $lines );
-			foreach( $words as $word ) {
-				$keywords = explode ( "#", $word );
-				foreach ( $keywords as $key ) {
-					if ( !empty( $key ) ) {
-						$keys[] = $key;
-					}
+		    $keywords = explode ( "\n", $lines );
+		    foreach ( $keywords as $key ) {
+				if ( !empty( $key ) ) {
+				    $keys[] = rtrim( $key, " " );
 				}
 			}
 		}
@@ -559,7 +558,7 @@ class LoopLiterature {
 			$htmlElements = array();
 			#$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
 			$allItems = LoopLiterature::getAllItems();
-	
+	       #dd($keys);
 			foreach ( $keys as $key ) {
 				if ( isset ( $allItems[$key] ) ) {
 					if ( $allItems[$key]->author ) {
@@ -571,7 +570,12 @@ class LoopLiterature {
 					$literatureItem = $allItems[$key];
 					$htmlElements[$orderkey] = ( isset($args) ) ? '<p class="literature-entry mb-2" id="'. $key.'">' : '<paragraph>';
 					$type = ( isset($args) ) ? 'html' : 'xml';
-					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, null, $type );
+					if ( $args == null ) {
+					    $ref = false;
+					} else {
+					    $ref = null;
+					}
+					$htmlElements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $ref, $type );
 					$htmlElements[$orderkey] .= ( isset($args) ) ? '</p>' : '</paragraph>';
 					
 					if ( $wgLoopLiteratureCiteType == "harvard" ) {
@@ -1049,8 +1053,9 @@ class LoopLiterature {
 		if ( $li->itemType == "LOOP1" && $li->note && $type == 'html' ) {
 			$return .= $li->note . " ";
 		}
-
-		if ( $editMode && isset ( $ref ) && $type == 'html' ) {
+        #dd(empty($ref));
+		$return .= empty($ref);
+		if ( ( $editMode && $ref  && $type == 'html' ) ) {
 			$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
 
 			if ( $user->isAllowed('loop-edit-literature') ) {

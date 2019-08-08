@@ -1,7 +1,8 @@
 <?php
 /**
- * Exports LOOP to HTML offline version
- * @author Dennis Krohn @krohnden
+ * @description Exports LOOP to HTML offline version
+ * @ingroup Extensions
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
 if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file cannot be run standalone.\n" );

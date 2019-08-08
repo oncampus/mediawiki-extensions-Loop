@@ -1,6 +1,7 @@
 <?php 
 /**
   * @description Adds LOOP functions to update/upgrade process
+  * @ingroup Extensions
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
   

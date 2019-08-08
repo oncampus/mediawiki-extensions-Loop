@@ -1,4 +1,13 @@
 <?php
+/**
+ * @description Exports LOOP to various formats.
+ * @ingroup Extensions
+ * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 
 use MediaWiki\MediaWikiServices;
 

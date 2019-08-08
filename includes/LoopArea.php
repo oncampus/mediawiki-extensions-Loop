@@ -1,4 +1,12 @@
 <?php
+/**
+ * @description Adds support for <loop_area> Tags
+ * @ingroup Extensions
+ * @author Dustin Neﬂ @krohnden <dustin.ness@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 
 class LoopArea {
 

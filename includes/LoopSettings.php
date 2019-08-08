@@ -1,4 +1,12 @@
 <?php
+/**
+ * @description Special page for LOOP settings
+ * @ingroup Extensions
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 
 use MediaWiki\MediaWikiServices;
 
