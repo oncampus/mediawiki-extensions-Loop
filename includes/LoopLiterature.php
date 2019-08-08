@@ -912,7 +912,7 @@ class LoopLiterature {
 	 * @param String $type 'html' or 'xml'
 	 * @param Mixed $tag 'loop_literature' or false for adding edit links
 	 */
-	public static function renderLiteratureElement( $li, $ref = null, $type = 'html', $tag = false ) {
+	public static function renderLiteratureElement( $li, $ref = null, $type = 'html', $tag = false, $allReferences = null ) {
 
 		global $wgOut, $wgLoopLiteratureCiteType;
 		if ( !isset( $ref ) ) {
@@ -1063,10 +1063,36 @@ class LoopLiterature {
 		if ( $li->itemType == "LOOP1" && $li->note && $type == 'html' ) {
 			$return .= $li->note . " ";
 		}
-        #dd(empty($ref));
-		$return .= $tag;
+
 		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
 			$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
+		}
+
+		if ( $allReferences && !empty( $ref ) && ! $tag && $type == 'html' ) {
+			#dd($ref, $allReferences);
+
+			$return .= '<span class="dropdown ml-1 cursor-pointer" title="'.wfMessage( "loopliterature-label-deleteentry" )->text().'">';
+			$return .= '<span class="dropdown-toggle d-inline accent-color literature-ref-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
+			$return .= '<span class="dropdown-menu">';	
+
+			foreach ( $allReferences as $articleId => $pageRefs ) {
+				foreach ( $pageRefs as $pageRef ) {
+					if ( $pageRef[ "itemKey" ] == $li->itemKey ) {
+						#dd($pageRef);
+						$title = Title::newFromId( $articleId );
+						$return .= $linkRenderer->makelink( 
+							$title, 
+							new HtmlArmor( $title->mTextform ), 
+							array( 'title' => $title->mTextform, "class" => "dropdown-item literature-refs" ),
+							array()
+						);
+					}
+				}
+			}
+			$return .= '</span></span> ';
+		}
+		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
+			#$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
 
 			if ( $user->isAllowed('loop-edit-literature') ) {
 				$return .= $linkRenderer->makelink( 
@@ -1437,7 +1463,7 @@ class SpecialLoopLiterature extends SpecialPage {
                     }
                     if ( $type == "html" ) {
                         $elements[$orderkey] = '<p class="literature-entry" id="'. $referenceData["itemKey"].'">';
-                        $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type );
+                        $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type, false, $allReferences );
                         $elements[$orderkey] .= '</p>';
                     } else {
                         $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
@@ -1514,6 +1540,11 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 		if ( $user->isAllowed('loop-edit-literature') ) {
 
 			$html = '';
+
+			$html .= '<h1>';
+			$html .= wfMessage( "loopliterature-label-addentry" )->text();
+			$html .= '</h1>';
+
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$linkRenderer->setForceArticlePath(true); #required for readable links
 			$request = $this->getRequest();

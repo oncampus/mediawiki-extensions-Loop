@@ -170,7 +170,9 @@ class LoopUpdater {
 	public static function migrateLiterature( $wikiPage, $title, $contentText, $systemUser ) {
 		$literaturePage = false;
 		$stableRev = false;
-		if ( $title->mTextform == "Literatur" ) {
+		$bibliographyPageTitle = Title::newFromText("MediaWiki:Bibliographypage"); #todo
+
+		if ( $title->mTextform == "Literatur" ) { #MediaWiki:Bibliographypage
 			$literaturePage = true;
 		}
 		if ( $contentText == null ) {
@@ -217,29 +219,7 @@ class LoopUpdater {
 			if ( $literaturePage ) {
 				$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "namespace-special" )->inContentLanguage()->text() . ":" . wfMessage( "loopliterature" )->inContentLanguage()->text() . "]]" );
 				$wikiPage->doEditContent( $newRedirectContent, 'Redirect to new bibliography', EDIT_UPDATE, false, $user );	
-			} else {
-				$xmlText = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$contentText.'</div>', 'HTML-ENTITIES', 'UTF-8');
-				$dom = new DOMDocument("1.0", 'utf-8');
-				@$dom->loadHTML( $xmlText, LIBXML_HTML_NODEFDTD );
-				
-				$bibliotags = $dom->getElementsByTagName('biblio');
-
-				$i = 0;
-				foreach ( $bibliotags as $element ) {
-					$newElement = $dom->createElement('loop_literature');
-					$textNode = $dom->createTextNode( $loopliterature_tags[$i] );
-					$newElement->appendChild( $textNode );
-					$element->parentNode->replaceChild($newElement, $element);
-					$i++;
-				}
-				$changedText = mb_substr($dom->saveHTML(), 55, -21);
-				$decodedText = html_entity_decode($changedText);
-				
-				$content = $wikiPage->getContent();
-				$content = $content->getContentHandler()->unserializeContent( $decodedText );
-				$summary = 'Replaced biblio tag';
-				$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $systemUser );
-			}
+			} 
 		}
 
 		return true;
