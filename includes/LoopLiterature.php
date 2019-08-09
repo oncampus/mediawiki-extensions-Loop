@@ -251,10 +251,6 @@ class LoopLiterature {
 	public static function checkDataValidity( $key, $val ) {
 		
 		switch ( $key ) {
-			case "itemkey":
-				if ( strpos( "#", $val ) < 0 ) {
-					return true;
-				} else { return false; }
 			case "edition":
 				$int_val = intval($val);
 				if ( is_numeric( $val ) ) {
