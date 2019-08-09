@@ -4,16 +4,16 @@
 	"type": "other",
 	"author": [
 		"Marc Vorreiter",
-		"Kevin Berg",
 		"Dennis Krohn",
-    "Dustin Neß"
+		"Kevin Berg",
+    	"Dustin Neß"
 	],
 	"version": "2.0.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.32.0",
+		"MediaWiki": ">= 1.33.0",
 		"extensions": {
 			"WikiEditor": "*",
 			"Math": "*",
@@ -25,11 +25,12 @@
 		"Loop": "includes/Loop.php",
 		"LoopHooks": "includes/Loop.hooks.php",
 		"LoopSpoiler": "includes/LoopSpoiler.php",
-		"LoopUpdater": "schema/LoopUpdater.php",
+		"LoopUpdater": "includes/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
-		"SpecialLoopStructure": "includes/SpecialLoopStructure.php",
-		"SpecialLoopStructureEdit": "includes/SpecialLoopStructure.php",
+		"SpecialLoopStructure": "includes/LoopStructure.php",
+		"SpecialLoopStructureEdit": "includes/LoopStructure.php",
+		"LoopXsl": "includes/LoopXsl.php",
 		"LoopXml": "includes/LoopXml.php",
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
@@ -45,10 +46,10 @@
 		"LoopExportEpub": "includes/LoopExport.php",
 		"LoopExportHtml": "includes/LoopExport.php",
 		"LoopExportScorm": "includes/LoopExport.php",
-		"SpecialLoopExport": "includes/SpecialLoopExport.php",
+		"SpecialLoopExport": "includes/LoopExport.php",
 		"LoopSettings": "includes/LoopSettings.php",
-		"SpecialLoopSettings": "includes/SpecialLoopSettings.php",
-		"SpecialPurgeCache": "includes/SpecialPurgeCache.php",
+		"SpecialLoopSettings": "includes/LoopSettings.php",
+		"SpecialPurgeCache": "includes/PurgeCache.php",
 		"LoopException": "includes/LoopException.php",
 		"LoopObjectIndex": "includes/LoopObjectIndex.php",
 		"LoopObject": "includes/LoopObject.php",
@@ -67,11 +68,13 @@
 		"LoopReference": "includes/LoopReference.php",
 		"LoopCode": "includes/LoopCode.php",
 		"LoopLiterature": "includes/LoopLiterature.php",
-		"SpecialLoopLiterature": "includes/SpecialLoopLiterature.php",
-		"SpecialLoopLiteratureEdit": "includes/SpecialLoopLiterature.php",
-		"SpecialLoopLiteratureImport": "includes/SpecialLoopLiterature.php",
+		"LoopLiteratureReference": "includes/LoopLiterature.php",
+		"SpecialLoopLiterature": "includes/LoopLiterature.php",
+		"SpecialLoopLiteratureEdit": "includes/LoopLiterature.php",
+		"SpecialLoopLiteratureImport": "includes/LoopLiterature.php",
 		"LoopGlossary": "includes/LoopGlossary.php",
-		"SpecialLoopGlossary": "includes/LoopGlossary.php"
+		"SpecialLoopGlossary": "includes/LoopGlossary.php",
+		"LoopLegacy": "includes/LoopLegacy.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -91,7 +94,8 @@
 			"LoopReference::onParserSetup",
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
-			"LoopLiterature::onParserSetup"
+			"LoopLiterature::onParserSetup",
+			"LoopLegacy::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -99,17 +103,26 @@
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
 		],
-		"HtmlPageLinkRendererEnd": [
-			"LoopHooks::onHtmlPageLinkRendererEnd"
-		],
 		"ParserMakeImageParams":[
 			"LoopHooks::onParserMakeImageParams"
 		],
-		"LinksUpdateConstructed": "LoopObject::onLinksUpdateConstructed",
-		"ArticleDeleteComplete": "LoopObject::onArticleDeleteComplete",
-		"AfterStabilizeChange":"LoopObject::onAfterStabilizeChange",
-		"AfterClearStable":"LoopObject::onAfterClearStable",
-		"LoopUpdateSavePage":"LoopObject::onLoopUpdateSavePage"
+		"LinksUpdateConstructed": [
+			"LoopObject::onLinksUpdateConstructed",
+			"LoopLiterature::onLinksUpdateConstructed"
+		],
+		"ArticleDeleteComplete": [
+			"LoopObject::onArticleDeleteComplete",
+			"LoopLiterature::onArticleDeleteComplete"
+		],
+		"AfterStabilizeChange": [
+			"LoopObject::onAfterStabilizeChange",
+			"LoopLiterature::onAfterStabilizeChange"
+		],
+		"AfterClearStable": [
+			"LoopObject::onAfterClearStable",
+			"LoopLiterature::onAfterClearStable"
+		],
+		"LoopUpdateSavePage":"LoopUpdater::onLoopUpdateSavePage"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -133,10 +146,10 @@
 		"remoteExtPath": "Loop"
 	},
 	"ResourceModules": {
-		"ext.loop-settings.js": {
+		"loop.special.settings.js": {
 			"position": "bottom",
 			"scripts": [
-				"resources/js/SpecialLoopSettings.js"
+				"resources/js/loop.special.settings.js"
 			],
 			"dependencies": [
 				"oojs-ui-core",
@@ -144,7 +157,13 @@
 				"mediawiki.Upload.Dialog"
 			]
 		},
-		"loop.printtag.js": {
+		"loop.special.literature-edit.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.special.literatureedit.js"
+			]
+		},
+		"loop.print.js": {
 			"position": "bottom",
 			"scripts": [
 				"resources/js/loop.printtag.js"
@@ -164,7 +183,8 @@
 		}
 	},
 	"TrackingCategories": [
-		"loop-tracking-category-error"
+		"loop-tracking-category-error",
+		"looplegacy-tracking-category"
 	],
 	"GroupPermissions": {
 		"*": {
@@ -613,6 +633,10 @@
 		"LoopSpoilerDefaultType": {
 			"value": "default",
 			"description" : "Setting default type for loop spoiler"
+		},
+		"LoopLiteratureCiteType": {
+			"value": "harvard",
+			"description" : "Setting default type citiations of literature"
 		}
 
 	},

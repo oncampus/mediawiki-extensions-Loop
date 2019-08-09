@@ -1,4 +1,13 @@
-<?php 
+<?php
+/**
+ * @description Renders LOOP objects
+ * @ingroup Extensions
+ * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Logger\LoggerFactory;
 
@@ -294,10 +303,11 @@ class LoopObject {
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true);
 		if ( $lsi ) {
 			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
 			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
 				new HtmlArmor( $linktext ),
@@ -306,7 +316,6 @@ class LoopObject {
 		} elseif ( $ns == NS_GLOSSARY ) {
 			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
 			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
 				new HtmlArmor( $linktext ),
@@ -841,31 +850,6 @@ class LoopObject {
 	}
 
 	/**
-	 * Custom hook called when updating LOOP
-	 * @param Title $title
-	 */
-	public static function onLoopUpdateSavePage( $title ) {
-		
-		$latestRevId = $title->getLatestRevID();
-		$wikiPage = WikiPage::factory($title);
-		$fwp = new FlaggableWikiPage ( $title );
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
-		
-		if ( isset($fwp) ) {
-			$stableRevId = $fwp->getStable();
-
-			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				self::doIndexLoopObjects( $wikiPage, $title, null, $systemUser );
-			} else {
-				$revision = $wikiPage->getRevision();
-				$content = $revision->getContent();
-				self::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * When deleting a page, remove all Object entries from DB.
 	 * Attached to ArticleDeleteComplete hook.
 	 */
@@ -933,7 +917,7 @@ class LoopObject {
 					$objects[$objectType] = 0;
 				}
 				$object_tags = array ();
-				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight' ); # don't save ids when in here
+				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
@@ -972,7 +956,7 @@ class LoopObject {
 							} else {
 								# create new id
 								$newRef = uniqid();
-								$newContentText = self::setReferenceId( $newContentText, $newRef ); 
+								$newContentText = self::setReferenceId( $newContentText, $newRef, 'objects' ); 
 								$tmpLoopObjectIndex->refId = $newRef; 
 							}
 							if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
@@ -1011,10 +995,10 @@ class LoopObject {
 	 * @param string $text
 	 * @param string $id
 	 */
-	public static function setReferenceId( $text, $id ) {
+	public static function setReferenceId( $text, $id, $type ) {
 		$changedText = false;
 		$text = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
-		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight'); # don't set ids when in these tags 
+		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags 
 		
 		$dom = new DOMDocument("1.0", 'utf-8');
 		@$dom->loadHTML( $text, LIBXML_HTML_NODEFDTD );
@@ -1022,11 +1006,14 @@ class LoopObject {
 		$xpath = new DOMXPath( $dom );
 		
 		$objectTags = array();
-		foreach (self::$mObjectTypes as $objectTag) {
-			$objectTags[] = '//'.$objectTag;
+		if ( $type == "objects" ) {
+			foreach (self::$mObjectTypes as $objectTag) {
+				$objectTags[] = '//'.$objectTag;
+			}
+		} elseif ( $type == 'cite' ) {
+			$objectTags[] = '//cite';
 		}
 		$query = implode(' | ', $objectTags);
-		
 		$nodes = $xpath->query( $query );
 		$changed = false;
 		foreach ( $nodes as $node ) {

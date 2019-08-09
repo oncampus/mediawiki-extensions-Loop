@@ -118,15 +118,17 @@
 	<xsl:variable name="word_looparea_websource"  select="functx:get_term_name('word_looparea_websource')" />
 	<xsl:variable name="word_looparea_experiment"  select="functx:get_term_name('word_looparea_experiment')" />
 	<xsl:variable name="word_looparea_citation"  select="functx:get_term_name('word_looparea_citation')" />	
-	
-	<xsl:variable name="word_spoiler_defaulttitle"  select="functx:get_term_name('word_spoiler_defaulttitle')" />
 
+	<xsl:variable name="word_spoiler_defaulttitle"  select="functx:get_term_name('word_spoiler_defaulttitle')" />
 	<xsl:variable name="phrase_syntaxhighlight"  select="functx:get_term_name('phrase_syntaxhighlight')" />
 	<xsl:variable name="phrase_looparea_start"  select="functx:get_term_name('phrase_looparea_start')" />
 	<xsl:variable name="phrase_looparea_end"  select="functx:get_term_name('phrase_looparea_end')" />
 	<xsl:variable name="phrase_spoiler_start"  select="functx:get_term_name('phrase_spoiler_start')" />
 	<xsl:variable name="phrase_spoiler_end"  select="functx:get_term_name('phrase_spoiler_end')" />
-
 	<xsl:variable name="word_glossary"  select="functx:get_term_name('word_glossary')" />
+	<xsl:variable name="phrase_literature_list"  select="functx:get_term_name('phrase_literature_list')" />
+	<xsl:variable name="word_literature_page"  select="functx:get_term_name('word_literature_page')" />
+	<xsl:variable name="word_literature_pages"  select="functx:get_term_name('word_literature_pages')" />
+	<xsl:variable name="word_bibliography"  select="functx:get_term_name('word_bibliography')" />
 
 </xsl:stylesheet>

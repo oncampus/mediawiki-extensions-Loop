@@ -1,7 +1,12 @@
 <?php
+/**
+  * @description Hide <loop_noprint> content from PDF.
+  * @ingroup Extensions
+  * @author Dustin Neß <dustin.ness@th-luebeck.de>
+  */
 
 if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
+    die( "This file cannot be run standalone.\n" );
 }
 
 class LoopNoprint {

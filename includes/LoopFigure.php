@@ -1,4 +1,13 @@
 <?php
+/**
+ * @description A parser extension that adds the tag <loop_figure> to mark content as figure and provide a table of figures
+ * @ingroup Extensions
+ * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 
 use MediaWiki\MediaWikiServices;
 
@@ -191,10 +200,11 @@ class LoopFigure extends LoopObject{
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true);
 		if ($lsi) {
 			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
 			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
 				new HtmlArmor( $linktext ),
@@ -202,8 +212,6 @@ class LoopFigure extends LoopObject{
 				) . '<br/>';
 		} elseif ( $ns == NS_GLOSSARY ) {
 			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
-			
-			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
 				new HtmlArmor( $linktext ),
@@ -233,67 +241,70 @@ class SpecialLoopFigures extends SpecialPage {
 	public function execute($sub) {
 		global $wgParserConf, $wgLoopNumberingType;
 		
-		$config = $this->getConfig ();
-		$request = $this->getRequest ();
-		
-		$out = $this->getOutput ();
-		
+		/*
 		$out->addModuleStyles( [ 'ext.math.styles' ] );
 		$mathmode = MathHooks::mathModeToString( $this->getUser()->getOption( 'math' ) );
 		if ( $mathmode == 'mathml' ) {
 			$out->addModuleStyles( [ 'ext.math.desktop.styles' ] );
 			$out->addModules( [ 'ext.math.scripts' ] );
-		}
-		
+			}*/
+		$out = $this->getOutput ();
 		$out->setPageTitle ( $this->msg ( 'loopfigures-specialpage-title' ) );
-		
-		$out->addHtml ( '<h1>' );
-		$out->addWikiMsg ( 'loopfigures-specialpage-title' );
-		$out->addHtml ( '</h1>' );
-		
-		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
-	
-		$parser = new Parser ( $wgParserConf );
-		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
-		$parser->Options ( $parserOptions );		
-		
-		$figures = array ();
-		$structureItems = $loopStructure->getStructureItems();
-		$glossaryItems = LoopGlossary::getGlossaryPages();
-		$figure_number = 1;
-		$articleIds = array();
-		$out->addHtml ( '<table class="table table-hover list_of_figures list_of_objects">' );
-		$figure_tags = LoopObjectIndex::getObjectsOfType ( 'loop_figure' );
-		
-		foreach ( $structureItems as $structureItem ) {
-			$articleIds[ $structureItem->article ] = NS_MAIN;
-		}
-		foreach ( $glossaryItems as $glossaryItem ) {
-			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
-		}
-
-		foreach ( $articleIds as $article => $ns ) {
-			$article_id = $article;
-			if ( isset( $figure_tags[$article_id] ) ) {
-				foreach ( $figure_tags[$article_id] as $figure_tag ) {
-					$figure = new LoopFigure();
-					$figure->init($figure_tag["thumb"], $figure_tag["args"]);
-					$figure->parse();
-					$figure->setNumber ( $figure_tag["nthoftype"] );
-					$figure->setArticleId ( $article_id );
-
-					preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
-					if (isset($thumbFile[1])) {
-						$figure->setFile($thumbFile[1]);
-					}
-					$out->addHtml ( $figure->renderForSpecialpage ( $ns ) );
-				}
-			}
-		}
-
-		$out->addHtml ( '</table>' );
+		$html = self::renderLoopFigureSpecialPage();
+		$out->addHtml ( $html );
 	}
+	
+	public static function renderLoopFigureSpecialPage() {
+	    global $wgParserConf, $wgLoopNumberingType;
+	    
+	    $html = '<h1>';
+	    $html .= wfMessage( 'loopfigures-specialpage-title')->text();
+	    $html .= '</h1>';
+	    
+	    $loopStructure = new LoopStructure();
+	    $loopStructure->loadStructureItems();
+	    
+	    $parser = new Parser ( $wgParserConf );
+	    $parserOptions = new ParserOptions();
+	    $parser->Options ( $parserOptions );
+	    
+	    $figures = array ();
+	    $structureItems = $loopStructure->getStructureItems();
+	    $glossaryItems = LoopGlossary::getGlossaryPages();
+	    $figure_number = 1;
+	    $articleIds = array();
+	    $html .= '<table class="table table-hover list_of_figures list_of_objects">';
+	    $figure_tags = LoopObjectIndex::getObjectsOfType ( 'loop_figure' );
+	    
+	    foreach ( $structureItems as $structureItem ) {
+	        $articleIds[ $structureItem->article ] = NS_MAIN;
+	    }
+	    foreach ( $glossaryItems as $glossaryItem ) {
+	        $articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+	    }
+	    
+	    foreach ( $articleIds as $article => $ns ) {
+	        $article_id = $article;
+	        if ( isset( $figure_tags[$article_id] ) ) {
+	            foreach ( $figure_tags[$article_id] as $figure_tag ) {
+	                $figure = new LoopFigure();
+	                $figure->init($figure_tag["thumb"], $figure_tag["args"]);
+	                $figure->parse();
+	                $figure->setNumber ( $figure_tag["nthoftype"] );
+	                $figure->setArticleId ( $article_id );
+	                
+	                preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
+	                if (isset($thumbFile[1])) {
+	                    $figure->setFile($thumbFile[1]);
+	                }
+	                $html .= $figure->renderForSpecialpage ( $ns );
+	            }
+	        }
+	    }
+	    $html .= '</table>';
+	    return $html;
+	}
+	
 	protected function getGroupName() {
 		return 'loop';
 	}

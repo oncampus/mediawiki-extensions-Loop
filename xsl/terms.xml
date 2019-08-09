@@ -104,6 +104,10 @@
 	<msg name="phrase_spoiler_start" lang="en">Here begins hidden content.</msg>
 	<msg name="phrase_spoiler_end" lang="en">Here ends the hidden content.</msg>
 	<msg name="word_glossary" lang="en">Glossary</msg>
+	<msg name="phrase_literature_list" lang="en">Here is a list of literature.</msg>
+	<msg name="word_literature_page" lang="en">p.</msg>
+	<msg name="word_literature_pages" lang="en">pp.</msg>
+	<msg name="word_bibliography" lang="en">Bibliography</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -171,6 +175,11 @@
 	<msg name="phrase_spoiler_start" lang="de">Hier beginnt versteckter Inhalt.</msg>
 	<msg name="phrase_spoiler_end" lang="de">Hier endet der versteckte Inhalt.</msg>
 	<msg name="word_glossary" lang="de">Glossar</msg>
+	<msg name="phrase_literature_list" lang="de">An dieser Stelle befindet sich eine Literaturauflistung.</msg>
+	<msg name="word_literature_page" lang="de">S.</msg>
+	<msg name="word_literature_pages" lang="de">S.</msg>
+	<msg name="word_bibliography" lang="de">Literaturverzeichnis</msg>
+
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>
@@ -223,7 +232,7 @@
 	<msg name="word_looparea_indentation" lang="sv">Fördjupning</msg>
 	<msg name="word_looparea_norm" lang="sv">Standard</msg>
 	<msg name="word_looparea_law" lang="sv">Lag</msg>
-	<msg name="word_looparea_question" lang="sv">Frage</msg>
+	<msg name="word_looparea_question" lang="sv">Fråga</msg>
 	<msg name="word_looparea_practice" lang="sv">Från praktiken</msg>
 	<msg name="word_looparea_exercise" lang="sv">Övning</msg>
 	<msg name="word_looparea_websource" lang="sv">Websource</msg>
@@ -232,9 +241,13 @@
 	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> 
 	<msg name="phrase_syntaxhighlight" lang="sv">Här är source code med syntaxhighlights. </msg>
 	<msg name="phrase_looparea_start" lang="sv"></msg> <!-- Här börjar sidintervallet</msg>-->
-	<msg name="phrase_looparea_end" lang="sv"></msg> <!--slutar sidintervallet</msg>-->
+	<msg name="phrase_looparea_end" lang="sv"></msg> <!--Här slutar sidintervallet</msg>-->
 	<msg name="phrase_spoiler_start" lang="sv">Här börjar doldt innehåll.</msg>
 	<msg name="phrase_spoiler_end" lang="sv">Här slutar dolda innehållet.</msg>
 	<msg name="word_glossary" lang="sv">Ordlista</msg>
+	<msg name="phrase_literature_list" lang="sv">Här är en list av litteratur.</msg>
+	<msg name="word_literature_page" lang="sv">s</msg>
+	<msg name="word_literature_pages" lang="sv">sid</msg>
+	<msg name="word_bibliography" lang="sv">Bibliografi</msg>
 	
 </terms> 

@@ -136,7 +136,6 @@ class SpecialLoopMedia extends SpecialPage {
 	}
 	
 	public function execute($sub) {
-		global $wgParserConf, $wgLoopNumberingType;
 		
 		$config = $this->getConfig ();
 		$request = $this->getRequest ();
@@ -145,56 +144,64 @@ class SpecialLoopMedia extends SpecialPage {
 		
 		$out->setPageTitle ( $this->msg ( 'loopmedia-specialpage-title' ) );
 		
-		$out->addHtml ( '<h1>' );
-		$out->addWikiMsg ( 'loopmedia-specialpage-title' );
-		$out->addHtml ( '</h1>' );
-		
-		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
-		
-		$parser = new Parser ( $wgParserConf );
-		$parserOptions = ParserOptions::newFromUser ( $this->getUser () );
-		$parser->Options ( $parserOptions );		
-		
-		$medias = array ();
-		$structureItems = $loopStructure->getStructureItems();
-		$glossaryItems = LoopGlossary::getGlossaryPages();
-		$media_number = 1;
-			$articleIds = array();
-		$out->addHtml ( '<table class="table table-hover list_of_objects">' );
-		$media_tags = LoopObjectIndex::getObjectsOfType ( 'loop_media' );
-		
-		foreach ( $structureItems as $structureItem ) {
-			$articleIds[ $structureItem->article ] = NS_MAIN;
-		}
-		foreach ( $glossaryItems as $glossaryItem ) {
-			$articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
-		}
-
-		foreach ( $articleIds as $article => $ns ) {
-			
-			$article_id = $article;
-			
-			if ( isset( $media_tags[$article_id] ) ) {
-			foreach ( $media_tags[$article_id] as $media_tag ) {
-				$media = new LoopMedia();
-				$media->init($media_tag ["thumb"], $media_tag ["args"]);
-				
-				$media->parse();
-				if ( $wgLoopNumberingType == "chapter" ) {
-					$media->setNumber ( $media_tag["nthoftype"] );
-				} elseif ( $wgLoopNumberingType == "ongoing" ) {
-					$media->setNumber ( $media_number );
-					$media_number ++;
-				}
-				$media->setArticleId ( $article_id );
-				
-				$out->addHtml ( $media->renderForSpecialpage ( $ns ) );
-				}
-			}
-		}
-		$out->addHtml ( '</table>' );
+		$html = self::renderLoopMediaSpecialPage();
+		$out->addHtml ( $html );
 	}
+	
+	public static function renderLoopMediaSpecialPage() {
+	    global $wgParserConf, $wgLoopNumberingType;
+	    $loopStructure = new LoopStructure();
+	    $loopStructure->loadStructureItems();
+	    
+	    $html = '<h1>';
+	    $html .= wfMessage( 'loopmedia-specialpage-title' )->text();
+	    $html .= '</h1>';
+	    
+	    $parser = new Parser ( $wgParserConf );
+	    $parserOptions = new ParserOptions();
+	    $parser->Options ( $parserOptions );
+	    
+	    $medias = array ();
+	    $structureItems = $loopStructure->getStructureItems();
+	    $glossaryItems = LoopGlossary::getGlossaryPages();
+	    $media_number = 1;
+	    $articleIds = array();
+	    $html .= '<table class="table table-hover list_of_objects">';
+	    $media_tags = LoopObjectIndex::getObjectsOfType ( 'loop_media' );
+	    
+	    foreach ( $structureItems as $structureItem ) {
+	        $articleIds[ $structureItem->article ] = NS_MAIN;
+	    }
+	    foreach ( $glossaryItems as $glossaryItem ) {
+	        $articleIds[ $glossaryItem->mArticleID ] = NS_GLOSSARY;
+	    }
+	    
+	    foreach ( $articleIds as $article => $ns ) {
+	        
+	        $article_id = $article;
+	        
+	        if ( isset( $media_tags[$article_id] ) ) {
+	            foreach ( $media_tags[$article_id] as $media_tag ) {
+	                $media = new LoopMedia();
+	                $media->init($media_tag ["thumb"], $media_tag ["args"]);
+	                
+	                $media->parse();
+	                if ( $wgLoopNumberingType == "chapter" ) {
+	                    $media->setNumber ( $media_tag["nthoftype"] );
+	                } elseif ( $wgLoopNumberingType == "ongoing" ) {
+	                    $media->setNumber ( $media_number );
+	                    $media_number ++;
+	                }
+	                $media->setArticleId ( $article_id );
+	                
+	                $html .= $media->renderForSpecialpage ( $ns );
+	            }
+	        }
+	    }
+	    $html .= '</table>';
+	    return $html;
+	}
+	
 	protected function getGroupName() {
 		return 'loop';
 	}

@@ -96,33 +96,45 @@ class SpecialLoopGlossary extends SpecialPage {
 
 	public function execute( $sub ) {
 		
-		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
-		$user = $this->getUser();
 		$out = $this->getOutput();
-
 		$out->setPageTitle(wfMessage('loopglossary'));
 		$html = '';
 		
-		$glossaryItems = LoopGlossary::getGlossaryPages();
+		$html = self::renderLoopGlossarySpecialPage();
 		
-		if ( $glossaryItems ) {
-			$html .= '<div class="list-group list-group-flush">';
-			foreach ( $glossaryItems as $pageTitle => $titleObject ) {
-
-				$html .= $linkRenderer->makeLink(
-					$titleObject,
-					$titleObject->mTextform,
-					array( 'class' => 'list-group-item list-group-item-action' )
-				);
-			}
-			$html .= '</div>';
-
-		} else {
-			$html .= wfMessage('loop-glossary-empty');
+		if ( empty ( $html ) ) {
+			$html = wfMessage('loop-glossary-empty')->text();
 		}
 
 		$out->addHTML( $html );
 
+    }
+    
+    public static function renderLoopGlossarySpecialPage() {
+        
+        $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+        $linkRenderer->setForceArticlePath(true);
+        $glossaryItems = LoopGlossary::getGlossaryPages();
+        $html = '';
+        
+        $html .= '<h1>';
+        $html .= wfMessage( 'loopglossary' )->text();
+        $html .= '</h1>';
+        
+        if ( $glossaryItems ) {
+            $html .= '<div class="list-group list-group-flush">';
+            foreach ( $glossaryItems as $pageTitle => $titleObject ) {
+                
+                $html .= $linkRenderer->makeLink(
+                    $titleObject,
+                    $titleObject->mTextform,
+                    array( 'class' => 'list-group-item list-group-item-action' )
+                    );
+            }
+            $html .= '</div>';
+            
+        }
+        return $html;
     }
 
 	/**

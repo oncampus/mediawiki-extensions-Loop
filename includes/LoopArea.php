@@ -1,4 +1,12 @@
 <?php
+/**
+ * @description Adds support for <loop_area> Tags
+ * @ingroup Extensions
+ * @author Dustin Neﬂ @krohnden <dustin.ness@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
 
 class LoopArea {
 
@@ -109,9 +117,29 @@ class LoopArea {
 
 			try {
 				if( file_exists( wfLocalFile( $args['icon'] )->getLocalRefPath() ) ) {
-					$owniconurl = wfLocalFile( $args['icon'] )->getCanonicalURL();
+					
+				    global $wgOut, $wgDefaultUserOptions, $wgUploadDirectory;
+					$user = $wgOut->getUser();
+					$renderMode = $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+					
+					if ( $renderMode == "offline" ) {
+					    $loopHtml = new LoopHtml();
+					    $fileData = array();
+					    preg_match('/(.*)(\.{1})(.*)/', $args['icon'], $fileData);
+					    $fileName = $loopHtml->resolveUrl($fileData[1], '.'.$fileData[3]);
+					    $owniconurl = "resources/images/".$fileName;
+					    $fileUrl = wfLocalFile( $args['icon'] )->getCanonicalURL();;
+					    $fileContent = $loopHtml->requestContent(array($fileUrl));
+					    #dd($fileUrl, $fileName);
+					    $loopHtml->writeFile( $wgUploadDirectory . '/export/html/0/files/resources/images/', $fileName, $fileContent );
+					    
+					} else {
+					    $owniconurl = wfLocalFile( $args['icon'] )->getCanonicalURL();
+					}
 					$cssicon = 'ownicon d-block';
 					$ownicon = 'style="background-image: url(' . $owniconurl . ')"'; 
+					#$owniconurl = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');;
+					#dd( , $renderMode);
 				} else {
 					throw new LoopException( wfMessage( 'looparea-error-imagenotfound', $args['icon'] )->text() );
 				}

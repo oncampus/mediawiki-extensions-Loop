@@ -1,4 +1,13 @@
 <?php
+/**
+ * @description Exports LOOP to HTML offline version
+ * @ingroup Extensions
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
+
 
 class LoopHtml{
 
@@ -57,14 +66,15 @@ class LoopHtml{
                 LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
             }
 
-            # Create toc file
-            $tocPage = Title::newFromText( 'Special:LoopStructure' );
-            LoopHtml::writeSpecialPageToFile( $tocPage, "", $exportSkin );
-
+            # Create special page files
+            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary' ); # todo LoopIndex
+            foreach( $specialPages as $page ) {
+                $tmpTitle = Title::newFromText( $page, NS_SPECIAL );
+                LoopHtml::writeSpecialPageToFile( $tmpTitle, "", $exportSkin );
+            }
             foreach($loopStructureItems as $loopStructureItem) {
 
                 $articleId = $loopStructureItem->getArticle();
-
                 if( isset( $articleId ) && is_numeric( $articleId )) {
 
                     $title = Title::newFromID( $articleId );
@@ -73,7 +83,10 @@ class LoopHtml{
                 }
 
             }
-
+            $glossaryPages = LoopGlossary::getGlossaryPages();
+            foreach( $glossaryPages as $title ) {
+                LoopHtml::writeArticleToFile( $title, "", $exportSkin );
+            }
             if ( filter_var( htmlspecialchars_decode( $loopSettings->imprintLink ), FILTER_VALIDATE_URL ) == false ) {
                 $imprintTitle = Title::newFromText( $loopSettings->imprintLink );
                 if ( ! empty ( $imprintTitle->mTextform ) ) {
@@ -146,16 +159,55 @@ class LoopHtml{
      */   
     private static function writeSpecialPageToFile( $specialPage, $prependHref, $exportSkin ) {
 
-        $loopStructure = new LoopStructure;
-        $loopStructure->loadStructureItems();
-
-        $text = $loopStructure->render();
-        $tmpFileName = LoopHtml::getInstance()->resolveUrl( $specialPage->mTextform, '.html');
+       # $loopStructure = new LoopStructure;
+        #$loopStructure->loadStructureItems();
+        #$text = $loopStructure->render();
+        
+       # global $wgExtensionMessagesFiles, $wgLanguageCode;
+        
+        $tmpTextform = wfMessage( strtolower( $specialPage->mTextform ) )->text();
+        #dd($tmpTextform, $specialPage);
+        #$specialPage->mTextform = $tmpTextform;
+        $tmpFileName = $tmpTextform.'.html';
+        switch ( $specialPage->mTextform ) {
+            case "LoopLiterature":
+                $content = SpecialLoopLiterature::renderLoopLiteratureSpecialPage();
+                break;
+            case "LoopGlossary":
+                $content = SpecialLoopGlossary::renderLoopGlossarySpecialPage();
+                break;
+            case "LoopFigures":
+                $content = SpecialLoopFigures::renderLoopFigureSpecialPage();
+                break;
+            case "LoopFormulas":
+                $content = SpecialLoopFormulas::renderLoopFormulaSpecialPage();
+                break;
+            case "LoopListings":
+                $content = SpecialLoopListings::renderLoopListingSpecialPage();
+                break;
+            case "LoopMedia":
+                $content = SpecialLoopMedia::renderLoopMediaSpecialPage();
+                break;
+            case "LoopTables":
+                $content = SpecialLoopTables::renderLoopTableSpecialPage();
+                break;
+            case "LoopTasks":
+                $content = SpecialLoopTasks::renderLoopTaskSpecialPage();
+                break;
+            case "LoopStructure":
+                $content = SpecialLoopStructure::renderLoopStructureSpecialPage();
+                break;
+            default:
+                dd($specialPage);
+                $content = '';
+        }
+        
         $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
     
         $exportSkin->getContext()->setTitle( $specialPage );
-        $exportSkin->getContext()->getOutput()->mBodytext = $text;
-
+        $exportSkin->getContext()->getOutput()->setPageTitle($specialPage);
+        $exportSkin->getContext()->getOutput()->mBodytext = $content;
+        #dd($text, $specialPage, $exportSkin->getContext()->getOutput()->mBodytext, $exportSkin, $specialPage);
         # get html with skin object
         ob_start();
         $exportSkin->outputPage();
@@ -180,7 +232,9 @@ class LoopHtml{
      * @Return string html
      */   
     private static function writeArticleToFile( $title, $prependHref, $exportSkin ) {
-
+        if ( getType( $title ) == "string" ) {
+            $title = Title::newFromId($title);
+        }
         $wikiPage = WikiPage::factory( $title );
         $revision = $wikiPage->getRevision();
         $content = $revision->getContent( Revision::RAW );
@@ -190,8 +244,13 @@ class LoopHtml{
         
         # regular articles are in ZIP/files/ folder, start article in ZIP/
         if ( $prependHref == "" ) {
-            $tmpFileName = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');
-            $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
+            if ( $title->getNamespace() == NS_MAIN ) {
+                $tmpFileName = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');
+                $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
+            } elseif( $title->getNamespace() == NS_GLOSSARY ) {
+                $tmpFileName = LoopHtml::getInstance()->resolveUrl( wfMessage("loop-glossary-namespace")->text() . ":" . $title->mTextform, '.html');
+                $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
+            }
         } else {
             $htmlFileName = LoopHtml::getInstance()->startDirectory.$title->mUrlform.'.html'; # TODO name start file
         } 
@@ -216,6 +275,10 @@ class LoopHtml{
         
     }
 
+    private function loadResources() {
+
+        
+    }
      /**
      * Replaces resources provided by resource loader
      * @param string $html
@@ -256,7 +319,8 @@ class LoopHtml{
         $requestUrls = $this->requestContent( $requestUrls );
         foreach ( $requestUrls as $url => $content ) {
             # Undoing MW's absolute paths in CSS files
-            $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content);
+            $content = preg_replace('/(\/mediawiki\/skins\/Loop\/resources\/)/', '../', $content); #css replacement links
+            $content = preg_replace('/(\/skins\/Loop\/resources\/)/', '../', $content);
             $fileName = $this->resolveUrl( $url, '.css' );
             $this->writeFile( "resources/styles/", $fileName, $content );
         }
@@ -294,8 +358,28 @@ class LoopHtml{
                 "targetpath" => "resources/js/",
                 "link" => "script"
             ),
+            "loopprint.js" => array(
+                "srcpath" => $wgServer . "/mediawiki/extensions/Loop/resources/js/loop.printtag.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
+            ),
+            "loopspoiler.js" => array(
+                "srcpath" => $wgServer . "/mediawiki/extensions/Loop/resources/js/loop.spoiler.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
+            ),
             "shared.css" => array(
                 "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/shared.css",
+                "targetpath" => "resources/styles/",
+                "link" => "style"
+            ),
+            "syntaxhighlight.generated.css" => array(
+                "srcpath" => $wgServer."/mediawiki/extensions/SyntaxHighlight_GeSHi/modules/pygments.generated.css",
+                "targetpath" => "resources/styles/",
+                "link" => "style"
+            ),
+            "syntaxhighlight.wrapper.css" => array(
+                "srcpath" => $wgServer."/mediawiki/extensions/SyntaxHighlight_GeSHi/modules/pygments.wrapper.css",
                 "targetpath" => "resources/styles/",
                 "link" => "style"
             ),
@@ -366,27 +450,38 @@ class LoopHtml{
                 }
             }
         }
-
+                
+        
+        
         $headElements = $doc->getElementsByTagName('head');
+        $bodyElements = $doc->getElementsByTagName('body');
 
         # request contents for all entries in $resources array,
         # writes file in it's targetpath and links it on output page.
         foreach( $resources as $file => $data ) {
             $tmpContent[$file]["content"] =  file_get_contents( $data["srcpath"] );
-            
-            $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
+            #if ( ! is_file($this->exportDirectory.$data["targetpath"].$file) ) {
+                #dd( is_file($this->exportDirectory.$data["targetpath"].$file),$this->exportDirectory.$data["targetpath"].$file );
+                #var_dump($data["srcpath"]);
+                $this->writeFile( $data["targetpath"], $file, $tmpContent[$file]["content"] );
+            #}
             
             if ( isset ( $data["link"] ) )  { # add file to output page if requested
                 if ($data["link"] == "style") {
                     $tmpNode = $doc->createElement("link");
                     $tmpNode->setAttribute('href', $prependHref.$data["targetpath"] . $file );
                     $tmpNode->setAttribute('rel', "stylesheet" );
+                    $headElements[0]->appendChild( $tmpNode );
                 } else if ( $data["link"] == "script" ) {
                     $tmpNode = $doc->createElement("script");
                     $tmpNode->setAttribute('src', $prependHref.$data["targetpath"] . $file );
-                }
-                foreach( $headElements as $headElement) {
-                    $headElement->appendChild( $tmpNode );
+                    $headElements[0]->appendChild( $tmpNode );
+                } 
+               
+                if ( $data["link"] == "script-btm" ) {
+                    $tmpNode = $doc->createElement("script");
+                    $tmpNode->setAttribute('src', $prependHref.$data["targetpath"] . $file );
+                    $bodyElements[0]->appendChild( $tmpNode );
                 }
             }
 
@@ -399,7 +494,7 @@ class LoopHtml{
     }
 
      /**
-     * Replaces internal link href by class "internal-link" and template links.
+     * Replaces internal link href by class "local-link" and template links.
      * @param string $html
      * @param string $prependHref for start file 
      * 
@@ -462,13 +557,18 @@ class LoopHtml{
      * Requests urls and returns an array.
      * @Return Array ($url => $content)
      */
-    private function requestContent (Array $urls) : Array {
+    function requestContent (Array $urls) : Array {
         $tmpContent = array();
 
         foreach($urls as $url) {
 
             if( ! in_array( $url, $this->requestedUrls ) ) {
+                #if ( is_file( $url ) ) { 
                 $content = file_get_contents( $url );
+                #} else {
+                #    dd($urls, $url, $this->requestedUrls);
+                #    $content = '';
+                #}
                 $this->requestedUrls[ $url ] = $content;
             }
 
@@ -522,10 +622,11 @@ class LoopHtml{
      * 
      * @Return true
      */   
-    private function writeFile( $pathAddendum, $fileName, $content ) {
+    function writeFile( $pathAddendum, $fileName, $content ) {
         
         if ( ! file_exists( $this->exportDirectory.$pathAddendum ) ) { # folder creation
             mkdir( $this->exportDirectory.$pathAddendum, 0775, true );
+            error_log($this->exportDirectory.$pathAddendum);
         }
         if ( ! file_exists( $this->exportDirectory.$pathAddendum.$fileName ) ) {
             file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
@@ -562,6 +663,7 @@ class LoopHtml{
                 $imageData["name"][$wgServer . $tmpSrc] = $tmpTitle[2];
                 $imageData["suffix"][$wgServer . $tmpSrc] = $tmpTitle[4];
                 $newSrc = $prependHref."resources/images/" . $this->resolveUrl($tmpTitle[2], '.'.$tmpTitle[4] );
+                #dd($tmpTitle[2],$newSrc, $imageData["content"]);
                 $element->setAttribute( 'src', $newSrc );
             }
             if ( $imageData["name"] && $imageData["suffix"] ) {

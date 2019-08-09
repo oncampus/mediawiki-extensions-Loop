@@ -8,6 +8,7 @@
     "require": {
         "composer/installers": "1.*,>=1.0.1",
         "james-heinrich/getid3": ">=1.9" ,
-        "symfony/process": ">=4.3.2" 
+        "symfony/process": ">=4.3.2",
+        "renanbr/bibtex-parser": ">=2.0.2"
     }
 }

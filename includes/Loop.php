@@ -1,4 +1,15 @@
-<?php class Loop {
+<?php 
+
+/**
+  * @description Handles general functions and settings
+  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
+  */
+  
+if ( !defined( 'MEDIAWIKI' ) ) {
+	die( "This file cannot be run standalone.\n" );
+}
+
+class Loop {
 
 	/**
 	 * Save changes in LoopEditMode and LoopRenderMode
@@ -32,7 +43,7 @@
 		
 	public static function onExtensionLoad() {
 
-		if ( ! defined( 'FLAGGED_REVISIONS' ) ) {
+		if ( ! defined( 'FLAGGED_REVISIONS' ) ) { 
 			exit( "FlaggedRevs must be installed to run LOOP" );
 		}
 
@@ -43,10 +54,7 @@
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
-		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces;
-		
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => false, 'create'=> true, 'validate' => true ] ); 
-		$systemUser->addGroup("sysop");
+		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType;
 		
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -79,8 +87,13 @@
 				$wgWhitelistRead[] = ( !isset( $data['lset_privacylink'] ) ? $wgPrivacyLink : $data['lset_privacylink'] );
 				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
 				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
+				$wgLoopLiteratureCiteType = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopLiteratureCiteType : $data['lset_citationstyle'] );
 
 			}
+			
+			# Define new name for glossary
+			$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
+
 		}
 		
 		$wgWhitelistRead[] = "MediaWiki:Common.css";
@@ -122,9 +135,6 @@
 		$wgNamespaceProtection[NS_HELP_TALK] = ['*'];
 		$wgNamespaceProtection[NS_CATEGORY_TALK] = ['*'];
 
-		# Define new name for glossary
-		$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
-
 		return true;
 	}
 	
@@ -133,11 +143,15 @@
 	 */
 	public static function setupLoopPages() {
 		
-		global $wgOut;
-
-		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->text(), NS_CATEGORY ));
+		$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+			
+		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
-		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $wgOut->getUser() );
+		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $user );
+
+		$loopLegacyPage = WikiPage::factory( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
+		$loopLegacyPageContent = new WikitextContent( wfMessage( 'looplegacy-tracking-category-desc' )->inContentLanguage()->text() );
+		$loopLegacyPage->doEditContent( $loopLegacyPageContent, '', EDIT_NEW, false, $user );
 
 	}
 
