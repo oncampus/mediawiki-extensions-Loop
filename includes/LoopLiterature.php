@@ -152,7 +152,6 @@ class LoopLiterature {
 				'lit_doi' => $this->doi
 			)
 		);
-		
 
         return true;
 	}
@@ -289,7 +288,7 @@ class LoopLiterature {
 
     /**
      * Loads all literature items from DB
-	 * @param Array $dada = null
+	 * @param Array $data = null
 	 * 			"keys" -> will only return keys
      */
     public static function getAllLiteratureItems( $data = null ) {
@@ -451,6 +450,7 @@ class LoopLiterature {
         
 	}
 	
+	# returns whether to show literature in TOC or not
 	public static function getShowLiterature() {
 		
 		global $wgOut;
@@ -491,16 +491,6 @@ class LoopLiterature {
 			
 			return $e;
 		} else {
-			#dd();
-			/* displays data from entry
-			if ( isset( $loopLiterature->author ) ) {
-				$text .= $loopLiterature->author;
-			} elseif ( isset( $loopLiterature->itemTitle )) {
-				$text .= $loopLiterature->itemTitle;
-			}
-			if ( isset( $loopLiterature->year ) ) {
-				$text .= " " . $loopLiterature->year;
-			} */
 			if ( $wgLoopLiteratureCiteType == "harvard" ) {
 				$text = str_replace( "+" , " " , $input );
 				$html = $linkRenderer->makeLink( 
@@ -525,9 +515,6 @@ class LoopLiterature {
 				$refId = $args["id"];
 				$articleId = $parser->mTitle->mArticleID;
 				$objectNumber = $allReferences[$articleId][$refId]["objectnumber"];
-				#$reference = LoopLiteratureReference::getItemData( $args["id"] );
-				#dd( $allReferences[$articleId][$refId]["objectnumber"] );
-				
 				$text = "<sup>". $objectNumber."</sup>";
 
 				$html = $linkRenderer->makeLink( 
@@ -550,23 +537,23 @@ class LoopLiterature {
 
 		global $wgLoopLiteratureCiteType; 
 
-		$lines = str_replace( "#", "\n", $input );
-		$lines = str_replace( "\t", " ", $lines );
-		$keys = array();
-		if ( ! empty ( $lines ) ) {
-		    $keywords = explode ( "\n", $lines );
-		    foreach ( $keywords as $key ) {
-				if ( !empty( $key ) ) {
-				    $keys[] = rtrim( $key, " " );
-				}
+		if ( $parser == null ) {
+			$parser = new Parser();
+		}
+
+		$matches = array();
+		$parser->extractTagsAndParams ( array( "literature" ), $input, $matches );
+		
+		foreach ( $matches as $key ) {
+			if ( !empty( $key[1] ) ) {
+				$keys[] = rtrim( $key[1], " " );
 			}
 		}
+
 		$return = ( isset($args) ) ? '<div class="loop-literature mb-1 ml-4">' : '';
 		if ( !empty ( $keys ) ) {
 			$htmlElements = array();
-			#$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
 			$allItems = LoopLiterature::getAllItems();
-	       #dd($keys);
 			foreach ( $keys as $key ) {
 				if ( isset ( $allItems[$key] ) ) {
 					if ( $allItems[$key]->author ) {
@@ -680,6 +667,7 @@ class LoopLiterature {
 	 * @param WikiPage $wikiPage
 	 * @param Title $title
 	 * @param Content $content
+	 * @param User $user
 	 */
 	public static function doIndexLoopLiteratureReferences( &$wikiPage, $title, $content = null, $user = null ) {
 		
@@ -1069,8 +1057,6 @@ class LoopLiterature {
 		}
 
 		if ( $allReferences && !empty( $ref ) && ! $tag && $type == 'html' ) {
-			#dd($ref, $allReferences);
-
 			$return .= '<span class="dropdown ml-1 cursor-pointer" title="'.wfMessage( "loopliterature-label-deleteentry" )->text().'">';
 			$return .= '<span class="dropdown-toggle d-inline accent-color literature-ref-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
 			$return .= '<span class="dropdown-menu">';	
@@ -1078,7 +1064,6 @@ class LoopLiterature {
 			foreach ( $allReferences as $articleId => $pageRefs ) {
 				foreach ( $pageRefs as $pageRef ) {
 					if ( $pageRef[ "itemKey" ] == $li->itemKey ) {
-						#dd($pageRef);
 						$title = Title::newFromId( $articleId );
 						$return .= $linkRenderer->makelink( 
 							$title, 
@@ -1092,7 +1077,6 @@ class LoopLiterature {
 			$return .= '</span></span> ';
 		}
 		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
-			#$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
 
 			if ( $user->isAllowed('loop-edit-literature') ) {
 				$return .= $linkRenderer->makelink( 
@@ -1511,7 +1495,6 @@ class SpecialLoopLiterature extends SpecialPage {
                 $return .= $element;
             }
         }
-        #dd($return);
         return $return;
     }
 
@@ -1673,7 +1656,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				$presetData = $loopLiterature->literatureTypes["book"];
 			}
 			$requiredObjects  = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
-			$requiredObjects .= '<input  class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
+			$requiredObjects .= '<input class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
 			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div>';
 			$requiredObjects .= '<div class="invalid-feedback" id="keymsg2">'. $this->msg("loopliterature-error-invalidkey", " ").'</div></div>';
 			$requiredObjects .= '<div class="col-12 mb-1' . ( $editKey ? '"' :  ' d-none"' ). '>';
