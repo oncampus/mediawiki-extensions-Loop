@@ -279,7 +279,6 @@
 	"loopliterature-error-keyunknown": "Der Zitatschlüssel '''$1''' ist nicht vorhanden. Bitte [[Special:LoopLiteratureEdit| legen Sie den Literatureintrag an]]. ",
 	
 	"looplegacy-error-unsupported": "Der Tag '''$1''' wird seit $2 nicht mehr unterstützt.",
-	
 	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",

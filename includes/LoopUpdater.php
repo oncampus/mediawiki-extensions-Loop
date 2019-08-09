@@ -31,14 +31,12 @@ class LoopUpdater {
 		$dbr = wfGetDB( DB_REPLICA );
 
 		if ( $dbr->tableExists( 'loop_structure_items' ) ) {
+			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+			if ( $systemUser ) { #why is system user null sometimes? #TODO investigate
+				$systemUser->addGroup("sysop");
+			}
 			Loop::setupLoopPages();
 		}
-		
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
-		if ( $systemUser ) { #why is system user null sometimes? #TODO
-			$systemUser->addGroup("sysop");
-		}
-		
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
 		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
 			self::saveAllWikiPages();
@@ -161,19 +159,22 @@ class LoopUpdater {
 		return true;
 	}
 
-	
 	/**
-	 * Migrates LOOP 1 tag biblio
+	 * Migrates LOOP 1 tag biblio into DB
 	 * - bibliography page "Literatur" and adds given entries to database
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	public static function migrateLiterature( $wikiPage, $title, $contentText, $systemUser ) {
 		$literaturePage = false;
 		$stableRev = false;
-		$bibliographyPageTitle = Title::newFromText("MediaWiki:Bibliographypage"); #todo
-
-		if ( $title->mTextform == "Literatur" ) { #MediaWiki:Bibliographypage
-			$literaturePage = true;
+		$bibliographyPageTitle = Title::newFromText( "Bibliographypage", NS_MEDIAWIKI); 
+		$bibliographyPageWP = WikiPage::factory( $bibliographyPageTitle );
+		$bibliographyPageRev = $bibliographyPageWP->getRevision();
+		if ( $bibliographyPageRev ) {
+			$bibliographyPageContentText = $bibliographyPageRev->getContent()->getText();
+			if ( $title->mTextform == $bibliographyPageContentText ) { 
+				$literaturePage = true; #this is the bibliography page and will get a redirect
+			}
 		}
 		if ( $contentText == null ) {
 			$revision = $wikiPage->getRevision();
@@ -183,7 +184,7 @@ class LoopUpdater {
 		$biblio_tags = array ();
 		$loopliterature_tags = array ();
 		$parser->extractTagsAndParams( array( 'biblio' ), $contentText, $biblio_tags );
-		#dd($biblio_tags);
+		
 		if ( !empty ( $biblio_tags ) ) {
 			error_log("Migrating bibliography");
 			foreach ( $biblio_tags as $biblio ) {
@@ -218,7 +219,7 @@ class LoopUpdater {
 			}
 			if ( $literaturePage ) {
 				$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "namespace-special" )->inContentLanguage()->text() . ":" . wfMessage( "loopliterature" )->inContentLanguage()->text() . "]]" );
-				$wikiPage->doEditContent( $newRedirectContent, 'Redirect to new bibliography', EDIT_UPDATE, false, $user );	
+				$wikiPage->doEditContent( $newRedirectContent, 'Redirect to new bibliography', EDIT_UPDATE, false, $systemUser );	
 			} 
 		}
 

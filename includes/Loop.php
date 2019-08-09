@@ -90,6 +90,10 @@ class Loop {
 				$wgLoopLiteratureCiteType = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopLiteratureCiteType : $data['lset_citationstyle'] );
 
 			}
+			
+			# Define new name for glossary
+			$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
+
 		}
 		
 		$wgWhitelistRead[] = "MediaWiki:Common.css";
@@ -130,9 +134,6 @@ class Loop {
 		$wgNamespaceProtection[NS_TEMPLATE_TALK] = ['*'];
 		$wgNamespaceProtection[NS_HELP_TALK] = ['*'];
 		$wgNamespaceProtection[NS_CATEGORY_TALK] = ['*'];
-
-		# Define new name for glossary
-		$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
 
 		return true;
 	}
