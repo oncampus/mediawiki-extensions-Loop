@@ -152,7 +152,7 @@ class LoopLiterature {
 				'lit_doi' => $this->doi
 			)
 		);
-
+		SpecialPurgeCache::purge();
         return true;
 	}
 
@@ -901,7 +901,7 @@ class LoopLiterature {
 	 * @param Mixed $tag 'loop_literature' or false for adding edit links
 	 */
 	public static function renderLiteratureElement( $li, $ref = null, $type = 'html', $tag = false, $allReferences = null ) {
-
+	    
 		global $wgOut, $wgLoopLiteratureCiteType;
 		if ( !isset( $ref ) ) {
 		    #$ref = array();
@@ -1103,7 +1103,6 @@ class LoopLiterature {
 				$return .= '</span></span>';
 			}
 		}
-
 		return $return;
 	}
 
@@ -1135,7 +1134,8 @@ class LoopLiteratureReference {
             __METHOD__
 		);
         $this->id = $dbw->insertId();
-		
+        SpecialPurgeCache::purge();
+        
         return true;
 
 	}
@@ -1417,7 +1417,7 @@ class SpecialLoopLiterature extends SpecialPage {
         return $html;
     }
     
-    public static function renderBibliography( $type, $editMode = false ) {
+    public static function renderBibliography( $type = 'html', $editMode = false ) {
         
         global $wgLoopLiteratureCiteType;
         $loopStructure = new LoopStructure();
@@ -1451,7 +1451,7 @@ class SpecialLoopLiterature extends SpecialPage {
                         $elements[$orderkey] .= '</p>';
                     } else {
                         $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
-                        $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type );
+                        $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, "xml" );
                         $elements[$orderkey] .= '</paragraph>';
                     }
                 }
@@ -1485,7 +1485,7 @@ class SpecialLoopLiterature extends SpecialPage {
                     $elements[$orderkey] .= '</p>';
                 } else {
                     $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
-                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $item, array() );
+                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $item, array(), 'xml' );
                     $elements[$orderkey] .= '</paragraph>';
                 }
                 
