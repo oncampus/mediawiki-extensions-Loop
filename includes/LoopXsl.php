@@ -2,7 +2,7 @@
 
 /**
  * @description Transforms XML to XSLT-compatible content
- * @author Dennis Krohn <dennis.krohn@th-luebeck.de>, Dustin Neß <dustin.ness@th-luebeck.de>
+ * @author Dennis Krohn <dennis.krohn@th-luebeck.de>, Dustin Neï¿½ <dustin.ness@th-luebeck.de>
  */
 
 if ( !defined( 'MEDIAWIKI' ) ) {
@@ -85,7 +85,7 @@ class LoopXsl {
 		
 		$doc = new DOMDocument;
 		
-		$old_error_handler = set_error_handler( "xsl_error_handler" );
+		$old_error_handler = set_error_handler( "LoopXsl::xsl_error_handler" );
 		libxml_use_internal_errors( true );
 		
 		try {
@@ -210,7 +210,7 @@ class LoopXsl {
 			$output = '<pre>'.$output.'</pre>';
 			$return = new DOMDocument;
 			
-			$old_error_handler = set_error_handler("xsl_error_handler");
+			$old_error_handler = set_error_handler("LoopXsl::xsl_error_handler");
 			libxml_use_internal_errors(true);
 			
 			try {
