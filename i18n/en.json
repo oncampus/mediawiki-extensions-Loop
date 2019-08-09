@@ -66,7 +66,7 @@
 	"loopsettings-numbering-objects-label": "Activate numbering of LOOP-objects, e.g. figures",
 	"loopsettings-numbering-type-ongoing-label": "Ongoing numbering - e.g. '''Fig. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Numbering per chapter - e.g. '''Fig. 3.12'''",
-	"loopsettings-citation-style": "Citation style",
+	"loopsettings-citation-style": "Quoting style",
 	"loopsettings-citation-style-harvard-label": "'''Harvard''', Displayed in text, e.g. Müller 2002",
 	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', Displayed with superior numbers, e.g. ²",
 
