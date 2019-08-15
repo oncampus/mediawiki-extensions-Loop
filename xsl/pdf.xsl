@@ -1445,6 +1445,23 @@
 		</fo:block>
 	</xsl:template>
 	
+	<!-- Loop Paragraph -->
+	<xsl:template match="extension[@extension_name='loop_paragraph']">
+		<fo:block margin="2mm 0 2mm 0">
+			<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="center" padding-bottom="2mm">
+				<xsl:value-of select="$icon_citation"></xsl:value-of>
+			</fo:block>
+			<fo:block  padding="2mm" border-bottom="solid 0.8mm {$accent_color}" border-top="solid 0.8mm {$accent_color}">
+				<xsl:apply-templates></xsl:apply-templates>
+				<xsl:if test="@copyright">
+					<fo:block text-align="right" font-style="italic">
+						<xsl:value-of select="@copyright"></xsl:value-of>
+					</fo:block>
+				</xsl:if>
+			</fo:block>
+		</fo:block>
+	</xsl:template>
+
 	<!-- Loop Print-->
 	<xsl:template match="extension[@extension_name='loop_print']">
 		<fo:block >
