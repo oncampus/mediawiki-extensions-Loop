@@ -1228,6 +1228,19 @@
 		<xsl:attribute name="line-height">12.5pt</xsl:attribute>
 	</xsl:template>
 
+	<xsl:template name="font_smallbold">
+		<xsl:attribute name="font-size">9.5pt</xsl:attribute>
+		<xsl:attribute name="font-weight">bold</xsl:attribute>
+		<xsl:attribute name="line-height">12.5pt</xsl:attribute>
+	</xsl:template>
+
+	<xsl:template name="font_smallitalic">
+		<xsl:attribute name="font-size">9.5pt</xsl:attribute>
+		<xsl:attribute name="font-weight">normal</xsl:attribute>
+		<xsl:attribute name="font-style">italic</xsl:attribute>
+		<xsl:attribute name="line-height">12.5pt</xsl:attribute>
+	</xsl:template>
+
 	<xsl:template name="font_normal">
 		<xsl:attribute name="font-size">11.5pt</xsl:attribute>
 		<xsl:attribute name="font-weight">normal</xsl:attribute>
@@ -1427,7 +1440,7 @@
 					</xsl:choose>
 				</fo:inline>			
 		</fo:block>
-		<fo:table keep-together.within-column="always" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}"> <!--  -->
+		<fo:table keep-together.within-column="always" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="140mm">
@@ -1445,22 +1458,88 @@
 		</fo:block>
 	</xsl:template>
 	
+	<!-- Loop Sidenote-->
+	<xsl:template match="extension[@extension_name='loop_sidenote']">
+	<fo:float float="inside">
+		<fo:block-container position="absolute" left="-35mm" top="1mm" width="32mm">
+			<fo:block>
+				<fo:table>
+					<fo:table-body>
+						<fo:table-row>
+							<fo:table-cell text-align="left">
+							<xsl:choose>
+								<xsl:when test="@type='marginalnote'">
+									<fo:block text-transform="uppercase" >
+										<xsl:call-template name="font_smallitalic"></xsl:call-template>
+										<xsl:value-of select="."></xsl:value-of>
+									</fo:block>
+								</xsl:when>
+								<xsl:when test="@type='keyword'">
+									<fo:block color="{$accent_color}" font-weight="bold" text-transform="uppercase">
+										<xsl:call-template name="font_smallbold"></xsl:call-template>
+										<xsl:value-of select="."></xsl:value-of>
+									</fo:block>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:block text-transform="uppercase">
+										<xsl:call-template name="font_small"></xsl:call-template>
+										<xsl:value-of select="."></xsl:value-of>
+									</fo:block>
+								</xsl:otherwise>
+							</xsl:choose>
+							</fo:table-cell>
+						</fo:table-row>
+					</fo:table-body>
+				</fo:table>
+			</fo:block>
+		</fo:block-container>
+		</fo:float>
+	</xsl:template>
+	
 	<!-- Loop Paragraph -->
 	<xsl:template match="extension[@extension_name='loop_paragraph']">
-		<fo:block margin="2mm 0 2mm 0">
-			<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="center" padding-bottom="2mm">
-				<xsl:value-of select="$icon_citation"></xsl:value-of>
-			</fo:block>
-			<fo:block  padding="2mm" border-bottom="solid 0.8mm {$accent_color}" border-top="solid 0.8mm {$accent_color}">
-				<xsl:apply-templates></xsl:apply-templates>
+		<fo:table table-layout="auto" border-collapse="separate" width="150mm" margin="3mm 0 3mm 0">
+			<fo:table-body>
+				<fo:table-row>
+					<fo:table-cell width="10mm">
+						<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="left" padding-top="1mm">
+							<xsl:value-of select="$icon_citation"></xsl:value-of>
+						</fo:block>
+					</fo:table-cell>
+					<fo:table-cell width="140mm">
+						<fo:block>
+							<xsl:apply-templates></xsl:apply-templates>
+						</fo:block>								
+					</fo:table-cell>
+				</fo:table-row>
 				<xsl:if test="@copyright">
-					<fo:block text-align="right" font-style="italic">
-						<xsl:value-of select="@copyright"></xsl:value-of>
-					</fo:block>
+					<fo:table-row>
+						<fo:table-cell>
+							<fo:block></fo:block>
+						</fo:table-cell>
+						<fo:table-cell>
+							<fo:block text-align="right" font-style="italic">
+								<xsl:value-of select="@copyright"></xsl:value-of>
+							</fo:block>								
+						</fo:table-cell>
+					</fo:table-row>
 				</xsl:if>
-			</fo:block>
-		</fo:block>
+			</fo:table-body>
+		</fo:table>	
 	</xsl:template>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	<!-- Loop Print-->
 	<xsl:template match="extension[@extension_name='loop_print']">
@@ -2209,7 +2288,6 @@
 <xsl:when test="@class='il'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
 			
 <xsl:when test="@class='x'"><fo:inline ><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>			
-			
 			
 			
 			<xsl:otherwise>
