@@ -1417,8 +1417,7 @@
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>	
-		
-
+	
 	<!-- Loop Spoiler -->
 	<xsl:template name="spoiler">
 		<fo:block keep-together.within-page="always">
@@ -1527,19 +1526,6 @@
 			</fo:table-body>
 		</fo:table>	
 	</xsl:template>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	<!-- Loop Print-->
 	<xsl:template match="extension[@extension_name='loop_print']">
