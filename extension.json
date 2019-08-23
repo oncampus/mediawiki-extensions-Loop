@@ -37,6 +37,8 @@
 		"LoopHtml": "includes/LoopHtml.php",
 		"LoopArea": "includes/LoopArea.php",
 		"LoopPrint": "includes/LoopPrint.php",
+		"LoopParagraph": "includes/LoopParagraph.php",
+		"LoopSidenote": "includes/LoopSidenote.php",
 		"LoopNoprint": "includes/LoopNoprint.php",
 		"LoopExport": "includes/LoopExport.php",
 		"LoopExportPdf": "includes/LoopExport.php",
@@ -89,6 +91,8 @@
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
 			"LoopArea::onParserSetup",
+			"LoopParagraph::onParserSetup",
+			"LoopSidenote::onParserSetup",
 			"LoopPrint::onParserSetup",
 			"LoopNoprint::onParserSetup",
 			"LoopReference::onParserSetup",
