@@ -11,7 +11,6 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 
 use MediaWiki\MediaWikiServices;
 
-
 class LoopStructure {
 
 	private $id = 0; // id of the structure
@@ -20,11 +19,9 @@ class LoopStructure {
 	public $mainPage; // article id of the main page
 	public $structureItems = array(); // array of structure items
 
-
 	function __construct() {
 		$this->id = 0;
 	}
-
 
 	public function getId() {
 		return $this->id;
