@@ -67,7 +67,7 @@ class LoopSpoiler {
 
 		try {		
 			$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
-			$spoiler->setContent( $parser->recursiveTagParse( $input ) );
+			$spoiler->setContent( $parser->recursiveTagParseFully( $input ), $frame );
 			$return  = $spoiler->render();
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
@@ -83,11 +83,11 @@ class LoopSpoiler {
 		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
 			$content = substr( $content, 0, -1 );
 		}
-	
-		$return = '<span class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '">'.$this->getBtnText() . '</span>';
+		$return = '<div class="loopspoiler-container">';
+		$return .= '<span class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '">'.$this->getBtnText() . '</span>';
 		$return .= '<div id="'.$this->getId() . '" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType() . '">';
 		$return .= '<div class="loopspoiler_content">' . $content . '</div>';
-		$return .= "\n</div>";
+		$return .= "\n</div></div>";
 		
 		return $return;
 	}

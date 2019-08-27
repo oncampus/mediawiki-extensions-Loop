@@ -50,15 +50,15 @@ class LoopStructure {
 					$tabLevel = 1;
 				}
 				$title = Title::newFromID( $structureItem->article );
-				$link =  $structureItem->tocNumber .' '. $structureItem->tocText;
+				$link = $structureItem->tocNumber . ' '. $structureItem->tocText;
 				if ( $title ) {
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( $structureItem->tocNumber .' '. $structureItem->tocText )
+						new HtmlArmor( '<span class="loopstructure-number">'.$structureItem->tocNumber .'</span> '. $structureItem->tocText )
 					);
 					
 				} 
-				$text .= '<div class="loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat('	',  $tabLevel ) . $link . '</div>';
+				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat('	',  $tabLevel ) . $link . '</div>';
 				
 				
 			}
@@ -842,7 +842,7 @@ class SpecialLoopStructure extends SpecialPage {
 	    $html .= Html::openElement(
 	        'h1',
 	        array(
-	            'id' => 'loopstructure-h1'
+	            'id' => 'title' //'id' => 'loopstructure-h1'
 	        )
 	        )
 	        . wfMessage( 'loopstructure-specialpage-title' )->parse();
@@ -856,7 +856,7 @@ class SpecialLoopStructure extends SpecialPage {
     	                'a',
     	                array(
     	                    'href' => Title::newFromText( 'Special:LoopStructureEdit' )->getFullURL(),
-    	                    'id' => 'edittoclink',
+    	                    'id' => 'editpagelink',
     	                    'class' => 'ml-2'
     	                ),
     	                '<i class="ic ic-edit"></i>'
@@ -869,9 +869,7 @@ class SpecialLoopStructure extends SpecialPage {
 	        )
 	        . Html::rawElement(
 	            'div',
-	            array(
-	                'style' => 'white-space: pre;'
-	            ),
+	            array(),
 	            $loopStructure->render()
 	            );
 	    return $html;
