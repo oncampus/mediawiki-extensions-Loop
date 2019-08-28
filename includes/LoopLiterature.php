@@ -689,6 +689,8 @@ class LoopLiterature {
 				$extractTags = array_merge( array('cite'), $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
+				$loopStructure = new LoopStructure();
+				$loopStructure->loadStructureItems();
 				
 				$items = 0;
 				foreach ( $object_tags as $object ) {
@@ -696,8 +698,12 @@ class LoopLiterature {
 						$tmpLoopLiteratureReference = new LoopLiteratureReference();
 						$items++;
 						$tmpLoopLiteratureReference->nthItem = $items;
+
 						$tmpLoopLiteratureReference->pageId = $title->getArticleID();
 						$tmpLoopLiteratureReference->itemKey = $object[1];
+
+						$tmpLoopLiteratureReference->handleLiteratureOccurrences( $loopStructure, $title );
+						#dd($tmpLoopLiteratureReference->firstItemGlobal);
 						
 						if ( isset( $object[2]["id"] ) ) {
 							if ( $tmpLoopLiteratureReference->checkDublicates( $object[2]["id"] ) ) {
@@ -1107,10 +1113,11 @@ class LoopLiterature {
 
 class LoopLiteratureReference {
 
-	public $key;
+	public $itemKey;
 	public $pageId;
 	public $refId; 
 	public $nthItem;
+	public $firstItemGlobal;
 
 	/**
 	 * Add literature reference item to the database
@@ -1125,7 +1132,8 @@ class LoopLiteratureReference {
                 'llr_itemkey' => $this->itemKey,
                 'llr_pageid' => $this->pageId,
                 'llr_refid' => $this->refId,
-                'llr_nthitem' => $this->nthItem
+                'llr_nthitem' => $this->nthItem,
+                'llr_firstitemglobal' => $this->firstItemGlobal
             ),
             __METHOD__
 		);
@@ -1148,7 +1156,7 @@ class LoopLiteratureReference {
         return true;
 	}
 
-	public static function getItemData( $refId ) { 
+	public static function getItemData( $refId, $object = false ) { 
         
         $dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
@@ -1157,7 +1165,8 @@ class LoopLiteratureReference {
                 'llr_itemkey',
                 'llr_pageid',
                 'llr_refid',
-                'llr_nthitem'
+                'llr_nthitem',
+                'llr_firstitemglobal'
 			),
 			array(
 				'llr_refid = "' . $refId .'"'
@@ -1166,14 +1175,25 @@ class LoopLiteratureReference {
 		);
 		
 		foreach( $res as $row ) {
-
-            $return = array(
-                'refId' => $row->llr_refid,
-                'articleId' => $row->llr_pageid,
-                'itemKey' => $row->llr_itemkey,
-                'nthItem' => $row->llr_nthitem,
-            );
-
+			
+			if ( $object ) {
+				$return = new LoopLiteratureReference();
+				$return->pageId = $row->llr_pageid;
+				$return->itemKey = $row->llr_itemkey;
+				$return->refId = $row->llr_refid;
+				$return->itemKey = $row->llr_itemkey;
+				$return->nthItem = $row->llr_nthitem;
+				$return->firstItemGlobal = boolval($row->llr_firstitemglobal);
+			} else {
+				$return = array(
+					'refId' => $row->llr_refid,
+					'articleId' => $row->llr_pageid,
+					'itemKey' => $row->llr_itemkey,
+					'nthItem' => $row->llr_nthitem,
+					'firstItemGlobal' => boolval($row->llr_firstitemglobal),
+				);
+			}
+			
 			return $return;
 
 		}
@@ -1206,7 +1226,113 @@ class LoopLiteratureReference {
 		return true;
     }
 	
-	
+	public function handleLiteratureOccurrences ( LoopStructure $loopStructure, Title $title ) {
+
+		$itemKey = $this->itemKey;
+		$articleId = $this->pageId;
+		$structureItems = $loopStructure->structureItems;
+		$lastStructureItem = end($structureItems);
+		$structureLength = $lastStructureItem->sequence;
+		$lsi = LoopStructureItem::newFromIds ( $articleId );
+
+		if ( ! $lsi  && $title->getNamespace() != NS_GLOSSARY ) {
+			$this->firstItemGlobal = false; # this reference is not in structure or glossary.
+			return;
+		}
+
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'loop_literature_references',
+			array(
+                'llr_itemkey',
+                'llr_pageid',
+                'llr_refid',
+                'llr_nthitem',
+                'llr_firstitemglobal'
+			),
+			array(
+				'llr_itemkey = "' . $itemKey .'"'
+			),
+			__METHOD__
+		);
+		$objects = array();
+		foreach( $res as $row ) {
+			# this is not necessarily the first occurrence of that key. will investigate further later
+			
+			$objects[$row->llr_pageid][$row->llr_nthitem] = array(
+				'refId' => $row->llr_refid,
+				'firstItemGlobal' => boolval( $row->llr_firstitemglobal )
+			);
+		}
+		if ( empty ( $objects ) ) {
+			if  ( isset( $lsi ) || $title->getNamespace() == NS_GLOSSARY )  {
+				# this is the *very* first occurrence. return true!
+				$this->firstItemGlobal = true;
+				return;
+			} else {
+				# it's the first occurrence but not in structure or glossary.
+				$this->firstItemGlobal = false;
+				return;
+			}
+		} else {
+			# this key has been referenced already. it must be determined which one occurs first.
+			#dd($lsi);
+			if  ( $lsi ) {
+				$seqVal = $lsi->sequence;
+			} elseif ( $title->getNamespace() == NS_GLOSSARY )  {
+				$glossaryPages = LoopGlossary::getGlossaryPages( "idArray" );
+				$seqVal = $structureLength + array_search( $articleId, $glossaryPages );
+			}
+			$keySequence = array( $seqVal => array( $this->nthItem => array( "refId" => null, "firstItemGlobal" => null ) ) );
+			foreach ( $objects as $article => $object ) {
+				foreach ( $object as $n => $data ) {
+					$tmpLsi = LoopStructureItem::newFromIds ( $article );
+					if ( $tmpLsi ) { # page is in structure!
+						$keySequence[ $tmpLsi->sequence ][ $n ] = $data;
+					} elseif ( $title->getNamespace() == NS_GLOSSARY ) { # page is in glossary!
+						$glossaryPages = LoopGlossary::getGlossaryPages( "idArray" );
+						$keySequence[ $structureLength + array_search( $article, $glossaryPages ) ][ $n ] = $data;
+					} else {
+						$this->firstItemGlobal = false;
+						return;
+					}
+					#$keysInSequence = 
+				}
+			}
+			ksort($keySequence);
+			$firstKey = array_key_first($keySequence);
+
+			foreach ( $keySequence as $seq => $arr ) {
+				foreach ( $arr as $nth => $itemdata ) {
+					$val = ( $seq == $firstKey && $nth === 1 ) ? true : false; # if it's the first key in 
+					#dd($val, $seq, $arr, $nth, $itemdata);
+					#dd($itemdata);
+					if ( $itemdata["firstItemGlobal"] != $val || !isset( $itemdata["firstItemGlobal"] )) {
+						if ( isset ( $itemdata["refId"] ) ) {
+							$item = self::getItemData( $itemdata["refId"], true );
+							$dbw = wfGetDB( DB_MASTER );
+							$dbw->delete(
+								'loop_literature_references',
+								'llr_refid = "' . $itemdata["refId"] .'"',
+								__METHOD__
+							);
+							$item->firstItemGlobal = $val;
+							$item->addToDatabase();	
+						} else {
+							$this->firstItemGlobal = $val;
+						}
+						#dd("hi");
+					}
+					#dd($seq, $nth, $itemdata);
+				}
+			}
+			#dd($keySequence, $firstKey);
+				#dd( $article, $object );
+				#dd($loopStructure, array_key_exists($articleId, $structureItems));
+			#}
+		}
+		return;
+	}
     // returns structure literature items with numberings in the table
     public static function getAllItems ( $loopStructure ) {
         
@@ -1220,7 +1346,8 @@ class LoopLiteratureReference {
                 'llr_itemkey',
                 'llr_pageid',
                 'llr_refid',
-                'llr_nthitem'
+                'llr_nthitem',
+                'llr_firstitemglobal'
             ),
             array(
             ),
@@ -1250,6 +1377,7 @@ class LoopLiteratureReference {
 					'articleId' => $row->llr_pageid,
 					'itemKey' => $row->llr_itemkey,
 					'nthItem' => $row->llr_nthitem,
+					'firstItemGlobal' => boolval( $row->llr_firstitemglobal )
                 );
                 
                 $lsi = LoopStructureItem::newFromIds($row->llr_pageid);
@@ -1287,7 +1415,8 @@ class LoopLiteratureReference {
                 'llr_itemkey',
                 'llr_pageid',
                 'llr_refid',
-                'llr_nthitem'
+                'llr_nthitem',
+                'llr_firstitemglobal'
 			),
 			"*",
 			__METHOD__
@@ -1303,7 +1432,7 @@ class LoopLiteratureReference {
 			if (  $item->sequence < $lsi->sequence  ) {
 				foreach( $objects as $objectType => $page ) {
 					if ( isset( $page[$tmpId] ) ) {
-						$return[$objectType] += sizeof($page[$tmpId]);
+						$return[$objectType] += sizeof( $page[$tmpId] );
 					}
 				}
 			}
@@ -1341,7 +1470,8 @@ class LoopLiteratureReference {
 					'llr_itemkey',
 					'llr_pageid',
 					'llr_refid',
-					'llr_nthitem'
+					'llr_nthitem',
+					'llr_firstitemglobal'
                 ),
                 "*",
                 __METHOD__
