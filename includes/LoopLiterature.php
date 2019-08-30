@@ -504,18 +504,24 @@ class LoopLiterature {
 					$html .= ", " . wfMessage("loopliterature-text-pages", 2)->text() . " " . $args["pages"];
 				} 
 			} elseif ( $wgLoopLiteratureCiteType == "vancouver" ) {
-						
+				$refId = '';	
 				$loopStructure = new LoopStructure();
 				$loopStructure->loadStructureItems();
 				$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
-				$refId = $args["id"];
 				$articleId = $parser->mTitle->mArticleID;
-				$objectNumber = $allReferences[$articleId][$refId]["objectnumber"];
+				#dd($allReferences[$articleId]);
+				if ( isset( $args["id"] ) ) {
+					$refId = $args["id"];
+					$objectNumber = $allReferences[$articleId][$refId]["objectnumber"];
+					#dd($allReferences[$articleId]);
+					
+				}
 				if ( !empty ( $objectNumber ) ) {
 					$text = "<sup>". $objectNumber."</sup>";
 				} else {
 					$text = str_replace( "+" , " " , $input ); # if there is no object number (as in pages that are not in structure), render normally
 				}
+				
 
 				$html = $linkRenderer->makeLink( 
 					new TitleValue( NS_SPECIAL, 'LoopLiterature' ), 
@@ -761,9 +767,16 @@ class LoopLiterature {
 	 * 					]
 	 * @param Array $previousObjects
 	 * @param Array $objectData
-	 */
+	*/
+	/*
 	public static function getLiteratureNumberingOutput( $objectid, Array $pageData, $previousObjects = null, $objectData = null ) {
 
+		#man braucht die objectid/den key, die seite auf der der key erstmals angewandt wurde und DESSEN previousObjects.
+
+        $loopStructure = new LoopStructure();
+        $loopStructure->loadStructureItems();
+		$allFirstReferences = LoopLiteratureReference::getAllItems( $loopStructure  );
+		dd($previousObjects, $pageData, $allFirstReferences, $loopStructure);
 		$typeOfPage = $pageData[0];
 #dd($pageData);#
 		if ( $previousObjects == null ) {
@@ -794,7 +807,7 @@ class LoopLiterature {
 					
 			
 		}
-	}
+	}*/
 
 	 // returns all literature items from table
 	 public static function getAllItems ( $returnType = null ) {
@@ -902,7 +915,7 @@ class LoopLiterature {
 			}
 		}
         return $items;
-	}
+	} 
 	
 	/**
 	 * @param LoopLiterature $li entry to render
@@ -1374,15 +1387,22 @@ class LoopLiteratureReference {
         $objects = array();
         
         $loopStructureItems = $loopStructure->getStructureItems();
+		$glossaryPages = LoopGlossary::getGlossaryPages( "idArray" );
+		
+		$pageSequence = array();
+		foreach ( $loopStructureItems as $item ) {
+			$pageSequence[$item->sequence] = $item->article;
+			#$previousObjects[ $item->article ] = self::getLiteratureNumberingsForPage( $loopStructure, $item->article );
         
-        foreach ( $loopStructureItems as $loopStructureItem ) {
-            $previousObjects[ $loopStructureItem->article ] = self::getLiteratureNumberingsForPage( $loopStructure, $loopStructureItem->article );
-        }
-        
-		$glossaryItems = LoopGlossary::getGlossaryPages("idArray");
-        foreach ( $glossaryItems as $glossaryItem ) {
-            $previousObjects[ $glossaryItem ] = self::getLiteratureNumberingsForPage( $loopStructure, $glossaryItem );
-        }
+		}
+		$structureLength = sizeOf( $loopStructureItems );
+		$i = 1;
+		foreach ( $glossaryPages as $glossaryPage ) {
+			#$previousObjects[ $glossaryPage ] = self::getLiteratureNumberingsForPage( $loopStructure, $glossaryPage );
+			$pageSequence[ $structureLength + $i ] = $glossaryPage;
+			$i++;
+		}
+
         foreach( $res as $row ) {
             
             $numberText = '';
@@ -1397,13 +1417,14 @@ class LoopLiteratureReference {
 					'firstItemGlobal' => boolval( $row->llr_firstitemglobal )
                 );
                 
-                $lsi = LoopStructureItem::newFromIds($row->llr_pageid);
-                if ( $lsi ) {
-                    $pageData = array( "structure", $lsi, $loopStructure );
-                } elseif ( isset ( $previousObjects[ $row->llr_pageid ] ) ) {
-					$pageData = array( "glossary", $row->llr_pageid );
-                }
-				$numberText = LoopLiterature::getLiteratureNumberingOutput( $row->llr_refid, $pageData, $previousObjects[ $row->llr_pageid ], $objectData );
+                #$lsi = LoopStructureItem::newFromIds($row->llr_pageid);
+                #if ( $lsi ) {
+                #    $pageData = array( "structure", $lsi, $loopStructure );
+                #} elseif ( isset ( $previousObjects[ $row->llr_pageid ] ) ) {
+				#	$pageData = array( "glossary", $row->llr_pageid );
+				#}
+				#dd($previousObjects);
+				#$numberText = "";#LoopLiterature::getLiteratureNumberingOutput( $row->llr_refid, $pageData, $previousObjects, $objectData );
 			}
 			
             $objects[$row->llr_pageid][$row->llr_refid] = array(
@@ -1411,16 +1432,33 @@ class LoopLiteratureReference {
                 'articleId' => $row->llr_pageid,
                 'itemKey' => $row->llr_itemkey,
                 'nthItem' => $row->llr_nthitem,
-                'objectnumber' => $numberText
+                'firstReference' => boolval( $row->llr_firstitemglobal )
+                #'objectnumber' => $numberText
             );
 			
+		}
+		$currentNumber = 0;
+		$numberArray = array();
+		foreach ( $pageSequence as $seq => $articleId ) {
+			if ( isset( $objects[$articleId] ) ) {
+				#dd($objects[$articleId]);
+				foreach ( $objects[$articleId] as $obj ) {
+					if ( $obj["firstReference"] ) {
+						$currentNumber++;
+						$numberArray[$obj["itemKey"]] = $currentNumber;
+						$objects[$articleId][$obj["refId"]]["objectnumber"] = $currentNumber;
+					} else {
+						$objects[$articleId][$obj["refId"]]["objectnumber"] = $numberArray[$obj["itemKey"]];
+					}
+				}
+			}
 		}
 		#dd($objects);
         return $objects;
     }
 	
 	// returns number of literature items in structure and glossary before the given article
-    public static function getLiteratureNumberingsForPage ( LoopStructure $loopStructure, $articleId ) {
+    /*public static function getLiteratureNumberingsForPage ( LoopStructure $loopStructure, $articleId ) {
 
 		$structureItems = $loopStructure->structureItems;
 		$glossaryPages = LoopGlossary::getGlossaryPages( "idArray" );
@@ -1475,7 +1513,7 @@ class LoopLiteratureReference {
 		}
 		#dd($return);
         return $return;
-    }
+    }*/
     
 }
 
