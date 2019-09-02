@@ -149,7 +149,6 @@ $( document ).ready( function () {
             $("#overwrite").prop("disabled", false)
             $("#overwrite").parent().removeClass("d-none")
             if ( $("#overwrite").prop("checked") == true ) {
-                //$("#keymsg").hide()
                 $("#loopliterature-submit").prop("disabled", false)
             } else { 
                 $("#keymsg").show()
@@ -160,11 +159,6 @@ $( document ).ready( function () {
             $("#loopliterature-submit").prop("disabled", false)
             $("#overwrite").prop("disabled", true)
             $("#overwrite").parent().addClass("d-none")
-        }
-        if ( $val.includes("#") ) {
-            $('#keymsg2').show()
-        } else {
-            $("#keymsg2").hide()
         }
     }
     
