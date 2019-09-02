@@ -493,7 +493,7 @@ class LoopLiterature {
 					new HtmlArmor( $text ),
 					array( 
 						"title" => str_replace( "+" , " " , $input ),
-						"data-target" => $input, # target id will be added in hook
+						"data-target" => "lit-".$input, # target id will be added in hook
 						"class" => "literature-link"
 					) 
 				);
@@ -527,7 +527,7 @@ class LoopLiterature {
 					new HtmlArmor( $text ),
 					array( 
 						"title" => str_replace( "+" , " " , $input ),
-					    "data-target" => $refId, # target id will be added in hook
+					    "data-target" => "lit-".$input, # target id will be added in hook
 					    "class" => "literature-link"
 					) 
 				);
@@ -1209,84 +1209,85 @@ class LoopLiteratureReference {
 		}
 		if ( array_search ( $this->pageId, $pageSequence ) === false ) {
 			$this->firstItemGlobal = false; # this reference is not in structure or glossary.
-			return;
 		}
+		if ( $this->firstItemGlobal === null ) {
 
-		$dbr = wfGetDB( DB_REPLICA );
-		$res = $dbr->select(
-			'loop_literature_references',
-			array(
-                'llr_itemkey',
-                'llr_pageid',
-                'llr_refid',
-                'llr_nthitem',
-                'llr_firstitemglobal'
-			),
-			array(
-				'llr_itemkey = "' . $itemKey .'"'
-			),
-			__METHOD__
-		);
-		$objects = array();
-		foreach( $res as $row ) {
-			# this is not necessarily the first occurrence of that key. will investigate further later
-			
-			$objects[$row->llr_pageid][$row->llr_nthitem] = array(
-				'refId' => $row->llr_refid,
-				'firstItemGlobal' => boolval( $row->llr_firstitemglobal )
+			$dbr = wfGetDB( DB_REPLICA );
+			$res = $dbr->select(
+				'loop_literature_references',
+				array(
+					'llr_itemkey',
+					'llr_pageid',
+					'llr_refid',
+					'llr_nthitem',
+					'llr_firstitemglobal'
+				),
+				array(
+					'llr_itemkey = "' . $itemKey .'"'
+				),
+				__METHOD__
 			);
-		}
-		if ( empty ( $objects ) ) {
-			if  ( $lsi || $title->getNamespace() == NS_GLOSSARY )  {
-				# this is the *very* first occurrence. return true!
-				$this->firstItemGlobal = true;
-				return;
-			} else {
-				# it's the first occurrence but not in structure or glossary.
-				$this->firstItemGlobal = false;
-				return;
+			$objects = array();
+			foreach( $res as $row ) {
+				# this is not necessarily the first occurrence of that key. will investigate further later
+				
+				$objects[$row->llr_pageid][$row->llr_nthitem] = array(
+					'refId' => $row->llr_refid,
+					'firstItemGlobal' => boolval( $row->llr_firstitemglobal )
+				);
 			}
-		} else {
-			# this key has been referenced already. it must be determined which one occurs first.
-			if  ( array_search ( $this->pageId, $pageSequence ) !== false ) {
-				$seqVal = array_search ( $this->pageId, $pageSequence );
-			} else {
-				$this->firstItemGlobal = false; # this reference is not in structure or glossary.
-				return;
-			}
-
-			$keySequence = array( $seqVal => array( $this->nthItem => array( "refId" => null, "firstItemGlobal" => null ) ) );
-			foreach ( $objects as $article => $object ) {
-				foreach ( $object as $n => $data ) { # n is sequence position
-					$tmpLsi = LoopStructureItem::newFromIds ( $article );
-					if ( array_search ( $article, $pageSequence ) != false ) { # page is in structure!
-						$keySequence[ array_search ( $article, $pageSequence ) ][ $n ] = $data;
-					}
+			if ( empty ( $objects ) ) {
+				if  ( $lsi || $title->getNamespace() == NS_GLOSSARY )  {
+					# this is the *very* first occurrence. return true!
+					$this->firstItemGlobal = true;
+				} else {
+					# it's the first occurrence but not in structure or glossary.
+					$this->firstItemGlobal = false;
 				}
-			}
-			ksort($keySequence);
-			$firstKey = array_key_first($keySequence);
-			foreach ( $keySequence as $seq => $arr ) {
-				foreach ( $arr as $nth => $itemdata ) {
-					$val = ( $seq == $firstKey && $nth === 1 ) ? true : false; # if it's the first key in 
-					if ( $itemdata["firstItemGlobal"] != $val || !isset( $itemdata["firstItemGlobal"] )) {
-						if ( isset ( $itemdata["refId"] ) ) {
-							$item = self::getItemData( $itemdata["refId"], true );
-							$dbw = wfGetDB( DB_MASTER );
-							$dbw->delete(
-								'loop_literature_references',
-								'llr_refid = "' . $itemdata["refId"] .'"',
-								__METHOD__
-							);
-							$item->firstItemGlobal = $val;
-							$item->addToDatabase();	
-						} else {
-							$this->firstItemGlobal = $val;
+			} else {
+				# this key has been referenced already. it must be determined which one occurs first.
+				if  ( array_search ( $this->pageId, $pageSequence ) !== false ) {
+					$seqVal = array_search ( $this->pageId, $pageSequence );
+				} else {
+					$this->firstItemGlobal = false; # this reference is not in structure or glossary.
+				}
+
+				$keySequence = array( $seqVal => array( $this->nthItem => array( "refId" => null, "firstItemGlobal" => null ) ) );
+				foreach ( $objects as $article => $object ) {
+					foreach ( $object as $n => $data ) { # n is sequence position
+						$tmpLsi = LoopStructureItem::newFromIds ( $article );
+						if ( array_search ( $article, $pageSequence ) != false ) { # page is in structure!
+							$keySequence[ array_search ( $article, $pageSequence ) ][ $n ] = $data;
 						}
 					}
 				}
+				ksort($keySequence);
+				$changedObjects = array();
+				$firstKey = array_key_first($keySequence);
+				foreach ( $keySequence as $seq => $arr ) {
+					foreach ( $arr as $nth => $itemdata ) {
+						$val = ( $seq == $firstKey ) ? true : false; # if it's the first key in structure
+						if ( $itemdata["firstItemGlobal"] != $val )
+							if ( isset ( $itemdata["refId"] ) ) {
+								$item = self::getItemData( $itemdata["refId"], true );
+								$dbw = wfGetDB( DB_MASTER );
+								$dbw->delete(
+									'loop_literature_references',
+									'llr_refid = "' . $itemdata["refId"] .'"',
+									__METHOD__
+								);
+								$item->firstItemGlobal = $val;
+								$item->addToDatabase();	
+							} else {
+								$this->firstItemGlobal = $val;
+							}
+						}
+					}
+				}
+			} else {
+				$this->firstItemGlobal = false;
 			}
-		}
+		
 		return;
 	}
 	
@@ -1344,19 +1345,25 @@ class LoopLiteratureReference {
 			$numberArray = array();
 			
 			# count objects in page sequence: first all objects in structure, then in glossary (alphabetical)
+			#dd($pageSequence, $numberArray);
 			foreach ( $pageSequence as $seq => $articleId ) {
-					if ( isset( $objects[$articleId] ) ) {
+				if ( isset( $objects[$articleId] ) ) {
+					#dd($numberArray);
 					foreach ( $objects[$articleId] as $obj ) {
 						if ( $obj["firstReference"] ) {
 							$currentNumber++;
 							$numberArray[$obj["itemKey"]] = $currentNumber;
 							$objects[$articleId][$obj["refId"]]["objectnumber"] = $currentNumber;
-						} else {
+						} elseif ( isset ( $numberArray[$obj["itemKey"]] ) ) {
 							$objects[$articleId][$obj["refId"]]["objectnumber"] = $numberArray[$obj["itemKey"]];
+						} else {
+							#todo error!
+							#dd( "error" , $obj, $numberArray);
 						}
 					}
 				}
 			}
+			#dd( $numberArray,$objects);
 			# add numbers to counted objects on pages that are NOT in structure or glossary.
 			foreach ( $objects as $page => $refs ) { 
 					foreach ( $refs as $ref => $data ) {
@@ -1381,6 +1388,7 @@ class SpecialLoopLiterature extends SpecialPage {
 	public function execute( $sub ) {
 		global $wgLoopLiteratureCiteType;
 		$user = $this->getUser();
+		#dd($this->getContext());
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
 		$out = $this->getOutput();
 		$out->setPageTitle($this->msg('loopliterature'));
@@ -1427,8 +1435,8 @@ class SpecialLoopLiterature extends SpecialPage {
         global $wgLoopLiteratureCiteType;
         $loopStructure = new LoopStructure();
         $loopStructure->loadStructureItems();
-		$vancouver = $wgLoopLiteratureCiteType == "vancouver" ? true : false;
-        $allReferences = LoopLiteratureReference::getAllItems( $loopStructure, $vancouver );
+		$strict = true; #must be activated in vancouver. in harvard it will reduce the shown pages in the upper half to those in structure.
+        $allReferences = LoopLiteratureReference::getAllItems( $loopStructure, $strict );
         $allReferences_links = LoopLiteratureReference::getAllItems( $loopStructure );
         $allItems = LoopLiterature::getAllItems();
         $allItemsCopy = $allItems;
@@ -1446,27 +1454,31 @@ class SpecialLoopLiterature extends SpecialPage {
                         }
                     } else {
                         $orderkey = $referenceData["objectnumber"];
-                    }
+					}
                     $literatureItem = $allItems[$referenceData["itemKey"]];
                     if ( isset( $allItemsCopy[$referenceData["itemKey"]] ) ) {
                         unset( $allItemsCopy[$referenceData["itemKey"]] );
 					}
 					if ( $type == "html" ) {
-						$elements[$orderkey] = '<p class="literature-entry" id="'. $referenceData["itemKey"].'">';
-						$elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type, false, $allReferences, $allReferences_links );
-						$elements[$orderkey] .= '</p>';
+						$tmpElement = '<p class="literature-entry" id="lit-'. $referenceData["itemKey"].'">';
+						$tmpElement .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, $type, false, $allReferences, $allReferences_links );
+						$tmpElement .= '</p>';
 					} else {
-						$elements[$orderkey] = '<paragraph>';
-						$elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, "xml" );#
-						$elements[$orderkey] .= '</paragraph>';
+						$tmpElement = '<paragraph>';
+						$tmpElement .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, "xml" );#
+						$tmpElement .= '</paragraph>';
 					}
+					$elements[$orderkey][$referenceData["itemKey"]] = $tmpElement;
                 } 
             }
-        }
+		}
 		ksort( $elements, SORT_STRING );
-        foreach ( $elements as $element ) {
-            $return .= $element;
-        }
+		
+        foreach ( $elements as $order ) {
+			foreach ( $order as $element ) {
+				$return .= $element;
+			}
+		}
         if ( ! empty( $allItemsCopy ) ) {
             $elements = array();
             
@@ -1486,20 +1498,22 @@ class SpecialLoopLiterature extends SpecialPage {
                 }
                 
                 if ( $type == "html" ) {
-                    $elements[$orderkey] = '<p class="literature-entry">';
-                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $item, array() );
-                    $elements[$orderkey] .= '</p>';
+                    $tmpElement = '<p class="literature-entry">';
+                    $tmpElement .= LoopLiterature::renderLiteratureElement( $item, array() );
+                    $tmpElement .= '</p>';
                 } else {
-                    $elements[$orderkey] = '<paragraph>';# id="a'. $referenceData["refId"].'">';
-                    $elements[$orderkey] .= LoopLiterature::renderLiteratureElement( $item, array(), 'xml' );
-                    $elements[$orderkey] .= '</paragraph>';
+                    $tmpElement = '<paragraph>';# id="a'. $referenceData["refId"].'">';
+                    $tmpElement .= LoopLiterature::renderLiteratureElement( $item, array(), 'xml' );
+                    $tmpElement .= '</paragraph>';
                 }
-                
+				$elements[$orderkey][$referenceData["itemKey"]] = $tmpElement;
             }
             ksort( $elements, SORT_STRING );
-            foreach ( $elements as $element ) {
-                $return .= $element;
-            }
+			foreach ( $elements as $order ) {
+				foreach ( $order as $element ) {
+					$return .= $element;
+				}
+			}
         }
         return $return;
     }
