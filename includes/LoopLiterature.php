@@ -211,8 +211,8 @@ class LoopLiterature {
 													$this->edition = intval($value);
 													break;
 												case "number":
-												$this->number = intval($value);
-												break;
+													$this->number = intval($value);
+													break;
 												case "url":
 													$this->url = $value;
 													break;
@@ -250,12 +250,18 @@ class LoopLiterature {
 	public static function checkDataValidity( $key, $val ) {
 		
 		switch ( $key ) {
+			case "itemKey":
+				#if ( is_numeric( $val ) ) {
+				#	return true;
+				#} else { return false; }
+				return true; #TODO
+				
 			case "edition":
 				$int_val = intval($val);
 				if ( is_numeric( $val ) ) {
 					return true;
 				} else { return false; }
-				
+			
 			case "number":
 				$int_val = intval($val);
 				if ( is_numeric( $val ) ) {
@@ -1412,7 +1418,12 @@ class SpecialLoopLiterature extends SpecialPage {
                 $linkRenderer->setForceArticlePath(true); #required for readable links
                 $html .= $linkRenderer->makeLink(
                     new TitleValue( NS_SPECIAL, 'LoopLiteratureEdit' ),
-                    new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive float-right mt-1">' . wfMessage( "loopliterature-label-addentry" ) . "</div>" ),
+                    new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive float-right mt-1 ml-1">' . wfMessage( "loopliterature-label-addentry" ) . "</div>" ),
+                    array()
+                    );
+                $html .= $linkRenderer->makeLink(
+                    new TitleValue( NS_SPECIAL, 'LoopLiteratureImport' ),
+                    new HtmlArmor( '<div class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive float-right mt-1 ml-1">' . wfMessage( "loopliterature-label-import" ) . "</div>" ),
                     array()
                     );
             }
@@ -1548,6 +1559,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$html .= wfMessage( "loopliterature-label-addentry" )->text();
 			$html .= '</h1>';
 
+			$html .= wfMessage( "loopliterature-import-hint" );
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 			$linkRenderer->setForceArticlePath(true); #required for readable links
 			$request = $this->getRequest();
@@ -1556,16 +1568,20 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			if ( $editKey ) {
 				$editLiteratureItem = new LoopLiterature;
 				$editLiteratureItem->loadLiteratureItem( $editKey );
-				$html .= '<script>var editValues = new Array;';
-				$html .= 'editValues = {';
-				$itemArray = get_object_vars($editLiteratureItem);
-				foreach ( $itemArray as $key => $val ) {
-					if ( $key != "literatureTypes" && $key != "errors" && isset($val) ) {
-						$val = str_replace('"', "&quot;", $val);
-						$html .= ''. $key.': "'. $val.'",';
+				if (!isset ($editLiteratureItem->itemKey)) {
+					$editKey = '';
+				} else {
+					$html .= '<script>var editValues = new Array;';
+					$html .= 'editValues = {';
+					$itemArray = get_object_vars($editLiteratureItem);
+					foreach ( $itemArray as $key => $val ) {
+						if ( $key != "literatureTypes" && $key != "errors" && isset($val) ) {
+							$val = str_replace('"', "&quot;", $val);
+							$html .= ''. $key.': "'. $val.'",';
+						}
 					}
+					$html .= '}</script>';
 				}
-				$html .= '}</script>';
 			} else {
 				$html .= '<script>var editValues = new Array;</script>';
 			}
@@ -1576,7 +1592,6 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			$out->setPageTitle($this->msg('loopliteratureedit')->text());
 			$out->addModules( 'loop.special.literature-edit.js' );
 
-			
 			if ( ! empty( $requestToken ) ) {
 
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
@@ -1674,8 +1689,9 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			} else {
 				$presetData = $loopLiterature->literatureTypes["book"];
 			}
+			#dd($presetData,  $loopLiterature);
 			$requiredObjects  = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
-			$requiredObjects .= '<input class="form-control" id="itemKey" name="itemKey" max-length="255" required/>';
+			$requiredObjects .= '<input class="form-control" id="itemKey" name="itemKey" max-length="255" required pattern="[A-Za-z-+.&_]{1,}"/>';
 			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
 			$requiredObjects .= '<div class="col-12 mb-1' . ( $editKey ? '"' :  ' d-none"' ). '>';
 			$requiredObjects .= '<input class="mr-2" type="checkbox" id="overwrite" name="overwrite" value="true"' . ( $editKey ? " required checked" : " disabled" ) . '/>';
@@ -1748,19 +1764,251 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
+		global $wgSecretKey;
+
 		$user = $this->getUser();
+        $request = $this->getRequest();
+        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
 		$out = $this->getOutput();
 		$out->setPageTitle($this->msg('loopliteratureimport'));
+        $html = '<h1>';
+		$html .= wfMessage( 'loopliteratureimport' )->text();
+		$html .= '</h1>';
+		
+		if ( $user->isAllowed('loop-edit-literature') ) {
 
+			$contentToImport = $request->getText( 'loopliterature-import-input' );
+			
+			$messages = '';
+
+			if ( !empty ( $contentToImport ) ) {
+				$handled = self::handleImportRequest( $contentToImport );
+
+				if ( empty( $handled["errors"] ) ) { #no errors!
+					$messageType = "success";
+					if ( ! empty( $handled["success"] ) ) { # all success!
+						$messages .= wfMessage( "loopliterature-import-success" )->text() . "<br>";
+						$messageType = "success";
+						foreach ( $handled["success"] as $msg ) {
+							$messages .= "- <b>" . $msg . '</b><br>';
+						}
+					} else { # nothing found! no error, no success
+						$messages = wfMessage( "loopliterature-import-no-bibtex" )->text();
+						$messageType = "warning";
+					}
+				} else {
+					$messageType = "warning";
+					if ( empty( $handled["success"] ) ) {
+						$messageType = "danger";
+					}
+					$messages .= wfMessage( "loopliterature-import-fail" )->text() . "<br>";
+					foreach ( $handled["errors"] as $msg ) {
+						$messages .= "- " . $msg . '<br>';
+					}
+
+				}
+				$html .= '<div class="alert alert-'.$messageType.'" role="alert">' . $messages . '</div>';
+		
+				#dd($contentToImport, $request);
+			} 
+		    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		    $linkRenderer->setForceArticlePath(true); #required for readable links
+			$out = $this->getOutput();
+
+			$html .= wfMessage( "loopliterature-import-description")->text();
+			
+	        $html .= Html::openElement(
+	                'form',
+	                array(
+	                    'class' => 'mw-editform mt-3 mb-3',
+	                    'id' => 'loopliterature-import-form',
+	                    'method' => 'post',
+	                    'enctype' => 'multipart/form-data'
+	                )
+	            )
+	            . Html::rawElement(
+	                'textarea',
+	                array(
+	                    'name' => 'loopliterature-import-input',
+	                    'id' => 'loopliterature-import-textarea',
+	                    'rows' => 15,
+	                    'class' => 'd-block mt-3 w-100',
+	                ),
+	                $contentToImport
+	            )
+	            . Html::rawElement(
+	                'input',
+	                array(
+	                    'type' => 'hidden',
+	                    'name' => 't',
+	                    'id' => 'loopliterature-import-token',
+	                    'value' => $saltedToken
+	                )
+	            )
+	            . Html::rawElement(
+	                'input',
+	                array(
+	                    'type' => 'submit',
+	                    'class' => 'mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2',
+	                    'id' => 'loopliterature-import-submit',
+	                    'value' => $this->msg( 'submit' )->parse()
+	                )
+	            ) . Html::closeElement(
+	                'form'
+				);
+
+
+		} else {
+			$html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
+		}
+		$out->addHTML( $html );
+    }
+
+	private static function handleImportRequest ( $input ) {
+		global $IP;
+		
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Parser.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/ListenerInterface.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Listener.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ExceptionInterface.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ParserException.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ProcessorException.php";
+
+		$bibtexParser = new RenanBr\BibTexParser\Parser();
+		$bibtexListener = new RenanBr\BibTexParser\Listener();
+		$bibtexParser->addListener($bibtexListener);
+		$errors = array();
+		$success = array();
+
+		try {
+			$bibtexParser->parseString($input);
+			$entries = $bibtexListener->export();
+		
+			foreach ( $entries as $entry ) {
+				
+				$tmpLiterature = new LoopLiterature();
+
+				preg_match('/(@\s*)(.*)(\s*{)/', $entry["_original"], $type);
+					#dd($type, $entry["_original"], array_key_exists( $type[2],  $tmpLiterature->literatureTypes ), $tmpLiterature->literatureTypes );
+				if ( array_key_exists( $type[2], $tmpLiterature->literatureTypes ) ) {
+
+					$tmpLiterature->itemType = $type[2];
+				
+					foreach ( $entry as $key => $val ) {
+							switch ( $key ) {
+								case "citation-key":
+									$tmpLiterature->itemKey = $val;
+									break;
+								case "type":
+									if ( array_key_exists( $val, $tmpLiterature->literatureTypes ) ) {
+										$tmpLiterature->type = $val;
+									}
+									break;
+								case "title":
+									$tmpLiterature->itemTitle = $val;
+									break;
+								default: 
+									$tmpLiterature->$key = $val;
+									break;
+							}
+						}
+					
+					if ( isset ( $tmpLiterature->itemKey ) ) {
+						$existingKey = new LoopLiterature();
+						$exists = $existingKey->loadLiteratureItem( $tmpLiterature->itemKey );
+						if ( ! $exists ) {
+							#dd($exists);
+							$tmpLiterature->addToDatabase();
+							$success[] = $tmpLiterature->itemKey;
+						} else {
+							$errors[] = wfMessage( "loopliterature-error-dublicatekey", $tmpLiterature->itemKey );
+						}
+
+					}
+				}
+				#dd($tmpLiterature, $key);
+			}
+		} catch (ParserException $exception) {
+			#throw 1;
+			#dd(1);
+			#$errors[] = $exception;
+		}
+		#dd( array( "success" => $success, "errors" => $errors ) );
+		return array( "success" => $success, "errors" => $errors );
+		#return true;
+	}
+
+	/**
+	 * Specify the specialpages-group loop
+	 *
+	 * @return string
+	 */
+	protected function getGroupName() {
+		return 'loop';
+	}
+}
+
+class SpecialLoopLiteratureExport extends SpecialPage {
+
+	public function __construct() {
+		parent::__construct( 'LoopLiteratureExport' );
+	}
+
+	public function execute( $sub ) {
+		$user = $this->getUser();
+		$out = $this->getOutput();
+		$out->setPageTitle($this->msg('loopliteratureexport'));
+        $html = '<h1>';
+		$html .= wfMessage( 'loopliteratureexport' )->text();
+		$html .= '</h1>';
+		
 		if ( $user->isAllowed('loop-edit-literature') ) {
 			
 		    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		    $linkRenderer->setForceArticlePath(true); #required for readable links
 			$out = $this->getOutput();
 
-			$html = "Hello world!";
+			$allItems = LoopLiterature::getAllItems();
+			$export = '';
+			foreach( $allItems as $key => $item ) {
+				$type = $item->itemType == "LOOP1" ? "misc" : $item->itemType;
+				#$key = $item->itemKey.replace("ß", "ss").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("Ä", "AE").replace("Ö", "OE").replace("Ü", "UE").replace("#", "+").replace(",", "").replace("(", "[").replace(")", "]").replace("{", "[").replace("}", "]").replace("=", "-").replace("%", "-").replace("\"", "").replace("'", "");
+				#https://tex.stackexchange.com/questions/408530/what-characters-are-allowed-to-use-as-delimiters-for-bibtex-keys
+				$export .= "@$type{ $item->itemKey,\n";
+				$item->title = $item->itemTitle;
+				unset($item->id);
+				unset($item->literatureTypes);
+				unset($item->errors);
+				unset($item->itemType);
+				unset($item->itemKey);
+				unset($item->itemTitle);
+				foreach ( $item as $key => $val) {
+					if ( !empty($val) ) {
+						$export .= "\t" . $key . " = " . '"' . $val . '",' . "\n";  
+					}
+					#dd($key);
+				}
+				$export .= "}\n";
 
+				
+			}
+
+			$html .= Html::rawElement(
+				'textarea',
+				array(
+					'name' => 'loopliterature-export',
+					'id' => 'loopliterature-export-textarea',
+					'rows' => "25",
+					'class' => 'd-block mt-3 w-100',
+				),
+				$export
+			);
+			#$html .= "Hello world!";
+
+		} else {
+			$html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
 		}
+		$out->addHTML( $html );
     }
 
 	/**

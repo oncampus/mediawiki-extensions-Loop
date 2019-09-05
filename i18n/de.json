@@ -205,6 +205,7 @@
 	"loopliterature": "Literaturverzeichnis",
 	"loopliteratureedit": "Literatureintrag bearbeiten",
 	"loopliteratureimport": "Literatur importieren",
+	"loopliteratureexport": "Literatur exportieren",
 
 	"loopliterature-entry-article": "Artikel",
 	"loopliterature-entry-book": "Buch",
@@ -264,6 +265,13 @@
 	"loopliterature-label-volume": "Band",
 	"loopliterature-label-year": "Jahr",
 	"loopliterature-label-overwrite": "Daten zu diesem Zitatschlüssel überschreiben",
+	"loopliterature-import-description": "Auf dieser Seite können Sie beliebig viele Literatureinträge gleichzeitig im BibTeX-Format importieren.",
+	"loopliterature-import-hint": "Legen Sie hier einen Literatureintrag an, der dann im Literaturverzeichnis dargestellt wird. Anschließend lässt sich der Eintrag in einem <nowiki><cite></nowiki>-Tag referenzieren. <br>Sie können auch mehrere Einträge im BibTeX-Format [[Special:LoopLiteratureImport| importieren]].",
+	"loopliterature-import-success": "Die folgenden Einträge wurden erfolgreich importiert:",
+	"loopliterature-import-fail": "Es sind Fehler aufgetreten:",
+	"loopliterature-label-import": "BibTeX importieren",
+	"loopliterature-label-export": "Literatur exportieren",
+	"loopliterature-import-no-bibtex": "Im angegebenen Text konnte kein BibTeX-Eintrag erkannt werden.",
 
 	"loopliterature-alert-saved": "Der Literatureintrag '''$1''' wurde gespeichert.",
 	"loopliterature-alert-deleted": "Der Literatureintrag '''$1''' wurde gelöscht.",
