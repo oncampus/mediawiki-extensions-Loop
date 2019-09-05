@@ -1867,40 +1867,51 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 	private static function handleImportRequest ( $input ) {
 		global $IP;
 		
+		require "$IP/extensions/Loop/vendor/ryakad/pandoc-php/src/Pandoc/Pandoc.php";
+		require "$IP/extensions/Loop/vendor/ryakad/pandoc-php/src/Pandoc/PandocException.php";
+		
+		
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Parser.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/ListenerInterface.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Listener.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ExceptionInterface.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ParserException.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ProcessorException.php";
-
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/TagSearchTrait.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/TagCoverageTrait.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/LatexToUnicodeProcessor.php";
+		
 		$bibtexParser = new RenanBr\BibTexParser\Parser();
 		$bibtexListener = new RenanBr\BibTexParser\Listener();
+		$bibtexListener->addProcessor(new RenanBr\BibTexParser\Processor\LatexToUnicodeProcessor());
 		$bibtexParser->addListener($bibtexListener);
 		$errors = array();
 		$success = array();
 
-		try {
+		#try {
 			$bibtexParser->parseString($input);
 			$entries = $bibtexListener->export();
-		
+		#dd($entries);
 			foreach ( $entries as $entry ) {
-				
+				#dd($entry);
 				$tmpLiterature = new LoopLiterature();
 
-				preg_match('/(@\s*)(.*)(\s*{)/', $entry["_original"], $type);
-					#dd($type, $entry["_original"], array_key_exists( $type[2],  $tmpLiterature->literatureTypes ), $tmpLiterature->literatureTypes );
-				if ( array_key_exists( $type[2], $tmpLiterature->literatureTypes ) ) {
-
-					$tmpLiterature->itemType = $type[2];
+				preg_match('/(@\s*)([a-zA-Z]+)/', $entry["_original"], $type);
+				#dd($type, $entry["_original"], array_key_exists( $type[2],  $tmpLiterature->literatureTypes ), $tmpLiterature->literatureTypes );
+					
+				if ( isset ( $type[2] ) ) {
 				
-					foreach ( $entry as $key => $val ) {
+    				if ( array_key_exists( $type[2], $tmpLiterature->literatureTypes ) ) {
+    
+    					$tmpLiterature->itemType = $type[2];
+    				
+    					foreach ( $entry as $key => $val ) {
 							switch ( $key ) {
 								case "citation-key":
 									$tmpLiterature->itemKey = $val;
 									break;
 								case "type":
-									if ( array_key_exists( $val, $tmpLiterature->literatureTypes ) ) {
+									if ( ! array_key_exists( $val, $tmpLiterature->literatureTypes ) ) {
 										$tmpLiterature->type = $val;
 									}
 									break;
@@ -1910,29 +1921,29 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 								default: 
 									$tmpLiterature->$key = $val;
 									break;
-							}
-						}
-					
-					if ( isset ( $tmpLiterature->itemKey ) ) {
-						$existingKey = new LoopLiterature();
-						$exists = $existingKey->loadLiteratureItem( $tmpLiterature->itemKey );
-						if ( ! $exists ) {
-							#dd($exists);
-							$tmpLiterature->addToDatabase();
-							$success[] = $tmpLiterature->itemKey;
-						} else {
-							$errors[] = wfMessage( "loopliterature-error-dublicatekey", $tmpLiterature->itemKey );
-						}
-
-					}
+    						}
+    					}
+    					if ( isset ( $tmpLiterature->itemKey ) ) {
+    						$existingKey = new LoopLiterature();
+    						$exists = $existingKey->loadLiteratureItem( $tmpLiterature->itemKey );
+    						if ( ! $exists ) {
+    							#dd($exists);
+    							$tmpLiterature->addToDatabase();
+    							$success[] = $tmpLiterature->itemKey;
+    						} else {
+    							$errors[] = wfMessage( "loopliterature-error-dublicatekey", $tmpLiterature->itemKey );
+    						}
+    
+    					}
+    				}
 				}
 				#dd($tmpLiterature, $key);
 			}
-		} catch (ParserException $exception) {
+		#} catch (ParserException $exception) {
 			#throw 1;
 			#dd(1);
 			#$errors[] = $exception;
-		}
+		#}
 		#dd( array( "success" => $success, "errors" => $errors ) );
 		return array( "success" => $success, "errors" => $errors );
 		#return true;
