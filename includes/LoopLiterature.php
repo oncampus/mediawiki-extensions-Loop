@@ -1870,13 +1870,12 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 		require "$IP/extensions/Loop/vendor/ryakad/pandoc-php/src/Pandoc/Pandoc.php";
 		require "$IP/extensions/Loop/vendor/ryakad/pandoc-php/src/Pandoc/PandocException.php";
 		
-		
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Parser.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/ListenerInterface.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Listener.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ExceptionInterface.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ParserException.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ProcessorException.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Parser.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/ListenerInterface.php";
+		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Listener.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/TagSearchTrait.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/TagCoverageTrait.php";
 		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/LatexToUnicodeProcessor.php";
@@ -1888,16 +1887,13 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 		$errors = array();
 		$success = array();
 
-		#try {
+		try {
 			$bibtexParser->parseString($input);
 			$entries = $bibtexListener->export();
-		#dd($entries);
 			foreach ( $entries as $entry ) {
-				#dd($entry);
 				$tmpLiterature = new LoopLiterature();
 
 				preg_match('/(@\s*)([a-zA-Z]+)/', $entry["_original"], $type);
-				#dd($type, $entry["_original"], array_key_exists( $type[2],  $tmpLiterature->literatureTypes ), $tmpLiterature->literatureTypes );
 					
 				if ( isset ( $type[2] ) ) {
 				
@@ -1927,7 +1923,6 @@ class SpecialLoopLiteratureImport extends SpecialPage {
     						$existingKey = new LoopLiterature();
     						$exists = $existingKey->loadLiteratureItem( $tmpLiterature->itemKey );
     						if ( ! $exists ) {
-    							#dd($exists);
     							$tmpLiterature->addToDatabase();
     							$success[] = $tmpLiterature->itemKey;
     						} else {
@@ -1937,16 +1932,11 @@ class SpecialLoopLiteratureImport extends SpecialPage {
     					}
     				}
 				}
-				#dd($tmpLiterature, $key);
 			}
-		#} catch (ParserException $exception) {
-			#throw 1;
-			#dd(1);
-			#$errors[] = $exception;
-		#}
-		#dd( array( "success" => $success, "errors" => $errors ) );
+		} catch ( RenanBr\BibTexParser\Exception\ExceptionInterface $exception) {
+			$errors[] = $exception->getMessage();
+		}
 		return array( "success" => $success, "errors" => $errors );
-		#return true;
 	}
 
 	/**
