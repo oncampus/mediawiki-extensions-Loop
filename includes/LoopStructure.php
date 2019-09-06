@@ -926,7 +926,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		$requestToken = $request->getText( 't' );
 
 		$userIsPermitted = (! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ));
-
+		$success = null;
 		$error = false;
 		$feedbackMessageClass = 'success';
 
@@ -982,7 +982,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 												$this->msg( 'loopstructure-save-success' )->parse()
 											)
 										);
-	
+										$success = true;
 									} else {
 										$error = $this->msg( 'loopstructure-save-equal-error' )->parse();
 										$feedbackMessageClass = 'warning';
@@ -1033,7 +1033,11 @@ class SpecialLoopStructureEdit extends SpecialPage {
         if( $userIsPermitted ) {
 
         	# user is permitted to edit the toc, print edit form here
-
+			if ( !empty ($newStructureContent) && ! $success ) {
+				$displayedStructure = $newStructureContent;
+			} else {
+				$displayedStructure = $currentStructureAsWikiText;
+			}
 	        $out->addHTML(
 	            Html::openElement(
 	                'form',
@@ -1052,7 +1056,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 	                    'tabindex' => ++$tabindex,
 	                    'class' => 'd-block mt-3',
 	                ),
-	                $currentStructureAsWikiText
+	                $displayedStructure
 	            )
 	            . Html::rawElement(
 	                'input',
