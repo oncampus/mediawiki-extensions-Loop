@@ -1377,14 +1377,10 @@ class LoopLiteratureReference {
 							$objects[$articleId][$obj["refId"]]["objectnumber"] = $currentNumber;
 						} elseif ( isset ( $numberArray[$obj["itemKey"]] ) ) {
 							$objects[$articleId][$obj["refId"]]["objectnumber"] = $numberArray[$obj["itemKey"]];
-						} else {
-							#todo error!
-							#dd( "error" , $obj, $numberArray);
-						}
+						} 
 					}
 				}
 			}
-			#dd( $numberArray,$objects);
 			# add numbers to counted objects on pages that are NOT in structure or glossary.
 			foreach ( $objects as $page => $refs ) { 
 					foreach ( $refs as $ref => $data ) {
