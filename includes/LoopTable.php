@@ -65,7 +65,11 @@ class SpecialLoopTables extends SpecialPage {
 	
 	public function execute($sub) {
 	    
-		$out = $this->getOutput ();
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 		$out->setPageTitle ( $this->msg ( 'looptables-specialpage-title' ) );
 		$html = self::renderLoopTableSpecialPage();
 		$out->addHtml ( $html );

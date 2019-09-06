@@ -24,6 +24,8 @@ class SpecialPurgeCache extends SpecialPage {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		
 		$this->setHeaders();
 		if ( $out->getUser()->isAllowed( 'purgecache' ) ) {

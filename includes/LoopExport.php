@@ -345,11 +345,13 @@ class SpecialLoopExport extends SpecialPage {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
-		$user = $this->getUser();
-		$config = $this->getConfig();
-		$request = $this->getRequest();
-		$context = $this->getContext();
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$config = $this->getConfig();
+		$context = $this->getContext();
 
 		$out->setPageTitle( $this->msg( 'loopexport-specialpage-title' ) );
 
@@ -358,10 +360,7 @@ class SpecialLoopExport extends SpecialPage {
 		$out->addHtml ('</h1>');
 
 		$out->addHtml ($sub);
-		//dd($sub, $request);
-
 		$structure = new LoopStructure();
-
 		$sub = mb_strtolower($sub);
 
 		$export = false;

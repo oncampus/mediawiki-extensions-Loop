@@ -69,7 +69,11 @@ class SpecialLoopTasks extends SpecialPage {
 	
 	public function execute($sub) {
 	    
-		$out = $this->getOutput ();
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 		$out->setPageTitle ( $this->msg ( 'looptasks-specialpage-title' ) );
 		$html = self::renderLoopTaskSpecialPage();
 		$out->addHtml ( $html );

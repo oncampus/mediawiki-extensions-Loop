@@ -819,9 +819,12 @@ class SpecialLoopStructure extends SpecialPage {
 
 	public function execute( $sub ) {
 
-		$user = $this->getUser();
-		$this->setHeaders();
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopstructure-specialpage-title' ) );
 		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
@@ -898,9 +901,12 @@ class SpecialLoopStructureEdit extends SpecialPage {
 
 		global $wgSecretKey;
 
-		$user = $this->getUser();
-		$this->setHeaders();
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopstructure-edit-specialpage-title' ) );
 
 		$tabindex = 0;

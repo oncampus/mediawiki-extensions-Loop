@@ -248,7 +248,11 @@ class SpecialLoopFigures extends SpecialPage {
 			$out->addModuleStyles( [ 'ext.math.desktop.styles' ] );
 			$out->addModules( [ 'ext.math.scripts' ] );
 			}*/
-		$out = $this->getOutput ();
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 		$out->setPageTitle ( $this->msg ( 'loopfigures-specialpage-title' ) );
 		$html = self::renderLoopFigureSpecialPage();
 		$out->addHtml ( $html );

@@ -1408,12 +1408,14 @@ class SpecialLoopLiterature extends SpecialPage {
 
 	public function execute( $sub ) {
 		global $wgLoopLiteratureCiteType;
-		$user = $this->getUser();
-		#dd($this->getContext());
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		
 		$out = $this->getOutput();
-		$out->setPageTitle($this->msg('loopliterature'));
 		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$out->setPageTitle($this->msg('loopliterature'));
 		$deleteKey = $request->getText( 'delete' );
 		
 		$html = self::renderLoopLiteratureSpecialPage( $deleteKey, $editMode, $user );
@@ -1423,7 +1425,6 @@ class SpecialLoopLiterature extends SpecialPage {
     public static function renderLoopLiteratureSpecialPage( $deleteKey = null, $editMode = false, $user = null ) {
         
         $html = '';
-        
         $html .= '<h1>';
         $html .= wfMessage( 'loopliterature' )->text();
         
@@ -1563,13 +1564,15 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 	public function execute( $sub ) {
 
 		global $wgSecretKey;
-		$user = $this->getUser();
+
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
 		if ( $user->isAllowed('loop-edit-literature') ) {
 
 			$html = '';
-
 			$html .= '<h1>';
 			$html .= wfMessage( "loopliterature-label-addentry" )->text();
 			$html .= '</h1>';
@@ -1782,10 +1785,12 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 	public function execute( $sub ) {
 		global $wgSecretKey;
 
-		$user = $this->getUser();
-        $request = $this->getRequest();
-        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		
+        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
 		$out->setPageTitle($this->msg('loopliteratureimport'));
         $html = '<h1>';
 		$html .= wfMessage( 'loopliteratureimport' )->text();
@@ -1976,8 +1981,11 @@ class SpecialLoopLiteratureExport extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
-		$user = $this->getUser();
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 		$out->setPageTitle($this->msg('loopliteratureexport'));
         $html = '<h1>';
 		$html .= wfMessage( 'loopliteratureexport' )->text();

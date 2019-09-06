@@ -350,10 +350,13 @@ class SpecialLoopSettings extends SpecialPage {
 	}
 	function execute( $sub ) {
 		
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
-		$user = $this->getUser();
-		$out = $this->getOutput();
 		$html = '';#<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
 		
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
@@ -362,8 +365,6 @@ class SpecialLoopSettings extends SpecialPage {
 			$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
 				
 			$this->setHeaders();
-			$out = $this->getOutput();
-			$request = $this->getRequest();
 			
  			$out->addModules( 'loop.special.settings.js' );
 			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );

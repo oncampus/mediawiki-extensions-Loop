@@ -138,9 +138,11 @@ class SpecialLoopMedia extends SpecialPage {
 	public function execute($sub) {
 		
 		$config = $this->getConfig ();
-		$request = $this->getRequest ();
-		
-		$out = $this->getOutput ();
+
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		
 		$out->setPageTitle ( $this->msg ( 'loopmedia-specialpage-title' ) );
 		
