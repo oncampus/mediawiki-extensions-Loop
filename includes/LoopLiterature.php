@@ -189,8 +189,15 @@ class LoopLiterature {
 					if ( $request->getText( 'overwrite' ) == true ) {
 						self::removeFromDatabase ( $key );
 					}
-					$valid = self::checkDataValidity( "itemkey", $key );
+					$keyType = ( $itemType == "LOOP1" ) ? $itemType : "";
+					$valid = self::checkDataValidity( "itemKey".$keyType, $key );
+
 					if ( $valid ) { 
+						#$key = str_replace( "", "", $key );
+
+						#$validKey = self::checkDataValidity( "itemKey", $key );
+						#if ( $validKey ) {
+
 						$this->itemKey = $key; 
 					
 						if ( array_key_exists( strtolower( $itemType ), $this->literatureTypes ) ) {
@@ -251,10 +258,18 @@ class LoopLiterature {
 		
 		switch ( $key ) {
 			case "itemKey":
-				#if ( is_numeric( $val ) ) {
-				#	return true;
-				#} else { return false; }
-				return true; #TODO
+				$keyLength = strlen($val);
+				preg_match( "/([A-Za-z0-9-+.&_]{1,})/", $val, $ret );
+				if ( isset( $ret[0] ) ) {
+					$validLength = strlen($ret[0]);
+					if ( $keyLength == $validLength ) {
+						return true;
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
 				
 			case "edition":
 				$int_val = intval($val);
@@ -1505,7 +1520,7 @@ class SpecialLoopLiterature extends SpecialPage {
                 if ( $item->author ) {
                     $orderkey = ucfirst($item->author);
                 } elseif ( $item->itemTitle ) {
-                    $orderkey = ucfirst($item->itemTitle);
+					$orderkey = ucfirst($item->itemTitle);
                 }
                 
                 if ( $type == "html" ) {
@@ -1516,16 +1531,16 @@ class SpecialLoopLiterature extends SpecialPage {
                     $tmpElement = '<paragraph>';# id="a'. $referenceData["refId"].'">';
                     $tmpElement .= LoopLiterature::renderLiteratureElement( $item, array(), 'xml' );
                     $tmpElement .= '</paragraph>';
-                }
-				$elements[$orderkey][$referenceData["itemKey"]] = $tmpElement;
-            }
+				}
+				$elements[$orderkey][$item->itemKey] = $tmpElement;
+			}
             ksort( $elements, SORT_STRING );
 			foreach ( $elements as $order ) {
 				foreach ( $order as $element ) {
 					$return .= $element;
 				}
 			}
-        }
+		}
         return $return;
     }
 
@@ -1691,8 +1706,9 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 			}
 			#dd($presetData,  $loopLiterature);
 			$requiredObjects  = '<div class="literature-field col-12 mb-3"><label for="itemKey">'. $this->msg('loopliterature-label-key')->text().'</label>';
-			$requiredObjects .= '<input class="form-control" id="itemKey" name="itemKey" max-length="255" required pattern="[A-Za-z-+.&_]{1,}"/>';
-			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div></div>';
+			$requiredObjects .= '<input class="form-control" id="itemKey" name="itemKey" max-length="255" required pattern="[A-Za-z0-9-+.&_]{1,}"/>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg">'. $this->msg("loopliterature-error-keyalreadyexists")->text().'</div>';
+			$requiredObjects .= '<div class="invalid-feedback" id="keymsg2">'. $this->msg("loopliterature-error-invalidkey", " ").'</div></div>';
 			$requiredObjects .= '<div class="col-12 mb-1' . ( $editKey ? '"' :  ' d-none"' ). '>';
 			$requiredObjects .= '<input class="mr-2" type="checkbox" id="overwrite" name="overwrite" value="true"' . ( $editKey ? " required checked" : " disabled" ) . '/>';
 			$requiredObjects .= '<label for="overwrite">'. $this->msg("loopliterature-label-overwrite")->text().'</label></div>';
@@ -1866,23 +1882,27 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 
 	private static function handleImportRequest ( $input ) {
 		global $IP;
+		$scriptPath = "$IP/extensions/Loop/vendor";
+
+		exec('which pandoc', $output, $pandocExists); # if pandoc is not installed, don't use pandoc services
 		
-		require "$IP/extensions/Loop/vendor/ryakad/pandoc-php/src/Pandoc/Pandoc.php";
-		require "$IP/extensions/Loop/vendor/ryakad/pandoc-php/src/Pandoc/PandocException.php";
-		
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ExceptionInterface.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ParserException.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Exception/ProcessorException.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Parser.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/ListenerInterface.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Listener.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/TagSearchTrait.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/TagCoverageTrait.php";
-		require "$IP/extensions/Loop/vendor/renanbr/bibtex-parser/src/Processor/LatexToUnicodeProcessor.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Exception/ExceptionInterface.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Exception/ParserException.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Exception/ProcessorException.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Parser.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/ListenerInterface.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Listener.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Processor/TagSearchTrait.php";
+		require "$scriptPath/renanbr/bibtex-parser/src/Processor/TagCoverageTrait.php";
 		
 		$bibtexParser = new RenanBr\BibTexParser\Parser();
 		$bibtexListener = new RenanBr\BibTexParser\Listener();
-		$bibtexListener->addProcessor(new RenanBr\BibTexParser\Processor\LatexToUnicodeProcessor());
+		if ( $pandocExists === 0 ) {
+		    require "$scriptPath/ryakad/pandoc-php/src/Pandoc/Pandoc.php";
+		    require "$scriptPath/ryakad/pandoc-php/src/Pandoc/PandocException.php";
+		    require "$scriptPath/renanbr/bibtex-parser/src/Processor/LatexToUnicodeProcessor.php";
+		    $bibtexListener->addProcessor(new RenanBr\BibTexParser\Processor\LatexToUnicodeProcessor());
+		}
 		$bibtexParser->addListener($bibtexListener);
 		$errors = array();
 		$success = array();
@@ -1973,27 +1993,37 @@ class SpecialLoopLiteratureExport extends SpecialPage {
 			$export = '';
 			foreach( $allItems as $key => $item ) {
 				$type = $item->itemType == "LOOP1" ? "misc" : $item->itemType;
-				#$key = $item->itemKey.replace("ß", "ss").replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("Ä", "AE").replace("Ö", "OE").replace("Ü", "UE").replace("#", "+").replace(",", "").replace("(", "[").replace(")", "]").replace("{", "[").replace("}", "]").replace("=", "-").replace("%", "-").replace("\"", "").replace("'", "");
-				#https://tex.stackexchange.com/questions/408530/what-characters-are-allowed-to-use-as-delimiters-for-bibtex-keys
-				$export .= "@$type{ $item->itemKey,\n";
-				$item->title = $item->itemTitle;
-				unset($item->id);
-				unset($item->literatureTypes);
-				unset($item->errors);
-				unset($item->itemType);
-				unset($item->itemKey);
-				unset($item->itemTitle);
-				foreach ( $item as $key => $val) {
-					if ( !empty($val) ) {
-						$export .= "\t" . $key . " = " . '"' . $val . '",' . "\n";  
+				
+				$keyValidity = LoopLiterature::checkDataValidity( "itemKey", $item->itemKey );
+				if ( $keyValidity ) {
+					$export .= "@$type{ $item->itemKey,\n";
+					$item->title = $item->itemTitle;
+					unset($item->id);
+					unset($item->literatureTypes);
+					unset($item->errors);
+					unset($item->itemType);
+					unset($item->itemKey);
+					unset($item->itemTitle);
+					foreach ( $item as $key => $val) {
+						if ( !empty($val) ) {
+							$export .= "\t" . $key . " = " . '"' . $val . '",' . "\n";  
+						}
+						#dd($key);
 					}
-					#dd($key);
+					$export .= "}\n";
+				} else {
+					$errors[] = $item->itemKey;
 				}
-				$export .= "}\n";
-
+				
 				
 			}
-
+			if ( !empty ( $errors ) ) {
+				$html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopliterature-error-invalid-export" )."<br>";
+				foreach ( $errors as $error ) {
+					$html .= "<b>".$error."</b><br>";
+				}
+				$html .= '</div>';
+			}
 			$html .= Html::rawElement(
 				'textarea',
 				array(
@@ -2004,7 +2034,6 @@ class SpecialLoopLiteratureExport extends SpecialPage {
 				),
 				$export
 			);
-			#$html .= "Hello world!";
 
 		} else {
 			$html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';

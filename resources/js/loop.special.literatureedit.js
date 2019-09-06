@@ -160,6 +160,12 @@ $( document ).ready( function () {
             $("#overwrite").prop("disabled", true)
             $("#overwrite").parent().addClass("d-none")
         }
+        $match = $val.match( /([A-Za-z0-9-+.&_]{1,})/ );
+        if ( $val.length == 0 || ( $match != null && $match[0].length == $val.length ) ) {
+            $('#keymsg2').hide()
+        } else {
+            $("#keymsg2").show()
+        }
     }
     
     function doOptional( $this ) {
