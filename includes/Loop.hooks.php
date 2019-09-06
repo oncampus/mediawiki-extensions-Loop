@@ -64,10 +64,10 @@ class LoopHooks {
 	 * @return boolean
 	 */
 	public static function onSpecialPageinitList ( &$specialPages ) {
-		global $wgOut;
-		/* # causes session error in 1.33!
-		$user = $wgOut->getUser();
-		if ( ! $user->isAllowed( "loop-view-special-pages" ) ) {
+
+		global $wgUser; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
+
+		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.	
 
 			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects',  'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
 				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
@@ -85,13 +85,12 @@ class LoopHooks {
 				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel', 
 				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'ChangeCredentials', 'RemoveCredentials',
 				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages'
-				
 			);
 			foreach( $hidePages as $page ){ 
 				unset( $specialPages[$page] );
 			}
 		}
-		*/
+		
 		return true;
 	}
 	
