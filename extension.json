@@ -77,7 +77,9 @@
 		"SpecialLoopLiteratureExport": "includes/LoopLiterature.php",
 		"LoopGlossary": "includes/LoopGlossary.php",
 		"SpecialLoopGlossary": "includes/LoopGlossary.php",
-		"LoopLegacy": "includes/LoopLegacy.php"
+		"LoopLegacy": "includes/LoopLegacy.php",
+		"LoopIndex": "includes/LoopIndex.php",
+		"SpecialLoopIndex": "includes/LoopIndex.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -100,7 +102,8 @@
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
 			"LoopLiterature::onParserSetup",
-			"LoopLegacy::onParserSetup"
+			"LoopLegacy::onParserSetup",
+			"LoopIndex::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -127,7 +130,7 @@
 			"LoopObject::onAfterClearStable",
 			"LoopLiterature::onAfterClearStable"
 		],
-		"LoopUpdateSavePage":"LoopUpdater::onLoopUpdateSavePage"
+		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -145,7 +148,8 @@
 		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
 		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
 		"LoopLiteratureExport": "SpecialLoopLiteratureExport",
-		"LoopGlossary": "SpecialLoopGlossary"
+		"LoopGlossary": "SpecialLoopGlossary",
+		"LoopIndex": "SpecialLoopIndex"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
