@@ -116,19 +116,23 @@
 		],
 		"LinksUpdateConstructed": [
 			"LoopObject::onLinksUpdateConstructed",
-			"LoopLiterature::onLinksUpdateConstructed"
+			"LoopLiterature::onLinksUpdateConstructed",
+			"LoopIndex::onLinksUpdateConstructed"
 		],
 		"ArticleDeleteComplete": [
 			"LoopObject::onArticleDeleteComplete",
-			"LoopLiterature::onArticleDeleteComplete"
+			"LoopLiterature::onArticleDeleteComplete",
+			"LoopIndex::onArticleDeleteComplete"
 		],
 		"AfterStabilizeChange": [
 			"LoopObject::onAfterStabilizeChange",
-			"LoopLiterature::onAfterStabilizeChange"
+			"LoopLiterature::onAfterStabilizeChange",
+			"LoopIndex::onAfterStabilizeChange"
 		],
 		"AfterClearStable": [
 			"LoopObject::onAfterClearStable",
-			"LoopLiterature::onAfterClearStable"
+			"LoopLiterature::onAfterClearStable",
+			"LoopIndex::onAfterClearStable"
 		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage"
 	},
