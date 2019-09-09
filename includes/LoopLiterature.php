@@ -1047,16 +1047,20 @@ class LoopLiterature {
 			$return .= '<span class="dropdown-toggle d-inline accent-color literature-ref-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
 			$return .= '<span class="dropdown-menu">';	
 
+			$linkedTitles = array();
 			foreach ( $linkablePageReferences as $articleId => $pageRefs ) {
 				foreach ( $pageRefs as $pageRef ) {
 					if ( $pageRef[ "itemKey" ] == $li->itemKey ) {
 						$title = Title::newFromId( $articleId );
-						$return .= $linkRenderer->makelink( 
-							$title, 
-							new HtmlArmor( $title->mTextform ), 
-							array( 'title' => $title->mTextform, "class" => "dropdown-item literature-refs" ),
-							array()
-						);
+						if ( ! in_array( $title->mArticleID, $linkedTitles ) ) {
+							$linkedTitles[] = $title->mArticleID;
+							$return .= $linkRenderer->makelink( 
+								$title, 
+								new HtmlArmor( $title->mTextform ), 
+								array( 'title' => $title->mTextform, "class" => "dropdown-item literature-refs" ),
+								array()
+							);
+						}
 					}
 				}
 			}
