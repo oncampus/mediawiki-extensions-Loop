@@ -1010,9 +1010,9 @@ class LoopObject {
 			foreach (self::$mObjectTypes as $objectTag) {
 				$objectTags[] = '//'.$objectTag;
 			}
-		} elseif ( $type == 'cite' ) {
-			$objectTags[] = '//cite';
-		}
+		} else {
+			$objectTags[] = '//'.$type;
+		} 
 		$query = implode(' | ', $objectTags);
 		$nodes = $xpath->query( $query );
 		$changed = false;
