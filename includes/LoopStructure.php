@@ -1040,7 +1040,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 
         	# user is permitted to edit the toc, print edit form here
 			if ( !empty ($newStructureContent) && ! $success ) {
-				$displayedStructure = $newStructureContent;
+				$displayedStructure = substr( $newStructureContent, 13 ); # remove __FORCE_TOC__
 			} else {
 				$displayedStructure = $currentStructureAsWikiText;
 			}
