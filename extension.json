@@ -643,6 +643,10 @@
 		"LoopLiteratureCiteType": {
 			"value": "harvard",
 			"description" : "Setting default type citiations of literature"
+		},
+		"LoopLegacyShowTitles": {
+			"value": true,
+			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
 		}
 
 	},
