@@ -74,6 +74,7 @@
 		"SpecialLoopLiterature": "includes/LoopLiterature.php",
 		"SpecialLoopLiteratureEdit": "includes/LoopLiterature.php",
 		"SpecialLoopLiteratureImport": "includes/LoopLiterature.php",
+		"SpecialLoopLiteratureExport": "includes/LoopLiterature.php",
 		"LoopGlossary": "includes/LoopGlossary.php",
 		"SpecialLoopGlossary": "includes/LoopGlossary.php",
 		"LoopLegacy": "includes/LoopLegacy.php"
@@ -143,6 +144,7 @@
 		"LoopLiterature": "SpecialLoopLiterature",
 		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
 		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
+		"LoopLiteratureExport": "SpecialLoopLiteratureExport",
 		"LoopGlossary": "SpecialLoopGlossary"
 	},
 	"ResourceFileModulePaths": {
@@ -641,6 +643,10 @@
 		"LoopLiteratureCiteType": {
 			"value": "harvard",
 			"description" : "Setting default type citiations of literature"
+		},
+		"LoopLegacyShowTitles": {
+			"value": true,
+			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
 		}
 
 	},

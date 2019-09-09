@@ -350,10 +350,13 @@ class SpecialLoopSettings extends SpecialPage {
 	}
 	function execute( $sub ) {
 		
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
-		$user = $this->getUser();
-		$out = $this->getOutput();
 		$html = '';#<h1 id="loopsettings-h1">' . $this->msg( 'loopsettings-specialpage-title' ) . '</h1>';
 		
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
@@ -362,8 +365,6 @@ class SpecialLoopSettings extends SpecialPage {
 			$wgSkinStyles, $wgLanguageCode, $wgSupportedLoopLanguages;
 				
 			$this->setHeaders();
-			$out = $this->getOutput();
-			$request = $this->getRequest();
 			
  			$out->addModules( 'loop.special.settings.js' );
 			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
@@ -618,10 +619,10 @@ class SpecialLoopSettings extends SpecialPage {
 
                     #$html .= '<div class="form-row">';
                     $html .= '<h3>' . $this->msg( "loopsettings-citation-style" ) . '</h3>';
-                    $html .= '<input type="radio" name="citation-style" id="harvard" value="harvard" disabled checked>'; #.' ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>
+                    $html .= '<input type="radio" name="citation-style" id="harvard" value="harvard" ' . ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>';
                     $html .= '<label for="harvard"> ' . $this->msg( 'loopsettings-citation-style-harvard-label' ) . '</label><br>';
 
-					$html .= '<input type="radio" name="citation-style" id="vancouver" value="vancouver" disabled>'; #. ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>
+					$html .= '<input type="radio" name="citation-style" id="vancouver" value="vancouver" ' . ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>';
 					$html .= '<label for="vancouver"> ' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label><br>';
                    
                     #$html .= '</div>';

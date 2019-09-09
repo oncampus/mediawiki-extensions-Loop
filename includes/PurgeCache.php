@@ -24,17 +24,20 @@ class SpecialPurgeCache extends SpecialPage {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		
 		$this->setHeaders();
 		if ( $out->getUser()->isAllowed( 'purgecache' ) ) {
 			if ( $request->getCheck( 'purge' ) && $request->wasPosted() ) {
-				$dbw = wfGetDB( DB_MASTER );
-				$dbw->delete( 'objectcache', '*', __METHOD__ );
+				self::purge();
+				#$dbw = wfGetDB( DB_MASTER );
+				#$dbw->delete( 'objectcache', '*', __METHOD__ );
 				$out->addWikiMsg( 'purgecache-purged' );
 				$out->addHTML( $this->makeForm() );
 						
-				$exportPath = $wgUploadDirectory . "/export/";
-				SpecialPurgeCache::deleteAll($exportPath);
+				#$exportPath = $wgUploadDirectory . "/export/";
+				#SpecialPurgeCache::deleteAll($exportPath);
 
 			} else {
 				$out->addWikiMsg( 'purgecache-warning' );
@@ -49,8 +52,8 @@ class SpecialPurgeCache extends SpecialPage {
 		global $wgOut, $wgUploadDirectory;
 
 		if ( $wgOut->getUser()->isAllowed( 'purgecache' ) ) {
-			#$dbw = wfGetDB( DB_MASTER );
-			#$dbw->delete( 'objectcache', '*', __METHOD__ );
+			$dbw = wfGetDB( DB_MASTER );
+			$dbw->delete( 'objectcache', '*', __METHOD__ );
 					
 			$exportPath = $wgUploadDirectory . "/export/";
 			SpecialPurgeCache::deleteAll($exportPath);

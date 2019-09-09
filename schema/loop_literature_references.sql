@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_literature_references (
   `llr_pageid` int(10) NOT NULL,
   `llr_refid` varchar(255) NOT NULL,
   `llr_nthitem` int(10) NOT NULL,
+  `llr_firstitemglobal` tinyint(1) NOT NULL,
   PRIMARY KEY (llr_id)
 ) /*$wgDBTableOptions*/;

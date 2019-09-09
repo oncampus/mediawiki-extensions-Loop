@@ -149,7 +149,6 @@ $( document ).ready( function () {
             $("#overwrite").prop("disabled", false)
             $("#overwrite").parent().removeClass("d-none")
             if ( $("#overwrite").prop("checked") == true ) {
-                //$("#keymsg").hide()
                 $("#loopliterature-submit").prop("disabled", false)
             } else { 
                 $("#keymsg").show()
@@ -161,10 +160,11 @@ $( document ).ready( function () {
             $("#overwrite").prop("disabled", true)
             $("#overwrite").parent().addClass("d-none")
         }
-        if ( $val.includes("#") ) {
-            $('#keymsg2').show()
+        $match = $val.match( /([A-Za-z0-9-+.&_]{1,})/ );
+        if ( $val.length == 0 || ( $match != null && $match[0].length == $val.length ) ) {
+            $('#keymsg2').hide()
         } else {
-            $("#keymsg2").hide()
+            $("#keymsg2").show()
         }
     }
     

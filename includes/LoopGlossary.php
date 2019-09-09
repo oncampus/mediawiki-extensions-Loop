@@ -97,6 +97,10 @@ class SpecialLoopGlossary extends SpecialPage {
 	public function execute( $sub ) {
 		
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 		$out->setPageTitle(wfMessage('loopglossary'));
 		$html = '';
 		

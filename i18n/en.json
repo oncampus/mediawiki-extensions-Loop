@@ -205,6 +205,7 @@
 	"loopliterature": "Bibliography",
 	"loopliteratureedit": "Edit literature",
 	"loopliteratureimport": "Import literature",
+	"loopliteratureexport": "Export literature",
 	
 	"loopliterature-entry-article": "Article",
 	"loopliterature-entry-book": "Book",
@@ -264,6 +265,13 @@
 	"loopliterature-label-volume": "Volume",
 	"loopliterature-label-year": "Year",
 	"loopliterature-label-overwrite": "Overwrite data for this literature key",
+	"loopliterature-import-description": "You can import literature in BibTeX format here.",
+	"loopliterature-import-hint": "Add a literature entry on this page so it can displayed in the bibliography. After that you can refer it in a <nowiki><cite></nowiki> tag. <br>You can [[Special:LoopLiteratureImport| import]] multiple entries at once if you have them in BibTeX format.",
+	"loopliterature-import-success": "These entries have been successfully imported:",
+	"loopliterature-import-fail": "An error has occurred:",
+	"loopliterature-label-import": "Import BibTeX",
+	"loopliterature-label-export": "Export bibliography",
+	"loopliterature-import-no-bibtex": "No BibTeX entry could be found in the given input.",
 
 	"loopliterature-alert-saved": "The literature entry '''$1''' has been saved.",
 	"loopliterature-alert-deleted": "The literature entry '''$1''' has been deleted.",
@@ -277,6 +285,7 @@
 	"loopliterature-error-missingkey": "No literature key has been entered.",
 	"loopliterature-error-keyalreadyexists": "The literature key exists already. Please choose a different one or overwrite the data.",
 	"loopliterature-error-keyunknown": "The literature key '''$1''' does not exist. Please [[Special:LoopLiteratureEdit| create it]]. ",
+	"loopliterature-error-invalid-export": "The following literature entries cannot be exported, as the key does not match BibTeX format: ",
 	
 	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
 	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",

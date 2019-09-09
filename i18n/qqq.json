@@ -144,7 +144,6 @@
 	"looparea-name-task" : "name of the looparea type task",
 	"looparea-name-timerequirement" : "name of the looparea type timerequirement",
 	"looparea-name-websource" : "name of the looparea type websource",
-	
 	"looparea-icon-text-annotation" : "icon text of the looparea type annotation",
 	"looparea-icon-text-area" : "icon text of the looparea type area",
 	"looparea-icon-text-arrangement" : "icon text of the looparea type arrangement",
@@ -206,6 +205,7 @@
 	"loopliterature": "Page title for Special:LoopLiterature",
 	"loopliteratureedit": "Page title for Special:LoopLiteratureEdit",
 	"loopliteratureimport": "Page title for Special:LoopLiteratureImport",
+	"loopliteratureexport": "Page title for Special:LoopLiteratureExport",
 	
 	"loopliterature-entry-article": "Type of literature entry (bibtex): Article",
 	"loopliterature-entry-book": "Type of literature entry (bibtex): Book",
@@ -265,6 +265,13 @@
 	"loopliterature-label-volume": "Label for literature form input: Volume",
 	"loopliterature-label-year": "Label for literature form input: Year",
 	"loopliterature-label-overwrite": "Label for literature form input: Overwrite data",
+	"loopliterature-import-description": "Description shown on page: LoopLiteratureImport",
+	"loopliterature-import-hint": "Info for users on page: LoopLiteratureImport",
+	"loopliterature-import-success": "Success message after literature has been imported on LoopLiteratureImport",
+	"loopliterature-import-fail": "Failure message after literature has been imported on LoopLiteratureImport",
+	"loopliterature-label-import": "Label for menu entry: Import literature",
+	"loopliterature-label-export": "Label for menu entry: Export literature",
+	"loopliterature-import-no-bibtex": "Failure message after literature has been imported on LoopLiteratureImport but there was no valid bibtex",
 
 	"loopliterature-alert-saved": "Alert message for saved literature entry.",
 	"loopliterature-alert-deleted": "Alert message for deleted literature entry.",
@@ -278,6 +285,7 @@
 	"loopliterature-error-missingkey": "Error message for literature: Missing quote key",
 	"loopliterature-error-keyalreadyexists": "Error message for literature: key exists already",
 	"loopliterature-error-keyunknown": "Error message for literature: key unknown",
+	"loopliterature-error-invalid-export": "Error message for literature: key invalid for export",
 	
 	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
 	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",

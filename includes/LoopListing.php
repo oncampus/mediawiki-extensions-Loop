@@ -65,7 +65,11 @@ class SpecialLoopListings extends SpecialPage {
 	
 	public function execute($sub) {
 		
-		$out = $this->getOutput ();
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
 		$out->setPageTitle ( $this->msg ( 'looplistings-specialpage-title' ) );
 		$html = self::renderLoopListingSpecialPage();
 		$out->addHtml ( $html );

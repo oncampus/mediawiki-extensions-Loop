@@ -1,14 +1,15 @@
 {
-    "name": "oncampus/mediawiki-extensions-loop",
-    "type": "mediawiki-extension",
-    "version":	"2.0.0",
-    "description": "A mediawiki extension to create academic learning content",
-	"homepage": "https://oncampus.github.io/mediawiki-extensions-Loop",
-	"license": "GPL-3.0-or-later",    
-    "require": {
-        "composer/installers": "1.*,>=1.0.1",
-        "james-heinrich/getid3": ">=1.9" ,
-        "symfony/process": ">=4.3.2",
-        "renanbr/bibtex-parser": ">=2.0.2"
-    }
+	"name" : "oncampus/mediawiki-extensions-loop",
+	"type" : "mediawiki-extension",
+	"version" : "2.0.0",
+	"description" : "A mediawiki extension to create academic learning content",
+	"homepage" : "https://oncampus.github.io/mediawiki-extensions-Loop",
+	"license" : "GPL-3.0-or-later",
+	"require" : {
+		"composer/installers" : "1.*,>=1.0.1",
+		"james-heinrich/getid3" : ">=1.9",
+		"symfony/process" : ">=4.3.2",
+		"renanbr/bibtex-parser" : ">=2.0.2",
+		"ryakad/pandoc-php" : "~1.0"
+	}
 }

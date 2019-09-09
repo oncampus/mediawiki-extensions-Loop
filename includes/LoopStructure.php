@@ -819,9 +819,12 @@ class SpecialLoopStructure extends SpecialPage {
 
 	public function execute( $sub ) {
 
-		$user = $this->getUser();
-		$this->setHeaders();
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopstructure-specialpage-title' ) );
 		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
@@ -898,9 +901,12 @@ class SpecialLoopStructureEdit extends SpecialPage {
 
 		global $wgSecretKey;
 
-		$user = $this->getUser();
-		$this->setHeaders();
 		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopstructure-edit-specialpage-title' ) );
 
 		$tabindex = 0;
@@ -926,7 +932,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		$requestToken = $request->getText( 't' );
 
 		$userIsPermitted = (! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ));
-
+		$success = null;
 		$error = false;
 		$feedbackMessageClass = 'success';
 
@@ -982,7 +988,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 												$this->msg( 'loopstructure-save-success' )->parse()
 											)
 										);
-	
+										$success = true;
 									} else {
 										$error = $this->msg( 'loopstructure-save-equal-error' )->parse();
 										$feedbackMessageClass = 'warning';
@@ -1033,7 +1039,11 @@ class SpecialLoopStructureEdit extends SpecialPage {
         if( $userIsPermitted ) {
 
         	# user is permitted to edit the toc, print edit form here
-
+			if ( !empty ($newStructureContent) && ! $success ) {
+				$displayedStructure = substr( $newStructureContent, 13 ); # remove __FORCE_TOC__
+			} else {
+				$displayedStructure = $currentStructureAsWikiText;
+			}
 	        $out->addHTML(
 	            Html::openElement(
 	                'form',
@@ -1052,7 +1062,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 	                    'tabindex' => ++$tabindex,
 	                    'class' => 'd-block mt-3',
 	                ),
-	                $currentStructureAsWikiText
+	                $displayedStructure
 	            )
 	            . Html::rawElement(
 	                'input',
