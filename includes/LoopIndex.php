@@ -1,6 +1,6 @@
 <?php
 /**
- * @description 
+ * @description Adds index functions
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
@@ -240,7 +240,6 @@ class LoopIndex {
 		if ($content == null) {
 			$content = $wikiPage->getContent();
 		}
-		
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 			$loopIndex = new LoopIndex();
 			self::removeAllPageItemsFromDb ( $title->getArticleID() );
@@ -300,7 +299,7 @@ class LoopIndex {
 						$stableRev = $wikiPage->getRevision()->getId();
 					} 
 
-					$summary = '';
+					$summary = wfMessage("loop-summary-id")->text();
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
 				}	
@@ -330,8 +329,8 @@ class SpecialLoopIndex extends SpecialPage {
         $html = "<h1>".wfMessage( 'loopindex' )->text()."</h1>";
         
 	    $html .= '<table class="table loop_index">';
-        $links = array();
         foreach ( $allItems as $index => $pages ) {
+			$links = array();
             foreach ( $pages as $page => $items ) {
                 foreach ( $items as $refId ) {
                     #dd( $item, $page, $refId );
@@ -346,24 +345,28 @@ class SpecialLoopIndex extends SpecialPage {
                     );
                 }
             }
-            #sort( $links, SORT_STRING );
-          #  dd($links);
-            $html .= '<tr scope="row" class="ml-1 pb-3">';
-            $html .= '<td scope="col" class="pl-1 pr-1">'.$index.'</td>';
-            $html .= '<td scope="col" class="pl-1 pr-1">';
+        	sort( $links, SORT_STRING ); # sorts links of an index term
+			$ucIndex = ucFirst($index);
+			$indexlinks[$ucIndex] = '<tr scope="row" class="ml-1 pb-3">';
+            $indexlinks[$ucIndex] .= '<td scope="col" class="pl-1 pr-1">'.$index.'</td>';
+            $indexlinks[$ucIndex] .= '<td scope="col" class="pl-1 pr-1">';
             $i = 1;
             foreach ( $links as $link ) {
-                $html .= ( $i == 1 ? " " : ", "  ) . $link;
+                $indexlinks[$ucIndex] .= ( $i == 1 ? " " : ", "  ) . $link;
                 $i++;
             }
-            $html .= '</td></tr>';
+            $indexlinks[$ucIndex] .= '</td></tr>';
         }
-
+		ksort($indexlinks); # sorts terms
+		foreach ($indexlinks as $indexlink) {
+			$html .= $indexlink;
+		}
         
 	    $html .= '</table>';
 
         $out->addHtml( $html );
-    }
+	}
+	
         
 	/**
 	 * Specify the specialpages-group loop
