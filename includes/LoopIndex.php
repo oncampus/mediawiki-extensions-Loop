@@ -35,24 +35,16 @@ class LoopIndex {
     
 	# returns whether to show index in TOC or not
 	public static function getShowIndex() {
-		
-		global $wgOut;
 
 		$showIndex = false;
 		
-		$user = $wgOut->getUser();
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureItems();
 
-		if ( $editMode ) {
-			
+		$indexItems = self::getAllItems( $loopStructure );
+
+		if ( $indexItems ) {
 			$showIndex = true;
-
-		} else {
-		    $indexItems = self::getAllItems();
-	
-			if ( $indexItems ) {
-				$showIndex = true;
-			}
 		}
 
 		return $showIndex;
@@ -148,7 +140,8 @@ class LoopIndex {
         }
             
         foreach( $res as $row ) {
-            if ( in_array( $row->li_pageid, $pageSequence ) ) {
+			
+            if ( in_array( $row->li_pageid, $pageSequence ) && !empty ( $row->li_index ) ) {
                 $objects[$row->li_index][$row->li_pageid][] = $row->li_refid;
             }
         }
