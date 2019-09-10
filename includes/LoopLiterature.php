@@ -767,7 +767,7 @@ class LoopLiterature {
 						$stableRev = $wikiPage->getRevision()->getId();
 					} 
 
-					$summary = '';
+					$summary = wfMessage("loop-summary-id")->text();
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
 				}	

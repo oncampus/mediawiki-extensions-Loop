@@ -980,7 +980,7 @@ class LoopObject {
 						$stableRev = $wikiPage->getRevision()->getId();
 					} 
 
-					$summary = '';
+					$summary = wfMessage("loop-summary-id")->text();
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					#$content = $content->updateRedirect( $title ); # probably unnecessary
 
