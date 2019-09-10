@@ -321,12 +321,21 @@ class SpecialLoopIndex extends SpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
         Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		
+		$html = self::renderLoopIndexSpecialPage();
+		
+        $out->addHtml( $html );
+	}
+	
+	public static function renderLoopIndexSpecialPage () {
+		
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
         $loopStructure = new LoopStructure();
         $loopStructure->loadStructureItems();
         $allItems = LoopIndex::getAllItems( $loopStructure );
-        $html = "<h1>".wfMessage( 'loopindex' )->text()."</h1>";
+		
+		$html = "<h1>".wfMessage( 'loopindex' )->text()."</h1>";
         
 	    $html .= '<table class="table loop_index">';
         foreach ( $allItems as $index => $pages ) {
@@ -362,11 +371,11 @@ class SpecialLoopIndex extends SpecialPage {
 			$html .= $indexlink;
 		}
         
-	    $html .= '</table>';
+		$html .= '</table>';
+		
+		return $html;
 
-        $out->addHtml( $html );
 	}
-	
         
 	/**
 	 * Specify the specialpages-group loop
