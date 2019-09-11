@@ -109,7 +109,7 @@ class LoopIndex {
     }
     
     // returns all index items
-    public static function getAllItems ( $loopStructure ) {
+    public static function getAllItems ( $loopStructure, $letter = false ) {
     
         $dbr = wfGetDB( DB_REPLICA );
         
@@ -140,14 +140,23 @@ class LoopIndex {
         }
             
         foreach( $res as $row ) {
-			
-            if ( in_array( $row->li_pageid, $pageSequence ) && !empty ( $row->li_index ) ) {
-                $objects[$row->li_index][$row->li_pageid][] = $row->li_refid;
-            }
+			if ( $letter ) {
+				if ( in_array( $row->li_pageid, $pageSequence ) && !empty ( $row->li_index ) ) {
+					$letter = ucFirst(substr($row->li_index, 0, 1));
+					preg_match('/([A-Z]{1})/', $letter, $output_array);
+					if ( ! isset($output_array[0] ) ) {
+						$letter = "#";
+					}
+					$objects[ $letter ][$row->li_index][$row->li_pageid][] = $row->li_refid;
+				}
+			} else {
+				$objects[$row->li_index][$row->li_pageid][] = $row->li_refid;
+			}
         }
         if ( !empty( $objects ) ) {
             ksort( $objects, SORT_STRING );
-        }
+		}
+		#dd($objects);
         return $objects;
     }
 

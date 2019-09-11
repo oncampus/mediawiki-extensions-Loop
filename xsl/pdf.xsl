@@ -130,20 +130,7 @@
 
 			</fo:flow>
 		</fo:page-sequence>
-		<xsl:if test="$glossary_exists='1'">
-		<fo:page-sequence master-reference="full-page" id="glossary_sequence">
-			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
-				<xsl:call-template name="default-header"></xsl:call-template>			
-			</fo:static-content>			
-			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-after">
-				<xsl:call-template name="default-footer"></xsl:call-template>
-			</fo:static-content>
-			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
-				<xsl:call-template name="page-content-glossary"></xsl:call-template>
-			</fo:flow>
-		</fo:page-sequence>	         	
-        </xsl:if>			
-		<!-- 	   
+		
 		<xsl:if test="$index_exists='1'">
 		<fo:page-sequence master-reference="full-page-2column" id="index_sequence">
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
@@ -156,11 +143,97 @@
             	<xsl:call-template name="page-content-index"></xsl:call-template>
 			</fo:flow>
 		</fo:page-sequence>	            	
-        </xsl:if>       
-	 	-->
+        </xsl:if>      
+		
+		<xsl:if test="$glossary_exists='1'">
+		<fo:page-sequence master-reference="full-page" id="glossary_sequence">
+			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
+				<xsl:call-template name="default-header"></xsl:call-template>			
+			</fo:static-content>			
+			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-after">
+				<xsl:call-template name="default-footer"></xsl:call-template>
+			</fo:static-content>
+			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
+				<xsl:call-template name="page-content-glossary"></xsl:call-template>
+			</fo:flow>
+		</fo:page-sequence>	         	
+        </xsl:if>	
+		
+		
 	</xsl:template>			
 	
+	<xsl:template name="page-content-index">
+		<fo:block>
+			<fo:marker marker-class-name="page-title-left">
+				<xsl:value-of select="$word_appendix"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block>
+			<fo:marker marker-class-name="page-title-right">
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'index'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+				<xsl:value-of select="$word_index"></xsl:value-of>
+			</fo:marker>
+		</fo:block>
+		<fo:block id="index" keep-with-next="always">
+			<xsl:call-template name="font_head"></xsl:call-template>
+				<xsl:call-template name="appendix_number">
+					<xsl:with-param name="content" select="'index'"></xsl:with-param>
+				</xsl:call-template>
+				<xsl:text> </xsl:text>			
+			<xsl:value-of select="$word_index"></xsl:value-of>
+		</fo:block>
+		<fo:block>
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_getIndex', '')"></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>		
 	
+	
+	<xsl:template match="loop_index_list">
+		<xsl:apply-templates></xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template match="loop_index_group">
+		<fo:block>
+		<fo:block margin-top="5mm" font-weight="bold">
+			<xsl:value-of select="@letter"></xsl:value-of>
+		</fo:block>
+		<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="loop_index_item">
+		<fo:block>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+
+	<xsl:template match="loop_index_title">
+		<xsl:value-of select="."></xsl:value-of>
+		<xsl:text> </xsl:text>
+	</xsl:template>
+
+	<xsl:template match="loop_index_pages">
+		<xsl:text> </xsl:text>
+		<xsl:apply-templates></xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template match="loop_index_page">
+		<xsl:if test="@further=1">
+			<xsl:text>,</xsl:text>
+		</xsl:if>
+		<xsl:text> ... </xsl:text>
+		<fo:basic-link >
+			<xsl:attribute name="internal-destination"><xsl:value-of select="@pagetitle"></xsl:value-of></xsl:attribute>
+			<fo:page-number-citation>
+				<xsl:attribute name="ref-id" ><xsl:value-of select="@pagetitle"></xsl:value-of></xsl:attribute>
+			</fo:page-number-citation>	
+		</fo:basic-link> 
+	</xsl:template>
+
+
 	<xsl:template name="page-content-glossary">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
@@ -420,6 +493,26 @@
 				</fo:inline>
 			</fo:block>		
 		</xsl:if>
+		
+		<xsl:if test="$index_exists='1'">
+			<fo:block text-align-last="justify">
+				<xsl:call-template name="font_normal"></xsl:call-template>
+				<fo:basic-link color="black">
+					<xsl:attribute name="internal-destination">index</xsl:attribute> 
+					<xsl:call-template name="appendix_number">
+						<xsl:with-param name="content" select="'index'"></xsl:with-param>
+					</xsl:call-template>					
+					<xsl:text> </xsl:text><xsl:value-of select="$word_index"></xsl:value-of>
+				</fo:basic-link> 
+				<fo:inline keep-together.within-line="always">
+					<fo:leader leader-pattern="dots"></fo:leader>
+					<fo:page-number-citation>
+						<xsl:attribute name="ref-id">index</xsl:attribute>
+					</fo:page-number-citation>
+				</fo:inline> 
+			</fo:block>		
+		</xsl:if> 
+
 		<xsl:if test="$glossary_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
