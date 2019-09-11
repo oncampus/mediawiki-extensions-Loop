@@ -491,11 +491,27 @@
 		},
 		"H5PHostUrl": {
 			"value" : "https://h5p.org/h5p/embed/",
-			"description" : "URL for customly hosted H5P elements"
+			"description" : "URL for H5P hosted elements"
 		},
 		"H5PCustomHostUrl": {
 			"value" : "",
 			"description" : "URL for customly hosted H5P elements"
+		},
+		"LearningAppUrl": {
+			"value" : "https://LearningApps.org/watch?",
+			"description" : "URL for LearningApps elements"
+		},
+		"PadletUrl": {
+			"value" : "https://www.padlet.com/embed/",
+			"description" : "URL for Padlet elements"
+		},
+		"PreziUrl": {
+			"value" : "https://prezi.com/embed/",
+			"description" : "URL for Prezi elements"
+		},
+		"SlideshareUrl": {
+			"value" : "https://www.slideshare.net/slideshow/embed_code/key/",
+			"description" : "URL for Slideshare elements"
 		},
 		"SocialIcons": {
 			"value" : {

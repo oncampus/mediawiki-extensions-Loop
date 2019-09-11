@@ -300,7 +300,12 @@
 
 	"loopexternalcontent-h5p-error-nocustomhost": "Es wurde kein benutzerdefinierter Host für H5P-Elemente definiert. Bitte kontaktieren Sie den Administrator.", 
 	"loopexternalcontent-h5p-error-unknownhost": "Es wurde ein unbekannter Wert für den Parameter host angegeben: $1.", 
-	"loopexternalcontent-h5p-error-noid": "In dem H5P-Element wurde keine ID angegeben.", 
+	"loopexternalcontent-h5p-error-noid": "In dem H5P-Element wurde keine ID (id) angegeben.", 
+	"loopexternalcontent-learningapp-error-noid": "In dem LearningApp-Element wurde keine App ID (app) angegeben.",
+	"loopexternalcontent-padlet-error-noid": "In dem Padlet-Element wurde kein Schlüssel (key) angegeben.", 
+	"loopexternalcontent-prezi-error-noid": "In dem Prezi-Element wurde keine ID (id) angegeben.", 
+	"loopexternalcontent-prezi-on": "auf", 
+	"loopexternalcontent-slideshare-error-noid": "In dem Slideshare-Element wurde kein Schlüssel (key) angegeben.", 
 
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
