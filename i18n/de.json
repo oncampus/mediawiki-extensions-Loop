@@ -298,6 +298,10 @@
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
+	"loopexternalcontent-h5p-error-nocustomhost": "Es wurde kein benutzerdefinierter Host für H5P-Elemente definiert. Bitte kontaktieren Sie den Administrator.", 
+	"loopexternalcontent-h5p-error-unknownhost": "Es wurde ein unbekannter Wert für den Parameter host angegeben: $1.", 
+	"loopexternalcontent-h5p-error-noid": "In dem H5P-Element wurde keine ID angegeben.", 
+
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-objectnumber-prefix": "G-",

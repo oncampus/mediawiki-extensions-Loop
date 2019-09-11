@@ -77,6 +77,7 @@
 		"SpecialLoopLiteratureExport": "includes/LoopLiterature.php",
 		"LoopGlossary": "includes/LoopGlossary.php",
 		"SpecialLoopGlossary": "includes/LoopGlossary.php",
+		"LoopExternalContent": "includes/LoopExternalContent.php",
 		"LoopLegacy": "includes/LoopLegacy.php"
 	},
 	"Hooks": {
@@ -100,6 +101,7 @@
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
 			"LoopLiterature::onParserSetup",
+			"LoopExternalContent::onParserSetup",
 			"LoopLegacy::onParserSetup"
 		],
 		"ParserAfterTidy": [
@@ -486,6 +488,14 @@
 		"Xmlfo2PdfServiceToken": {
 			"value" : "",
 			"description" : "Token for the Service to convert XMLFO to PDF"
+		},
+		"H5PHostUrl": {
+			"value" : "https://h5p.org/h5p/embed/",
+			"description" : "URL for customly hosted H5P elements"
+		},
+		"H5PCustomHostUrl": {
+			"value" : "",
+			"description" : "URL for customly hosted H5P elements"
 		},
 		"SocialIcons": {
 			"value" : {
