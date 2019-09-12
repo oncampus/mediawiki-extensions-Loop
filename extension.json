@@ -513,6 +513,10 @@
 			"value" : "https://www.slideshare.net/slideshow/embed_code/key/",
 			"description" : "URL for Slideshare elements"
 		},
+		"QuizletUrl": {
+			"value" : "https://www.quizlet.com/",
+			"description" : "URL for Quizlet elements"
+		},
 		"SocialIcons": {
 			"value" : {
 				"Facebook": {

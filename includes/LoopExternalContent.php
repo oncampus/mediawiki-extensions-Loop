@@ -24,6 +24,7 @@ class LoopExternalContent {
 		$parser->setHook ( 'padlet', 'LoopExternalContent::renderPadlet' );
 		$parser->setHook ( 'prezi', 'LoopExternalContent::renderPrezi' );
 		$parser->setHook ( 'slideshare', 'LoopExternalContent::renderSlideshare' );
+		$parser->setHook ( 'quizlet', 'LoopExternalContent::renderQuizlet' );
 		return true;
     }	
     
@@ -33,10 +34,10 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '700';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
         $hostUrl = $wgH5PHostUrl;
-
+$parser->getOutput()->addModules("skins.loop.resizer.js");
         if ( array_key_exists( 'host', $args ) ) {
             if ( strtolower( $args['host'] ) == "oncampus" || strtolower( $args['host'] ) == "custom" ) {
                 global $wgH5PCustomHostUrl;
@@ -46,7 +47,7 @@ class LoopExternalContent {
                     $errors .= wfMessage('loopexternalcontent-h5p-error-nocustomhost')->text() . "<br>";
                 }
             } elseif ( strtolower( $args['host'] ) != "h5p" ) {
-                $errors .= wfMessage('loopexternalcontent-h5p-error-unknownhost')->text() . "<br>";
+                $errors .= wfMessage('loopexternalcontent-h5p-error-unknownhost', $args['host'] )->text() . "<br>";
             }
         }
 
@@ -57,6 +58,7 @@ class LoopExternalContent {
                     'src' => $hostUrl . $id,
                     'width' => $width,
                     'height' => $height,
+                    #'data-height' => $height,
                     'allowfullscreen' => 'allowfullscreen',
                     'class' => 'ext-h5p responsive-iframe'
                 ),
@@ -68,7 +70,6 @@ class LoopExternalContent {
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
-			
         }
 
         return $return;
@@ -81,10 +82,12 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $appId = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '700';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgLearningAppUrl;
 
+        $parser->getOutput()->addModules("skins.loop.resizer.js");
+        
         if ( array_key_exists( 'app', $args ) ) {
             $appId = "app=" . $args["app"];
         } elseif ( array_key_exists( 'privateapp', $args ) ) {
@@ -110,7 +113,6 @@ class LoopExternalContent {
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
-			
         }
 
         return $return;
@@ -122,7 +124,7 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $key = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '700';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgPadletUrl;
 
@@ -151,7 +153,6 @@ class LoopExternalContent {
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
-			
         }
 
         return $return;
@@ -201,7 +202,6 @@ class LoopExternalContent {
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
-			
         }
 
         return $return;
@@ -213,7 +213,7 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $key = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '700';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgSlideshareUrl;
 
@@ -242,7 +242,48 @@ class LoopExternalContent {
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
-			
+        }
+
+        return $return;
+    }
+    
+    public static function renderQuizlet ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+
+        global $wgQuizletUrl;
+        $errors = '';
+        $return = '';
+        $id = '';
+        $allowed_modes = array( 'flashcards', 'learn', 'scatter', 'speller', 'test', 'spacerace' );
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
+        $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
+        $mode = ( array_key_exists( 'mode', $args ) && array_key_exists( strtolower( $args['mode'] ), $allowed_modes ) ) ? $args['mode'] : 'flashcards';
+        $hostUrl = $wgQuizletUrl;
+
+        if ( array_key_exists( 'quiz', $args ) ) {
+            $id = $args["quiz"];
+        } elseif ( array_key_exists( 'id', $args ) ) {
+            $id = $args["id"];
+        } else {
+            $errors .= wfMessage('loopexternalcontent-quizlet-error-noid')->text() . "<br>";
+        }
+
+        if ( !empty( $id ) ) {
+            $return = Html::rawElement(
+                'iframe',
+                array(
+                    'src' => $hostUrl .  $id . '/' . $mode . '/embedv2',
+                    'width' => $width,
+                    'height' => $height,
+                    'allowfullscreen' => 'allowfullscreen',
+                    'class' => 'ext-quizlet responsive-iframe'
+                ),
+                ''
+            );
+        } 
+        
+        if ( !empty ( $errors ) ) {
+            $return .= new LoopException( $errors );
+            $parser->addTrackingCategory( 'loop-tracking-category-error' );
         }
 
         return $return;
