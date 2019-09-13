@@ -335,46 +335,55 @@ class SpecialLoopIndex extends SpecialPage {
 		$linkRenderer->setForceArticlePath(true); #required for readable links
         $loopStructure = new LoopStructure();
         $loopStructure->loadStructureItems();
-        $allItems = LoopIndex::getAllItems( $loopStructure );
+        $allItems = LoopIndex::getAllItems( $loopStructure, true );
 		
 		$html = "<h1>".wfMessage( 'loopindex' )->text()."</h1>";
         
-	    $html .= '<table class="table loop_index">';
-        foreach ( $allItems as $index => $pages ) {
-			$links = array();
-            foreach ( $pages as $page => $items ) {
-                foreach ( $items as $refId ) {
-                    #dd( $item, $page, $refId );
-                    $title = Title::newFromId( $page );
-                    $lsi = LoopStructureItem::newFromIds( $page );
-                    $prepend = ($lsi && strlen( $lsi->tocNumber ) != 0 ) ? $lsi->tocNumber . " " : "";
-                    $links[$prepend . $title->mTextform] = $linkRenderer->makelink( 
-                        $title, 
-                        new HtmlArmor( $prepend . $title->mTextform ), 
-                        array( 'title' =>  $prepend . $title->mTextform, "class" => "index-link", "data-target" => $refId ),
-                        array()
-                    );
-                }
-            }
-        	sort( $links, SORT_STRING ); # sorts links of an index term
-			$ucIndex = ucFirst($index);
-			$indexlinks[$ucIndex] = '<tr scope="row" class="ml-1 pb-3">';
-            $indexlinks[$ucIndex] .= '<td scope="col" class="pl-1 pr-1">'.$index.'</td>';
-            $indexlinks[$ucIndex] .= '<td scope="col" class="pl-1 pr-1">';
-            $i = 1;
-            foreach ( $links as $link ) {
-                $indexlinks[$ucIndex] .= ( $i == 1 ? " " : ", "  ) . $link;
-                $i++;
-            }
-            $indexlinks[$ucIndex] .= '</td></tr>';
-        }
+		$html .= '<table class="table loop_index">';
+		$links = array();
+		foreach ( $allItems as $letter => $indexArray ) {
+			foreach ( $indexArray as $index => $indexPages ) {
+				foreach ($indexPages as $pages => $page) {
+					foreach ( $page as $refId ) {
+
+						$title = Title::newFromId( $page );
+						$lsi = LoopStructureItem::newFromIds( $page );
+						$prepend = ( $lsi && strlen( $lsi->tocNumber ) != 0 ) ? $lsi->tocNumber . " " : "";
+						$links[$letter][$index][$prepend . $title->mTextform] = $linkRenderer->makelink( 
+							$title, 
+							new HtmlArmor( $prepend . $title->mTextform ), 
+							array( 'title' =>  $prepend . $title->mTextform, "class" => "index-link", "data-target" => $refId ),
+							array()
+						);
+					}
+				}
+				sort( $links[$letter][$index], SORT_STRING ); # sorts links of an index term
+				$ucIndex = ucFirst($index);
+				$indexlinks[$letter][$ucIndex] = '<tr scope="row" class="ml-1 pb-3">';
+				$indexlinks[$letter][$ucIndex] .= '<td scope="col" class="pl-1 pr-1 font-weight-bold"></td>';
+				$indexlinks[$letter][$ucIndex] .= '<td scope="col" class="pl-1 pr-1">'.$index.'</td>';
+				$indexlinks[$letter][$ucIndex] .= '<td scope="col" class="pl-1 pr-1">';
+				$i = 1;
+				foreach ( $links[$letter][$index] as $link ) {
+					$indexlinks[$letter][$ucIndex] .= ( $i == 1 ? " " : ", "  ) . $link;
+					$i++;
+				}
+				$indexlinks[$letter][$ucIndex] .= '</td></tr>';
+			}
+		}
 		ksort($indexlinks); # sorts terms
-		foreach ($indexlinks as $indexlink) {
-			$html .= $indexlink;
+		foreach ($indexlinks as $letter => $indexArray ) {
+			$i = 1;
+			foreach ( $indexArray as $indexLink ) {
+				if ( $i == 1 ) {
+					$indexLink = substr_replace($indexLink, $letter, 85, 0);
+				}
+				$html .= $indexLink;
+				$i++;
+			}
 		}
         
 		$html .= '</table>';
-		
 		return $html;
 
 	}
