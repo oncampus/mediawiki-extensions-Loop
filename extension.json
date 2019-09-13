@@ -510,7 +510,7 @@
 			"description" : "URL for Prezi elements"
 		},
 		"SlideshareUrl": {
-			"value" : "https://www.slideshare.net/slideshow/embed_code/key/",
+			"value" : "//www.slideshare.net/slideshow/embed_code/key/",
 			"description" : "URL for Slideshare elements"
 		},
 		"QuizletUrl": {

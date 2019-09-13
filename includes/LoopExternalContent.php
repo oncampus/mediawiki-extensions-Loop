@@ -36,8 +36,15 @@ class LoopExternalContent {
         $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
+        $scale = array_key_exists( 'scale', $args ) ? $args['scale'] : false;
         $hostUrl = $wgH5PHostUrl;
-$parser->getOutput()->addModules("skins.loop.resizer.js");
+        $scaleClass = 'responsive-iframe';
+
+        if ( $scale ) {
+            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $scaleClass = "scale-frame";
+        }
+
         if ( array_key_exists( 'host', $args ) ) {
             if ( strtolower( $args['host'] ) == "oncampus" || strtolower( $args['host'] ) == "custom" ) {
                 global $wgH5PCustomHostUrl;
@@ -58,9 +65,10 @@ $parser->getOutput()->addModules("skins.loop.resizer.js");
                     'src' => $hostUrl . $id,
                     'width' => $width,
                     'height' => $height,
-                    #'data-height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-h5p responsive-iframe'
+                    'class' => 'ext-h5p ' . $scaleClass
                 ),
                 ''
             );
@@ -165,11 +173,10 @@ $parser->getOutput()->addModules("skins.loop.resizer.js");
         $return = '';
         $id = '';
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '550';
-        $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
+        $height = array_key_exists( 'height', $args ) ? $args['height'] : '400';
         $controls = ( array_key_exists( 'control', $args ) && $args["control"] == strtolower("simple") ) ? '1' : '0';
         $title = array_key_exists( 'title', $args ) ? $args['title'] : '';
-        $hostUrl = $wgPadletUrl;
-
+        $hostUrl = $wgPreziUrl;
         if ( array_key_exists( 'id', $args ) ) {
             $id = $args["id"];
         } else {
@@ -177,7 +184,7 @@ $parser->getOutput()->addModules("skins.loop.resizer.js");
         }
 
         if ( !empty( $id ) ) {
-            $return = Html::openElement( 'div', array( 'class' => 'prezi-player', '') );
+            $return = Html::openElement( 'div', array( 'class' => 'prezi-player', 'style' => 'width:"'.$width.'";') );
             $return .= Html::rawElement(
                 'iframe',
                 array(
@@ -189,20 +196,21 @@ $parser->getOutput()->addModules("skins.loop.resizer.js");
                 ),
                 ''
             );
-            $return = Html::rawElement( 
+            $return .= Html::rawElement( 
                 'div', 
                 array( 
                     'class' => 'prezi-player-links text-center' 
                 ), 
-                '<p><a class="external-link" target="_blank" href="https://prezi.com/'.$id.'/">'.$title.'</a> '.wfMessage( "loopexternalcontent-prezi-on" )->text().' <a class="external-link" target="_blank" href="https://prezi.com">Prezi</a></p>'
+                '<p style="width:'.$width.'px;"><a class="external-link" target="_blank" href="https://prezi.com/'.$id.'/">'.$title.'</a> '.wfMessage( "loopexternalcontent-prezi-on" )->text().' <a class="external-link" target="_blank" href="https://prezi.com">Prezi</a></p>'
             );
-            $return = Html::closeElement( 'div' );
+            $return .= Html::closeElement( 'div' );
         } 
         
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
         }
+        #dd($input, $args, $return);
 
         return $return;
     }
