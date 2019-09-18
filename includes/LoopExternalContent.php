@@ -34,12 +34,12 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
-        $scale = array_key_exists( 'scale', $args ) ? $args['scale'] : false;
         $hostUrl = $wgH5PHostUrl;
+        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
         $scaleClass = 'responsive-iframe';
-
+        
         if ( $scale ) {
             $parser->getOutput()->addModules("skins.loop.resizer.js");
             $scaleClass = "scale-frame";
@@ -90,11 +90,16 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $appId = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgLearningAppUrl;
-
-        $parser->getOutput()->addModules("skins.loop.resizer.js");
+        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scaleClass = 'responsive-iframe';
+        
+        if ( $scale ) {
+            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $scaleClass = "scale-frame";
+        }
         
         if ( array_key_exists( 'app', $args ) ) {
             $appId = "app=" . $args["app"];
@@ -112,7 +117,7 @@ class LoopExternalContent {
                     'width' => $width,
                     'height' => $height,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-learningapp responsive-iframe'
+                    'class' => 'ext-learningapp ' . $scaleClass
                 ),
                 ''
             );
@@ -132,9 +137,16 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $key = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgPadletUrl;
+        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scaleClass = 'responsive-iframe';
+        
+        if ( $scale ) {
+            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $scaleClass = "scale-frame";
+        }
 
         if ( array_key_exists( 'key', $args ) ) {
             $key = $args["key"];
@@ -152,7 +164,7 @@ class LoopExternalContent {
                     'width' => $width,
                     'height' => $height,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-padlet responsive-iframe'
+                    'class' => 'ext-padlet ' . $scaleClass
                 ),
                 ''
             );
@@ -177,6 +189,14 @@ class LoopExternalContent {
         $controls = ( array_key_exists( 'control', $args ) && $args["control"] == strtolower("simple") ) ? '1' : '0';
         $title = array_key_exists( 'title', $args ) ? $args['title'] : '';
         $hostUrl = $wgPreziUrl;
+        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scaleClass = 'responsive-iframe';
+        
+        if ( $scale ) {
+            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $scaleClass = "scale-frame";
+        }
+
         if ( array_key_exists( 'id', $args ) ) {
             $id = $args["id"];
         } else {
@@ -192,7 +212,7 @@ class LoopExternalContent {
                     'width' => $width,
                     'height' => $height,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-prezi responsive-iframe'
+                    'class' => 'ext-prezi ' . $scaleClass
                 ),
                 ''
             );
@@ -221,9 +241,16 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $key = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgSlideshareUrl;
+        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scaleClass = 'responsive-iframe';
+        
+        if ( $scale ) {
+            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $scaleClass = "scale-frame";
+        }
 
         if ( array_key_exists( 'key', $args ) ) {
             $key = $args["key"];
@@ -241,7 +268,7 @@ class LoopExternalContent {
                     'width' => $width,
                     'height' => $height,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-slideshare responsive-iframe'
+                    'class' => 'ext-slideshare ' . $scaleClass
                 ),
                 ''
             );
@@ -262,10 +289,17 @@ class LoopExternalContent {
         $return = '';
         $id = '';
         $allowed_modes = array( 'flashcards', 'learn', 'scatter', 'speller', 'test', 'spacerace' );
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '100%';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $mode = ( array_key_exists( 'mode', $args ) && array_key_exists( strtolower( $args['mode'] ), $allowed_modes ) ) ? $args['mode'] : 'flashcards';
         $hostUrl = $wgQuizletUrl;
+        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scaleClass = 'responsive-iframe';
+        
+        if ( $scale ) {
+            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $scaleClass = "scale-frame";
+        }
 
         if ( array_key_exists( 'quiz', $args ) ) {
             $id = $args["quiz"];
@@ -283,7 +317,7 @@ class LoopExternalContent {
                     'width' => $width,
                     'height' => $height,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-quizlet responsive-iframe'
+                    'class' => 'ext-quizlet ' . $scaleClass
                 ),
                 ''
             );
