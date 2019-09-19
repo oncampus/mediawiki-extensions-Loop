@@ -37,26 +37,7 @@ class LoopExternalContent {
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
         $hostUrl = $wgH5PHostUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
-        $scaleClass = 'responsive-iframe';
-        
-        if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop.resizer.js");
-            $scaleClass = "scale-frame";
-        }
-
-        if ( array_key_exists( 'host', $args ) ) {
-            if ( strtolower( $args['host'] ) == "oncampus" || strtolower( $args['host'] ) == "custom" ) {
-                global $wgH5PCustomHostUrl;
-                if ( !empty ( $wgH5PCustomHostUrl ) ) {
-                    $hostUrl = $wgH5PCustomHostUrl;
-                } else {
-                    $errors .= wfMessage('loopexternalcontent-h5p-error-nocustomhost')->text() . "<br>";
-                }
-            } elseif ( strtolower( $args['host'] ) != "h5p" ) {
-                $errors .= wfMessage('loopexternalcontent-h5p-error-unknownhost', $args['host'] )->text() . "<br>";
-            }
-        }
+        $parser->getOutput()->addModules("skins.loop-h5p-resizer.js");
 
         if ( !empty( $id ) ) {
             $return = Html::rawElement(
@@ -68,7 +49,7 @@ class LoopExternalContent {
                     'data-height' => $height,
                     'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-h5p ' . $scaleClass
+                    'class' => 'ext-h5p h5p-iframe'
                 ),
                 ''
             );
@@ -97,7 +78,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
         }
         
@@ -144,7 +125,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
         }
 
@@ -185,7 +166,7 @@ class LoopExternalContent {
         $return = '';
         $id = '';
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '550';
-        $height = array_key_exists( 'height', $args ) ? $args['height'] : '400';
+        $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
         $controls = ( array_key_exists( 'control', $args ) && $args["control"] == strtolower("simple") ) ? '1' : '0';
         $title = array_key_exists( 'title', $args ) ? $args['title'] : '';
         $hostUrl = $wgPreziUrl;
@@ -193,7 +174,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
         }
 
@@ -248,7 +229,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
         }
 
@@ -297,7 +278,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop.resizer.js");
+            $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
         }
 

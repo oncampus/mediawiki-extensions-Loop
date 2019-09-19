@@ -196,6 +196,10 @@
 	],
 	"GroupPermissions": {
 		"*": {
+			"editmyoptions": true,
+			"viewmyprivateinfo": true,
+			"editmyprivateinfo": true,
+			
 			"loop-toc-edit": false,
 			"loop-export-pdf": false,
 			"loop-export-xml": false,
@@ -210,6 +214,9 @@
 			"writeapi": false,
 			"loop-view-special-pages": false,
 			"loop-edit-literature": false
+		},
+		"user" : {
+			"read": true
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -240,6 +247,7 @@
 			"loop-rendermode": true,
 			"purgecache": true,
 			"unreviewedpages": true,
+			"edit": true,
 			"review": true,
 			"autoreview": true,
 			"loop-view-special-pages": true,
@@ -448,7 +456,9 @@
 		"watchmoves",
 		"watchdeletion",
 		"watchuploads",
-		"flaggedrevswatch"
+		"flaggedrevswatch",
+		"rcenhancedfilters-disable",
+		"wlenhancedfilters-disable"
 	],
 	"AvailableRights": [
 		"loop-toc-edit",
@@ -490,12 +500,8 @@
 			"description" : "Token for the Service to convert XMLFO to PDF"
 		},
 		"H5PHostUrl": {
-			"value" : "https://h5p.org/h5p/embed/",
+			"value" : "https://h5p.com/h5p/embed/",
 			"description" : "URL for H5P hosted elements"
-		},
-		"H5PCustomHostUrl": {
-			"value" : "",
-			"description" : "URL for customly hosted H5P elements"
 		},
 		"LearningAppUrl": {
 			"value" : "https://LearningApps.org/watch?",

@@ -298,6 +298,13 @@
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
 	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
 
+	"loopexternalcontent-h5p-error-noid": "The H5P element is missing an ID (id) parameter.", 
+	"loopexternalcontent-learningapp-error-noid": "The LearningApp element is missing an app (app / privateapp) parameter.",
+	"loopexternalcontent-padlet-error-noid": "The Padlet element is missing a (key) parameter.", 
+	"loopexternalcontent-prezi-error-noid": "The Prezi element is missing an ID (id) parameter.", 
+	"loopexternalcontent-prezi-on": "on", 
+	"loopexternalcontent-slideshare-error-noid": "The Slideshare element is missing a key (key) parameter.", 
+
 	"namespace-special": "Special",
 	"loop-glossary-namespace": "Glossary",
 	"loop-glossary-objectnumber-prefix": "G-",
