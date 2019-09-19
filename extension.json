@@ -490,12 +490,8 @@
 			"description" : "Token for the Service to convert XMLFO to PDF"
 		},
 		"H5PHostUrl": {
-			"value" : "https://h5p.org/h5p/embed/",
+			"value" : "https://h5p.com/h5p/embed/",
 			"description" : "URL for H5P hosted elements"
-		},
-		"H5PCustomHostUrl": {
-			"value" : "",
-			"description" : "URL for customly hosted H5P elements"
 		},
 		"LearningAppUrl": {
 			"value" : "https://LearningApps.org/watch?",
