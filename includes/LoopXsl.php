@@ -285,6 +285,7 @@ class LoopXsl {
 	    
 	    return $return;
 	}
+
 	public static function xsl_transform_cite( $input ) {
 	    global $wgLoopLiteratureCiteType;
 	    
@@ -323,6 +324,20 @@ class LoopXsl {
 	    }
 	    return $dom;
 	}
-	
+
+	public static function get_page_link( $input ) {
+
+		if ( isset( $input[0]->value ) ) {
+			$articleId = str_replace( "article", "", $input[0]->value );
+			if ( is_numeric ( $articleId ) ) {
+				global $wgServer, $wgArticlePath;
+				$title = Title::newFromId( $articleId );
+				if ( isset( $title ) ) {
+					$url = $wgServer . str_replace( "$1", $title->mUrlform, $wgArticlePath );
+					return $url;
+				}
+			}
+		}
+	}
 	
 }

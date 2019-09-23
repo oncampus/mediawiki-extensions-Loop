@@ -52,6 +52,14 @@
 	<xsl:variable name="icon_experiment" select="functx:get_icon('icon_experiment')" />
 	<xsl:variable name="icon_citation" select="functx:get_icon('icon_citation')" />
 
+	<xsl:variable name="icon_h5p" select="functx:get_icon('icon_h5p')" />
+	<xsl:variable name="icon_quizlet" select="functx:get_icon('icon_quizlet')" />
+	<xsl:variable name="icon_slideshare" select="functx:get_icon('icon_slideshare')" />
+	<xsl:variable name="icon_prezi" select="functx:get_icon('icon_prezi')" />
+	<xsl:variable name="icon_padlet" select="functx:get_icon('icon_padlet')" />
+	<xsl:variable name="icon_learningapps" select="functx:get_icon('icon_learningapps')" />
+	<xsl:variable name="icon_ngspice" select="functx:get_icon('icon_ngspice')" />
+
 	<xsl:variable name="word_chapter" select="functx:get_term_name('word_chapter')" />
 	<xsl:variable name="word_state"  select="functx:get_term_name('word_state')" />
 	<xsl:variable name="word_content"  select="functx:get_term_name('word_content')" />
@@ -130,5 +138,6 @@
 	<xsl:variable name="word_literature_page"  select="functx:get_term_name('word_literature_page')" />
 	<xsl:variable name="word_literature_pages"  select="functx:get_term_name('word_literature_pages')" />
 	<xsl:variable name="word_bibliography"  select="functx:get_term_name('word_bibliography')" />
+	<xsl:variable name="phrase_interactive_element"  select="functx:get_term_name('phrase_interactive_element')" />
 
 </xsl:stylesheet>
