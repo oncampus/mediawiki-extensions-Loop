@@ -637,8 +637,8 @@ class LoopLiterature {
 	            # In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
 	            $user = null;
 	            $systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+				$systemUser->addGroup("sysop");
 	            if ( $systemUser->getId() == $userId ) {
-					$systemUser->addGroup("sysop");
 	                $user = $systemUser;
 	            }
 	            
@@ -768,7 +768,7 @@ class LoopLiterature {
 						$stableRev = $wikiPage->getRevision()->getId();
 					} 
 
-					$summary = '';
+					$summary = 'Added IDs';
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
 				}	
