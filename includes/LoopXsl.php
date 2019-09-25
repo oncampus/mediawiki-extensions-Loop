@@ -329,10 +329,10 @@ class LoopXsl {
 		if ( isset( $input[0]->value ) ) {
 			$articleId = str_replace( "article", "", $input[0]->value );
 			if ( is_numeric ( $articleId ) ) {
-				global $wgServer, $wgArticlePath;
+				global $wgCanonicalServer, $wgArticlePath;
 				$title = Title::newFromId( $articleId );
 				if ( isset( $title ) ) {
-					$url = $wgServer . str_replace( "$1", $title->mUrlform, $wgArticlePath );
+					$url = $wgCanonicalServer . str_replace( "$1", $title->mUrlform, $wgArticlePath );
 					return $url;
 				}
 			}
