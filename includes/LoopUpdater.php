@@ -27,6 +27,7 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_object_index', $schemaPath . 'loop_object_index.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', $schemaPath . 'loop_literature_items.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
 		
 		$dbr = wfGetDB( DB_REPLICA );
 
@@ -166,7 +167,6 @@ class LoopUpdater {
 	 */
 	public static function migrateLiterature( $wikiPage, $title, $contentText, $systemUser ) {
 		$literaturePage = false;
-		$stableRev = false;
 		$bibliographyPageTitle = Title::newFromText( "Bibliographypage", NS_MEDIAWIKI); 
 		$bibliographyPageWP = WikiPage::factory( $bibliographyPageTitle );
 		$bibliographyPageRev = $bibliographyPageWP->getRevision();
@@ -224,6 +224,36 @@ class LoopUpdater {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Changes loop_index tags with multiple words (seperated by |) to multiple tags
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
+	public static function migrateIndex( $wikiPage, $title, $contentText = null, $systemUser ) {
+
+		$revision = $wikiPage->getRevision();
+		if ( $contentText == null ) {
+			$contentText = $revision->getContent()->getText();
+		}
+		$parser = new Parser();
+		$index_tags = array ();
+		$loopliterature_tags = array ();
+		$parser->extractTagsAndParams( array( 'loop_index' ), $contentText, $index_tags );
+		$newContentText = $contentText;
+
+		if ( !empty ( $index_tags ) ) {
+			foreach ( $index_tags as $index ) {
+				if ( strpos ( $index[1], "|" ) != false ) {
+					$replace = str_replace("|", "</loop_index><loop_index>", $index[3]);
+					$newContentText = str_replace( $index[3], $replace, $contentText );
+				}
+			}
+		}
+		if ( $newContentText != $contentText ) {
+			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
+			$wikiPage->doEditContent( $editContent, 'Splitted loop_index tags', EDIT_UPDATE, false, $systemUser );	
+		} 
 	}
 
 }

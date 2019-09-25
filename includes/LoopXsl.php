@@ -306,15 +306,14 @@ class LoopXsl {
 	
 	public static function xsl_get_bibliography( $input ) {
 	    global $wgLoopLiteratureCiteType;
-	    
+	    #dd($input[0]);
 	    $input_object = $input[0];
+		$dom = new DOMDocument( "1.0", "utf-8" );
 	    
 	    if ( empty ( $input_object ) ) {
 	        $xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
-	        $dom = new DOMDocument( "1.0", "utf-8" );
 	        $dom->loadXML($xml);
 	    } else {
-	        $dom = new DOMDocument( "1.0", "utf-8" );
 	        $dom->appendChild($dom->importNode($input_object, true));
 	        $tags = $dom->getElementsByTagName ("extension"); 
 	        $input = $tags[0]->nodeValue;
@@ -338,6 +337,55 @@ class LoopXsl {
 				}
 			}
 		}
+	}
+
+	public static function xsl_getIndex ( $input ) {
+
+		$structure = new LoopStructure();
+		$structure->loadStructureItems();
+		$indexItems = LoopIndex::getAllItems( $structure, true );
+		$dom = new DOMDocument( "1.0", "utf-8" );
+
+		$root = $dom->createElement('loop_index_list');
+		$root = $dom->appendChild($root);
+
+		foreach ($indexItems as $letter => $group) {
+			$loop_index_group = $dom->createElement('loop_index_group');
+			$letterAttribute = $dom->createAttribute('letter');
+			$letterAttribute->value = $letter;
+			$loop_index_group->appendChild($letterAttribute);
+			$loop_index_group = $root->appendChild($loop_index_group);
+	
+			foreach ($group as $indexname => $pages) {
+				$loop_index_item = $dom->createElement('loop_index_item');
+				$loop_index_item = $loop_index_group->appendChild($loop_index_item);
+	
+				$loop_index_title_value = str_replace('_', ' ', $indexname);
+				$loop_index_title = $dom->createElement('loop_index_title', $loop_index_title_value);
+				$loop_index_title = $loop_index_item->appendChild($loop_index_title);
+	
+				$loop_index_pages = $dom->createElement('loop_index_pages');
+				$loop_index_pages = $loop_index_item->appendChild($loop_index_pages);
+	
+				$furthervalue = '0';
+				foreach ($pages as $page => $refIds) {
+					$loop_index_page = $dom->createElement('loop_index_page');
+	
+					$furtherAttribute = $dom->createAttribute('further');
+					$furtherAttribute->value = $furthervalue;
+					$loop_index_page->appendChild($furtherAttribute);
+					
+					$pagetitleAttribute = $dom->createAttribute('pagetitle');
+					$pagetitleAttribute->value = "article".$page;
+					$loop_index_page->appendChild($pagetitleAttribute);
+	
+					$loop_index_pages->appendChild($loop_index_page);
+	
+					$furthervalue = '1';
+				}
+			}
+		}
+		return $dom;
 	}
 	
 }

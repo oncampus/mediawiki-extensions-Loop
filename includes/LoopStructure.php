@@ -123,6 +123,15 @@ class LoopStructure {
 			$this->mainPage = $newTitle->getArticleId();
 		}
 
+		# Set new MW main page from LOOP main page
+		$mainPage = Title::newFromId( $this->mainPage );
+		$mainPageWP =  WikiPage::factory( $mainPage );
+		$mwMainPageTitle = Title::newFromText( "Mainpage", NS_MEDIAWIKI );
+		$mwMainPageWP = WikiPage::factory( $mwMainPageTitle );
+		$content = $mainPageWP->getContent();
+		$newMainPageContent = $content->getContentHandler()->unserializeContent( $mainPage->mTextform );
+		$mwMainPageWP->doEditContent ( $newMainPageContent, "", 0, false, $user ); #TODO deprecated
+
 		$parent_id = array();
 		$parent_id[0] = $this->mainPage;
 		$max_level = 0;

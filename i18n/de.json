@@ -70,8 +70,8 @@
 	"loopsettings-citation-style-harvard-label": "'''Harvard''', Anzeige im Fließtext z.B. Müller 2002",
 	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', Anzeige mit durchlaufender Nummerierung, z.B. ²",
 
-	"loopexport-specialpage-title": "Loop Exportieren",
-	"loopexport": "Loop Exportieren",
+	"loopexport-specialpage-title": "Loop exportieren",
+	"loopexport": "Loop exportieren",
 	"loopexport-audio-chapter": "Kap.",
 	"loopexport-audio-filename": "Hoerbuch",
 	"loopexport-offline-filename": "Offlineversion",
@@ -309,5 +309,8 @@
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glossar",
-	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen."
+	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen.",
+
+	"loopindex": "Index",
+	"loop-summary-id": "ID automatisch zu Tag hinzugefügt."
 }

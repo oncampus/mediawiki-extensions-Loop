@@ -116,7 +116,8 @@
 	<msg name="word_literature_page" lang="en">p.</msg>
 	<msg name="word_literature_pages" lang="en">pp.</msg>
 	<msg name="word_bibliography" lang="en">Bibliography</msg>
-	<msg name="phrase_interactive_element" lang="en">An dieser Stelle befindet sich online ein interaktives Medienelement.</msg>
+	<msg name="phrase_interactive_element" lang="en">There is an interactive element at this point on the website.</msg>
+	<msg name="word_index" lang="en">Index</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -189,6 +190,7 @@
 	<msg name="word_literature_pages" lang="de">S.</msg>
 	<msg name="word_bibliography" lang="de">Literaturverzeichnis</msg>
 	<msg name="phrase_interactive_element" lang="de">An dieser Stelle befindet sich online ein interaktives Medienelement.</msg>
+	<msg name="word_index" lang="de">Index</msg>
 
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
@@ -260,5 +262,6 @@
 	<msg name="word_literature_pages" lang="sv">sid</msg>
 	<msg name="word_bibliography" lang="sv">Bibliografi</msg>
 	<msg name="phrase_interactive_element" lang="sv">På webbsidan finns det ett interaktivt medieelement här.</msg>
+	<msg name="word_index" lang="sv">Index</msg>
 	
 </terms> 
