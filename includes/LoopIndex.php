@@ -326,6 +326,7 @@ class SpecialLoopIndex extends SpecialPage {
 		
 		$html = self::renderLoopIndexSpecialPage();
 		
+		$out->setPageTitle(wfMessage('loopindex'));
         $out->addHtml( $html );
 	}
 	
@@ -338,16 +339,15 @@ class SpecialLoopIndex extends SpecialPage {
         $allItems = LoopIndex::getAllItems( $loopStructure, true );
 		
 		$html = "<h1>".wfMessage( 'loopindex' )->text()."</h1>";
-        
 		$html .= '<table class="table loop_index">';
 		$links = array();
 		foreach ( $allItems as $letter => $indexArray ) {
 			foreach ( $indexArray as $index => $indexPages ) {
-				foreach ($indexPages as $pages => $page) {
+				foreach ($indexPages as $pageId => $page) {
 					foreach ( $page as $refId ) {
-
-						$title = Title::newFromId( $page );
-						$lsi = LoopStructureItem::newFromIds( $page );
+						#dd($pages);
+						$title = Title::newFromId( $pageId );
+						$lsi = LoopStructureItem::newFromIds( $pageId );
 						$prepend = ( $lsi && strlen( $lsi->tocNumber ) != 0 ) ? $lsi->tocNumber . " " : "";
 						$links[$letter][$index][$prepend . $title->mTextform] = $linkRenderer->makelink( 
 							$title, 
