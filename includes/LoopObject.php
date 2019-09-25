@@ -829,7 +829,8 @@ class LoopObject {
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
 				# In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
 				$user = null;
-				$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+				$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+				$systemUser->addGroup("sysop");
 				if ( $systemUser->getId() == $userId ) {
 					$user = $systemUser;
 				}
