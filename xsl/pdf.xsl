@@ -1538,7 +1538,7 @@
 		<fo:block>
 			<fo:inline>
 				<xsl:call-template name="font_icon"></xsl:call-template>
-				<xsl:value-of select="$icon_learningapp"/>
+				<xsl:value-of select="$icon_learningapps"/>
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
@@ -1626,7 +1626,7 @@
 		</fo:block>				
 	</xsl:template>
 
-	<!-- Prezi -->
+	<!-- Slideshare -->
 	<xsl:template match="extension[@extension_name='slideshare']">
 		<fo:block>
 			<fo:inline>
