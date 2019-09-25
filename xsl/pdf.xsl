@@ -1309,10 +1309,9 @@
 	
 	
 <xsl:template name="font_icon">
-		<xsl:attribute name="font-size" >8.5pt</xsl:attribute>
-		<xsl:attribute name="font-weight" >bold</xsl:attribute>
+		<xsl:attribute name="font-size" >16pt</xsl:attribute>
 		<xsl:attribute name="line-height" >12pt</xsl:attribute>
-		<xsl:attribute name="margin-bottom" >1mm</xsl:attribute>
+		<xsl:attribute name="vertical-align" >middle</xsl:attribute>
 	</xsl:template>	
 
 	<xsl:template name="font_small">
@@ -1510,6 +1509,145 @@
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>	
+	
+	<!-- H5P -->
+	<xsl:template match="extension[@extension_name='h5p']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_h5p"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- LearningApps -->
+	<xsl:template match="extension[@extension_name='learningapp']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_learningapps"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+	
+	<!-- Quizlet -->
+	<xsl:template match="extension[@extension_name='quizlet']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_quizlet"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- Padlet -->
+	<xsl:template match="extension[@extension_name='padlet']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_padlet"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- Prezi -->
+	<xsl:template match="extension[@extension_name='prezi']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_prezi"/>
+			</fo:inline>
+
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- Slideshare -->
+	<xsl:template match="extension[@extension_name='slideshare']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_slideshare"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
 	
 	<!-- Loop Spoiler -->
 	<xsl:template name="spoiler">

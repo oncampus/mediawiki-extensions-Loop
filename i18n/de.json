@@ -298,6 +298,13 @@
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
+	"loopexternalcontent-h5p-error-noid": "In dem H5P-Element wurde keine ID (id) angegeben.", 
+	"loopexternalcontent-learningapp-error-noid": "In dem LearningApp-Element wurde keine App ID (app / privateapp) angegeben.",
+	"loopexternalcontent-padlet-error-noid": "In dem Padlet-Element wurde kein Schlüssel (key) angegeben.", 
+	"loopexternalcontent-prezi-error-noid": "In dem Prezi-Element wurde keine ID (id) angegeben.", 
+	"loopexternalcontent-prezi-on": "auf", 
+	"loopexternalcontent-slideshare-error-noid": "In dem Slideshare-Element wurde kein Schlüssel (key) angegeben.", 
+
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-objectnumber-prefix": "G-",

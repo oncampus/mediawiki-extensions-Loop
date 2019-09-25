@@ -285,6 +285,7 @@ class LoopXsl {
 	    
 	    return $return;
 	}
+
 	public static function xsl_transform_cite( $input ) {
 	    global $wgLoopLiteratureCiteType;
 	    
@@ -322,9 +323,24 @@ class LoopXsl {
 	    }
 	    return $dom;
 	}
-	
+
+	public static function get_page_link( $input ) {
+
+		if ( isset( $input[0]->value ) ) {
+			$articleId = str_replace( "article", "", $input[0]->value );
+			if ( is_numeric ( $articleId ) ) {
+				global $wgCanonicalServer, $wgArticlePath;
+				$title = Title::newFromId( $articleId );
+				if ( isset( $title ) ) {
+					$url = $wgCanonicalServer . str_replace( "$1", $title->mUrlform, $wgArticlePath );
+					return $url;
+				}
+			}
+		}
+	}
+
 	public static function xsl_getIndex ( $input ) {
-#dd(1);
+
 		$structure = new LoopStructure();
 		$structure->loadStructureItems();
 		$indexItems = LoopIndex::getAllItems( $structure, true );
@@ -353,7 +369,6 @@ class LoopXsl {
 	
 				$furthervalue = '0';
 				foreach ($pages as $page => $refIds) {
-					#dd($group , $indexname , $pages, $page, $refIds);
 					$loop_index_page = $dom->createElement('loop_index_page');
 	
 					$furtherAttribute = $dom->createAttribute('further');
@@ -361,7 +376,6 @@ class LoopXsl {
 					$loop_index_page->appendChild($furtherAttribute);
 					
 					$pagetitleAttribute = $dom->createAttribute('pagetitle');
-					#dd($page);
 					$pagetitleAttribute->value = "article".$page;
 					$loop_index_page->appendChild($pagetitleAttribute);
 	
@@ -371,7 +385,6 @@ class LoopXsl {
 				}
 			}
 		}
-		#dd( $dom, $indexItems, $input );
 		return $dom;
 	}
 	

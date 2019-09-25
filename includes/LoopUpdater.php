@@ -95,7 +95,8 @@ class LoopUpdater {
 		if ( !empty( $glossaryItems ) ) {
 			foreach ( $glossaryItems as $title ) {
 
-				$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+				$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+				$user->addGroup("sysop");
 
 				$oldWikiPage = WikiPage::factory ( $title );
 				$oldFlaggableWikiPage = new FlaggableWikiPage ( $title );
@@ -141,7 +142,8 @@ class LoopUpdater {
 		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+		$systemUser->addGroup("sysop");
 		
 		if ( isset( $fwp ) ) {
 			$stableRevId = $fwp->getStable();
