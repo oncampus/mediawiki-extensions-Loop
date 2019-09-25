@@ -24,7 +24,8 @@ $specialPageAliases['en'] = array(
 	'LoopLiteratureEdit' => array( 'Edit literature' ),
 	'LoopLiteratureImport' => array( 'Import literature' ),
 	'LoopLiteratureExport' => array( 'Export bibliography' ),
-	'LoopGlossary' => array( 'Glossary' )
+	'LoopGlossary' => array( 'Glossary' ),
+	'LoopIndex' => array( 'Index' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -43,7 +44,8 @@ $specialPageAliases['de'] = array(
 	'LoopLiteratureEdit' => array( 'Literatureintrag bearbeiten' ),
 	'LoopLiteratureImport' => array( 'Literatur importieren' ),
 	'LoopLiteratureExport' => array( 'Literatur exportieren' ),
-	'LoopGlossary' => array( 'Glossar', 'Glossary' )
+	'LoopGlossary' => array( 'Glossar', 'Glossary' ),
+	'LoopIndex' => array( 'Index' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -62,7 +64,8 @@ $specialPageAliases['sv'] = array(
 	'LoopLiteratureEdit' => array( 'Regidera litteraturen' ),
 	'LoopLiteratureImport' => array( 'Importera litteraturen' ),
 	'LoopLiteratureExport' => array( 'Exportera bibliografi' ),
-	'LoopGlossary' => array( 'Glossary', 'Ordlista' )
+	'LoopGlossary' => array( 'Glossary', 'Ordlista' ),
+	'LoopIndex' => array( 'Index' )
 	);
 
 

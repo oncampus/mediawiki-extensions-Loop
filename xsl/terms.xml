@@ -108,6 +108,7 @@
 	<msg name="word_literature_page" lang="en">p.</msg>
 	<msg name="word_literature_pages" lang="en">pp.</msg>
 	<msg name="word_bibliography" lang="en">Bibliography</msg>
+	<msg name="word_index" lang="en">Index</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -179,6 +180,7 @@
 	<msg name="word_literature_page" lang="de">S.</msg>
 	<msg name="word_literature_pages" lang="de">S.</msg>
 	<msg name="word_bibliography" lang="de">Literaturverzeichnis</msg>
+	<msg name="word_index" lang="de">Index</msg>
 
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
@@ -249,5 +251,6 @@
 	<msg name="word_literature_page" lang="sv">s</msg>
 	<msg name="word_literature_pages" lang="sv">sid</msg>
 	<msg name="word_bibliography" lang="sv">Bibliografi</msg>
+	<msg name="word_index" lang="sv">Index</msg>
 	
 </terms> 

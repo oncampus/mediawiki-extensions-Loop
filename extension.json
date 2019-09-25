@@ -77,7 +77,9 @@
 		"SpecialLoopLiteratureExport": "includes/LoopLiterature.php",
 		"LoopGlossary": "includes/LoopGlossary.php",
 		"SpecialLoopGlossary": "includes/LoopGlossary.php",
-		"LoopLegacy": "includes/LoopLegacy.php"
+		"LoopLegacy": "includes/LoopLegacy.php",
+		"LoopIndex": "includes/LoopIndex.php",
+		"SpecialLoopIndex": "includes/LoopIndex.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -100,7 +102,8 @@
 			"LoopSpoiler::onParserSetup",
 			"LoopCode::onParserSetup",
 			"LoopLiterature::onParserSetup",
-			"LoopLegacy::onParserSetup"
+			"LoopLegacy::onParserSetup",
+			"LoopIndex::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -113,21 +116,25 @@
 		],
 		"LinksUpdateConstructed": [
 			"LoopObject::onLinksUpdateConstructed",
-			"LoopLiterature::onLinksUpdateConstructed"
+			"LoopLiterature::onLinksUpdateConstructed",
+			"LoopIndex::onLinksUpdateConstructed"
 		],
 		"ArticleDeleteComplete": [
 			"LoopObject::onArticleDeleteComplete",
-			"LoopLiterature::onArticleDeleteComplete"
+			"LoopLiterature::onArticleDeleteComplete",
+			"LoopIndex::onArticleDeleteComplete"
 		],
 		"AfterStabilizeChange": [
 			"LoopObject::onAfterStabilizeChange",
-			"LoopLiterature::onAfterStabilizeChange"
+			"LoopLiterature::onAfterStabilizeChange",
+			"LoopIndex::onAfterStabilizeChange"
 		],
 		"AfterClearStable": [
 			"LoopObject::onAfterClearStable",
-			"LoopLiterature::onAfterClearStable"
+			"LoopLiterature::onAfterClearStable",
+			"LoopIndex::onAfterClearStable"
 		],
-		"LoopUpdateSavePage":"LoopUpdater::onLoopUpdateSavePage"
+		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -145,7 +152,8 @@
 		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
 		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
 		"LoopLiteratureExport": "SpecialLoopLiteratureExport",
-		"LoopGlossary": "SpecialLoopGlossary"
+		"LoopGlossary": "SpecialLoopGlossary",
+		"LoopIndex": "SpecialLoopIndex"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

@@ -707,7 +707,7 @@ class LoopLiterature {
 			$contentText = ContentHandler::getContentText( $content );
 			$parser = new Parser();
 
-			# check if loop_object in page content
+			# check if cite is in page content
 			$has_reference = false;
 			if ( substr_count ( $contentText, 'cite' ) >= 1 ) {
 				$has_reference = true;
@@ -767,7 +767,7 @@ class LoopLiterature {
 						$stableRev = $wikiPage->getRevision()->getId();
 					} 
 
-					$summary = '';
+					$summary = wfMessage("loop-summary-id")->text();
 					$content = $content->getContentHandler()->unserializeContent( $newContentText );
 					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
 				}	

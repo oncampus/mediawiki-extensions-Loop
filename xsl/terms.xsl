@@ -130,5 +130,6 @@
 	<xsl:variable name="word_literature_page"  select="functx:get_term_name('word_literature_page')" />
 	<xsl:variable name="word_literature_pages"  select="functx:get_term_name('word_literature_pages')" />
 	<xsl:variable name="word_bibliography"  select="functx:get_term_name('word_bibliography')" />
+	<xsl:variable name="word_index"  select="functx:get_term_name('word_index')" />
 
 </xsl:stylesheet>

@@ -67,7 +67,7 @@ class LoopHtml{
             }
 
             # Create special page files
-            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary' ); # todo LoopIndex
+            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary', 'LoopIndex' ); 
             foreach( $specialPages as $page ) {
                 $tmpTitle = Title::newFromText( $page, NS_SPECIAL );
                 LoopHtml::writeSpecialPageToFile( $tmpTitle, "", $exportSkin );
@@ -197,8 +197,11 @@ class LoopHtml{
             case "LoopStructure":
                 $content = SpecialLoopStructure::renderLoopStructureSpecialPage();
                 break;
+            case "LoopIndex":
+                $content = SpecialLoopIndex::renderLoopIndexSpecialPage();
+                break;
             default:
-                dd($specialPage);
+                #dd($specialPage);
                 $content = '';
         }
         
