@@ -388,4 +388,24 @@ class LoopXsl {
 		return $dom;
 	}
 	
+	/**
+	 * Returns image url of musical notes to embed in pdf
+	 */
+	public static function xsl_score( $input, $lang ) {
+		global $wgServer;
+		
+		if( count( $lang ) != 0 ) {
+			$language = $lang[0]->value;
+		} else {
+			$language = 'lilypond';
+		}
+		
+		$parser = new Parser();
+		$html = Score::renderScore( $input[0]->textContent, ['lang' => $language], $parser );
+		preg_match_all( '~<img.*?src=["\']+(.*?)["\']+~', $html, $url );
+		$return = $wgServer . $url[1][0];
+		
+		return $return;
+	}
+
 }

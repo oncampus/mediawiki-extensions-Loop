@@ -1775,6 +1775,18 @@
 		<fo:block></fo:block>				
 	</xsl:template>
 	
+	<!-- Loop Score -->
+	<xsl:template match="extension[@extension_name='score']">
+		<fo:block>
+			<xsl:variable name="score" select="."/>
+			<xsl:variable name="lang" select="@lang"/>
+			<xsl:variable name="scoreimg" select="php:function('LoopXsl::xsl_score', $score, $lang)"/>
+
+			<fo:external-graphic scaling="uniform" content-width="scale-to-fit">
+				<xsl:attribute name="src"><xsl:value-of select="$scoreimg"></xsl:value-of></xsl:attribute>
+			</fo:external-graphic>
+		</fo:block>
+	</xsl:template>
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
