@@ -1775,10 +1775,22 @@
 		<fo:block></fo:block>				
 	</xsl:template>
 	
+	<!-- Loop Score -->
+	<xsl:template match="extension[@extension_name='score']">
+		<fo:block>
+			<xsl:variable name="score" select="."/>
+			<xsl:variable name="lang" select="@lang"/>
+			<xsl:variable name="scoreimg" select="php:function('LoopXsl::xsl_score', $score, $lang)"/>
+
+			<fo:external-graphic scaling="uniform" content-width="scale-to-fit">
+				<xsl:attribute name="src"><xsl:value-of select="$scoreimg"></xsl:value-of></xsl:attribute>
+			</fo:external-graphic>
+		</fo:block>
+	</xsl:template>
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
-		<fo:table table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
+		<fo:table keep-together.within-page="always" table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
 			<fo:table-column column-number="1" column-width="10mm" />
 			<fo:table-column column-number="2" column-width="6mm" margin-right="-10mm"/>
 			<fo:table-column column-number="3" column-width="146mm"/>
