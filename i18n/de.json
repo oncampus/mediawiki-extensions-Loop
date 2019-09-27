@@ -312,5 +312,16 @@
 	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen.",
 
 	"loopindex": "Index",
-	"loop-summary-id": "ID automatisch zu Tag hinzugefügt."
+	"loop-summary-id": "ID automatisch zu Tag hinzugefügt.",
+
+	"loopwikieditor-section-loop": "LOOP",
+	"loopwikieditor-section-references": "Referenzen",
+	"loopwikieditor-references-literature": "Literatur",
+	"loopwikieditor-references-figures": "Abbildungen",
+	"loopwikieditor-references-formulas": "Formeln",
+	"loopwikieditor-references-media": "Medien",
+	"loopwikieditor-references-listings": "Listings",
+	"loopwikieditor-references-tasks": "Aufgaben",
+	"loopwikieditor-references-tables": "Tabellen"
+
 }

@@ -80,7 +80,8 @@
 		"LoopExternalContent": "includes/LoopExternalContent.php",
 		"LoopLegacy": "includes/LoopLegacy.php",
 		"LoopIndex": "includes/LoopIndex.php",
-		"SpecialLoopIndex": "includes/LoopIndex.php"
+		"SpecialLoopIndex": "includes/LoopIndex.php",
+		"LoopWikiEditor": "includes/LoopWikiEditor.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -136,7 +137,8 @@
 			"LoopLiterature::onAfterClearStable",
 			"LoopIndex::onAfterClearStable"
 		],
-		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage"
+		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
+		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -196,7 +198,25 @@
 			"messages": [
 				"loopspoiler-default-title"
 			]
+		},
+		"loop.wikiEditor.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.wikiEditor.js"
+			],
+			"messages": [
+				"loopwikieditor-section-loop",
+				"loopwikieditor-section-references",
+				"loopwikieditor-references-literature",
+				"loopwikieditor-references-figures",
+				"loopwikieditor-references-formulas",
+				"loopwikieditor-references-media",
+				"loopwikieditor-references-listings",
+				"loopwikieditor-references-tasks",
+				"loopwikieditor-references-tables"
+			]
 		}
+	
 	},
 	"TrackingCategories": [
 		"loop-tracking-category-error",
