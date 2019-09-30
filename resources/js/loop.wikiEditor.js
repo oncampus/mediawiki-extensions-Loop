@@ -1,14 +1,14 @@
-/* Check if view is in edit mode and that the required modules are available. Then, customize the toolbar … */
-//if ( [ 'edit', 'submit' ].indexOf( mw.config.get( 'wgAction' ) ) !== -1 ) {
-	mw.loader.using( 'user.options' ).then( function () {
-		// This can be the string "0" if the user disabled the preference ([[phab:T54542#555387]])
-		if ( mw.user.options.get( 'usebetatoolbar' ) == 1 ) {
-			$.when(
-				mw.loader.using( 'ext.wikiEditor' ), $.ready
-			).then( customizeWikiEditor );
-		}
-	} );
-//}
+// customize WikiEditor for LOOP
+// @author Dennis Krohn @krohnden
+
+mw.loader.using( 'user.options' ).then( function () {
+    if ( mw.user.options.get( 'usebetatoolbar' ) == 1 ) {
+        $.when(
+            mw.loader.using( 'ext.wikiEditor' ), $.ready
+        ).then( customizeWikiEditor );
+    }
+} );
+
 var wikiEditor = $( '#wpTextbox1' );
 
 var customizeWikiEditor = function () {
@@ -17,57 +17,8 @@ var customizeWikiEditor = function () {
     
     $( '#wpTextbox1' ).wikiEditor( 'removeFromToolbar', {
         'section': 'characters'
-    })
+    } );
     
-        var literature2 = {};
-        var figures = {};
-        var formulas = {};
-        //var media = {};
-        var listings = {};
-        var tasks = {};
-        var tables = {};
-
-        if ( loop_literature !== "undefined" ) {
-            literature2 = { 'literature': {
-                'layout': 'characters',
-                'labelMsg': 'loopwikieditor-references-literature',
-                'characters': []
-            }}
-        }
-        console.log(typeof(media), literature2);
-        figures = {'figures': {
-            'layout': 'characters',
-            'labelMsg': 'loopwikieditor-references-figures',
-            'characters': []
-        }}
-        formulas = {'formulas': {
-            'layout': 'characters',
-            'labelMsg': 'loopwikieditor-references-formulas',
-            'characters': []
-        }}
-        var media = {'media': {
-            'layout': 'characters',
-            'labelMsg': 'loopwikieditor-references-media',
-            'characters': []
-        }}
-        listings = {'listings': {
-            'layout': 'characters',
-            'labelMsg': 'loopwikieditor-references-listings',
-            'characters': []
-        }}
-        tasks = {'tasks': {
-            'layout': 'characters',
-            'labelMsg': 'loopwikieditor-references-tasks',
-            'characters': []
-        }}
-        tables = {'tables': {
-            'layout': 'characters',
-            'labelMsg': 'loopwikieditor-references-tables',
-            'characters': []
-        }}
-
-
-
     $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
         'sections': {
             'loop': {
@@ -80,24 +31,62 @@ var customizeWikiEditor = function () {
                 
             }
         }
-    } )
-    $( '#wpTextbox1' ).wikiEditor( 'addToToolbar', {
-        'section': 'references',
-        'pages': media // nur eins geht gleichzeitig
-    } )
-    wikiEditor.wikiEditor( 'addToToolbar', {
-        
-      
-    } )
+    } );
 
+    var wikiEditorElements = new Array();
+    
+    // add all pages to references that are given in variable
+    $.each( loop_elements, function( $index, $value ) {
+        var tmp_characters = [];
+
+        var tag = ["<loop_reference id='", "'/>"];
+        if ( $index == "loop_literature" ) {
+            tag = ["<cite>", "</cite>"];
+        }
+        // add character button definitions
+            $.each( $value, function( $key, $val ) {
+                
+        if ( $index == "loop_literature" ) {
+            $tmp = {
+                label: $key + " - " + $val, 
+                action: { 
+                    type: 'encapsulate', 
+                    options: { 
+                        pre: "<cite>" + $key + "</cite>" } 
+                    } 
+                }
+        }
+        else {
+            $refid = $key.substring($key.indexOf("::") + 2);
+            $tmp = { 
+                label: $val, 
+                action: { 
+                    type: 'encapsulate', 
+                    options: { 
+                        pre: "<loop_reference id='" + $refid + "'/>" } 
+                    } 
+                }
+        }
+            tmp_characters.push( $tmp );
+        } );
+        // prepare page
+        wikiEditorElements[ $index ] = { [$index]: {
+            'layout': 'characters',
+            'labelMsg': 'loopwikieditor-references-'+$index,
+            'characters': tmp_characters
+            }
+        }
+        // add page to editor
+        addGroupToReferences( wikiEditorElements[ $index ] );
+
+    } );
+        
 }
 
-wikiEditor.on( 'wikiEditor-toolbar-buildSection-referencess', function (event, section) {
-    
-    jQuery.each( loop_literature, function( $key, $val ) {
-        section.pages.literature.characters.push( 
-            { label: $key + " - " + $val + "", action: { type: 'encapsulate', options: { pre: '<cite>'+$key+'</cite>' } } }
-        );
-    });
-
-});
+// adds given group to references in toolbar
+function addGroupToReferences( group ) {
+    wikiEditor.wikiEditor( 'addToToolbar', {
+        'section': 'references',
+        'pages': group 
+    } );
+}

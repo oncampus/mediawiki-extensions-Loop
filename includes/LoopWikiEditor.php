@@ -12,12 +12,11 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 class LoopWikiEditor {
 
 	public static function onEditPageShowEditFormInitial ( EditPage $editPage, OutputPage $outputPage ) {
+
 		$outputPage->addModules("loop.wikiEditor.js");
-		#return true;
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
         $script = self::addLiteratureScript($loopStructure);
-		#dd($script);
 		$outputPage->addHTML("<script>$script</script>");
 	}
 
@@ -26,34 +25,33 @@ class LoopWikiEditor {
         $literature = LoopLiterature::getAllItems( $loopStructure );
         $objects = LoopObjectIndex::getAllObjects ( $loopStructure );
 
-
         foreach ( $objects as $refid => $data) {
-            $output[$data["index"]][$refid] = wfMessage($data["index"]."-name-short")->text() . " " . $data["objectnumber"];
-            $output[$data["index"]][$refid] .= ( isset( $data["title"] ) ) ? ": " . $data["title"] : "";
-            #dd( $data);
+            $output[$data["index"]][$data["objectnumber"] ."::". $data["id"] ] = wfMessage($data["index"]."-name-short")->text() . " " . $data["objectnumber"];
+            $output[$data["index"]][$data["objectnumber"] ."::". $data["id"] ] .= ( isset( $data["title"] ) ) ? ": " . $data["title"] : "";
+            ksort( $output[$data["index"]], SORT_NUMERIC );
         }
 
-        $script = "";
+        $script = "var loop_elements = {\n";
        
         foreach ( $output as $index => $data ) {
-            $script .= "var $index = {\n";
+            $script .= "$index : {\n";
                 
                 foreach ( $data as $refid => $text ) {
                     $script .= "'$refid' : '$text',\n";
                 }
                 
-            $script .= "}\n";
+            $script .= "},\n";
         }
-        $script .= "var loop_literature = {\n";
         if ( !empty ( $literature ) ) {
+            $script .= "loop_literature : {\n";
             foreach ( $literature as $key => $val ) {
                 $text = LoopLiterature::renderLiteratureElement( $val, null, "wikieditor" );
                 $script .= "'$key' : '$text',\n";
             }
+            $script .= "}";
         }
         $script .= "}";
-
-        #dd($script, $objects, $output);
+        
         return $script;
     }
 

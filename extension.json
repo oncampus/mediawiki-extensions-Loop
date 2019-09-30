@@ -207,13 +207,13 @@
 			"messages": [
 				"loopwikieditor-section-loop",
 				"loopwikieditor-section-references",
-				"loopwikieditor-references-literature",
-				"loopwikieditor-references-figures",
-				"loopwikieditor-references-formulas",
-				"loopwikieditor-references-media",
-				"loopwikieditor-references-listings",
-				"loopwikieditor-references-tasks",
-				"loopwikieditor-references-tables"
+				"loopwikieditor-references-loop_literature",
+				"loopwikieditor-references-loop_figures",
+				"loopwikieditor-references-loop_formulas",
+				"loopwikieditor-references-loop_media",
+				"loopwikieditor-references-loop_listings",
+				"loopwikieditor-references-loop_tasks",
+				"loopwikieditor-references-loop_tables"
 			]
 		}
 	

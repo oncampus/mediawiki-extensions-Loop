@@ -316,12 +316,12 @@
 
 	"loopwikieditor-section-loop": "LOOP",
 	"loopwikieditor-section-references": "Referenzen",
-	"loopwikieditor-references-literature": "Literatur",
-	"loopwikieditor-references-figures": "Abbildungen",
-	"loopwikieditor-references-formulas": "Formeln",
-	"loopwikieditor-references-media": "Medien",
-	"loopwikieditor-references-listings": "Listings",
-	"loopwikieditor-references-tasks": "Aufgaben",
-	"loopwikieditor-references-tables": "Tabellen"
+	"loopwikieditor-references-loop_literature": "Literatur",
+	"loopwikieditor-references-loop_figures": "Abbildungen",
+	"loopwikieditor-references-loop_formulas": "Formeln",
+	"loopwikieditor-references-loop_media": "Medien",
+	"loopwikieditor-references-loop_listings": "Listings",
+	"loopwikieditor-references-loop_tasks": "Aufgaben",
+	"loopwikieditor-references-loop_tables": "Tabellen"
 
 }
