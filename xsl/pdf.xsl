@@ -1690,39 +1690,29 @@
 	
 	<!-- Loop Sidenote-->
 	<xsl:template match="extension[@extension_name='loop_sidenote']">
-	<fo:float float="inside">
-		<fo:block-container position="absolute" left="-35mm" top="1mm" width="32mm">
-			<fo:block>
-				<fo:table>
-					<fo:table-body>
-						<fo:table-row>
-							<fo:table-cell text-align="left">
-							<xsl:choose>
-								<xsl:when test="@type='marginalnote'">
-									<fo:block text-transform="uppercase" >
-										<xsl:call-template name="font_smallitalic"></xsl:call-template>
-										<xsl:value-of select="."></xsl:value-of>
-									</fo:block>
-								</xsl:when>
-								<xsl:when test="@type='keyword'">
-									<fo:block color="{$accent_color}" font-weight="bold" text-transform="uppercase">
-										<xsl:call-template name="font_smallbold"></xsl:call-template>
-										<xsl:value-of select="."></xsl:value-of>
-									</fo:block>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:block text-transform="uppercase">
-										<xsl:call-template name="font_small"></xsl:call-template>
-										<xsl:value-of select="."></xsl:value-of>
-									</fo:block>
-								</xsl:otherwise>
-							</xsl:choose>
-							</fo:table-cell>
-						</fo:table-row>
-					</fo:table-body>
-				</fo:table>
-			</fo:block>
-		</fo:block-container>
+		<fo:float float="left">
+			<fo:block-container absolute-position="absolute" left="-35mm" top="1mm" width="32mm" text-align="left">
+				<xsl:choose>
+					<xsl:when test="@type='marginalnote'">
+						<fo:block text-transform="uppercase" >
+							<xsl:call-template name="font_smallitalic"></xsl:call-template>
+							<xsl:value-of select="."></xsl:value-of>
+						</fo:block>
+					</xsl:when>
+					<xsl:when test="@type='keyword'">
+						<fo:block color="{$accent_color}" font-weight="bold" text-transform="uppercase">
+							<xsl:call-template name="font_smallbold"></xsl:call-template>
+							<xsl:value-of select="."></xsl:value-of>
+						</fo:block>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block text-transform="uppercase">
+							<xsl:call-template name="font_small"></xsl:call-template>
+							<xsl:value-of select="."></xsl:value-of>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>			
+			</fo:block-container>
 		</fo:float>
 	</xsl:template>
 	
