@@ -256,15 +256,24 @@
 				"looparea-name-timerequirement",
 				"looparea-name-websource",
 				"loopwikieditor-loop-snippets",
-				"loopwikieditor-loop-snippets-author",
 				"loopwikieditor-loop-snippets-spoiler",
 				"loopwikieditor-loop-snippets-zip",
 				"loopwikieditor-loop-snippets-paragraph",
 				"loopwikieditor-loop-snippets-toc",
 				"loopwikieditor-loop-snippets-literature",
 				"loopwikieditor-loop-snippets-math",
+				"loopwikieditor-loop-snippets-sidenote",
 				"loopwikieditor-loop-snippets-print",
-				"loopwikieditor-loop-snippets-noprint"
+				"loopwikieditor-loop-snippets-noprint",
+				"loopwikieditor-loop-contents",
+				"loopwikieditor-loop-content-video",
+				"loopwikieditor-loop-content-youtube",
+				"loopwikieditor-loop-content-h5p",
+				"loopwikieditor-loop-content-learningapps",
+				"loopwikieditor-loop-content-padlet",
+				"loopwikieditor-loop-content-prezi",
+				"loopwikieditor-loop-content-slideshare",
+				"loopwikieditor-loop-content-quizlet"
 			]
 		}
 	

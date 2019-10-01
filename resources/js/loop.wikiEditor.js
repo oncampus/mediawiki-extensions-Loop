@@ -212,32 +212,22 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'looparea-arrangement': {
-                                        labelMsg: 'looparea-name-arrangement',
+                                    'looparea-task': {
+                                        labelMsg: 'looparea-name-task',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="arrangement">',
+                                                pre: '<loop_area type="task">',
                                                 post: '</loop_area>'
                                             }
                                         }
                                     },
-                                    'looparea-citation': {
-                                        labelMsg: 'looparea-name-citation',
+                                    'looparea-practice': {
+                                        labelMsg: 'looparea-name-practice',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="citation">',
-                                                post: '</loop_area>'
-                                            }
-                                        }
-                                    },
-                                    'looparea-definition': {
-                                        labelMsg: 'looparea-name-definition',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: '<loop_area type="definition">',
+                                                pre: '<loop_area type="practice">',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -252,12 +242,22 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'looparea-exercise': {
-                                        labelMsg: 'looparea-name-exercise',
+                                    'looparea-sourcecode': {
+                                        labelMsg: 'looparea-name-sourcecode',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="exercise">',
+                                                pre: '<loop_area type="sourcecode">',
+                                                post: '</loop_area>'
+                                            }
+                                        }
+                                    },
+                                    'looparea-definition': {
+                                        labelMsg: 'looparea-name-definition',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_area type="definition">',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -282,22 +282,12 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'looparea-important': {
-                                        labelMsg: 'looparea-name-important',
+                                    'looparea-question': {
+                                        labelMsg: 'looparea-name-question',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="important">',
-                                                post: '</loop_area>'
-                                            }
-                                        }
-                                    },
-                                    'looparea-indentation': {
-                                        labelMsg: 'looparea-name-indentation',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: '<loop_area type="indentation">',
+                                                pre: '<loop_area type="question">',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -308,6 +298,26 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="law">',
+                                                post: '</loop_area>'
+                                            }
+                                        }
+                                    },
+                                    'looparea-arrangement': {
+                                        labelMsg: 'looparea-name-arrangement',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_area type="arrangement">',
+                                                post: '</loop_area>'
+                                            }
+                                        }
+                                    },
+                                    'looparea-notice': {
+                                        labelMsg: 'looparea-name-notice',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_area type="notice">',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -342,36 +352,6 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'looparea-notice': {
-                                        labelMsg: 'looparea-name-notice',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: '<loop_area type="notice">',
-                                                post: '</loop_area>'
-                                            }
-                                        }
-                                    },
-                                    'looparea-practice': {
-                                        labelMsg: 'looparea-name-practice',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: '<loop_area type="practice">',
-                                                post: '</loop_area>'
-                                            }
-                                        }
-                                    },
-                                    'looparea-question': {
-                                        labelMsg: 'looparea-name-question',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: '<loop_area type="question">',
-                                                post: '</loop_area>'
-                                            }
-                                        }
-                                    },
                                     'looparea-reflection': {
                                         labelMsg: 'looparea-name-reflection',
                                         action: {
@@ -382,32 +362,42 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'looparea-sourcecode': {
-                                        labelMsg: 'looparea-name-sourcecode',
+                                    'looparea-exercise': {
+                                        labelMsg: 'looparea-name-exercise',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="sourcecode">',
+                                                pre: '<loop_area type="exercise">',
                                                 post: '</loop_area>'
                                             }
                                         }
                                     },
-                                    'looparea-summary': {
-                                        labelMsg: 'looparea-name-summary',
+                                    'looparea-indentation': {
+                                        labelMsg: 'looparea-name-indentation',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="summary">',
+                                                pre: '<loop_area type="indentation">',
                                                 post: '</loop_area>'
                                             }
                                         }
                                     },
-                                    'looparea-task': {
-                                        labelMsg: 'looparea-name-task',
+                                    'looparea-websource': {
+                                        labelMsg: 'looparea-name-websource',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="task">',
+                                                pre: '<loop_area type="websource">',
+                                                post: '</loop_area>'
+                                            }
+                                        }
+                                    },
+                                    'looparea-important': {
+                                        labelMsg: 'looparea-name-important',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_area type="important">',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -422,34 +412,117 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'looparea-websource': {
-                                        labelMsg: 'looparea-name-websource',
+                                    'looparea-citation': {
+                                        labelMsg: 'looparea-name-citation',
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_area type="websource">',
+                                                pre: '<loop_area type="citation">',
                                                 post: '</loop_area>'
                                             }
                                         }
-                                    }
+                                    },
+                                    'looparea-summary': {
+                                        labelMsg: 'looparea-name-summary',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_area type="summary">',
+                                                post: '</loop_area>'
+                                            }
+                                        }
+                                    },
 
                                 }
                             }, // end of areas
                             
                             
+                            'loop-contents': {
+                                labelMsg: 'loopwikieditor-loop-contents',
+                                type: 'select',
+                                list: {
+                                    'loopmedia-video': {
+                                        labelMsg: 'loopwikieditor-loop-content-video',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '',
+                                                post: ''
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-youtube': {
+                                        labelMsg: 'loopwikieditor-loop-content-youtube',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '{{#ev:youtube|',
+                                                peri: 'ID',
+                                                post: '}}'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-h5p': {
+                                        labelMsg: 'loopwikieditor-loop-content-h5p',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<h5p id="" width="" height=""></h5p>'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-learningapps': {
+                                        labelMsg: 'loopwikieditor-loop-content-learningapps',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<learningapp app="" width="" height=""></learningapp>'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-padlet': {
+                                        labelMsg: 'loopwikieditor-loop-content-padlet',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<padlet id="" width="" height=""></padlet>'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-prezi': {
+                                        labelMsg: 'loopwikieditor-loop-content-prezi',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<prezi id="" width="" height=""></prezi>'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-slideshare': {
+                                        labelMsg: 'loopwikieditor-loop-content-slideshare',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<slideshare id="" width="" height=""></slideshare>'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-quizlet': {
+                                        labelMsg: 'loopwikieditor-loop-content-quizlet',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<quizlet id="" width="" height=""></quizlet>'
+                                            }
+                                        }
+                                    },
+                                }
+                            },
+                            
                             'loop-snippets': {
                                 labelMsg: 'loopwikieditor-loop-snippets',
                                 type: 'select',
                                 list: {
-                                    'loopsnippets-author': {
-                                        labelMsg: 'loopwikieditor-loop-snippets-author',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: "'''Dr. Vorname Nachname'''<br />\n\n[[File:vorname_nachname.jpg|85px]]<br />\n\n'''Hochschule:'''<br/>\n\nBeispielhochschule<br/>\n\n<br/>\n\n'''Tätigkeitsbereich:'''<br />\n\nBeispieltätigkeit\n\n<br/>\n\n<br/>\n\n'''Kontakt:'''<br/>\n\nAdresse<br />\n\n Musterstrasse 123<br />\n\n12345 Musterstadt, Deutschland",
-                                            }
-                                        }
-                                    },
                                     'loopsnippets-zip': {
                                         labelMsg: 'loopwikieditor-loop-snippets-zip',
                                         action: {
@@ -495,9 +568,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_literature>\n<literature>Key</literature>\n<literature>Key+2</literature>\n</loop_literature>',
-                                                peri: 'Text',
-                                                post: '</loop_literature>'
+                                                pre: '<loop_literature>\n<literature>',
+                                                peri: 'Key',
+                                                post: '</literature>\n<literature>Key+2</literature>\n</loop_literature>\n'
                                             }
                                         }
                                     },
@@ -509,6 +582,17 @@ var customizeWikiEditor = function () {
                                                 pre: '<math>',
                                                 peri: 'x^2',
                                                 post: '</math>'
+                                            }
+                                        }
+                                    },
+                                    'loopsnippets-sidenote': {
+                                        labelMsg: 'loopwikieditor-loop-snippets-sidenote',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_sidenote>',
+                                                peri: 'Sidenote',
+                                                post: '</loop_sidenote>'
                                             }
                                         }
                                     },

@@ -300,10 +300,11 @@
 
 	"loopexternalcontent-h5p-error-noid": "In dem H5P-Element wurde keine ID (id) angegeben.", 
 	"loopexternalcontent-learningapp-error-noid": "In dem LearningApp-Element wurde keine App ID (app / privateapp) angegeben.",
-	"loopexternalcontent-padlet-error-noid": "In dem Padlet-Element wurde kein Schlüssel (key) angegeben.", 
+	"loopexternalcontent-padlet-error-noid": "In dem Padlet-Element wurde keine ID (id) angegeben.", 
 	"loopexternalcontent-prezi-error-noid": "In dem Prezi-Element wurde keine ID (id) angegeben.", 
 	"loopexternalcontent-prezi-on": "auf", 
-	"loopexternalcontent-slideshare-error-noid": "In dem Slideshare-Element wurde kein Schlüssel (key) angegeben.", 
+	"loopexternalcontent-slideshare-error-noid": "In dem Slideshare-Element wurde keine ID (id) angegeben.", 
+	"loopexternalcontent-quizlet-error-noid": "In dem Quizlet-Element wurde keine ID (id) angegeben.", 
 
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
@@ -323,7 +324,6 @@
 	"loopwikieditor-references-loop_listing": "Listings",
 	"loopwikieditor-references-loop_task": "Aufgaben",
 	"loopwikieditor-references-loop_table": "Tabellen",
-
 	"loopwikieditor-loop-areas": "Seitenbereiche",
 	"loopwikieditor-loop-object": "Objektauszeichnung",
 	"loopwikieditor-loop-object-media-rollover": "Rollover",
@@ -336,16 +336,24 @@
 	"loopwikieditor-loop-object-media-dragdrop": "Drag & Drop",
 	"loopwikieditor-loop-area-area": "Ohne Icon",
 	"loopwikieditor-loop-area-custom": "Individuell",
-
 	"loopwikieditor-loop-snippets": "Vorlagen",
-	"loopwikieditor-loop-snippets-author": "Autoreninfo",
 	"loopwikieditor-loop-snippets-spoiler": "Spoiler",
 	"loopwikieditor-loop-snippets-zip": "ZIP-Datei",
 	"loopwikieditor-loop-snippets-paragraph": "Zitat",
 	"loopwikieditor-loop-snippets-toc": "Kapitelinhaltsverz.",
 	"loopwikieditor-loop-snippets-literature": "man. Literaturverz.",
 	"loopwikieditor-loop-snippets-math": "Math-Formel",
+	"loopwikieditor-loop-snippets-sidenote": "Marginalie",
 	"loopwikieditor-loop-snippets-print": "Druckbereich",
-	"loopwikieditor-loop-snippets-noprint": "Nicht-Druckbereich"
+	"loopwikieditor-loop-snippets-noprint": "Nicht-Druckbereich",
+	"loopwikieditor-loop-contents": "Medien",
+	"loopwikieditor-loop-content-video": "lokales Video",
+	"loopwikieditor-loop-content-youtube": "Youtube Video",
+	"loopwikieditor-loop-content-h5p": "H5P",
+	"loopwikieditor-loop-content-learningapps": "LearningApps",
+	"loopwikieditor-loop-content-padlet": "Padlet",
+	"loopwikieditor-loop-content-prezi": "Prezi",
+	"loopwikieditor-loop-content-slideshare": "SlideShare",
+	"loopwikieditor-loop-content-quizlet": "Quizlet"
 
 }
