@@ -37,6 +37,8 @@ class LoopWikiEditor {
             $script .= "$index : {\n";
                 
                 foreach ( $data as $refid => $text ) {
+                    $text = str_replace("\\", " ", $text);
+                    $text = str_replace("'", "\'", $text);
                     $script .= "'$refid' : '$text',\n";
                 }
                 
@@ -46,6 +48,8 @@ class LoopWikiEditor {
             $script .= "loop_literature : {\n";
             foreach ( $literature as $key => $val ) {
                 $text = LoopLiterature::renderLiteratureElement( $val, null, "wikieditor" );
+                $text = str_replace("\\", " ", $text);
+                $text = str_replace("'", "\'", $text);
                 $script .= "'$key' : '$text',\n";
             }
             $script .= "}";
