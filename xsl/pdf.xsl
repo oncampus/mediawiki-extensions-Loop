@@ -586,7 +586,7 @@
 					<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 				</xsl:if>
 				<fo:table table-layout="fixed" content-width="150mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse" padding-start="0pt" padding-end="0pt" padding-top="4mm" padding-bottom="4mm"  padding-right="0pt">
-					<xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute>
+					<!-- <xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute> -->
 					<fo:table-column column-number="1" column-width="0.4mm"/>
 					<fo:table-column column-number="2">
 						<xsl:choose> 
