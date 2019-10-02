@@ -580,24 +580,13 @@
 	<!-- LOOP_OBJECTS -->
 	<xsl:template name="loop_object">
 		<xsl:param name="object"></xsl:param>
-		<xsl:choose>
-			<xsl:when test="@id">
-				<xsl:variable name="objectid" select="@id"></xsl:variable>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:variable name="objectid" select="generate-id()"></xsl:variable>
-			</xsl:otherwise> 
-		</xsl:choose>
-		
-		
+		<xsl:variable name="objectid" select="@id"></xsl:variable>
 			<fo:block>
 				<xsl:if test="ancestor::extension[@extension_name='loop_area']">
 					<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 				</xsl:if>
 				<fo:table table-layout="fixed" content-width="150mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse" padding-start="0pt" padding-end="0pt" padding-top="4mm" padding-bottom="4mm"  padding-right="0pt">
-					<xsl:if test="@id != ''">
-						<xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute>
-					</xsl:if>
+					<xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute>
 					<fo:table-column column-number="1" column-width="0.4mm"/>
 					<fo:table-column column-number="2">
 						<xsl:choose> 
@@ -2028,56 +2017,44 @@
 		<!-- <xsl:if test="not(@extension_name='mathimage')"> -->
 		<xsl:if test="@extension_name='loop_figure'">
 			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id">
-						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-					</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_formula'">
 			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id">
-						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-					</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_listing'">
 			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id">
-						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-					</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_media'">
 			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id">
-						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-					</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_table'">
 			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id">
-						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-					</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_task'">
 			<fo:inline>
-				<xsl:if test="@id">
-					<xsl:attribute name="id">
-						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-					</xsl:attribute>
-				</xsl:if>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+				</xsl:attribute>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:choose>
