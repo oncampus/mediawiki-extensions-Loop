@@ -24,7 +24,7 @@ class LoopWikiEditor {
 
         $literature = LoopLiterature::getAllItems( $loopStructure );
         $objects = LoopObjectIndex::getAllObjects ( $loopStructure );
-
+        $output = array();
         foreach ( $objects as $refid => $data) {
             $output[$data["index"]][$data["objectnumber"] ."::". $data["id"] ] = wfMessage($data["index"]."-name-short")->text() . " " . $data["objectnumber"];
             $output[$data["index"]][$data["objectnumber"] ."::". $data["id"] ] .= ( isset( $data["title"] ) ) ? ": " . $data["title"] : "";
@@ -32,7 +32,7 @@ class LoopWikiEditor {
         }
 
         $script = "var loop_elements = {\n";
-       
+        
         foreach ( $output as $index => $data ) {
             $script .= "$index : {\n";
                 
