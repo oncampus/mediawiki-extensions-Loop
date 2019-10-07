@@ -903,9 +903,12 @@ class LoopLiterature {
 		if ($type == "html") {
 		    $italic = "<i>";
 		    $italicEnd = "</i>";
-		} else { #xml
+		} elseif ($type == "xml") { #xml
 		    $italic = "<italics>";
 		    $italicEnd = "</italics>";
+		} else {
+		    $italic = "";
+		    $italicEnd = "";
 		}
 
 		if ( $wgLoopLiteratureCiteType == 'vancouver' && !empty ( $ref["objectnumber"] ) ) {

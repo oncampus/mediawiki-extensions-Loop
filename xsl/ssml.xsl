@@ -178,6 +178,26 @@
 				
 			</xsl:when>	
 
+			<xsl:when test="@extension_name='loop_paragraph'">
+				<xsl:apply-templates/>
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>strong</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
+				<xsl:if test="@copyright!=''">
+					<xsl:value-of select="@copyright"></xsl:value-of>
+				</xsl:if>
+			</xsl:when>	
+			
+			<xsl:when test="@extension_name='loop_sidenote'">
+				<xsl:apply-templates/>
+				<xsl:element name="break">
+					<xsl:attribute name="strength">
+						<xsl:text>strong</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
+			</xsl:when>	
 			
 		</xsl:choose>	
 		<!--
@@ -628,6 +648,12 @@
 			</xsl:when>
 			<xsl:when test="extension[@extension_name='loop_literature']">
         		<func:result>2</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_paragraph']">
+        		<func:result>3</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_sidenote']">
+        		<func:result>3</func:result>
 			</xsl:when>
 
 			<xsl:otherwise>

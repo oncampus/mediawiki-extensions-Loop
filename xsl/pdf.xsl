@@ -586,7 +586,7 @@
 					<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 				</xsl:if>
 				<fo:table table-layout="fixed" content-width="150mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse" padding-start="0pt" padding-end="0pt" padding-top="4mm" padding-bottom="4mm"  padding-right="0pt">
-					<xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute>
+					<!-- <xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute> -->
 					<fo:table-column column-number="1" column-width="0.4mm"/>
 					<fo:table-column column-number="2">
 						<xsl:choose> 
@@ -999,20 +999,31 @@
 					<xsl:choose>
 						<xsl:when test="$object_type='loop_figure'">
 							<fo:block>
-								<fo:basic-link>
-									<xsl:attribute name="internal-destination">
-										<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-									</xsl:attribute>
-									<fo:block>
-									<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)!=''">
-										<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
-											<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
-										</fo:external-graphic>
-									</xsl:if>
-									</fo:block>
-								</fo:basic-link>
+							<xsl:choose>
+								<xsl:when test="@id!=''">
+									<fo:basic-link>
+										<xsl:attribute name="internal-destination">
+											<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+										</xsl:attribute>
+										<fo:block>
+										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)!=''">
+											<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
+												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
+											</fo:external-graphic>
+										</xsl:if>
+										</fo:block>
+									</fo:basic-link>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)!=''">
+											<fo:external-graphic scaling="uniform" content-width="24mm" content-height="scale-to-fit" max-height="20mm">
+												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', descendant::link/target)"></xsl:value-of></xsl:attribute>
+											</fo:external-graphic>
+										</xsl:if>
+									</xsl:otherwise>
+								</xsl:choose>	
 							</fo:block>
-						</xsl:when>
+							</xsl:when>
 						<xsl:otherwise>
 						</xsl:otherwise>
 					</xsl:choose>	
@@ -1021,8 +1032,16 @@
 				<fo:table-cell width="140mm">
 					<fo:block text-align-last="justify" text-align="justify">
 						<fo:basic-link color="black">
+						
 							<xsl:attribute name="internal-destination">
-								<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+							<xsl:choose>
+								<xsl:when test="@id!=''">
+									<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+								</xsl:when>
+								<xsl:otherwise>
+									cover_sequence
+								</xsl:otherwise>
+							</xsl:choose>	
 							</xsl:attribute>
 							
 							<fo:inline font-weight="bold">
@@ -2017,47 +2036,60 @@
 		<!-- <xsl:if test="not(@extension_name='mathimage')"> -->
 		<xsl:if test="@extension_name='loop_figure'">
 			<fo:inline>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-				</xsl:attribute>
+				<xsl:if test="@id">
+					<xsl:attribute name="id">
+						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_formula'">
 			<fo:inline>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-				</xsl:attribute>
+				<xsl:if test="@id">
+					<xsl:attribute name="id">
+						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_listing'">
 			<fo:inline>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-				</xsl:attribute>
+				<xsl:if test="@id">
+					<xsl:attribute name="id">
+						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_media'">
 			<fo:inline>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-				</xsl:attribute>
+				<xsl:if test="@id">
+					<xsl:attribute name="id">
+						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_table'">
 			<fo:inline>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-				</xsl:attribute>
+				<xsl:if test="@id">
+					<xsl:attribute name="id">
+						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:if test="@extension_name='loop_task'">
 			<fo:inline>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
-				</xsl:attribute>
+				<xsl:if test="@id">
+					<xsl:attribute name="id">
+						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:choose>
+
 		
 			<xsl:when test="@extension_name='loop_figure'">
 				<xsl:call-template name="loop_object">

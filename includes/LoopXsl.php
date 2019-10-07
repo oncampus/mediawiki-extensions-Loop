@@ -75,9 +75,13 @@ class LoopXsl {
 		$input_object = $input[0];
 		$mathcontent = $input_object->textContent;
 		
-		$math = new MathMathML($mathcontent);
-		$math->render();
-		$return = $math->getHtmlOutput();
+		try {
+		    $math = new MathMathML($mathcontent);
+		    $math->render();
+		    $return = $math->getHtmlOutput();
+		} catch (Exception $e) {
+		    $return = '<math></math>';
+		}
 		
 		$dom = new DOMDocument;
 		$dom->loadXML( $return );

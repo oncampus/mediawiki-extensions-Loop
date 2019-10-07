@@ -80,7 +80,8 @@
 		"LoopExternalContent": "includes/LoopExternalContent.php",
 		"LoopLegacy": "includes/LoopLegacy.php",
 		"LoopIndex": "includes/LoopIndex.php",
-		"SpecialLoopIndex": "includes/LoopIndex.php"
+		"SpecialLoopIndex": "includes/LoopIndex.php",
+		"LoopWikiEditor": "includes/LoopWikiEditor.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -136,7 +137,8 @@
 			"LoopLiterature::onAfterClearStable",
 			"LoopIndex::onAfterClearStable"
 		],
-		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage"
+		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
+		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -196,7 +198,85 @@
 			"messages": [
 				"loopspoiler-default-title"
 			]
+		},
+		"loop.wikiEditor.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.wikiEditor.js"
+			],
+			"messages": [
+				"loopwikieditor-section-loop",
+				"loopwikieditor-section-references",
+				"loopwikieditor-references-loop_literature",
+				"loopwikieditor-references-loop_figure",
+				"loopwikieditor-references-loop_formula",
+				"loopwikieditor-references-loop_media",
+				"loopwikieditor-references-loop_listing",
+				"loopwikieditor-references-loop_task",
+				"loopwikieditor-references-loop_table",
+				"loopwikieditor-loop-object",
+				"loop_figure-name",
+				"loop_table-name",
+				"loop_media-name",
+				"loop_listing-name",
+				"loop_formula-name",
+				"loop_task-name",
+				"loopwikieditor-loop-object-media-rollover",
+				"loopwikieditor-loop-object-media-video",
+				"loopwikieditor-loop-object-media-interaction",
+				"loopwikieditor-loop-object-media-click",
+				"loopwikieditor-loop-object-media-audio",
+				"loopwikieditor-loop-object-media-animation",
+				"loopwikieditor-loop-object-media-simulation",
+				"loopwikieditor-loop-object-media-dragdrop",
+				"loopwikieditor-loop-areas",
+				"looparea-name-annotation",
+				"loopwikieditor-loop-area-area",
+				"loopwikieditor-loop-area-custom",
+				"looparea-name-arrangement",
+				"looparea-name-citation",
+				"looparea-name-definition",
+				"looparea-name-example",
+				"looparea-name-exercise",
+				"looparea-name-experiment",
+				"looparea-name-formula",
+				"looparea-name-important",
+				"looparea-name-indentation",
+				"looparea-name-law",
+				"looparea-name-learningobjectives",
+				"looparea-name-markedsentence",
+				"looparea-name-norm",
+				"looparea-name-notice",
+				"looparea-name-practice" ,
+				"looparea-name-question",
+				"looparea-name-reflection",
+				"looparea-name-sourcecode",
+				"looparea-name-summary",
+				"looparea-name-task",
+				"looparea-name-timerequirement",
+				"looparea-name-websource",
+				"loopwikieditor-loop-snippets",
+				"loopwikieditor-loop-snippets-spoiler",
+				"loopwikieditor-loop-snippets-zip",
+				"loopwikieditor-loop-snippets-paragraph",
+				"loopwikieditor-loop-snippets-toc",
+				"loopwikieditor-loop-snippets-literature",
+				"loopwikieditor-loop-snippets-math",
+				"loopwikieditor-loop-snippets-sidenote",
+				"loopwikieditor-loop-snippets-print",
+				"loopwikieditor-loop-snippets-noprint",
+				"loopwikieditor-loop-contents",
+				"loopwikieditor-loop-content-video",
+				"loopwikieditor-loop-content-youtube",
+				"loopwikieditor-loop-content-h5p",
+				"loopwikieditor-loop-content-learningapps",
+				"loopwikieditor-loop-content-padlet",
+				"loopwikieditor-loop-content-prezi",
+				"loopwikieditor-loop-content-slideshare",
+				"loopwikieditor-loop-content-quizlet"
+			]
 		}
+	
 	},
 	"TrackingCategories": [
 		"loop-tracking-category-error",
@@ -259,7 +339,10 @@
 			"review": true,
 			"autoreview": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"editsitecss": true,
+			"editsitejs": true,
+			"editinterface": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -292,7 +375,10 @@
 			"undelete": true,
 			"protect": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"editsitecss": true,
+			"editsitejs": true,
+			"editinterface": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -325,7 +411,10 @@
 			"undelete": true,
 			"protect": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"editsitecss": true,
+			"editsitejs": true,
+			"editinterface": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -582,59 +671,59 @@
 				},
 				  "Public Domain": {
 					"url": "https://creativecommons.org/publicdomain/mark/1.0/",
-					"icon": "https://licensebuttons.net/p/mark/1.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-pd'></span>"
 				},
 				  "CC-0": {
 					"url": "https://creativecommons.org/publicdomain/zero/1.0",
-					"icon": "https://licensebuttons.net/l/zero/1.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-zero'></span>"
 				},
 				  "CC-BY-3.0": {
 					"url": "https://creativecommons.org/licenses/by/3.0/",
-					"icon": "https://licensebuttons.net/l/by/3.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span>"
 				},
 				  "CC-BY-4.0": {
 					"url": "https://creativecommons.org/licenses/by/4.0/",
-					"icon": "https://licensebuttons.net/l/by/4.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span>"
 				},
 				  "CC-BY-SA-3.0": {
 					"url": "https://creativecommons.org/licenses/by-sa/3.0/",
-					"icon": "https://licensebuttons.net/l/by-sa/3.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-sa'></span>"
 				},
 				  "CC-BY-SA-4.0": {
 					"url": "https://creativecommons.org/licenses/by-sa/4.0/",
-					"icon": "https://licensebuttons.net/l/by-sa/4.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-sa'></span>"
 				},
 				  "CC-BY-NC-3.0": {
 					"url": "https://creativecommons.org/licenses/by-nc/3.0/",
-					"icon": "https://licensebuttons.net/l/by-nc/3.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span>"
 				},
 				  "CC-BY-NC-4.0": {
 					"url": "https://creativecommons.org/licenses/by-nc/4.0/",
-					"icon": "https://licensebuttons.net/l/by-nc/4.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span>"
 				},
 				  "CC-BY-ND-3.0": {
 					"url": "https://creativecommons.org/licenses/by-nd/3.0/",
-					"icon": "https://licensebuttons.net/l/by-nd/3.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nd'></span>"
 				},
 				  "CC-BY-ND-4.0": {
 					"url": "https://creativecommons.org/licenses/by-nd/4.0/",
-					"icon": "https://licensebuttons.net/l/by-nd/4.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nd'></span>"
 				},
 				  "CC-BY-NC-SA-3.0": {
 					"url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
-					"icon": "https://licensebuttons.net/l/by-nc-sa/3.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-sa'></span>"
 				},
 				  "CC-BY-NC-SA-4.0": {
 					"url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-					"icon": "https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-sa'></span>"
 				},
 				  "CC-BY-NC-ND-3.0": {
 					"url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
-					"icon": "https://licensebuttons.net/l/by-nc-nd/3.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-nd'></span>"
 				},
 				  "CC-BY-NC-ND-4.0": {
 					"url": "https://creativecommons.org/licenses/by-nd-nd/4.0/",
-					"icon": "https://licensebuttons.net/l/by-nc-nd/4.0/80x15.png"
+					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-nd'></span>"
 				}
 			},
 			"description" : "Array of available Creative Commons licenses to apply"
