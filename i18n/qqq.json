@@ -354,5 +354,6 @@
 	"loopwikieditor-loop-content-padlet": "Wikieditor LOOP : Media Padlet",
 	"loopwikieditor-loop-content-prezi": "Wikieditor LOOP : Media Prezi",
 	"loopwikieditor-loop-content-slideshare": "Wikieditor LOOP : Media SlideShare",
-	"loopwikieditor-loop-content-quizlet": "Wikieditor LOOP : Media Quizlet"
+	"loopwikieditor-loop-content-quizlet": "Wikieditor LOOP : Media Quizlet",
+	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag"
 }

@@ -354,5 +354,6 @@
 	"loopwikieditor-loop-content-padlet": "Padlet",
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
-	"loopwikieditor-loop-content-quizlet": "Quizlet"
+	"loopwikieditor-loop-content-quizlet": "Quizlet",
+	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist."
 }

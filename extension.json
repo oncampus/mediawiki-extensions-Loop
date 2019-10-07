@@ -106,7 +106,8 @@
 			"LoopLiterature::onParserSetup",
 			"LoopExternalContent::onParserSetup",
 			"LoopLegacy::onParserSetup",
-			"LoopIndex::onParserSetup"
+			"LoopIndex::onParserSetup",
+			"LoopHooks::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -342,7 +343,8 @@
 			"loop-edit-literature": true,
 			"editsitecss": true,
 			"editsitejs": true,
-			"editinterface": true
+			"editinterface": true,
+			"writeapi": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -378,7 +380,8 @@
 			"loop-edit-literature": true,
 			"editsitecss": true,
 			"editsitejs": true,
-			"editinterface": true
+			"editinterface": true,
+			"writeapi": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -414,7 +417,8 @@
 			"loop-edit-literature": true,
 			"editsitecss": true,
 			"editsitejs": true,
-			"editinterface": true
+			"editinterface": true,
+			"writeapi": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -444,7 +448,8 @@
 			"undelete": true,
 			"protect": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"writeapi": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -477,7 +482,8 @@
 			"deletedhistory": true,
 			"browsearchive": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"writeapi": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,

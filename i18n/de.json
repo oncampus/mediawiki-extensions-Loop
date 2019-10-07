@@ -354,6 +354,7 @@
 	"loopwikieditor-loop-content-padlet": "Padlet",
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
-	"loopwikieditor-loop-content-quizlet": "Quizlet"
+	"loopwikieditor-loop-content-quizlet": "Quizlet",
+	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an."
 
 }

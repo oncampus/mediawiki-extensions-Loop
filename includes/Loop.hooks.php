@@ -120,5 +120,15 @@ class LoopHooks {
 		
 		return true;
 	}	
+	
+	# Dummy renderings for empty tags such as loop_sidebar
+	public static function onParserSetup( Parser &$parser ) {
+		$parser->setHook( 'loop_sidebar', 'LoopHooks::renderDummy' );
+		return true;
+    }
+    public static function renderDummy( $input, array $args, Parser $parser, PPFrame $frame ) {
+        return "";
+    }
+
 
 }
