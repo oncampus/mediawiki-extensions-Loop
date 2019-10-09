@@ -140,7 +140,8 @@ class LoopXml {
 	 * Converts article to XML code
 	 * @param Int $articleId: 
 	 * @param Array $modifiers: 
-	 * 		"glossary" => true; removes <meta>-tag for pdf
+	 * 		"nometa" => true; removes <meta>-tag for pdf
+	 * 		"noarticle" => true; removes <article>-tag wrapper for sidebar in pdf
 	 */
 	public static function articleFromId2xml( $articleId, $modifiers = null ) {
 
@@ -160,23 +161,32 @@ class LoopXml {
 		$content = html_entity_decode($content);
 		
 		$wiki2xml = new wiki2xml ();
-		$xml = "<article ";
-		$xml .= "id=\"article" . $articleId . "\" ";
-		$xml .= "title=\"" . htmlspecialchars($title->mTextform, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
-		$xml .= ">\n";
-		
-		if ( isset( $modifiers["glossary"] ) ) {
-			if ( $modifiers["glossary"] ) {
-				# no meta
+		$xml = "";
+		if ( isset( $modifiers["noarticle"] ) ) {
+			if ( ! $modifiers["noarticle"] ) {
+				$xml = "<article ";
+				$xml .= "id=\"article" . $articleId . "\" ";
+				$xml .= "title=\"" . htmlspecialchars($title->mTextform, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
+				$xml .= ">\n";
 			}
-		} else {
-			$xml .= "<meta>\n";
-			$xml .= "\t<lang>".$langParts[0]."</lang>\n";
-			$xml .= "</meta>\n";
+		}
+		
+		if ( isset( $modifiers["nometa"] ) ) {
+			if ( ! $modifiers["nometa"] ) {
+				$xml .= "<meta>\n";
+				$xml .= "\t<lang>".$langParts[0]."</lang>\n";
+				$xml .= "</meta>\n";
+			}
 		}
 
 		$xml .= $wiki2xml->parse ( $content );
-		$xml .= "\n</article>\n";
+
+		
+		if ( isset( $modifiers["noarticle"] ) ) {
+			if ( ! $modifiers["noarticle"] ) {
+				$xml .= "\n</article>\n";
+			}
+		}
 		return $xml;
 	}
 	
@@ -361,7 +371,7 @@ class LoopXml {
 		if ( !empty( $articles ) ) {
 			foreach ( $articles as $articleId ) {
 				#dd($articleId);
-				$return .= self::articleFromId2xml( $articleId, array( "glossary" => true ) );
+				$return .= self::articleFromId2xml( $articleId, array( "nometa" => true ) );
 			}
 		}
 

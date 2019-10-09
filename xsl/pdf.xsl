@@ -2551,6 +2551,29 @@
 				</fo:wrapper>
 	</xsl:template>
 	
+	<!-- Sidebar -->
+	<xsl:template match="extension[@extension_name='loop_sidebar']">
+		<fo:block>
+				
+			<xsl:choose>
+				<xsl:when test="@print">
+				
+					<xsl:choose>
+						<xsl:when test="@print='false'">
+						</xsl:when>	
+						<xsl:otherwise>
+							<xsl:apply-templates select="php:function('LoopXsl::xsl_getSidebarPage', @page)"></xsl:apply-templates>
+						</xsl:otherwise>
+					</xsl:choose>
+
+				</xsl:when>	
+				<xsl:otherwise>
+					<xsl:apply-templates select="php:function('LoopXsl::xsl_getSidebarPage', @page)"></xsl:apply-templates>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>				
+	</xsl:template>
+	
 	
 	
 </xsl:stylesheet>

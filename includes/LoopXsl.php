@@ -2,7 +2,7 @@
 
 /**
  * @description Transforms XML to XSLT-compatible content
- * @author Dennis Krohn <dennis.krohn@th-luebeck.de>, Dustin Ne� <dustin.ness@th-luebeck.de>
+ * @author Dennis Krohn <dennis.krohn@th-luebeck.de>, Dustin Neß <dustin.ness@th-luebeck.de>
  */
 
 if ( !defined( 'MEDIAWIKI' ) ) {
@@ -396,7 +396,7 @@ class LoopXsl {
 	 * Returns image url of musical notes to embed in pdf
 	 */
 	public static function xsl_score( $input, $lang ) {
-		global $wgServer;
+		global $wgCanonicalServer;
 		
 		if( count( $lang ) != 0 ) {
 			$language = $lang[0]->value;
@@ -407,9 +407,24 @@ class LoopXsl {
 		$parser = new Parser();
 		$html = Score::renderScore( $input[0]->textContent, ['lang' => $language], $parser );
 		preg_match_all( '~<img.*?src=["\']+(.*?)["\']+~', $html, $url );
-		$return = $wgServer . $url[1][0];
+		$return = $wgCanonicalServer . $url[1][0];
 		
 		return $return;
+	}
+
+	public static function xsl_getSidebarPage( $input ) {
+
+		$dom = new DOMDocument( "1.0", "utf-8" );
+
+		if ( !empty ( $input[0]->value ) ) {
+			$title = Title::newFromText( $input[0]->value );
+			if ( $title->getArticleID() != 0 && $title->getNamespace() == NS_MAIN ) {
+				$page = "<paragraph>".LoopXml::articleFromId2xml( $title->getArticleID(), array( "nometa" => true,  "noarticle" => true ) )."</paragraph>";
+				$page = str_replace("extension_name='loop_sidebar'", "extension_name='loop_sidebar_dummy'", $page); # don't render sidebars of sidebar pages
+				$dom->loadXML($page);
+			}
+		} 
+		return $dom;
 	}
 
 }
