@@ -98,7 +98,7 @@ class LoopZip {
 		$this->args = $args;
         $this->width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $this->height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
-        $this->scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $this->scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
 		
 		if ( array_key_exists( 'file', $args ) ) {
 			$this->file = $args[ "file" ];

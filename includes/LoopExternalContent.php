@@ -74,7 +74,7 @@ class LoopExternalContent {
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgLearningAppUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
@@ -97,6 +97,8 @@ class LoopExternalContent {
                     'src' => $hostUrl . $appId,
                     'width' => $width,
                     'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
                     'class' => 'ext-learningapp ' . $scaleClass
                 ),
@@ -121,7 +123,7 @@ class LoopExternalContent {
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgPadletUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
@@ -144,6 +146,8 @@ class LoopExternalContent {
                     'src' => $hostUrl . $key,
                     'width' => $width,
                     'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
                     'class' => 'ext-padlet ' . $scaleClass
                 ),
@@ -170,7 +174,7 @@ class LoopExternalContent {
         $controls = ( array_key_exists( 'control', $args ) && $args["control"] == strtolower("simple") ) ? '1' : '0';
         $title = array_key_exists( 'title', $args ) ? $args['title'] : '';
         $hostUrl = $wgPreziUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
@@ -192,6 +196,8 @@ class LoopExternalContent {
                     'src' => $hostUrl . $id . '/?bgcolor=ffffff&amp;lock_to_path='.$controls.'&amp;autoplay=0&amp;autohide_ctrls=0',
                     'width' => $width,
                     'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
                     'class' => 'ext-prezi ' . $scaleClass
                 ),
@@ -225,7 +231,7 @@ class LoopExternalContent {
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $hostUrl = $wgSlideshareUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
@@ -248,6 +254,8 @@ class LoopExternalContent {
                     'src' => $hostUrl . $key,
                     'width' => $width,
                     'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
                     'class' => 'ext-slideshare ' . $scaleClass
                 ),
@@ -274,7 +282,7 @@ class LoopExternalContent {
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
         $mode = ( array_key_exists( 'mode', $args ) && array_key_exists( strtolower( $args['mode'] ), $allowed_modes ) ) ? $args['mode'] : 'flashcards';
         $hostUrl = $wgQuizletUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && $args['scale'] === strtolower( "true" ) ) ? true : false;
+        $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
         
         if ( $scale ) {
@@ -297,6 +305,8 @@ class LoopExternalContent {
                     'src' => $hostUrl .  $id . '/' . $mode . '/embedv2',
                     'width' => $width,
                     'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
                     'allowfullscreen' => 'allowfullscreen',
                     'class' => 'ext-quizlet ' . $scaleClass
                 ),
