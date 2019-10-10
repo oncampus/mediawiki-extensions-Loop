@@ -81,7 +81,8 @@
 		"LoopLegacy": "includes/LoopLegacy.php",
 		"LoopIndex": "includes/LoopIndex.php",
 		"SpecialLoopIndex": "includes/LoopIndex.php",
-		"LoopWikiEditor": "includes/LoopWikiEditor.php"
+		"LoopWikiEditor": "includes/LoopWikiEditor.php",
+		"LoopZip": "includes/LoopZip.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -107,7 +108,8 @@
 			"LoopExternalContent::onParserSetup",
 			"LoopLegacy::onParserSetup",
 			"LoopIndex::onParserSetup",
-			"LoopHooks::onParserSetup"
+			"LoopHooks::onParserSetup",
+			"LoopZip::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -139,7 +141,8 @@
 			"LoopIndex::onAfterClearStable"
 		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
-		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial"
+		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
+		"UploadComplete": "LoopZip::onUploadComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
