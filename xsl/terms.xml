@@ -47,6 +47,7 @@
 	<msg name="icon_padlet">&#xe92e;</msg>
 	<msg name="icon_learningapps">&#xe923;</msg>
 	<msg name="icon_ngspice">&#xe92b;</msg>
+	<msg name="icon_zip">&#xe91a;</msg>
 
 	<msg name="word_chapter" lang="en">Chapter</msg>
 	<msg name="word_state" lang="en">state</msg>

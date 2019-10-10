@@ -1529,6 +1529,29 @@
 		</fo:inline>
 	</xsl:template>	
 	
+	<!-- loop_zip -->
+	<xsl:template match="extension[@extension_name='loop_zip']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_zip"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+
 	<!-- H5P -->
 	<xsl:template match="extension[@extension_name='h5p']">
 		<fo:block>
