@@ -355,5 +355,8 @@
 	"loopwikieditor-loop-content-prezi": "Wikieditor LOOP : Media Prezi",
 	"loopwikieditor-loop-content-slideshare": "Wikieditor LOOP : Media SlideShare",
 	"loopwikieditor-loop-content-quizlet": "Wikieditor LOOP : Media Quizlet",
-	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag"
+	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag",
+	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
+	"loopzip-error-nozipfile": "Error message for not-existing zip file given in parameter file",
+	"loopzip-error-missingrequired": "Error message when a required parameter of loop_zip is missing"
 }

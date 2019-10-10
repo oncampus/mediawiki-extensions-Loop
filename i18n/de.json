@@ -355,6 +355,9 @@
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
 	"loopwikieditor-loop-content-quizlet": "Quizlet",
-	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an."
+	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an.",
+	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
+	"loopzip-error-nozipfile": "Die angegebene ZIP-Datei (file) $1 existiert nicht. Bitte laden Sie sie hoch.",
+	"loopzip-error-missingrequired": "Die Angabe der Parameter file und start ist erforderlich. Mindestens ein Parameter wurde nicht angegeben."
 
 }

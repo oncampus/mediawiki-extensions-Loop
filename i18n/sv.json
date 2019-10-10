@@ -355,5 +355,8 @@
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
 	"loopwikieditor-loop-content-quizlet": "Quizlet",
-	"loopsidebar-error-notfound": "Det angivit sida (page) kunde inte hittas. Lägg till den [[$1|här]]."
+	"loopsidebar-error-notfound": "Den angivit sida (page) kunde inte hittas. Lägg till den [[$1|här]].",
+	"loopzip-error-nostartfile": "Den angivit HTML-fil $1 (parameter start)  kunde inte hittas i ZIP-filen $2.",
+	"loopzip-error-nozipfile": "Den angivit ZIP-fil (file) $1 finns inte. Vänligen ladda upp den.",
+	"loopzip-error-missingrequired": "Parametarna file och start är obligatoriska. Minst en parameter saknas."
 }

@@ -355,5 +355,8 @@
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
 	"loopwikieditor-loop-content-quizlet": "Quizlet",
-	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist."
+	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist.",
+	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
+	"loopzip-error-nozipfile": "The given ZIP file (file) $1 does not exist. Please upload it first.",
+	"loopzip-error-missingrequired": "The parameters file and start are required. At least one of them is missing."
 }
