@@ -405,6 +405,16 @@ class LoopHtml{
             "tree.png" => array(
                 "srcpath" => $skinPath."Loop/resources/img/tree.png",
                 "targetpath" => "resources/img/",
+            ),
+            "skins.loop-resizer.js" => array(
+                "srcpath" => $skinPath."Loop/resources/js/iframeresizer.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
+            ),
+            "skins.loop-h5p-resizer.js" => array(
+                "srcpath" => $skinPath."Loop/resources/js/h5presizer.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
             )
         );
 
@@ -549,11 +559,59 @@ class LoopHtml{
 
             $this->writeFile( "resources/images/", $fileName, $logoFile[$logoUrl] );
             $loopLogo->setAttribute( 'style', 'background-image: url("'.$prependHref.'resources/images/'. $fileName.'");' );
-        }        
+        }
+        
+        # download linked ZIP file contents from loop_zip iframes
+        $loopzips = $this->getElementsByClass( $body[0], "iframe", "loop-zip" );
+        if ( $loopzips ) {
+            foreach ( $loopzips as $element ) {
+                $src = $element->getAttribute( 'src' );
+                preg_match('/(mediawiki\/)(.*\/)(.*\.zip.extracted)(\/)(.*)/i', $src, $output_array); # gets the zipfile.zip.extracted folder name
+                if ( isset ( $output_array[2] ) ) {
+                    global $IP;
 
+                    $extractedFolderPath = $output_array[2];
+                    $extractedFolderName = $output_array[3];
+                    $startFile = $output_array[5];
+                    $sourceFolder = $IP  .'/'. $extractedFolderPath. $extractedFolderName;
+                    $requestUrls = self::listFolderFiles( $sourceFolder );
+                    $folderName = $this->resolveUrl($extractedFolderName, '');
+                    $folderPath = "resources/img/$folderName/";
+                    $requestUrlsContent = $this->requestContent($requestUrls);
+                    
+                    foreach( $requestUrlsContent as $url => $content ) {
+                        $fileName = array_search($url, $requestUrls);
+                        $addendum = str_replace( $sourceFolder."/", "", $url );
+                        $addendum = str_replace( $fileName, "", $addendum );
+                        $this->writeFile( $folderPath . $addendum, $fileName, $content );
+                    }
+                    $element->removeAttribute( 'src' );
+                    $newSrc = $prependHref . $folderPath . $startFile;
+                    $element->setAttribute( 'src', $newSrc );
+                }
+            }
+        }
         $html = $doc->saveHtml();
         
         return $html;
+    }
+
+    public static function listFolderFiles( $dir ){
+        $dirContent = scandir($dir);
+    
+        unset($dirContent[array_search('.', $dirContent, true)]);
+        unset($dirContent[array_search('..', $dirContent, true)]);
+    
+        if ( count($dirContent) < 1 )
+            return;
+    
+        foreach ( $dirContent as $file ){
+           $arr[$file] = $dir .'/'. $file;
+            if ( is_dir( $dir .'/'. $file) ) {
+                $arr = array_merge ( $arr, self::listFolderFiles( $dir .'/'. $file, "$dir/$file/" ) );
+            }
+        }
+       return $arr;
     }
 
     /**
@@ -566,16 +624,14 @@ class LoopHtml{
         foreach($urls as $url) {
 
             if( ! in_array( $url, $this->requestedUrls ) ) {
-                #if ( is_file( $url ) ) { 
-                $content = file_get_contents( $url );
-                #} else {
-                #    dd($urls, $url, $this->requestedUrls);
-                #    $content = '';
-                #}
-                $this->requestedUrls[ $url ] = $content;
+                if ( !is_dir( $url ) ) {
+                    $content = file_get_contents( $url );
+                    $this->requestedUrls[ $url ] = $content;
+                }
             }
-
-            $tmpContent[ $url ] = $this->requestedUrls[ $url ];
+            if ( isset ( $this->requestedUrls[ $url ] ) ) {
+                $tmpContent[ $url ] = $this->requestedUrls[ $url ];
+            }
 
         }
 
