@@ -112,10 +112,13 @@ class LoopHooks {
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
 		$params['frame']['class'] = 'responsive-image';
 
+		#dd($params);
 		if ($loopEditMode) {
 			$params['frame']['no-link'] = false;
+			$params['frame']['framed'] = true;
 		} else {
 			$params['frame']['no-link'] = true;
+			$params['frame']['framed'] = true;
 		}
 		
 		return true;
