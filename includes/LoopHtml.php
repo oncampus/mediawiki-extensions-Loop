@@ -591,8 +591,26 @@ class LoopHtml{
                 }
             }
         }
-        $html = $doc->saveHtml();
+
+        # manual replacement of imagemap links as the extension does not appear use the linkrenderer
+        $imageMapLinks = $this->getElementsByClass( $body[0], "div", "noresize" );
+        if ( $imageMapLinks ) {
+            global $wgArticlePath;
+            $articlePath = str_replace('$1', "", $wgArticlePath);
+            foreach ( $imageMapLinks as $element ) {
+                foreach ( $element->childNodes as $child ) {
+                    if ( $child->nodeName == 'a' ) {
+                        $href = $child->getAttribute( "href" );
+                        $newHref = str_replace( $articlePath, "", $href );
+                        $filename = $this->resolveUrl($newHref, '.html');
+                        $child->removeAttribute( 'href' );
+                        $child->setAttribute( 'href', $prependHref . $filename );
+                    } 
+                }
+            }
+        }
         
+        $html = $doc->saveHtml();
         return $html;
     }
 
