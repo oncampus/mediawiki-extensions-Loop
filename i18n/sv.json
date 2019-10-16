@@ -67,8 +67,12 @@
 	"loopsettings-numbering-type-ongoing-label": "Kontinuerlig numrering - t.ex. '''Fig. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Numrering enligt kapiteln - t.ex. '''Fig. 3.12'''",
 	"loopsettings-citation-style": "Citering stil",
-	"loopsettings-citation-style-harvard-label": "'''Harvard''', visas i text t.ex. Müller 2002",
+	"loopsettings-citation-style-harvard-label": "'''Harvard''', visas i text t.ex. Johansson 2002",
 	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', visas med numrering, t.ex. ²",
+	"extraSidebar": "Det här är den yttligare sidebar panel som har aktiverats i [[Special:LoopSettings|LOOP-Inställningar]]. Du kan editera dennas innehåll [[MediaWiki:ExtraSidebar|här]].",
+	"loopsettings-extra-sidebar-linktext": "Editera yttligare sidebar",
+	"loopsettings-extra-sidebar-label": "Visa yttligare sidebar.",
+	"loopsettings-headline-sidebar": "Sidebar",
 
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
@@ -356,6 +360,7 @@
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
 	"loopwikieditor-loop-content-quizlet": "Quizlet",
 	"loopsidebar-error-notfound": "Den angivit sida (page) kunde inte hittas. Lägg till den [[$1|här]].",
+	"loopsidebar-error-nopage": "Ingen sida (page) har angivits i sidebar-taggen.",
 	"loopzip-error-nostartfile": "Den angivit HTML-fil $1 (parameter start)  kunde inte hittas i ZIP-filen $2.",
 	"loopzip-error-nozipfile": "Den angivit ZIP-fil (file) $1 finns inte. Vänligen ladda upp den.",
 	"loopzip-error-missingrequired": "Parametarna file och start är obligatoriska. Minst en parameter saknas."
