@@ -82,7 +82,8 @@
 		"LoopIndex": "includes/LoopIndex.php",
 		"SpecialLoopIndex": "includes/LoopIndex.php",
 		"LoopWikiEditor": "includes/LoopWikiEditor.php",
-		"LoopZip": "includes/LoopZip.php"
+		"LoopZip": "includes/LoopZip.php",
+		"LoopSidebar": "includes/LoopSidebar.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -108,7 +109,7 @@
 			"LoopExternalContent::onParserSetup",
 			"LoopLegacy::onParserSetup",
 			"LoopIndex::onParserSetup",
-			"LoopHooks::onParserSetup",
+			"LoopSidebar::onParserSetup",
 			"LoopZip::onParserSetup"
 		],
 		"ParserAfterTidy": [
