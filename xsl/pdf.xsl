@@ -2577,26 +2577,27 @@
 	<!-- Sidebar -->
 	<xsl:template match="extension[@extension_name='loop_sidebar']">
 		<fo:block>
-				
 			<xsl:choose>
-				<xsl:when test="@print">
-				
-					<xsl:choose>
-						<xsl:when test="@print='false'">
-						</xsl:when>	
-						<xsl:otherwise>
-							<xsl:apply-templates select="php:function('LoopXsl::xsl_getSidebarPage', @page)"></xsl:apply-templates>
-						</xsl:otherwise>
-					</xsl:choose>
-
+				<xsl:when test="@print='false'">
 				</xsl:when>	
 				<xsl:otherwise>
-					<xsl:apply-templates select="php:function('LoopXsl::xsl_getSidebarPage', @page)"></xsl:apply-templates>
+					<xsl:if test="php:function('LoopXsl::xsl_getSidebarPage', @page)!=''">
+						<fo:leader leader-pattern="rule" leader-length="100%" rule-style="solid" rule-thickness="0.5pt"/>
+						<xsl:if test="@title!=''">
+							<fo:inline>
+								<xsl:call-template name="font_subsubsubhead"></xsl:call-template>
+								<xsl:value-of select="@title"></xsl:value-of>
+							</fo:inline>
+						</xsl:if>
+						<xsl:apply-templates select="php:function('LoopXsl::xsl_getSidebarPage', @page)"></xsl:apply-templates>
+						<fo:leader leader-pattern="rule" leader-length="100%" rule-style="solid" rule-thickness="0.5pt"/>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
 		</fo:block>				
 	</xsl:template>
 	
 	
+
 	
 </xsl:stylesheet>
