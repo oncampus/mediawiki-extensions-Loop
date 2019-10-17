@@ -65,10 +65,16 @@ class LoopHooks {
 	 */
 	public static function onSpecialPageinitList ( &$specialPages ) {
 
-		global $wgUser; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
+		global $wgUser, $wgOut; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
+		$hideSpecialPages = false;
 
-		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.	
+		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.
+			$hideSpecialPages = true;
+		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-spsecial-pages" ) ) { # for logged in users, we can check the rights.
+			$hideSpecialPages = true;
+		}
 
+		if ( $hideSpecialPages ) {
 			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects',  'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
 				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
 				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers', 
@@ -112,7 +118,6 @@ class LoopHooks {
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
 		$params['frame']['class'] = 'responsive-image';
 
-		#dd($params);
 		if ($loopEditMode) {
 			$params['frame']['no-link'] = false;
 			$params['frame']['framed'] = true;

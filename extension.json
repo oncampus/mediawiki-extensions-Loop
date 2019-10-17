@@ -498,7 +498,8 @@
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
-			"loop-edit-literature": false
+			"loop-edit-literature": false,
+			"loop-view-special-pages": false
 		}
 	},
 	"DefaultUserOptions": {
