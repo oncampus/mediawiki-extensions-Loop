@@ -70,7 +70,7 @@ class LoopHooks {
 
 		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.
 			$hideSpecialPages = true;
-		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-spsecial-pages" ) ) { # for logged in users, we can check the rights.
+		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
 		}
 
