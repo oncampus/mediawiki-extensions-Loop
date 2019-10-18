@@ -116,14 +116,17 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		$params['frame']['class'] = 'responsive-image';
+		$mediaType = $file->getMediaType();
 
-		if ($loopEditMode) {
-			$params['frame']['no-link'] = false;
-			$params['frame']['framed'] = true;
-		} else {
-			$params['frame']['no-link'] = true;
-			$params['frame']['framed'] = true;
+		if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { # otherwis
+			$params['frame']['class'] = 'responsive-image';
+			if ($loopEditMode) {
+				$params['frame']['no-link'] = false;
+				$params['frame']['framed'] = true;
+			} else {
+				$params['frame']['no-link'] = true;
+				$params['frame']['framed'] = true;
+			}
 		}
 		
 		return true;
