@@ -127,6 +127,8 @@ class LoopHooks {
 				$params['frame']['no-link'] = true;
 				$params['frame']['framed'] = true;
 			}
+		} elseif ( $mediaType == "VIDEO" ) { 
+			$params['frame']['class'] = 'responsive-video';
 		}
 		
 		return true;
