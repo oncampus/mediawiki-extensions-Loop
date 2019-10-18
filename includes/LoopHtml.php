@@ -405,6 +405,16 @@ class LoopHtml{
             "tree.png" => array(
                 "srcpath" => $skinPath."Loop/resources/img/tree.png",
                 "targetpath" => "resources/img/",
+            ),
+            "skins.loop-resizer.js" => array(
+                "srcpath" => $skinPath."Loop/resources/js/iframeresizer.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
+            ),
+            "skins.loop-h5p-resizer.js" => array(
+                "srcpath" => $skinPath."Loop/resources/js/h5presizer.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
             )
         );
 
@@ -549,11 +559,81 @@ class LoopHtml{
 
             $this->writeFile( "resources/images/", $fileName, $logoFile[$logoUrl] );
             $loopLogo->setAttribute( 'style', 'background-image: url("'.$prependHref.'resources/images/'. $fileName.'");' );
-        }        
+        }
+        
+        # download linked ZIP file contents from loop_zip iframes
+        $loopzips = $this->getElementsByClass( $body[0], "iframe", "loop-zip" );
+        if ( $loopzips ) {
+            foreach ( $loopzips as $element ) {
+                $src = $element->getAttribute( 'src' );
+                preg_match('/(mediawiki\/)(.*\/)(.*\.zip.extracted)(\/)(.*)/i', $src, $output_array); # gets the zipfile.zip.extracted folder name
+                if ( isset ( $output_array[2] ) ) {
+                    global $IP;
+
+                    $extractedFolderPath = $output_array[2];
+                    $extractedFolderName = $output_array[3];
+                    $startFile = $output_array[5];
+                    $sourceFolder = $IP  .'/'. $extractedFolderPath. $extractedFolderName;
+                    $requestUrls = self::listFolderFiles( $sourceFolder );
+                    $folderName = $this->resolveUrl($extractedFolderName, '');
+                    $folderPath = "resources/img/$folderName/";
+                    $requestUrlsContent = $this->requestContent($requestUrls);
+                    
+                    foreach( $requestUrlsContent as $url => $content ) {
+                        $fileName = array_search($url, $requestUrls);
+                        $addendum = str_replace( $sourceFolder."/", "", $url );
+                        $addendum = str_replace( $fileName, "", $addendum );
+                        $this->writeFile( $folderPath . $addendum, $fileName, $content );
+                    }
+                    $element->removeAttribute( 'src' );
+                    $newSrc = $prependHref . $folderPath . $startFile;
+                    $element->setAttribute( 'src', $newSrc );
+                }
+            }
+        }
+
+        # manual replacement of imagemap links as the extension does not appear use the linkrenderer
+        $imageMapLinks = $this->getElementsByClass( $body[0], "div", "noresize" );
+        if ( $imageMapLinks ) {
+            global $wgArticlePath;
+            $articlePath = str_replace('$1', "", $wgArticlePath);
+            foreach ( $imageMapLinks as $element ) {
+                foreach ( $element->childNodes as $child ) {
+                    if ( $child->nodeName == 'a' ) {
+                        $href = $child->getAttribute( "href" );
+                        if ( strpos( $href, $articlePath ) !== false ) {
+                            $newHref = str_replace( $articlePath, "", $href );
+                            $lsi = LoopStructureItem::newFromText($newHref);
+                            if ( $lsi ) {
+                                $filename = $this->resolveUrl($newHref, '.html');
+                                $child->setAttribute( 'href', $prependHref . $filename );
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         $html = $doc->saveHtml();
-        
         return $html;
+    }
+
+    public static function listFolderFiles( $dir ){
+        $dirContent = scandir($dir);
+    
+        unset($dirContent[array_search('.', $dirContent, true)]);
+        unset($dirContent[array_search('..', $dirContent, true)]);
+    
+        if ( count($dirContent) < 1 )
+            return;
+    
+        foreach ( $dirContent as $file ){
+           $arr[$file] = $dir .'/'. $file;
+            if ( is_dir( $dir .'/'. $file) ) {
+                $arr = array_merge ( $arr, self::listFolderFiles( $dir .'/'. $file, "$dir/$file/" ) );
+            }
+        }
+       return $arr;
     }
 
     /**
@@ -566,16 +646,14 @@ class LoopHtml{
         foreach($urls as $url) {
 
             if( ! in_array( $url, $this->requestedUrls ) ) {
-                #if ( is_file( $url ) ) { 
-                $content = file_get_contents( $url );
-                #} else {
-                #    dd($urls, $url, $this->requestedUrls);
-                #    $content = '';
-                #}
-                $this->requestedUrls[ $url ] = $content;
+                if ( !is_dir( $url ) ) {
+                    $content = file_get_contents( $url );
+                    $this->requestedUrls[ $url ] = $content;
+                }
             }
-
-            $tmpContent[ $url ] = $this->requestedUrls[ $url ];
+            if ( isset ( $this->requestedUrls[ $url ] ) ) {
+                $tmpContent[ $url ] = $this->requestedUrls[ $url ];
+            }
 
         }
 
@@ -629,7 +707,7 @@ class LoopHtml{
         
         if ( ! file_exists( $this->exportDirectory.$pathAddendum ) ) { # folder creation
             mkdir( $this->exportDirectory.$pathAddendum, 0775, true );
-            error_log($this->exportDirectory.$pathAddendum);
+            #error_log($this->exportDirectory.$pathAddendum);
         }
         if ( ! file_exists( $this->exportDirectory.$pathAddendum.$fileName ) ) {
             file_put_contents($this->exportDirectory.$pathAddendum.$fileName, $content);
@@ -656,21 +734,42 @@ class LoopHtml{
         $body = $doc->getElementsByTagName('body');
 
         $imageElements = $this->getElementsByClass( $body[0], "img", "responsive-image" );
+        $scoreExtElements = $this->getElementsByClass( $body[0], "div", "mw-ext-score" ); # add images generated by score
+        $mathExtElements = $this->getElementsByClass( $body[0], "img", "mwe-math-fallback-image-inline" ); # add images generated by math
+        $imageElements = array_merge($imageElements, $mathExtElements);
+        if ( !empty( $scoreExtElements ) ) {
+            $scoreImgElements = array();
+            foreach ( $scoreExtElements as $element ) {
+                $scoreImgElements[] = $element->firstChild;
+            }
+            $imageElements = array_merge($imageElements, $scoreImgElements);
+        }
+        
         $imageUrls = array();
         if ( $imageElements ) {
             foreach ( $imageElements as $element ) {
 
                 $tmpSrc = $element->getAttribute( 'src' );
-                $imageData["content"][] = $wgServer . $tmpSrc;
                 preg_match('/(.*\/)(.*)(\.{1})(.*)/', $tmpSrc, $tmpTitle);
-                $imageData["name"][$wgServer . $tmpSrc] = $tmpTitle[2];
-                $imageData["suffix"][$wgServer . $tmpSrc] = $tmpTitle[4];
-                $newSrc = $prependHref."resources/images/" . $this->resolveUrl($tmpTitle[2], '.'.$tmpTitle[4] );
+
+                if ( strpos( $element->getAttribute( 'class' ),  "mwe-math-fallback-image-inline" ) !== false ) { #handle external (restbase) images of math extension
+                    $prependServer = "";
+                    $imageData["suffix"][$prependServer . $tmpSrc] = 'svg';
+                    $imageData["name"][$prependServer . $tmpSrc] = $this->resolveUrl( $element->getAttribute( 'alt' ), "");
+                } else {
+                    $prependServer = $wgServer;
+                    $imageData["suffix"][$prependServer . $tmpSrc] = $tmpTitle[4];
+                    $imageData["name"][$prependServer . $tmpSrc] = $tmpTitle[2];
+                }
+
+                $imageData["content"][] = $prependServer . $tmpSrc;
+                $newSrc = $prependHref."resources/images/" . $this->resolveUrl(  $imageData["name"][$prependServer . $tmpSrc], '.'. $imageData["suffix"][$prependServer . $tmpSrc] );
                 #dd($tmpTitle[2],$newSrc, $imageData["content"]);
                 $element->setAttribute( 'src', $newSrc );
             }
             if ( $imageData["name"] && $imageData["suffix"] ) {
                 $imageData["content"] = $this->requestContent($imageData["content"]);
+                
                 foreach ( $imageData["name"] as $image => $data ) {
                     $fileName = $this->resolveUrl($imageData["name"][$image], '.'.$imageData["suffix"][$image] );
                     $content = $imageData["content"][$image];

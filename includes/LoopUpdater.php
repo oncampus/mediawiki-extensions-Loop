@@ -158,6 +158,7 @@ class LoopUpdater {
 			}
 			LoopObject::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
+			self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
 		}
 		return true;
 	}
@@ -212,7 +213,7 @@ class LoopUpdater {
 								$li->note = $text;
 								$li->addToDatabase();
 							}
-							$newTagContent .=  "#" . $key . "\n";
+							$newTagContent .=  "<literature>" . $key . "</literature>\n";
 							
 						}
 					}
@@ -255,6 +256,32 @@ class LoopUpdater {
 		if ( $newContentText != $contentText ) {
 			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
 			$wikiPage->doEditContent( $editContent, 'Splitted loop_index tags', EDIT_UPDATE, false, $systemUser );	
+		} 
+	}
+	
+	/**
+	 * Adds scale="true" to loop_zip tags upon update
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
+	public static function migrateLoopZip( $wikiPage, $title, $contentText = null, $systemUser ) {
+
+		$revision = $wikiPage->getRevision();
+		if ( $contentText == null ) {
+			$contentText = $revision->getContent()->getText();
+		}
+		$parser = new Parser();
+		$zip_tags = array ();
+		$loopliterature_tags = array ();
+		$parser->extractTagsAndParams( array( 'loop_zip' ), $contentText, $zip_tags );
+		$newContentText = $contentText;
+
+		if ( !empty ( $zip_tags ) ) {
+			$newContentText = str_replace( "<loop_zip", '<loop_zip scale="true" ', $contentText );
+			
+		}
+		if ( $newContentText != $contentText ) {
+			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
+			$wikiPage->doEditContent( $editContent, 'Added scale=true to loop_zip', EDIT_UPDATE, false, $systemUser );	
 		} 
 	}
 

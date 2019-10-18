@@ -68,7 +68,11 @@
 	"loopsettings-numbering-type-chapter-label": "Nummerierung nach Kapiteln - z.B. '''Abb. 3.12'''",
 	"loopsettings-citation-style": "Zitierstil",
 	"loopsettings-citation-style-harvard-label": "'''Harvard''', Anzeige im Fließtext z.B. Müller 2002",
-	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', Anzeige mit durchlaufender Nummerierung, z.B. ²",
+	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', Anzeige mit durchlaufender Nummerierung, z.B. ²",	
+	"extraSidebar": "Das ist ein zusätzliches Sidebar-Panel, das unter [[Special:LoopSettings|LOOP-Einstellungen]] aktiviert wurde. Sie können den Inhalt [[MediaWiki:ExtraSidebar|hier]] bearbeiten.",
+	"loopsettings-extra-sidebar-linktext": "Inhalt des zusätzlichen Sidebar-Panels bearbeiten",
+	"loopsettings-extra-sidebar-label": "Extra Sidebar-Panel einblenden.",
+	"loopsettings-headline-sidebar": "Sidebar",
 
 	"loopexport-specialpage-title": "Loop exportieren",
 	"loopexport": "Loop exportieren",
@@ -354,6 +358,11 @@
 	"loopwikieditor-loop-content-padlet": "Padlet",
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
-	"loopwikieditor-loop-content-quizlet": "Quizlet"
+	"loopwikieditor-loop-content-quizlet": "Quizlet",
+	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an.",
+	"loopsidebar-error-nopage": "In dem Sidebar-Tag wurde keine Seite (page) angegeben.",
+	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
+	"loopzip-error-nozipfile": "Die angegebene ZIP-Datei (file) $1 existiert nicht. Bitte laden Sie sie hoch.",
+	"loopzip-error-missingrequired": "Die Angabe der Parameter file und start ist erforderlich. Mindestens ein Parameter wurde nicht angegeben."
 
 }

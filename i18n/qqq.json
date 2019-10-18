@@ -69,6 +69,10 @@
 	"loopsettings-citation-style": "Headline on settings page, Citation style",
 	"loopsettings-citation-style-harvard-label": "Label for harvard style citation",
 	"loopsettings-citation-style-vancouver-label": "Label for vancouver style citation",
+	"extraSidebar": "Placeholder text for automatically generated MediaWiki:ExtraSidebar page.",
+	"loopsettings-extra-sidebar-linktext": "Link text for link to extra sidebar page",
+	"loopsettings-extra-sidebar-label": "Label for additional sidebar checkbox.",
+	"loopsettings-headline-sidebar": "Headline on settings page, Sidebar",
 
 	"loopexport-specialpage-title" : "Page title for Loop Export special page",
 	"loopexport": "Name of Specialpage Export in List of Specialpages",
@@ -354,5 +358,10 @@
 	"loopwikieditor-loop-content-padlet": "Wikieditor LOOP : Media Padlet",
 	"loopwikieditor-loop-content-prezi": "Wikieditor LOOP : Media Prezi",
 	"loopwikieditor-loop-content-slideshare": "Wikieditor LOOP : Media SlideShare",
-	"loopwikieditor-loop-content-quizlet": "Wikieditor LOOP : Media Quizlet"
+	"loopwikieditor-loop-content-quizlet": "Wikieditor LOOP : Media Quizlet",
+	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag",
+	"loopsidebar-error-nopage": "Error message for non-existent page parameter.",
+	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
+	"loopzip-error-nozipfile": "Error message for not-existing zip file given in parameter file",
+	"loopzip-error-missingrequired": "Error message when a required parameter of loop_zip is missing"
 }

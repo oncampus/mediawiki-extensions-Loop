@@ -40,6 +40,7 @@ class LoopSettings {
     public $numberingObjects;
     public $numberingType;
     public $citationStyle;
+    public $extraSidebar;
 
     /**
      * Add settings to the database
@@ -73,7 +74,8 @@ class LoopSettings {
             'lset_instagramlink' => $this->instagramLink,
             'lset_numberingobjects' => $this->numberingObjects,
             'lset_numberingtype' => $this->numberingType,
-            'lset_citationstyle' => $this->citationStyle
+            'lset_citationstyle' => $this->citationStyle,
+            'lset_extrasidebar' => $this->extraSidebar
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -163,6 +165,7 @@ class LoopSettings {
             $this->numberingObjects = $data['lset_numberingobjects'];
             $this->numberingType = $data['lset_numberingtype'];
             $this->citationStyle = $data['lset_citationstyle'];
+            $this->extraSidebar = $data['lset_extrasidebar'];
         }
         
         return true;
@@ -333,6 +336,12 @@ class LoopSettings {
             } 
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-citation-style-label' ) );
+        }
+        
+        if ( empty ( $request->getText( 'extra-sidebar-active' ) ) || $request->getText( 'extra-sidebar-active' ) == 'useExtraSidebar' ) {
+            $this->extraSidebar = $request->getText( 'extra-sidebar-active' );
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-sidebar-label' ) );
         }
 
         $this->addToDatabase();
@@ -507,9 +516,10 @@ class SpecialLoopSettings extends SpecialPage {
 				 * APPEARANCE TAB 
 				 */	
 				$html .= '<div class="tab-pane fade" id="nav-appearance" role="tabpanel" aria-labelledby="nav-appearance-tab">';
-					### SKIN BLOCK ###
-					$html .= '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
-					//echo $currentLoopSettings->skinStyle;
+                    ### SKIN BLOCK ###
+					$html .= '<div class="form-row">';
+					$html .=    '<div class="col-6 pl-1">';
+					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
 					$skinStyleOptions = '';
 					foreach( $wgSkinStyles as $style ) { 
 					if ( $style == $currentLoopSettings->skinStyle ) { #TODO: Some styles should not be selectable from every loop
@@ -518,32 +528,46 @@ class SpecialLoopSettings extends SpecialPage {
 							$selected = '';
 						}
 						$skinStyleOptions .= '<option value="' . $style.'" ' . $selected.'>'. $this->msg( 'loop-skinstyle-'. $style ) .'</option>';
-					}
-					$html .= 
-					'<label for="skin-style">' . $this->msg( 'loopsettings-skin-style-label' ) . '</label>
-					<select class="form-control" name="skin-style" id="skin-style" selected="'. $currentLoopSettings->skinStyle .' ">' . $skinStyleOptions . '</select><br>';
-					
+                    }
+                    
+					$html .= '<label for="skin-style">' . $this->msg( 'loopsettings-skin-style-label' ) . '</label>';
+					$html .= '<select class="form-control" name="skin-style" id="skin-style" selected="'. $currentLoopSettings->skinStyle .' ">' . $skinStyleOptions . '</select><br>';
+                    $html .=    '</div>';
+
+                    
+					# extra sidebar
+                    $html .=    '<div class="col-6 pl-1">';
+					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-sidebar' ) . '</h3>'; 
+					$html .=        '<input class="mr-1" type="checkbox" name="extra-sidebar-active" id="extra-sidebar-active" value="useExtraSidebar" ' . ( ! empty ( $currentLoopSettings->extraSidebar ) ? 'checked' : '' ) .'>';
+                    $html .=        '<label for="extra-sidebar-active">' . $this->msg( 'loopsettings-extra-sidebar-label' ) . '</label><br>';
+                    $html .= $linkRenderer->makeLink(
+                        Title::newFromText("MediaWiki:ExtraSidebar"),
+                        new HtmlArmor( $this->msg("loopsettings-extra-sidebar-linktext") ),
+                        array("target" => "blank")
+                    );
+                    $html .= '</div>';
+                    $html .= '</div>';
+
 					### LOGO BLOCK ###
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-logo' ) . '</h3>';
 					# logo
-					
-					$html .= 
-					'<div class="form-row">
-						<div class="col-9 col-sm-6 pl-1">
-							<input type="checkbox" name="logo-use-custom" id="logo-use-custom" value="useCustomLogo" '. ( ! empty( $currentLoopSettings->customLogo ) ? 'checked' : '' ) .'>
-							<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>
-							<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">
-							<div class="invalid-feedback">' . $this->msg( 'loopsettings-customlogo-hint' ) . '</div>
-							<input type="hidden" name="custom-logo-filepath" id="custom-logo-filepath" value="' . $currentLoopSettings->customLogoFilePath.'">
-						</div>
-						<div class="col-3 col-sm-6">';
-							if( $currentLoopSettings->customLogo == "useCustomLogo" && ! empty( $currentLoopSettings->customLogoFilePath ) ) {
-								$html .= "<p class='mb-1 mr-2'>" . $this->msg( 'Prefs-preview' ) . ' ' . $currentLoopSettings->customLogoFileName.":</p>
-								<img src='" . $currentLoopSettings->customLogoFilePath."' style='max-width:100%; max-height: 50px;'></img>";
-							}
-							$html .= '</div>
-						</div>
-						<br>';
+					$html .= '<div class="form-row">';
+					$html .=    '<div class="col-9 col-sm-6 pl-1">';
+					$html .=        '<input type="checkbox" class="mr-1" name="logo-use-custom" id="logo-use-custom" value="useCustomLogo" '. ( ! empty( $currentLoopSettings->customLogo ) ? 'checked' : '' ) .'>';
+					$html .=        '<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>';
+					$html .=        '<input '. ( empty( $currentLoopSettings->customLogo ) ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">';
+					$html .=        '<div class="invalid-feedback">' . $this->msg( 'loopsettings-customlogo-hint' ) . '</div>';
+					$html .=        '<input type="hidden" name="custom-logo-filepath" id="custom-logo-filepath" value="' . $currentLoopSettings->customLogoFilePath.'">';
+					$html .=    '</div>';
+                    $html .=    '<div class="col-3 col-sm-6">';
+                    if ( $currentLoopSettings->customLogo == "useCustomLogo" && ! empty( $currentLoopSettings->customLogoFilePath ) ) {
+                        $html .=    "<p class='mb-1 mr-2'>" . $this->msg( 'Prefs-preview' ) . ' ' . $currentLoopSettings->customLogoFileName.":</p>";
+                        $html .=    "<img src='" . $currentLoopSettings->customLogoFilePath."' style='max-width:100%; max-height: 50px;'></img>";
+                    }
+                    $html .=    '</div>';
+                    $html .= '</div>';
+                    $html .= '<br>';
+
 					#upload
 					$html .= $uploadButton;
 					

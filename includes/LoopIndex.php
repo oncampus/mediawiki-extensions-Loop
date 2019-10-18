@@ -371,15 +371,17 @@ class SpecialLoopIndex extends SpecialPage {
 				$indexlinks[$letter][$ucIndex] .= '</td></tr>';
 			}
 		}
-		ksort($indexlinks); # sorts terms
-		foreach ($indexlinks as $letter => $indexArray ) {
-			$i = 1;
-			foreach ( $indexArray as $indexLink ) {
-				if ( $i == 1 ) {
-					$indexLink = substr_replace($indexLink, $letter, 85, 0);
+		if ( isset( $indexlinks ) ) {
+			ksort($indexlinks); # sorts terms
+			foreach ($indexlinks as $letter => $indexArray ) {
+				$i = 1;
+				foreach ( $indexArray as $indexLink ) {
+					if ( $i == 1 ) {
+						$indexLink = substr_replace($indexLink, $letter, 85, 0);
+					}
+					$html .= $indexLink;
+					$i++;
 				}
-				$html .= $indexLink;
-				$i++;
 			}
 		}
         

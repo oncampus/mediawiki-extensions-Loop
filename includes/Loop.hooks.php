@@ -65,10 +65,16 @@ class LoopHooks {
 	 */
 	public static function onSpecialPageinitList ( &$specialPages ) {
 
-		global $wgUser; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
+		global $wgUser, $wgOut; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
+		$hideSpecialPages = false;
 
-		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.	
+		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.
+			$hideSpecialPages = true;
+		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
+			$hideSpecialPages = true;
+		}
 
+		if ( $hideSpecialPages ) {
 			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects',  'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
 				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
 				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers', 
@@ -110,12 +116,19 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		$params['frame']['class'] = 'responsive-image';
+		$mediaType = $file->getMediaType();
 
-		if ($loopEditMode) {
-			$params['frame']['no-link'] = false;
-		} else {
-			$params['frame']['no-link'] = true;
+		if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
+			$params['frame']['class'] = 'responsive-image';
+			if ($loopEditMode) {
+				$params['frame']['no-link'] = false;
+				$params['frame']['framed'] = true;
+			} else {
+				$params['frame']['no-link'] = true;
+				$params['frame']['framed'] = true;
+			}
+		} elseif ( $mediaType == "VIDEO" ) { 
+			$params['frame']['class'] = 'responsive-video';
 		}
 		
 		return true;

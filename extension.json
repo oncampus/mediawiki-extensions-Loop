@@ -81,7 +81,9 @@
 		"LoopLegacy": "includes/LoopLegacy.php",
 		"LoopIndex": "includes/LoopIndex.php",
 		"SpecialLoopIndex": "includes/LoopIndex.php",
-		"LoopWikiEditor": "includes/LoopWikiEditor.php"
+		"LoopWikiEditor": "includes/LoopWikiEditor.php",
+		"LoopZip": "includes/LoopZip.php",
+		"LoopSidebar": "includes/LoopSidebar.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -106,7 +108,9 @@
 			"LoopLiterature::onParserSetup",
 			"LoopExternalContent::onParserSetup",
 			"LoopLegacy::onParserSetup",
-			"LoopIndex::onParserSetup"
+			"LoopIndex::onParserSetup",
+			"LoopSidebar::onParserSetup",
+			"LoopZip::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"
@@ -138,7 +142,8 @@
 			"LoopIndex::onAfterClearStable"
 		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
-		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial"
+		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
+		"UploadComplete": "LoopZip::onUploadComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -342,7 +347,8 @@
 			"loop-edit-literature": true,
 			"editsitecss": true,
 			"editsitejs": true,
-			"editinterface": true
+			"editinterface": true,
+			"writeapi": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -378,7 +384,8 @@
 			"loop-edit-literature": true,
 			"editsitecss": true,
 			"editsitejs": true,
-			"editinterface": true
+			"editinterface": true,
+			"writeapi": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -414,7 +421,8 @@
 			"loop-edit-literature": true,
 			"editsitecss": true,
 			"editsitejs": true,
-			"editinterface": true
+			"editinterface": true,
+			"writeapi": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -444,7 +452,8 @@
 			"undelete": true,
 			"protect": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"writeapi": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -477,7 +486,8 @@
 			"deletedhistory": true,
 			"browsearchive": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": true
+			"loop-edit-literature": true,
+			"writeapi": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -488,7 +498,8 @@
 			"loop-export-scorm": true,
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
-			"loop-edit-literature": false
+			"loop-edit-literature": false,
+			"loop-view-special-pages": false
 		}
 	},
 	"DefaultUserOptions": {

@@ -1529,6 +1529,29 @@
 		</fo:inline>
 	</xsl:template>	
 	
+	<!-- loop_zip -->
+	<xsl:template match="extension[@extension_name='loop_zip']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_zip"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+				
+			<xsl:variable name="pageurl">
+				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+			</xsl:variable>	
+			<xsl:if test="$pageurl">
+				<fo:basic-link><!-- qr? -->
+					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+					<xsl:text> </xsl:text>
+				</fo:basic-link>
+			</xsl:if>
+		</fo:block>				
+	</xsl:template>
+
 	<!-- H5P -->
 	<xsl:template match="extension[@extension_name='h5p']">
 		<fo:block>
@@ -2551,6 +2574,30 @@
 				</fo:wrapper>
 	</xsl:template>
 	
+	<!-- Sidebar -->
+	<xsl:template match="extension[@extension_name='loop_sidebar']">
+		<fo:block>
+			<xsl:choose>
+				<xsl:when test="@print='false'">
+				</xsl:when>	
+				<xsl:otherwise>
+					<xsl:if test="php:function('LoopXsl::xsl_getSidebarPage', @page)!=''">
+						<fo:leader leader-pattern="rule" leader-length="100%" rule-style="solid" rule-thickness="0.5pt"/>
+						<xsl:if test="@title!=''">
+							<fo:inline>
+								<xsl:call-template name="font_subsubsubhead"></xsl:call-template>
+								<xsl:value-of select="@title"></xsl:value-of>
+							</fo:inline>
+						</xsl:if>
+						<xsl:apply-templates select="php:function('LoopXsl::xsl_getSidebarPage', @page)"></xsl:apply-templates>
+						<fo:leader leader-pattern="rule" leader-length="100%" rule-style="solid" rule-thickness="0.5pt"/>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>				
+	</xsl:template>
 	
+	
+
 	
 </xsl:stylesheet>

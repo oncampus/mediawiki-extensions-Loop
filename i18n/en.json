@@ -67,8 +67,12 @@
 	"loopsettings-numbering-type-ongoing-label": "Ongoing numbering - e.g. '''Fig. 47'''",
 	"loopsettings-numbering-type-chapter-label": "Numbering per chapter - e.g. '''Fig. 3.12'''",
 	"loopsettings-citation-style": "Quoting style",
-	"loopsettings-citation-style-harvard-label": "'''Harvard''', Displayed in text, e.g. Müller 2002",
+	"loopsettings-citation-style-harvard-label": "'''Harvard''', Displayed in text, e.g. Smith 2002",
 	"loopsettings-citation-style-vancouver-label": "'''Vancouver''', Displayed with superior numbers, e.g. ²",
+	"extraSidebar": "This is the additional sidebar panel that has been activated in [[Special:LoopSettings|LOOP Settings]]. You can edit it's contents [[MediaWiki:ExtraSidebar|here]].",
+	"loopsettings-extra-sidebar-linktext": "Edit the additional sidebar panel's content",
+	"loopsettings-extra-sidebar-label": "Show a custom sidebar panel globally.",
+	"loopsettings-headline-sidebar": "Sidebar",
 
 	"loopexport-specialpage-title" : "Loop Export",
 	"loopexport": "Loop Export",
@@ -354,5 +358,10 @@
 	"loopwikieditor-loop-content-padlet": "Padlet",
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
-	"loopwikieditor-loop-content-quizlet": "Quizlet"
+	"loopwikieditor-loop-content-quizlet": "Quizlet",
+	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist.",
+	"loopsidebar-error-nopage": "The sidebar-tag is missing a page parameter.",
+	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
+	"loopzip-error-nozipfile": "The given ZIP file (file) $1 does not exist. Please upload it first.",
+	"loopzip-error-missingrequired": "The parameters file and start are required. At least one of them is missing."
 }

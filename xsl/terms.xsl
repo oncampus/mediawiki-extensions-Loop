@@ -59,6 +59,7 @@
 	<xsl:variable name="icon_padlet" select="functx:get_icon('icon_padlet')" />
 	<xsl:variable name="icon_learningapps" select="functx:get_icon('icon_learningapps')" />
 	<xsl:variable name="icon_ngspice" select="functx:get_icon('icon_ngspice')" />
+	<xsl:variable name="icon_zip" select="functx:get_icon('icon_ngspice')" />
 
 	<xsl:variable name="word_chapter" select="functx:get_term_name('word_chapter')" />
 	<xsl:variable name="word_state"  select="functx:get_term_name('word_state')" />
