@@ -118,7 +118,7 @@ class LoopHooks {
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
 		$mediaType = $file->getMediaType();
 
-		if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { # otherwis
+		if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
 			$params['frame']['class'] = 'responsive-image';
 			if ($loopEditMode) {
 				$params['frame']['no-link'] = false;
