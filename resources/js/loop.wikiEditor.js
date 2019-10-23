@@ -308,6 +308,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="arrangement">',
+                                                peri: '<loop_toc/>',
                                                 post: '</loop_area>'
                                             }
                                         }

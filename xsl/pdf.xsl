@@ -2596,6 +2596,96 @@
 			</xsl:choose>
 		</fo:block>				
 	</xsl:template>
+
+	<!-- EmbedVideo, via MagicWord -->
+	<xsl:template match="extension[@extension_name='embed_video']">
+		<fo:block>
+			<xsl:choose>
+				<xsl:when test="@service='youtube'">
+					<xsl:if test="@videoid!=''">
+						<fo:inline>
+							<xsl:call-template name="font_icon"></xsl:call-template>
+							<xsl:value-of select="$icon_youtube"/>
+						</fo:inline>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$phrase_youtube_video"/>
+						<fo:basic-link><!-- qr? -->
+							<xsl:variable name="youtubeurl">
+								<xsl:text>https://youtu.be/</xsl:text>
+								<xsl:value-of select="@videoid"></xsl:value-of>
+							</xsl:variable>	
+							<xsl:attribute name="external-destination"><xsl:value-of select="$youtubeurl"></xsl:value-of></xsl:attribute>
+							<fo:block text-decoration="underline"><xsl:value-of select="$youtubeurl"></xsl:value-of></fo:block>
+							<xsl:text> </xsl:text>
+						</fo:basic-link>
+					</xsl:if>	
+				</xsl:when>	
+				<xsl:when test="@service!=''">
+					<xsl:variable name="pageurl">
+						<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+					</xsl:variable>	
+					<fo:inline>
+						<xsl:call-template name="font_icon"></xsl:call-template>
+						<xsl:value-of select="$icon_video"/>
+					</fo:inline>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$phrase_video"/>
+
+					<xsl:if test="$pageurl">
+						<fo:basic-link><!-- qr? -->
+							<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+							<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+							<xsl:text> </xsl:text>
+						</fo:basic-link>
+					</xsl:if>
+				</xsl:when>	
+				<xsl:otherwise>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- EmbedVideo, via tag. A direct link to the service can't be provided as there are too many options for the input -->
+	<xsl:template match="extension[@extension_name='embedvideo']">
+		<xsl:variable name="pageurl">
+			<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
+		</xsl:variable>	
+		<fo:block>
+			<xsl:choose>
+				<xsl:when test="@service='youtube'">
+					<fo:inline>
+						<xsl:call-template name="font_icon"></xsl:call-template>
+						<xsl:value-of select="$icon_youtube"/>
+					</fo:inline>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$phrase_youtube_video"/>
+					<fo:basic-link><!-- qr? -->
+						<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+						<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+						<xsl:text> </xsl:text>
+					</fo:basic-link>
+				</xsl:when>	
+				<xsl:when test="@service!=''">
+					<fo:inline>
+						<xsl:call-template name="font_icon"></xsl:call-template>
+						<xsl:value-of select="$icon_video"/>
+					</fo:inline>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$phrase_video"/>
+
+					<xsl:if test="$pageurl">
+						<fo:basic-link><!-- qr? -->
+							<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+							<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+							<xsl:text> </xsl:text>
+						</fo:basic-link>
+					</xsl:if>
+				</xsl:when>	
+				<xsl:otherwise>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>				
+	</xsl:template>
 	
 	
 

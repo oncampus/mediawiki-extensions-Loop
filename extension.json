@@ -17,7 +17,8 @@
 		"extensions": {
 			"WikiEditor": "*",
 			"Math": "*",
-			"SyntaxHighlight": "*"
+			"SyntaxHighlight": "*",
+			"EmbedVideo": ">= 2.8.0"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
