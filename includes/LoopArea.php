@@ -2,7 +2,7 @@
 /**
  * @description Adds support for <loop_area> Tags
  * @ingroup Extensions
- * @author Dustin Neß @krohnden <dustin.ness@th-luebeck.de>
+ * @author Dustin Neï¿½ @krohnden <dustin.ness@th-luebeck.de>
  */
 if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file cannot be run standalone.\n" );
@@ -141,7 +141,7 @@ class LoopArea {
 					#$owniconurl = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');;
 					#dd( , $renderMode);
 				} else {
-					throw new LoopException( wfMessage( 'looparea-error-imagenotfound', $args['icon'] )->text() );
+					throw new LoopException( wfMessage( "loop-error-missingfile", "loop_area", $args['icon'], 0 )->text() );
 				}
 			} catch( Exception $e) {
 				$parser->addTrackingCategory( 'loop-tracking-category-error' );

@@ -174,10 +174,8 @@
 	"looparea-icon-text-websource" : "icon text of the looparea type websource",
 	"looparea-error-unknown-type-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
 	"looparea-error-unknown-render-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
-	"looparea-error-imagenotfound" : "Error Message rendered when loop area could not find image",
 
 	"loopspoiler-default-title": "default label for spoiler button",
-	
 	"loopprint-printversion": "default label for print version button",
 
 	"loop_figure-name": "Prepend title of loop_figure",
@@ -302,14 +300,7 @@
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
 	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types",
 
-	"loopexternalcontent-h5p-error-noid": "Error message rendered when there is no ID given (id).", 
-	"loopexternalcontent-learningapp-error-noid": "Error message rendered when there is no ID given (app / privateapp).",
-	"loopexternalcontent-padlet-error-noid": "Error message rendered when there is no ID given (id).", 
-	"loopexternalcontent-prezi-error-noid": "Error message rendered when there is no ID given (id).", 
 	"loopexternalcontent-prezi-on": "The 'on' as in 'View on Prezi.com'", 
-	"loopexternalcontent-slideshare-error-noid": "Error message rendered when there is no ID given (id).", 
-	"loopexternalcontent-quizlet-error-noid": "Error message rendered when there is no ID given (id).", 
-
 	"namespace-special": "Special name space message",
 	"loop-glossary-namespace": "Namespace name for Glossary pages",
 	"loop-glossary-objectnumber-prefix": "prefix for LOOP object names in glossary",
@@ -362,6 +353,7 @@
 	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag",
 	"loopsidebar-error-nopage": "Error message for non-existent page parameter.",
 	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
-	"loopzip-error-nozipfile": "Error message for not-existing zip file given in parameter file",
-	"loopzip-error-missingrequired": "Error message when a required parameter of loop_zip is missing"
+	
+	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
+	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} "
 }

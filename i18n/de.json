@@ -174,10 +174,8 @@
 	"looparea-icon-text-websource" : "Websource",
 	"looparea-error-unknown-type-attribute" : "Dieser Seitenbereich besitzt für den Parameter Typ (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"looparea-error-unknown-render-attribute" : "Dieser Seitenbereich besitzt für den Parameter Render (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"looparea-error-imagenotfound" : "Die im Seitenbereich angegebene Grafik '''$1''' wurde nicht gefunden. Bitte laden Sie die Grafik hoch und speichern die Seite erneut. <br/>Dokumentation zu Auszeichnungen: XXX",
 
 	"loopspoiler-default-title": "Lösung",
-
 	"loopprint-printingarea": "Druckbereich",
 
 	"loop_figure-name": "Abbildung",
@@ -302,13 +300,7 @@
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
-	"loopexternalcontent-h5p-error-noid": "In dem H5P-Element wurde keine ID (id) angegeben.", 
-	"loopexternalcontent-learningapp-error-noid": "In dem LearningApp-Element wurde keine App ID (app / privateapp) angegeben.",
-	"loopexternalcontent-padlet-error-noid": "In dem Padlet-Element wurde keine ID (id) angegeben.", 
-	"loopexternalcontent-prezi-error-noid": "In dem Prezi-Element wurde keine ID (id) angegeben.", 
 	"loopexternalcontent-prezi-on": "auf", 
-	"loopexternalcontent-slideshare-error-noid": "In dem Slideshare-Element wurde keine ID (id) angegeben.", 
-	"loopexternalcontent-quizlet-error-noid": "In dem Quizlet-Element wurde keine ID (id) angegeben.", 
 
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
@@ -362,7 +354,7 @@
 	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an.",
 	"loopsidebar-error-nopage": "In dem Sidebar-Tag wurde keine Seite (page) angegeben.",
 	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
-	"loopzip-error-nozipfile": "Die angegebene ZIP-Datei (file) $1 existiert nicht. Bitte laden Sie sie hoch.",
-	"loopzip-error-missingrequired": "Die Angabe der Parameter file und start ist erforderlich. Mindestens ein Parameter wurde nicht angegeben."
-
+	
+	"loop-error-missingrequired": "In dem Tag $1 fehlt der notwendige Parameter $2. Das Element kann nicht dargestellt werden.",
+	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}"
 }
