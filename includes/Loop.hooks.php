@@ -116,19 +116,24 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		$mediaType = $file->getMediaType();
-
-		if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
-			$params['frame']['class'] = 'responsive-image';
-			if ($loopEditMode) {
-				$params['frame']['no-link'] = false;
-				$params['frame']['framed'] = true;
-			} else {
-				$params['frame']['no-link'] = true;
-				$params['frame']['framed'] = true;
-			}
-		} elseif ( $mediaType == "VIDEO" ) { 
-			$params['frame']['class'] = 'responsive-video';
+		
+		if ( is_object( $file ) ) {
+			$mediaType = $file->getMediaType();
+			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
+				$params['frame']['class'] = 'responsive-image';
+				if ($loopEditMode) {
+					$params['frame']['no-link'] = false;
+					$params['frame']['frame'] = true;
+				} else {
+					$params['frame']['no-link'] = true;
+					$params['frame']['frame'] = true;
+				}
+				if ( isset( $params['frame']['align'] ) ) {
+					$params['horizAlign'][ $params['frame']['align'] ] = true;
+				}
+			} elseif ( $mediaType == "VIDEO" ) { 
+				$params['frame']['class'] = 'responsive-video';
+			} 
 		}
 		
 		return true;
