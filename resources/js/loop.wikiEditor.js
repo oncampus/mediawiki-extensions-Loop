@@ -468,7 +468,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<h5p id="" width="" height=""></h5p>'
+                                                pre: '<h5p id="" width="" height=""/>'
                                             }
                                         }
                                     },
@@ -477,7 +477,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<learningapp app="" width="" height=""></learningapp>'
+                                                pre: '<learningapp app="" width="" height=""/>'
                                             }
                                         }
                                     },
@@ -486,7 +486,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<padlet id="" width="" height=""></padlet>'
+                                                pre: '<padlet id="" width="" height=""/>'
                                             }
                                         }
                                     },
@@ -495,7 +495,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<prezi id="" width="" height=""></prezi>'
+                                                pre: '<prezi id="" width="" height=""/>'
                                             }
                                         }
                                     },
@@ -504,7 +504,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<slideshare id="" width="" height=""></slideshare>'
+                                                pre: '<slideshare id="" width="" height=""/>'
                                             }
                                         }
                                     },
@@ -513,7 +513,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<quizlet id="" width="" height=""></quizlet>'
+                                                pre: '<quizlet id="" width="" height=""/>'
                                             }
                                         }
                                     },
