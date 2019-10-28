@@ -37,7 +37,6 @@ class LoopMediaHandler {
                     $file = wfLocalFile( $args["source"] );
                     if ( is_object( $file ) && $file->exists() ) {
                         $source = $file->getFullUrl();
-                        $mime = $file->getMimeType();
                     } else {
                         throw new LoopException( wfMessage( "loop-error-missingfile", "loop_video", $args["source"], 0 )->text() );
                     }
@@ -68,9 +67,7 @@ class LoopMediaHandler {
             if ( isset ( $image ) ) {
                 $html .= ' poster="' . $image . '" ';
             }
-            $html .= '>';
-            $html .= '<source type="' . $mime . '" src="' . $source . '"/>';
-            $html .= '</video>';
+            $html .= ' src="' . $source . '"></video>';
         }
 		return $html;
     }
@@ -98,7 +95,6 @@ class LoopMediaHandler {
                     $file = wfLocalFile( $args["source"] );
                     if ( is_object( $file ) && $file->exists() ) {
                         $source = $file->getFullUrl();
-                        $mime = $file->getMimeType();
                     } else {
                         throw new LoopException( wfMessage( "loop-error-missingfile", "loop_audio", $args["source"], 0 )->text() );
                     }
@@ -115,12 +111,7 @@ class LoopMediaHandler {
 		
         if ( isset( $source ) ) {
             $html .= '<audio controls class="responsive-audio" width="' . $width . '" height="' . $height . '"';
-            if ( isset ( $image ) ) {
-                $html .= ' poster="' . $image . '" ';
-            }
-            $html .= '>';
-            $html .= '<source type="' . $mime . '" src="' . $source . '"/>';
-            $html .= '</audio>';
+            $html .= ' src="' . $source . '"></audio>';
         }
 		return $html;
 	}
