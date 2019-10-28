@@ -144,5 +144,6 @@
 	<xsl:variable name="word_index" select="functx:get_term_name('word_index')"/>
 	<xsl:variable name="phrase_video" select="functx:get_term_name('phrase_video')"/>
 	<xsl:variable name="phrase_youtube_video" select="functx:get_term_name('phrase_youtube_video')"/>
+	<xsl:variable name="phrase_audio" select="functx:get_term_name('phrase_audio')"/>
 
 </xsl:stylesheet>

@@ -122,6 +122,7 @@
 	<msg name="word_index" lang="en">Index</msg>
 	<msg name="phrase_video" lang="en">There is a video at this point on the website.</msg>
 	<msg name="phrase_youtube_video" lang="en">There is a YouTube video at this point on the website.</msg>
+	<msg name="phrase_audio" lang="en">There is an audio file at this point on the website.</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -197,6 +198,7 @@
 	<msg name="word_index" lang="de">Index</msg>
 	<msg name="phrase_video" lang="de">An dieser Stelle befindet sich online ein Video.</msg>
 	<msg name="phrase_youtube_video" lang="de">An dieser Stelle befindet sich online ein YouTube-Video.</msg>
+	<msg name="phrase_audio" lang="de">An dieser Stelle befindet sich online eine Audiodatei.</msg>
 	
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
@@ -271,5 +273,6 @@
 	<msg name="word_index" lang="sv">Index</msg>
 	<msg name="phrase_video" lang="sv">På webbsidan finns det en video här.</msg>
 	<msg name="phrase_youtube_video" lang="sv">På webbsidan finns det en YouTube video här.</msg>
+	<msg name="phrase_audio" lang="sv">På webbsidan finns det en audio fil här.</msg>
 	
 </terms> 

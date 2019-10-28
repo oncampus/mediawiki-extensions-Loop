@@ -324,6 +324,13 @@ class LoopXml {
 									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
 								}
 								$return_xml .= '</paragraph>';
+							} elseif ( $file->getMediaType() == "AUDIO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+								$return_xml .= '<paragraph>';
+								$return_xml .= '<extension extension_name="loop_audio" source="'.$link_parts['target'].'"></extension>';
+								if ( isset ( $id ) ) {
+									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+								}
+								$return_xml .= '</paragraph>';
 							}
 						}
 					}

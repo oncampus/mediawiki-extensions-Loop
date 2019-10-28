@@ -2648,13 +2648,27 @@
 
 		</fo:block>				
 	</xsl:template>
-	
+
 	<xsl:template match="extension[@extension_name='loop_video_link']">	
 		<xsl:call-template name="page-link">
 			<xsl:with-param name="destination-id"><xsl:value-of select="@id"/></xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
 
+	<!-- loop_audio -->
+	<xsl:template match="extension[@extension_name='loop_audio']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_audio"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_audio"/>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
+		</fo:block>				
+	</xsl:template>
 	
 	<xsl:template name="page-link">
 		<xsl:param name="destination-id"></xsl:param>
