@@ -329,9 +329,8 @@ class LoopXsl {
 	}
 
 	public static function get_page_link( $input ) {
-
-		if ( isset( $input[0]->value ) ) {
-			$articleId = str_replace( "article", "", $input[0]->value );
+		if ( is_string( $input ) && !empty ($input) ) {
+			$articleId = str_replace( "article", "", $input );
 			if ( is_numeric ( $articleId ) ) {
 				global $wgCanonicalServer, $wgArticlePath;
 				$title = Title::newFromId( $articleId );
@@ -340,7 +339,7 @@ class LoopXsl {
 					return $url;
 				}
 			}
-		}
+		} 
 	}
 
 	public static function xsl_getIndex ( $input ) {
