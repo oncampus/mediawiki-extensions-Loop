@@ -729,8 +729,6 @@ class LoopHtml{
         $doc = new DOMDocument();
         $doc->loadHtml($html);
         
-        # todo: download more media (videos, pdf, zip)
-        # replace breadcrumb links
         $body = $doc->getElementsByTagName('body');
         $downloadElements = array();
 
@@ -756,7 +754,6 @@ class LoopHtml{
             foreach ( $downloadElements as $element ) {
                 $posterData = array();
                 $tmpSrc = $element->getAttribute( 'src' );
-               # dd($downloadElements, $tmpSrc);
                 if ( !empty ($tmpSrc) ) {
                     preg_match('/(.*\/)(.*)(\.{1})(.*)/', $tmpSrc, $tmpTitle);
 
@@ -778,7 +775,6 @@ class LoopHtml{
                                         $posterData["suffix"][$tmpPoster] = $tmpPosterTitle[4];
                                         $posterData["name"][$tmpPoster] = $tmpPosterTitle[2];
                                     }
-                                    #dd($tmpPoster, $tmpPosterTitle);
                                 }
                             }
                             $fileData["suffix"][$prependServer . $tmpSrc] = $tmpTitle[4];
@@ -801,13 +797,19 @@ class LoopHtml{
             }
             if ( $fileData["name"] && $fileData["suffix"] ) {
                 $fileData["content"] = $this->requestContent($fileData["content"]);
-                #dd($fileData["content"]);
                 foreach ( $fileData["name"] as $image => $data ) {
                     $fileName = $this->resolveUrl($fileData["name"][$image], '.'.$fileData["suffix"][$image] );
                     $content = $fileData["content"][$image];
                     $this->writeFile( 'resources/images/', $fileName, $content );
                 }
             }
+        }
+
+        $embedVideoElements = $this->getElementsByClass( $body[0], "div", "embedvideowrap" ); #fix errors in embedvideo urls (they start with //, not with https. this won't work with local files)
+        foreach ( $embedVideoElements as $element ) {
+            $iframe = $element->getElementsByTagName("iframe")->item(0);
+            $iframeSrc = $iframe->getAttribute( "src" );
+            $iframe->setAttribute( "src", "https:" . $iframeSrc );
         }
 
         $html = $doc->saveHtml();
