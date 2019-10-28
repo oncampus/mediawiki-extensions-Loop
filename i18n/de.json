@@ -343,6 +343,7 @@
 	"loopwikieditor-loop-snippets-print": "Druckbereich",
 	"loopwikieditor-loop-snippets-noprint": "Nicht-Druckbereich",
 	"loopwikieditor-loop-contents": "Medien",
+	"loopwikieditor-loop-content-audio": "lokale Audiodatei",
 	"loopwikieditor-loop-content-video": "lokales Video",
 	"loopwikieditor-loop-content-youtube": "Youtube Video",
 	"loopwikieditor-loop-content-h5p": "H5P",

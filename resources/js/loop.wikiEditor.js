@@ -447,8 +447,20 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '',
-                                                post: ''
+                                                pre: '<loop_video source="',
+                                                peri: 'video.mp4',
+                                                post: '"/>'
+                                            }
+                                        }
+                                    },
+                                    'loopmedia-audio': {
+                                        labelMsg: 'loopwikieditor-loop-content-audio',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_audio source="',
+                                                peri: 'audio.mp3',
+                                                post: '"/>'
                                             }
                                         }
                                     },

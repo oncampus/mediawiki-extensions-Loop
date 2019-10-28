@@ -342,6 +342,7 @@
 	"loopwikieditor-loop-snippets-print": "Wikieditor LOOP : Template Print area",
 	"loopwikieditor-loop-snippets-noprint": "Wikieditor LOOP : Template No-print area",
 	"loopwikieditor-loop-contents": "Wikieditor LOOP section: Label for dropdown - Media",
+	"loopwikieditor-loop-content-audio": "Wikieditor LOOP: Media local audio",
 	"loopwikieditor-loop-content-video": "Wikieditor LOOP: Media local video",
 	"loopwikieditor-loop-content-youtube": "Wikieditor LOOP : Media Youtube video",
 	"loopwikieditor-loop-content-h5p": "Wikieditor LOOP : Media H5P",
