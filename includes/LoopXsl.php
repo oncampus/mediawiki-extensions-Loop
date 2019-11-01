@@ -429,7 +429,6 @@ class LoopXsl {
 
 	public static function xsl_toc($xsl_tocText) {
 		global $wgTitle;
-	//dd($toctitle);
 		$xml = '';
 		$tocNumber = 0;
 		$structure = new LoopStructure();
@@ -438,8 +437,6 @@ class LoopXsl {
 		$linkId = 0;
 		$currentChapter = 0;
 		$hasSub = false;
-	
-		$debug = [];
 	
 		foreach( $structureItems as $structureItem ) {
 			
@@ -454,12 +451,7 @@ class LoopXsl {
 	
 		}
 	
-		
-	
 		$dom = new DOMDocument( "1.0", "utf-8" );
-	
-		//$dom->appendChild($looptoc = $dom->createElement('looptoc'));
-	
 		$xml = '<paragraph>';
 	
 		foreach( $structureItems as $structureItem ) {
@@ -486,31 +478,16 @@ class LoopXsl {
 				} else {
 					if( count($temp_float_tocNumber ) >= 3 && $temp_float_tocNumber != $currentChapter ) continue;
 				}
-				//dd($structureItem->id);
-				
-				
 			}
+
 			$linkId = 'article'.$structureItem->getArticle();
 			
-	
-		//	$boldtext = $dom->createElement('bold');
-		//	$boldtext->nodeValue = $structureItem->tocNumber;
-	
-		//	$article = $dom->createElement('loop_toc_list');
-	
-		//	$looptoc->appendChild($article);
-			//$article->appendChild($boldtext);
-			//$article->appendChild($dom->createTextNode($inc)); <- article ohne link
-			//$article->appendChild($dom->createTextNode(' ' . $structureItem->tocText));
-	
 			$xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="'.$linkId.'"><bold>'. $structureItem->tocNumber .'</bold>  '. $structureItem->tocText . '</php_link_internal></loop_toc_list>';
 	
 		}
 	
 		$xml .= '</paragraph>';
 	
-	
-	//	dd($debug);
 		$dom->loadXML($xml);
 		
 		return $dom;

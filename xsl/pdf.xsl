@@ -534,6 +534,24 @@
 		
 	</xsl:template>		
 	
+	<xsl:template match="loop_toc_list">
+		<xsl:choose>
+			<xsl:when test="position() != last()">
+				<fo:block margin-bottom="6pt">
+					<xsl:call-template name="font_normal"></xsl:call-template>
+					<xsl:attribute name="line-height">11.5pt</xsl:attribute>
+					<xsl:apply-templates></xsl:apply-templates>
+				</fo:block>
+			</xsl:when>
+			<xsl:otherwise>
+				<fo:block margin-bottom="0pt">
+					<xsl:call-template name="font_normal"></xsl:call-template>
+					<xsl:attribute name="line-height">11.5pt</xsl:attribute>
+					<xsl:apply-templates></xsl:apply-templates>
+				</fo:block>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	
 	<!-- Bibliography -->
@@ -1817,6 +1835,13 @@
 			<fo:external-graphic scaling="uniform" content-width="scale-to-fit">
 				<xsl:attribute name="src"><xsl:value-of select="$scoreimg"></xsl:value-of></xsl:attribute>
 			</fo:external-graphic>
+		</fo:block>
+	</xsl:template>
+
+	<!-- Loop Toc -->
+	<xsl:template match="extension[@extension_name='loop_toc']">
+		<fo:block>
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_toc', ancestor::article/@toctext)"></xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 
