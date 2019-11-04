@@ -2,7 +2,7 @@
 /**
  * @description Adds support for <loop_area> Tags
  * @ingroup Extensions
- * @author Dustin Neß @krohnden <dustin.ness@th-luebeck.de>
+ * @author Dustin Neß <dustin.ness@th-luebeck.de>
  */
 if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file cannot be run standalone.\n" );
