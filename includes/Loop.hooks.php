@@ -133,6 +133,9 @@ class LoopHooks {
 				}
 			} elseif ( $mediaType == "VIDEO" ) { 
 				$params['frame']['class'] = 'responsive-video';
+				if ( !isset( $params['handler']['width'] ) ) {
+					$params['handler']['width']= "800";
+				}
 			}  elseif ( $mediaType == "AUDIO" ) { 
 				$params['frame']['class'] = 'responsive-audio';
 			} 
