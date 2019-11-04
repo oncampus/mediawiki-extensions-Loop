@@ -1841,7 +1841,7 @@
 	<!-- Loop Toc -->
 	<xsl:template match="extension[@extension_name='loop_toc']">
 		<fo:block>
-			<xsl:apply-templates select="php:function('LoopXsl::xsl_toc', ancestor::article/@toctext)"></xsl:apply-templates>
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_toc', ancestor::article/@id)"></xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
 

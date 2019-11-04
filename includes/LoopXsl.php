@@ -427,65 +427,13 @@ class LoopXsl {
 		return $dom;
 	}
 
-	public static function xsl_toc($xsl_tocText) {
-		global $wgTitle;
-		$xml = '';
-		$tocNumber = 0;
-		$structure = new LoopStructure();
-		$structureItems = $structure->getStructureItems();
-		$tocLevel = 0;
-		$linkId = 0;
-		$currentChapter = 0;
-		$hasSub = false;
-	
-		foreach( $structureItems as $structureItem ) {
-			
-			if( $xsl_tocText[0]->value == $structureItem->tocText) {
-				$float_tocNumber = explode( '.', $structureItem->tocNumber );
-				$currentChapter = (int)$float_tocNumber[0];
-				if( count($float_tocNumber) >= 2 ) $hasSub = true;
-				if( count($float_tocNumber) >= 2 ) {
-					$currentSubChapter = (int)$float_tocNumber[1];
-				}
-			}
-	
-		}
-	
-		$dom = new DOMDocument( "1.0", "utf-8" );
-		$xml = '<paragraph>';
-	
-		foreach( $structureItems as $structureItem ) {
-	
-			$temp_float_tocNumber = explode( '.', $structureItem->tocNumber );
-	
-			if( $currentChapter == 0 ) { // if on chapter page
-				if( count($temp_float_tocNumber) > 1 ) continue;
-			} else {
-				if( $temp_float_tocNumber[0] != $currentChapter ) continue; // skip if not in same chapter
-				
-				if( count($temp_float_tocNumber ) == 1 && $currentChapter != (int)$temp_float_tocNumber[0] ) continue;
-	
-				if( $hasSub ) {
-					if( isset($temp_float_tocNumber[1]) ) {
-						if( $temp_float_tocNumber[1] != $currentSubChapter ) {
-							if(count($temp_float_tocNumber) == 1 || count($temp_float_tocNumber) == 2) continue;
-						}
-						if( count($temp_float_tocNumber) >= 4 ) continue;
-						if( $temp_float_tocNumber[1] != $currentSubChapter ) continue;
-					} else {
-						if( $structureItem->tocLevel <= 1 ) continue;
-					}
-				} else {
-					if( count($temp_float_tocNumber ) >= 3 && $temp_float_tocNumber != $currentChapter ) continue;
-				}
-			}
+	public static function xsl_toc( $article_id ) {
 
-			$linkId = 'article'.$structureItem->getArticle();
-			
-			$xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="'.$linkId.'"><bold>'. $structureItem->tocNumber .'</bold>  '. $structureItem->tocText . '</php_link_internal></loop_toc_list>';
-	
-		}
-	
+		$xml = '';
+		
+		$dom = new DOMDocument( "1.0", "utf-8" );
+		$xml .= '<paragraph>';
+		$xml .= LoopToc::outputLoopToc( $article_id[0], "xml" );
 		$xml .= '</paragraph>';
 	
 		$dom->loadXML($xml);
