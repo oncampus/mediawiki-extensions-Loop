@@ -64,11 +64,11 @@ class LoopZip {
                     $parser->addTrackingCategory( 'loop-tracking-category-error' );
                 }
             } else {
-                $return .= new LoopException( wfMessage( 'loopzip-error-nozipfile', $loopzip->file )->text() );
+                $return .= new LoopException( wfMessage( "loop-error-missingfile", "loop_zip", $loopzip->file, 1 )->text() );
                 $parser->addTrackingCategory( 'loop-tracking-category-error' );
             }
 		} else {
-            $return .= new LoopException( wfMessage( 'loopzip-error-missingrequired' )->text() );
+            $return .= new LoopException( wfMessage( 'loopzip-error-missingrequired', "loop_zip", "file/start" )->text() );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
         }
 		
