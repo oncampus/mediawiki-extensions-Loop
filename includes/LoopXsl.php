@@ -428,11 +428,12 @@ class LoopXsl {
 
 	public static function xsl_toc( $article_id ) {
 
+		$id = str_replace( "article", "", $article_id[0]->value );
 		$xml = '';
 		
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$xml .= '<paragraph>';
-		$xml .= LoopToc::outputLoopToc( $article_id[0], "xml" );
+		$xml .= LoopToc::outputLoopToc( $id, "xml" );
 		$xml .= '</paragraph>';
 	
 		$dom->loadXML($xml);
