@@ -17,7 +17,8 @@
 		"extensions": {
 			"WikiEditor": "*",
 			"Math": "*",
-			"SyntaxHighlight": "*"
+			"SyntaxHighlight": "*",
+			"EmbedVideo": ">= 2.8.0"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -84,7 +85,8 @@
 		"SpecialLoopIndex": "includes/LoopIndex.php",
 		"LoopWikiEditor": "includes/LoopWikiEditor.php",
 		"LoopZip": "includes/LoopZip.php",
-		"LoopSidebar": "includes/LoopSidebar.php"
+		"LoopSidebar": "includes/LoopSidebar.php",
+		"LoopMediaHandler": "includes/LoopMediaHandler.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -112,7 +114,8 @@
 			"LoopLegacy::onParserSetup",
 			"LoopIndex::onParserSetup",
 			"LoopSidebar::onParserSetup",
-			"LoopZip::onParserSetup"
+			"LoopZip::onParserSetup",
+			"LoopMediaHandler::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy"

@@ -46,8 +46,9 @@
 	<msg name="icon_prezi">&#xe934;</msg>
 	<msg name="icon_padlet">&#xe92e;</msg>
 	<msg name="icon_learningapps">&#xe923;</msg>
-	<msg name="icon_ngspice">&#xe91a;</msg>
-	<msg name="icon_zip">&#xe92b;</msg>
+	<msg name="icon_ngspice">&#xe92b;</msg>
+	<msg name="icon_zip">&#xe91a;</msg>
+	<msg name="icon_youtube">&#xe946;</msg>
 
 	<msg name="word_chapter" lang="en">Chapter</msg>
 	<msg name="word_state" lang="en">state</msg>
@@ -119,6 +120,9 @@
 	<msg name="word_bibliography" lang="en">Bibliography</msg>
 	<msg name="phrase_interactive_element" lang="en">There is an interactive element at this point on the website.</msg>
 	<msg name="word_index" lang="en">Index</msg>
+	<msg name="phrase_video" lang="en">There is a video at this point on the website.</msg>
+	<msg name="phrase_youtube_video" lang="en">There is a YouTube video at this point on the website.</msg>
+	<msg name="phrase_audio" lang="en">There is an audio file at this point on the website.</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -192,7 +196,10 @@
 	<msg name="word_bibliography" lang="de">Literaturverzeichnis</msg>
 	<msg name="phrase_interactive_element" lang="de">An dieser Stelle befindet sich online ein interaktives Medienelement.</msg>
 	<msg name="word_index" lang="de">Index</msg>
-
+	<msg name="phrase_video" lang="de">An dieser Stelle befindet sich online ein Video.</msg>
+	<msg name="phrase_youtube_video" lang="de">An dieser Stelle befindet sich online ein YouTube-Video.</msg>
+	<msg name="phrase_audio" lang="de">An dieser Stelle befindet sich online eine Audiodatei.</msg>
+	
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>
@@ -264,5 +271,8 @@
 	<msg name="word_bibliography" lang="sv">Bibliografi</msg>
 	<msg name="phrase_interactive_element" lang="sv">På webbsidan finns det ett interaktivt medieelement här.</msg>
 	<msg name="word_index" lang="sv">Index</msg>
+	<msg name="phrase_video" lang="sv">På webbsidan finns det en video här.</msg>
+	<msg name="phrase_youtube_video" lang="sv">På webbsidan finns det en YouTube video här.</msg>
+	<msg name="phrase_audio" lang="sv">På webbsidan finns det en audio fil här.</msg>
 	
 </terms> 

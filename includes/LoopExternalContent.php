@@ -54,7 +54,7 @@ class LoopExternalContent {
                 ''
             );
         } else {
-            $errors .= wfMessage('loopexternalcontent-h5p-error-noid')->text();
+            $errors .= wfMessage( "loop-error-missingrequired", "H5P", "id")->text() . "<br>";
         }
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
@@ -87,7 +87,7 @@ class LoopExternalContent {
         } elseif ( array_key_exists( 'privateapp', $args ) ) {
             $appId = "v=" . $args["privateapp"];
         } else {
-            $errors .= wfMessage('loopexternalcontent-learningapp-error-noid')->text() . "<br>";
+            $errors .= wfMessage( "loop-error-missingrequired", "LearningApp", "app/privateapp")->text() . "<br>";
         }
 
         if ( !empty( $appId ) ) {
@@ -136,7 +136,7 @@ class LoopExternalContent {
         } elseif ( array_key_exists( 'id', $args ) ) {
             $key = $args["id"];
         } else {
-            $errors .= wfMessage('loopexternalcontent-padlet-error-noid')->text() . "<br>";
+            $errors .= wfMessage( "loop-error-missingrequired", "Padlet", "id")->text() . "<br>";
         }
 
         if ( !empty( $key ) ) {
@@ -185,7 +185,7 @@ class LoopExternalContent {
         if ( array_key_exists( 'id', $args ) ) {
             $id = $args["id"];
         } else {
-            $errors .= wfMessage('loopexternalcontent-prezi-error-noid')->text() . "<br>";
+            $errors .= wfMessage( "loop-error-missingrequired", "Prezi", "id")->text() . "<br>";
         }
 
         if ( !empty( $id ) ) {
@@ -244,7 +244,7 @@ class LoopExternalContent {
         } elseif ( array_key_exists( 'id', $args ) ) {
             $key = $args["id"];
         } else {
-            $errors .= wfMessage('loopexternalcontent-slideshare-error-noid')->text() . "<br>";
+            $errors .= wfMessage( "loop-error-missingrequired", "Slideshare", "id")->text() . "<br>";
         }
 
         if ( !empty( $key ) ) {
@@ -295,7 +295,7 @@ class LoopExternalContent {
         } elseif ( array_key_exists( 'id', $args ) ) {
             $id = $args["id"];
         } else {
-            $errors .= wfMessage('loopexternalcontent-quizlet-error-noid')->text() . "<br>";
+            $errors .= wfMessage( "loop-error-missingrequired", "Quizlet", "id")->text() . "<br>";
         }
 
         if ( !empty( $id ) ) {

@@ -6,7 +6,6 @@
 
 class LoopLegacy {
     #hooks needed for: 
-
     
     public static function onParserSetup( Parser $parser ) {
         $parser->setHook ( 'biblio', 'LoopLegacy::renderLegacyBiblio' ); 
@@ -18,6 +17,7 @@ class LoopLegacy {
         $parser->setHook ( 'nocite', 'LoopLegacy::renderLegacNocite' ); 
         $parser->setHook ( 'talkpage', 'LoopLegacy::renderLegacyTalkpage' ); 
         $parser->setHook ( 'thread', 'LoopLegacy::renderLegacyThread' ); 
+        $parser->setHook ( 'graphwiz', 'LoopLegacy::renderLegacyThread' ); 
         return true;
     }	
 
@@ -80,6 +80,13 @@ class LoopLegacy {
     # No replacement. Will be removed later.
     public static function renderLegacyThread ( $input, array $args, Parser $parser, PPFrame $frame ) { 
         $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'thread', 'LOOP2' )->text() );
+        $parser->addTrackingCategory( 'looplegacy-tracking-category' );
+        return $e;
+    }
+
+    # No replacement. Will be removed later.
+    public static function renderLegacyGraphwiz ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'GraphWiz', 'MediaWiki 1.33 (LOOP 2)' )->text() );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }

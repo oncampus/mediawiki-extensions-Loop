@@ -230,10 +230,10 @@ class LoopXml {
 	}
 	
 	
-	public static function transform_link($input) {
+	public static function transform_link( $input, $id = null ) {
 	
 		libxml_use_internal_errors(true);
-	
+	#dd($input, $id);
 		$input_object=$input[0];
 	
 		if ($input_object->hasAttribute('type')) {
@@ -317,6 +317,20 @@ class LoopXml {
 								$return_xml .=  '></php_link_image>';
 									
 									
+							} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+								$return_xml .= '<paragraph>';
+								$return_xml .= '<extension extension_name="loop_video" source="'.$link_parts['target'].'"></extension>';
+								if ( isset ( $id ) ) {
+									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+								}
+								$return_xml .= '</paragraph>';
+							} elseif ( $file->getMediaType() == "AUDIO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+								$return_xml .= '<paragraph>';
+								$return_xml .= '<extension extension_name="loop_audio" source="'.$link_parts['target'].'"></extension>';
+								if ( isset ( $id ) ) {
+									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+								}
+								$return_xml .= '</paragraph>';
 							}
 						}
 					}
@@ -352,10 +366,8 @@ class LoopXml {
 		try {
 			$return->loadXml($return_xml);
 		} catch ( Exception $e ) {
-	
 		}
 		restore_error_handler();
-	
 	
 		return $return;
 	

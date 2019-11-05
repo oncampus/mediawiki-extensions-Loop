@@ -1557,16 +1557,9 @@
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
 				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 
@@ -1579,17 +1572,9 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 
@@ -1602,17 +1587,9 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 	
@@ -1626,16 +1603,9 @@
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
 				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 
@@ -1649,16 +1619,9 @@
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
 				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 
@@ -1673,16 +1636,9 @@
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
 				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 
@@ -1696,16 +1652,9 @@
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
 				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>				
 	</xsl:template>
 	
@@ -1988,10 +1937,10 @@
 	</xsl:template>			
 
 	<xsl:template match="link">
-		<xsl:apply-templates select="php:function('LoopXml::transform_link', .)"></xsl:apply-templates>
+		<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
 	</xsl:template> 
 	<xsl:template match="link" mode="loop_object">
-		<xsl:apply-templates select="php:function('LoopXml::transform_link', .)"></xsl:apply-templates>
+		<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
 	</xsl:template> 
 	
 	<xsl:template match="php_link">
@@ -2621,7 +2570,146 @@
 			</xsl:choose>
 		</fo:block>				
 	</xsl:template>
+
+	<!-- EmbedVideo, via MagicWord -->
+	<xsl:template match="extension[@extension_name='embed_video']">
+		<fo:block>
+			<xsl:choose>
+				<xsl:when test="@service='youtube'">
+					<xsl:if test="@videoid!=''">
+						<fo:inline>
+							<xsl:call-template name="font_icon"></xsl:call-template>
+							<xsl:value-of select="$icon_youtube"/>
+						</fo:inline>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$phrase_youtube_video"/>
+						<fo:basic-link><!-- qr? -->
+							<xsl:variable name="youtubeurl">
+								<xsl:text>https://youtu.be/</xsl:text>
+								<xsl:value-of select="@videoid"></xsl:value-of>
+							</xsl:variable>	
+							<xsl:attribute name="external-destination"><xsl:value-of select="$youtubeurl"></xsl:value-of></xsl:attribute>
+							<fo:block text-decoration="underline"><xsl:value-of select="$youtubeurl"></xsl:value-of></fo:block>
+							<xsl:text> </xsl:text>
+						</fo:basic-link>
+					</xsl:if>	
+				</xsl:when>	
+				<xsl:when test="@service!=''">
+					<fo:inline>
+						<xsl:call-template name="font_icon"></xsl:call-template>
+						<xsl:value-of select="$icon_video"/>
+					</fo:inline>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$phrase_video"/>
+					<xsl:call-template name="page-link">
+						<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+					</xsl:call-template>
+				</xsl:when>	
+				<xsl:otherwise>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- EmbedVideo, via tag. A direct link to the service can't be provided as there are too many options for the input -->
+	<xsl:template match="extension[@extension_name='embedvideo']">
+		<fo:block>
+			<xsl:choose>
+				<xsl:when test="@service='youtube'">
+					<fo:inline>
+						<xsl:call-template name="font_icon"></xsl:call-template>
+						<xsl:value-of select="$icon_youtube"/>
+					</fo:inline>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$phrase_youtube_video"/>
+					<xsl:call-template name="page-link">
+						<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+					</xsl:call-template>
+				</xsl:when>	
+				<xsl:when test="@service!=''">
+					<fo:inline>
+						<xsl:call-template name="font_icon"></xsl:call-template>
+						<xsl:value-of select="$icon_video"/>
+					</fo:inline>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="$phrase_video"/>
+					
+					<xsl:call-template name="page-link">
+						<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+					</xsl:call-template>
+				</xsl:when>	
+				<xsl:otherwise>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>				
+	</xsl:template>
+
+	<!-- loop_video -->
+	<xsl:template match="extension[@extension_name='loop_video']">
+		<fo:block>
+			<xsl:if test="@image!=''">
+				<xsl:variable name="image">
+					<xsl:text>File:</xsl:text>
+					<xsl:value-of select="@image"></xsl:value-of>
+				</xsl:variable>	
+				<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $image )!=''">
+					<fo:external-graphic scaling="uniform" content-height="scale-to-fit" max-height="70mm" max-width="140mm">
+						<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $image )"></xsl:value-of></xsl:attribute>
+					</fo:external-graphic>
+				</xsl:if>
+			</xsl:if>
+		</fo:block>		
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_video"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_video"/>
+
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
+
+		</fo:block>				
+	</xsl:template>
+
+	<xsl:template match="extension[@extension_name='loop_video_link']">	
+		<xsl:call-template name="page-link">
+			<xsl:with-param name="destination-id"><xsl:value-of select="@id"/></xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+
+	<!-- loop_audio -->
+	<xsl:template match="extension[@extension_name='loop_audio']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_audio"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_audio"/>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
+		</fo:block>				
+	</xsl:template>
 	
+	<xsl:template name="page-link">
+		<xsl:param name="destination-id"></xsl:param>
+		<xsl:variable name="pageurl">
+			<xsl:value-of select="php:function('LoopXsl::get_page_link', $destination-id)"></xsl:value-of>
+		</xsl:variable>	
+		
+		<xsl:if test="$pageurl">
+			<fo:basic-link><!-- qr? -->
+				<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
+				<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
+				<xsl:text> </xsl:text>
+			</fo:basic-link>
+			
+		</xsl:if>
+	</xsl:template>
 	
 
 	

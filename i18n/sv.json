@@ -174,11 +174,9 @@
 	"looparea-icon-text-websource" : "Websource",
 	"looparea-error-unknown-type-attribute" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"looparea-error-unknown-render-attribute" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"looparea-error-imagenotfound" : "Angivit grafik '''$1''' är okönd. Var god ladda upp den först och spara sidan igen.",
 
 	"loopspoiler-default-title": "Lösning",
-
-	"loopprint-printversion": "Utskriftsversion",
+	"loopprint-printversion": "Utskriftsavsnitt",
 
 	"loop_figure-name": "Figur",
 	"loop_figure-name-short": "Fig.",
@@ -302,14 +300,7 @@
 	"loopreference-error-no-refid" : "Ingen ID (id) har angivits i referensen.",
 	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''.",
 
-	"loopexternalcontent-h5p-error-noid": "Ingen ID (id) har angivits i H5P elementet.", 
-	"loopexternalcontent-learningapp-error-noid": "Ingen app ID (app / privateapp) har angivits i LearningApps elementet.",
-	"loopexternalcontent-padlet-error-noid": "Ingen ID (id) har angivits i Padlet elementet.", 
-	"loopexternalcontent-prezi-error-noid": "Ingen ID (id) har angivits i Prezi elementet.", 
 	"loopexternalcontent-prezi-on": "på", 
-	"loopexternalcontent-slideshare-error-noid": "Ingen ID (id) har angivits i Slideshare elementet.", 
-	"loopexternalcontent-quizlet-error-noid": "Ingen ID (id) har angivits i Quizlet elementet.", 
-
 	"namespace-special": "Special",
 	"loop-glossary-namespace": "Ordlista",
 	"loop-glossary-object-objectnumber-prefix": "O-",
@@ -351,6 +342,7 @@
 	"loopwikieditor-loop-snippets-print": "Printavsnitt",
 	"loopwikieditor-loop-snippets-noprint": "No-Printavsnitt",
 	"loopwikieditor-loop-contents": "Medier",
+	"loopwikieditor-loop-content-audio": "lokalt audio",
 	"loopwikieditor-loop-content-video": "lokalt video",
 	"loopwikieditor-loop-content-youtube": "Youtube video",
 	"loopwikieditor-loop-content-h5p": "H5P",
@@ -362,6 +354,7 @@
 	"loopsidebar-error-notfound": "Den angivit sida (page) kunde inte hittas. Lägg till den [[$1|här]].",
 	"loopsidebar-error-nopage": "Ingen sida (page) har angivits i sidebar-taggen.",
 	"loopzip-error-nostartfile": "Den angivit HTML-fil $1 (parameter start)  kunde inte hittas i ZIP-filen $2.",
-	"loopzip-error-nozipfile": "Den angivit ZIP-fil (file) $1 finns inte. Vänligen ladda upp den.",
-	"loopzip-error-missingrequired": "Parametarna file och start är obligatoriska. Minst en parameter saknas."
+	
+	"loop-error-missingrequired": "Taggen $1 saknas parametern $2. Elementet visas inte.",
+	"loop-error-missingfile": "Filen $2 som har angivits i taggen $1 kunde inte hittas. Vänligen ladda upp den. {{PLURAL:$3|Elementet visas uten filen.|Elementet visas inte.}}"
 }

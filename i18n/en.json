@@ -174,10 +174,8 @@
 	"looparea-icon-text-websource" : "Websource",
 	"looparea-error-unknown-type-attribute" : "This object's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"looparea-error-unknown-render-attribute" : "This object's rendering option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"looparea-error-imagenotfound" : "This area's given image '''$1''' could not be found. Please upload it and save the page again.",
 
 	"loopspoiler-default-title": "Solution",
-
 	"loopprint-printversion": "Printing area",
 
 	"loop_figure-name": "Figure",
@@ -302,14 +300,7 @@
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
 	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
 
-	"loopexternalcontent-h5p-error-noid": "The H5P element is missing an ID (id) parameter.", 
-	"loopexternalcontent-learningapp-error-noid": "The LearningApp element is missing an app (app / privateapp) parameter.",
-	"loopexternalcontent-padlet-error-noid": "The Padlet element is missing an ID (id) parameter.", 
-	"loopexternalcontent-prezi-error-noid": "The Prezi element is missing an ID (id) parameter.", 
 	"loopexternalcontent-prezi-on": "on", 
-	"loopexternalcontent-slideshare-error-noid": "The Slideshare element is missing an ID (id) parameter.", 
-	"loopexternalcontent-quizlet-error-noid": "The Quizlet element is missing an ID (id) parameter.", 
-
 	"namespace-special": "Special",
 	"loop-glossary-namespace": "Glossary",
 	"loop-glossary-objectnumber-prefix": "G-",
@@ -351,6 +342,7 @@
 	"loopwikieditor-loop-snippets-print": "Print area",
 	"loopwikieditor-loop-snippets-noprint": "No-print area",
 	"loopwikieditor-loop-contents": "Media",
+	"loopwikieditor-loop-content-audio": "local audio",
 	"loopwikieditor-loop-content-video": "local video",
 	"loopwikieditor-loop-content-youtube": "Youtube video",
 	"loopwikieditor-loop-content-h5p": "H5P",
@@ -362,6 +354,7 @@
 	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist.",
 	"loopsidebar-error-nopage": "The sidebar-tag is missing a page parameter.",
 	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
-	"loopzip-error-nozipfile": "The given ZIP file (file) $1 does not exist. Please upload it first.",
-	"loopzip-error-missingrequired": "The parameters file and start are required. At least one of them is missing."
+	
+	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
+	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}"
 }
