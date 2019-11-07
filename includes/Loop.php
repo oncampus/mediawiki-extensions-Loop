@@ -54,8 +54,12 @@ class Loop {
 		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
-		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType;
+		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
+		$wgContentHandlers;
 		
+		#override preSaveTransform function by copying WikitextContent and adding a Hook
+		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
+
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
 		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
@@ -156,4 +160,79 @@ class Loop {
 
 	}
 
+	
+	/**
+	 * Adds id to object, cite and index tags if there are none
+	 * @param string $text
+	 */
+	public static function setReferenceIds( $text ) { #todo remove id and type
+		$changedText = false;
+		$tmptext = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
+		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags 
+		$dom = new DOMDocument("1.0", 'utf-8');
+		@$dom->loadHTML( $tmptext, LIBXML_HTML_NODEFDTD );
+		
+		$xpath = new DOMXPath( $dom );
+		
+		$objectTags = array( '//loop_figure', '//loop_formula', '//loop_listing', '//loop_media', '//loop_table', '//loop_task', '//cite', '//loop_index' );
+		
+		$query = implode(' | ', $objectTags);
+		$nodes = $xpath->query( $query );
+		$changed = false;
+		foreach ( $nodes as $node ) {
+			# don't set ids when in these tags 
+			if ( ! in_array( strtolower($node->parentNode->nodeName), $forbiddenTags ) && ! in_array( strtolower($node->parentNode->parentNode->nodeName), $forbiddenTags ) ) {
+				$existingId = $node->getAttribute( 'id' );
+				if( ! $existingId ) {
+					$node->setAttribute('id', uniqid() );
+					$changed = true;
+				}
+			}
+		}
+		if ( $changed ) {
+			$changedText = mb_substr($dom->saveHTML(), 55, -21);
+			$decodedText = html_entity_decode($changedText);
+			return $decodedText;
+		} else {
+			return $text;
+		}
+	}
+
+}
+
+class LoopWikitextContentHandler extends WikitextContentHandler {
+    protected function getContentClass() {
+        return 'LoopWikitextContent';
+    }
+}
+class LoopWikitextContent extends WikitextContent {	
+	/**
+	* Copied from WikitextContent.php, overriding it with our own content and a custom Hook
+	*
+	* Returns a Content object with pre-save transformations applied using
+	* Parser::preSaveTransform().
+	*
+	* @param Title $title
+	* @param User $user
+	* @param ParserOptions $popts
+	*
+	* @return Content
+	*/
+   public function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
+	   global $wgParser;
+	   $text = $this->getText();
+	   $pst = $wgParser->preSaveTransform( $text, $title, $user, $popts );
+
+	   # Custom Hook for changing content before it's saved
+	   Hooks::run( 'PreSaveTransformComplete', [ &$pst, $title, $user ] );
+
+	   if ( $text === $pst ) {
+		   return $this;
+	   }
+	   $ret = new static( $pst );
+	   if ( $wgParser->getOutput()->getFlag( 'user-signature' ) ) {
+		   $ret->hadSignature = true;
+	   }
+	   return $ret;
+   }
 }

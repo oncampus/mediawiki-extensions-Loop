@@ -144,4 +144,18 @@ class LoopHooks {
 		return true;
 	}	
 
+	/**
+	 * Custom hook called after after pre save transforming
+	 * @param String &$text
+	 * @param Title $title
+	 * @param User $user
+	 */
+	public static function onPreSaveTransformComplete( &$text, $title, $user ) {
+		
+		$text = Loop::setReferenceIds( $text );
+		
+		return true;
+
+	}
+
 }
