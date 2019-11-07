@@ -288,12 +288,14 @@
 	"loopliterature-error-keyalreadyexists": "Error message for literature: key exists already",
 	"loopliterature-error-keyunknown": "Error message for literature: key unknown",
 	"loopliterature-error-invalid-export": "Error message for literature: key invalid for export",
+	"loopliterature-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used; $3 -> Key/Term of the original object",
 	
 	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
 	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
 	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options",
 	"loopobject-error-unknown-indexingoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - indexing option\n* $2 supported index options",
 	"loopobject-error-unknown-showcopyrightoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - show_copyright option\n* $2 supported show_copyright options",
+	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
 	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options",
 	"loopreference-error-unknown-titleoption" : "Error Message rendered when title option is unknown\n\nParameters:\n* $1 - title option\n* $2 supported title options",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
@@ -307,8 +309,8 @@
 	"loopglossary": "Title displayed for list glossary",
 	"loop-glossary-empty": "Shown message on Glossary special page when there is no glossary entry. ",
 
-	"loopindex": "page title for Special:LoopIndex",
-	"loop-summary-id": "Message for summary after automatic adding of ids",
+	"loopindex": "page title for Special:LoopIndex",	
+	"loopindex-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used; $3 -> Key/Term of the original object",
 
 	"loopwikieditor-section-loop": "Wikieditor section: LOOP functions",
 	"loopwikieditor-section-references": "Wikieditor section: LOOP References",

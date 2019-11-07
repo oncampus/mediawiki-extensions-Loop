@@ -303,7 +303,6 @@
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
 	"loopexternalcontent-prezi-on": "auf", 
-
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-objectnumber-prefix": "G-",
@@ -312,8 +311,6 @@
 
 	"loopindex": "Index",
 	"loopindex-error-dublicate-id" : "Der Indexbegriff '$3' besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiterer Begriff mit der ID vorhanden. Bitte ändern Sie die ID, damit auch dieser Begriff indexiert werden kann.",
-	
-	"loop-summary-id": "ID automatisch zu Tag hinzugefügt.",
 
 	"loopwikieditor-section-loop": "LOOP",
 	"loopwikieditor-section-references": "Referenzen",
