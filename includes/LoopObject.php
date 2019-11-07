@@ -163,14 +163,12 @@ class LoopObject {
 	 * @return string
 	 */
 	public function render() {
-		global $wgLoopObjectNumbering;
+		global $wgLoopObjectNumbering, $wgOut;
 
 		LoggerFactory::getInstance( 'LoopObject' )->debug( 'Start rendering' );
 
-
 		$html = '';
-		
-	
+		$showNumbering = true;
 		$floatclass = '';
 		if ($this->getAlignment()=='left') {
 			$floatclass = 'float-left';
@@ -178,13 +176,28 @@ class LoopObject {
 			$floatclass = 'float-right';
 		}
 		$html = '<div ';
-		if ($this->getId()) {
+		if ( $this->getId() ) {
+			
 			$html .= 'id="' . $this->getId() . '" ';
-		}
+			$object = LoopObjectIndex::getObjectData( $this->getId() );
+			$articleId = $wgOut->getTitle()->getArticleID();
+
+			#if there are hints for this element has a dublicate id, don't render the number and add an error
+			if ( $this->getTitle() != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+				$otherTitle = Title::newFromId( $object["articleId"] );
+				if (! isset( $this->error ) ){
+					$this->error = "";
+				} 
+				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $otherTitle->mTextform ) );
+				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+				$this->error .= $e . "\n";
+				$showNumbering = false;
+			}
+		} 
 		$html .= 'class="loop_object '.$this->getTag().' '.$floatclass.' loop_object_render_'.$this->getRenderOption().'"';
 		$html .= '>';
 		
-		if (isset($this->error) ){
+		if ( isset( $this->error ) ) {
 			$html .= $this->error;
 		} 
 	
@@ -203,8 +216,7 @@ class LoopObject {
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
 				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
-			#dd($this->mIndexing,  $this->getId());
-			if (($this->getShowNumber()) && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->mIndexing ) {
+			if ( $showNumbering && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->mIndexing ) {
 				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
 				$html .= '</span>';
 			}
@@ -827,15 +839,7 @@ class LoopObject {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				# In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
-				$user = null;
-				$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-				$systemUser->addGroup("sysop");
-				if ( $systemUser->getId() == $userId ) {
-					$user = $systemUser;
-				}
-
-				self::doIndexLoopObjects( $wikiPage, $title, $content, $user );
+				self::handleObjectItems( $wikiPage, $title, $content->getText() );
 			} 
 		} 
 		return true;
@@ -845,8 +849,9 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-		$wikiPage = WikiPage::factory($title);
-		self::doIndexLoopObjects( $wikiPage, $title );
+		
+		$wikiPage = WikiPage::factory( $title );
+		self::handleObjectItems( $wikiPage, $title );
 		return true;
 	}
 
@@ -862,47 +867,31 @@ class LoopObject {
 	}
 
 	/**
-	 * Checks revision status after saving content and starts db writing function in case of stable revision.
-	 * Attached to LinksUpdateConstructed hook.
-	 * @param LinksUpdate $linksUpdate
-	 */
-	public static function onLinksUpdateConstructed( $linksUpdate ) { 
-		#error_log("onLinksUpdateConstructed ");#TODO remove
-		$title = $linksUpdate->getTitle();
-		$wikiPage = WikiPage::factory( $title );
-		$latestRevId = $title->getLatestRevID();
-		if ( isset($title->flaggedRevsArticle) ) {
-			$stableRevId = $title->flaggedRevsArticle;
-			$stableRevId = $stableRevId->getStable();
-
-			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				self::doIndexLoopObjects( $wikiPage, $title );
-				#error_log("onLinksUpdateConstructed +");#TODO remove
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * Adds objects to db. Called by onLinksUpdateConstructed and onAfterStabilizeChange (custom Hook)
 	 * @param WikiPage $wikiPage
 	 * @param Title $title
-	 * @param Content $content
+	 * @param String $contentText
 	 */
-	public static function doIndexLoopObjects( &$wikiPage, $title, $content = null, $user = null ) {
+	public static function handleObjectItems( &$wikiPage, $title, $contentText = null ) {
 		
-		if ($content == null) {
-			$content = $wikiPage->getContent();
+		$content = $wikiPage->getContent();
+		if ($contentText == null) {
+			$contentText = $content->getText();
 		}
-		#dd($title->getNamespace());
+		
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 				
-			# on edit, delete all objects of that page from db. 
-			$loopObjectIndex = new LoopObjectIndex();
-			LoopObjectIndex::removeAllPageItemsFromDb ( $title->getArticleID() );
-			$contentText = ContentHandler::getContentText( $content );
 			$parser = new Parser();
+			$loopObjectIndex = new LoopObjectIndex();
+			$fwp = new FlaggableWikiPage ( $title );
+			$stableRevId = $fwp->getStable();
+			$latestRevId = $title->getLatestRevID();
+			$stable = false;
+			if ( $stableRevId == $latestRevId ) {
+				$stable = true;
+				# on edit, delete all objects of that page from db. 
+				LoopObjectIndex::removeAllPageItemsFromDb ( $title->getArticleID() );
+			} 
 			
 			# check if loop_object in page content
 			$has_object = false;
@@ -926,11 +915,11 @@ class LoopObject {
 				foreach ( $object_tags as $object ) {
 					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
 						if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
+							$valid = true;
 							$tmpLoopObjectIndex = new LoopObjectIndex();
 							$objects[$object[0]]++;
 							$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
 							$tmpLoopObjectIndex->index = $object[0];
-						
 							$tmpLoopObjectIndex->pageId = $title->getArticleID();
 							
 							if ( $object[0] == "loop_figure" ) {
@@ -949,18 +938,12 @@ class LoopObject {
 								if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
 									$tmpLoopObjectIndex->refId = $object[2]["id"];
 								} else {
-									# dublicate id must be replaced
-									$newRef = uniqid();
-									$newContentText = preg_replace('/(id="'.$object[2]["id"].'")/', 'id="'.$newRef.'"'  , $newContentText, 1 );
-									$tmpLoopObjectIndex->refId = $newRef; 
+									# dublicate id!
+									$valid = false;
+									$objects[$object[0]]--;
 								}
-							} else {
-								# create new id
-								$newRef = uniqid();
-								$newContentText = self::setReferenceId( $newContentText, $newRef, 'objects' ); 
-								$tmpLoopObjectIndex->refId = $newRef; 
-							}
-							if ( ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
+							} 
+							if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
 								$tmpLoopObjectIndex->addToDatabase();
 							}
 						}
@@ -974,64 +957,13 @@ class LoopObject {
 					LoopGlossary::updateGlossaryPageTouched();
 				}
 				if ( $contentText !== $newContentText ) {
-					
-					$fwp = new FlaggableWikiPage ( $title );
-					$stableRev = $fwp->getStable();
-					if ( $stableRev == 0 ) {
-						$stableRev = $wikiPage->getRevision()->getId();
-					} 
-
-					$summary = wfMessage("loop-summary-id")->text();
-					$content = $content->getContentHandler()->unserializeContent( $newContentText );
-					#$content = $content->updateRedirect( $title ); # probably unnecessary
-
-					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
+					return $newContentText;
 				}
 			}
 		}
+		return $contentText;
 	}
 
-	/**
-	 * Adds id to object tags if there is none
-	 * @param string $text
-	 * @param string $id
-	 */
-	public static function setReferenceId( $text, $id, $type ) {
-		$changedText = false;
-		$text = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
-		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags 
-		
-		$dom = new DOMDocument("1.0", 'utf-8');
-		@$dom->loadHTML( $text, LIBXML_HTML_NODEFDTD );
-		
-		$xpath = new DOMXPath( $dom );
-		
-		$objectTags = array();
-		if ( $type == "objects" ) {
-			foreach (self::$mObjectTypes as $objectTag) {
-				$objectTags[] = '//'.$objectTag;
-			}
-		} else {
-			$objectTags[] = '//'.$type;
-		} 
-		$query = implode(' | ', $objectTags);
-		$nodes = $xpath->query( $query );
-		$changed = false;
-		foreach ( $nodes as $node ) {
-			# don't set ids when in these tags 
-			if ( ! in_array( strtolower($node->parentNode->nodeName), $forbiddenTags ) && ! in_array( strtolower($node->parentNode->parentNode->nodeName), $forbiddenTags ) ) {
-				$existingId = $node->getAttribute( 'id' );
-				if( ! $existingId ) {
-					$node->setAttribute('id', $id );
-					$changed = true;
-					$changedText = mb_substr($dom->saveHTML(), 55, -21);
-					$decodedText = html_entity_decode($changedText);
-					return $decodedText;
-					break;
-				}
-			}
-		}
-	}
 
 	/**
 	 * Updates pagetouched data for all pages after given title, or all if there is no title
@@ -1093,14 +1025,13 @@ class LoopObject {
 	 * @param string $text
 	 */
 	
-	public static function onParserAfterTidy(&$parser, &$text) {
+	public static function onParserAfterTidy( &$parser, &$text ) {
 		
 		global $wgLoopObjectNumbering;
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
 		$showNumbers = true;
 		if ( isset( $title->flaggedRevsArticle ) ) {
-			#dd($title);
 			$fwp = $title->flaggedRevsArticle;
 			if ( $fwp->getRevision() ) {
 				$revId = $fwp->getRevision()->getId();
@@ -1110,7 +1041,6 @@ class LoopObject {
 				}
 			}
 		}
-		#dd($fwp->getStable(), $fwp->getRevision()->getId(), $showNumbers);
 		$count = array();
 		foreach (self::$mObjectTypes as $objectType) {
 			$count[$objectType] = 0; 
@@ -1118,15 +1048,12 @@ class LoopObject {
 		$lsi = LoopStructureItem::newFromIds ( $article );
 		
 		if ( $lsi ) {
-			
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
-			#$allObjects = LoopObjectIndex::getAllObjects( $loopStructure );
 			
 		} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $article );
-			
 		}
 		foreach ( self::$mObjectTypes as $objectType ) {
 			
@@ -1147,14 +1074,11 @@ class LoopObject {
 
 			} elseif ( $title->getNamespace() == NS_GLOSSARY && $wgLoopObjectNumbering == 1 && $showNumbers ) {
 				$i = 0;
-				#dd($previousObjects);
 				foreach ( $matches[0] as $objectmarker ) {
 					$objectid = $matches[2][$i];
 					$pageData = array( "glossary", $article );
 					$numbering = self::getObjectNumberingOutput( $objectid, $pageData, $previousObjects );
-					#dd($numbering);
 					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
-					#dd($text);
 					$i++;
 				} 
 
@@ -1164,10 +1088,9 @@ class LoopObject {
 				}
 			}	
 		}
-	
-		
 		return true;
 	}
+
 	/**
 	 * Outputs the given object's numbering
 	 * @param String $objectId

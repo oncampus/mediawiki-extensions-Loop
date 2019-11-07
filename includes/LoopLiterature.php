@@ -492,10 +492,10 @@ class LoopLiterature {
 	}
 
 	static function renderCite( $input, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgLoopLiteratureCiteType;
+		global $wgLoopLiteratureCiteType, $wgOut;
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
-
+		$html = '';
 		$loopLiterature = new LoopLiterature();
 		$loopLiteratureItem = $loopLiterature->loadLiteratureItem( $input );
 		
@@ -536,6 +536,15 @@ class LoopLiterature {
 					}
 					
 				}
+				$articleId = $wgOut->getTitle()->getArticleID();
+
+				if ( $refId != $allReferences[$articleId][$refId]["refId"] || $articleId != $allReferences[$articleId][$refId]["articleId"] || $input != $allReferences[$articleId][$refId]["itemKey"] ) {
+					$otherTitle = Title::newFromId( $allReferences[$articleId][$refId]["articleId"] );
+					$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->mTextform, $allReferences[$articleId][$refId]["itemKey"] ) );
+					$parser->addTrackingCategory( 'loop-tracking-category-error' );
+					$html .= $e;
+					$objectNumber = '';
+				}
 				if ( !empty ( $objectNumber ) ) {
 					$text = "<sup>". $objectNumber."</sup>";
 				} else {
@@ -543,7 +552,7 @@ class LoopLiterature {
 				}
 				
 
-				$html = $linkRenderer->makeLink( 
+				$html .= $linkRenderer->makeLink( 
 					new TitleValue( NS_SPECIAL, 'LoopLiterature' ), 
 					new HtmlArmor( $text ),
 					array( 
@@ -634,15 +643,7 @@ class LoopLiterature {
 	        $stableRevId = $fwp->getStable();
 	        
 	        if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-	            # In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
-	            $user = null;
-	            $systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-				$systemUser->addGroup("sysop");
-	            if ( $systemUser->getId() == $userId ) {
-	                $user = $systemUser;
-	            }
-	            
-	            self::doIndexLoopLiteratureReferences( $wikiPage, $title, $content, $user );
+	            self::handleLoopLiteratureReferences( $wikiPage, $title, $content->getText() );
 	        }
 	    }
 	    return true;
@@ -653,7 +654,7 @@ class LoopLiterature {
 	 */
 	public static function onAfterClearStable( $title ) {
 	    $wikiPage = WikiPage::factory($title);
-	    self::doIndexLoopLiteratureReferences( $wikiPage, $title );
+	    self::handleLoopLiteratureReferences( $wikiPage, $title );
 	    return true;
 	}
 	
@@ -669,44 +670,31 @@ class LoopLiterature {
 	}
 	
 	/**
-	 * Checks revision status after saving content and starts db writing function in case of stable revision.
-	 * Attached to LinksUpdateConstructed hook.
-	 * @param LinksUpdate $linksUpdate
-	 */
-	public static function onLinksUpdateConstructed( $linksUpdate ) { 
-		$title = $linksUpdate->getTitle();
-		$wikiPage = WikiPage::factory( $title );
-		$latestRevId = $title->getLatestRevID();
-		if ( isset($title->flaggedRevsArticle) ) {
-			$stableRevId = $title->flaggedRevsArticle;
-			$stableRevId = $stableRevId->getStable();
-
-			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				self::doIndexLoopLiteratureReferences( $wikiPage, $title );
-			}
-		}
-
-		return true;
-	}
-	
-	/**
 	 * Adds literature references to db. Called by onLinksUpdateConstructed and onAfterStabilizeChange (custom Hook)
 	 * @param WikiPage $wikiPage
 	 * @param Title $title
-	 * @param Content $content
-	 * @param User $user
+	 * @param String $contentText
 	 */
-	public static function doIndexLoopLiteratureReferences( &$wikiPage, $title, $content = null, $user = null ) {
+	public static function handleLoopLiteratureReferences( &$wikiPage, $title, $contentText = null ) {
 		
-		if ($content == null) {
-			$content = $wikiPage->getContent();
+		$content = $wikiPage->getContent();
+		if ($contentText == null) {
+			$contentText = $content->getText();
 		}
 		
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
-			$loopLiteratureReference = new LoopLiteratureReference();
-			LoopLiteratureReference::removeAllPageItemsFromDb ( $title->getArticleID() );
-			$contentText = ContentHandler::getContentText( $content );
+
 			$parser = new Parser();
+			$loopLiteratureReference = new LoopLiteratureReference();
+			$fwp = new FlaggableWikiPage ( $title );
+			$stableRevId = $fwp->getStable();
+			$latestRevId = $title->getLatestRevID();
+			$stable = false;
+			if ( $stableRevId == $latestRevId ) {
+				$stable = true;
+				# on edit, delete all objects of that page from db. 
+				LoopLiteratureReference::removeAllPageItemsFromDb ( $title->getArticleID() );
+			} 
 
 			# check if cite is in page content
 			$has_reference = false;
@@ -726,6 +714,7 @@ class LoopLiterature {
 				$items = 0;
 				foreach ( $object_tags as $object ) {
 					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
+						$valid = true;
 						$tmpLoopLiteratureReference = new LoopLiteratureReference();
 						$items++;
 						$tmpLoopLiteratureReference->nthItem = $items;
@@ -739,18 +728,14 @@ class LoopLiterature {
 							if ( $tmpLoopLiteratureReference->checkDublicates( $object[2]["id"] ) ) {
 								$tmpLoopLiteratureReference->refId = $object[2]["id"];
 							} else {
-								# dublicate id must be replaced
-								$newRef = uniqid();
-								$newContentText = preg_replace('/(id="'. $object[2]["id"].'")/', 'id="'. $newRef.'"'  , $newContentText, 1 );
-								$tmpLoopLiteratureReference->refId = $newRef; 
+								# dublicate id!
+								$valid = false;
+								$items--;
 							}
-						} else {
-							# create new id
-							$newRef = uniqid();
-							$newContentText = LoopObject::setReferenceId( $newContentText, $newRef, 'cite' ); 
-							$tmpLoopLiteratureReference->refId = $newRef; 
+						} 
+						if ( $valid && $stable ) {
+							$tmpLoopLiteratureReference->addToDatabase();
 						}
-						$tmpLoopLiteratureReference->addToDatabase();
 					}
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
@@ -761,19 +746,11 @@ class LoopLiterature {
 					LoopGlossary::updateGlossaryPageTouched();
 				}
 				if ( $contentText !== $newContentText ) {
-					
-					$fwp = new FlaggableWikiPage ( $title );
-					$stableRev = $fwp->getStable();
-					if ( $stableRev == 0 ) {
-						$stableRev = $wikiPage->getRevision()->getId();
-					} 
-
-					$summary = wfMessage("loop-summary-id")->text();
-					$content = $content->getContentHandler()->unserializeContent( $newContentText );
-					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
+					return $newContentText;
 				}	
 			}
 		}
+		return $contentText;
 	}
 
 	 // returns all literature items from table
