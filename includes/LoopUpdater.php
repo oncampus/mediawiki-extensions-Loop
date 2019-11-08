@@ -145,18 +145,20 @@ class LoopUpdater {
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
 		
+		$wikiPage->doEditContent( $wikiPage->getRevision()->getContent(), 'LOOP2 Upgrade', EDIT_UPDATE, false, $systemUser );
+		
 		if ( isset( $fwp ) ) {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) { # page is stable or does not have any stable version
-				$content = null;
 				$contentText = null;
 			} else {
 				$revision = $wikiPage->getRevision();
-				$content = $revision->getContent();
 				$contentText = $revision->getContent()->getText();
 			}
-			LoopObject::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
+			
+
+			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
 			self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
 		}

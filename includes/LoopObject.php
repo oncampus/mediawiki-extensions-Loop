@@ -163,7 +163,7 @@ class LoopObject {
 	 * @return string
 	 */
 	public function render() {
-		global $wgLoopObjectNumbering, $wgOut;
+		global $wgLoopObjectNumbering;
 
 		LoggerFactory::getInstance( 'LoopObject' )->debug( 'Start rendering' );
 
@@ -180,15 +180,19 @@ class LoopObject {
 			
 			$html .= 'id="' . $this->getId() . '" ';
 			$object = LoopObjectIndex::getObjectData( $this->getId() );
-			$articleId = $wgOut->getTitle()->getArticleID();
-
+			$articleId = $this->getParser()->getTitle()->getArticleID();
+		#dd( $this->getTitle() , $object["title"] , $articleId , $object["articleId"] , $this->getTag() , $object["index"], $object );
 			#if there are hints for this element has a dublicate id, don't render the number and add an error
 			if ( $this->getTitle() != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";
 				} 
-				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $otherTitle->mTextform ) );
+				$textform = "-";
+				if ( is_object( $otherTitle ) ) {
+					$textform = $otherTitle->mTextform;
+				}
+				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform ) );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error .= $e . "\n";
 				$showNumbering = false;
@@ -930,6 +934,13 @@ class LoopObject {
 							}
 							if ( isset( $object[2]["title"] ) ) {
 								$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
+							} else {
+								$title_tags = array ();
+								$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
+								foreach( $title_tags as $tag ) {
+									$tmpLoopObjectIndex->itemTitle = $tag[1];
+									break;
+								}
 							}
 							if ( isset( $object[2]["description"] ) ) {
 								$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
