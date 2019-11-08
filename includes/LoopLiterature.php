@@ -492,7 +492,7 @@ class LoopLiterature {
 	}
 
 	static function renderCite( $input, array $args, Parser $parser, PPFrame $frame ) {
-		global $wgLoopLiteratureCiteType, $wgOut;
+		global $wgLoopLiteratureCiteType;
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
 		$html = '';
@@ -536,7 +536,7 @@ class LoopLiterature {
 					}
 					
 				}
-				$articleId = $wgOut->getTitle()->getArticleID();
+				$articleId = $parser->getTitle()->getArticleID();
 
 				if ( $refId != $allReferences[$articleId][$refId]["refId"] || $articleId != $allReferences[$articleId][$refId]["articleId"] || $input != $allReferences[$articleId][$refId]["itemKey"] ) {
 					$otherTitle = Title::newFromId( $allReferences[$articleId][$refId]["articleId"] );

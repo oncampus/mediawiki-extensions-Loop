@@ -23,7 +23,6 @@ class LoopIndex {
     
 	static function renderLoopIndex( $input, array $args, Parser $parser, PPFrame $frame ) {
 
-		global $wgOut;
 		$html = '';
         if ( isset ( $args["id"] ) ) {
 			$id = $args["id"];
@@ -32,7 +31,7 @@ class LoopIndex {
 		
 		$item = self::getIndexItem( $id );
 		if ( $item ) {
-			$articleId = $wgOut->getTitle()->getArticleID();
+			$articleId = $parser->getTitle()->getArticleID();
 			# check if a dublicate id has been used
 			if ( $input != $item->li_index || $articleId != $item->li_pageid ) { 
 				$otherTitle = Title::newFromId( $item->li_pageid );
