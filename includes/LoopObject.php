@@ -181,7 +181,7 @@ class LoopObject {
 			$html .= 'id="' . $this->getId() . '" ';
 			$object = LoopObjectIndex::getObjectData( $this->getId() );
 			$articleId = $this->getParser()->getTitle()->getArticleID();
-		#dd( $this->getTitle() , $object["title"] , $articleId , $object["articleId"] , $this->getTag() , $object["index"], $object );
+			
 			#if there are hints for this element has a dublicate id, don't render the number and add an error
 			if ( $this->getTitle() != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
 				$otherTitle = Title::newFromId( $object["articleId"] );

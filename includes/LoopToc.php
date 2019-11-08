@@ -17,10 +17,8 @@ class LoopToc extends LoopStructure {
     }
 
 	static function renderLoopToc( $input, array $args, Parser $parser, PPFrame $frame ) {
-		
-        global $wgOut;
-        
-		$result = self::outputLoopToc( $wgOut->getTitle()->mArticleID, "html" );
+	
+		$result = self::outputLoopToc( $parser->getTitle()->mArticleID, "html" );
 
         $return  = '<div class="looptoc">';
         $return .= $result;
