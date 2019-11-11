@@ -23,7 +23,7 @@ class LoopLegacy {
 
     # Replaced by loop_literature. Will be removed later.
     public static function renderLegacyBiblio ( $input, array $args, Parser $parser, PPFrame $frame ) { 
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'biblio', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-biblio' )->text() );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
@@ -37,7 +37,7 @@ class LoopLegacy {
 
     # No replacement. Will be removed later.
     public static function renderLegacyReferences ( $input, array $args, Parser $parser, PPFrame $frame ) { 
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'references', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-references' )->text() );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }

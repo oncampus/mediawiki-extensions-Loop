@@ -291,6 +291,9 @@
 	"loopliterature-error-dublicate-id" : "Die Literaturreferenz '$3' besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist eine weitere Referenz mit der ID vorhanden. Bitte ändern Sie die ID, damit auch diese Referenz im Literaturverzeichnis berücksichtigt werden kann.",
 	
 	"looplegacy-error-unsupported": "Der Tag '''$1''' wird seit $2 nicht mehr unterstützt.",
+	"looplegacy-biblio": "Der '''biblio'''-Tag wird seit LOOP2 nicht mehr unterstützt. Bitte benutzen Sie den neuen Tag '''<loop_literature>'''.",
+	"looplegacy-references": "Der '''references'''-Tag wird seit LOOP2 nicht mehr benötigt. Fußnoten werden jetzt automatisch am Seitenende dargestellt, wenn ein <ref>-Tag auf einer Seite benutzt wird.",
+
 	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",

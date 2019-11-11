@@ -291,6 +291,9 @@
 	"loopliterature-error-dublicate-id" : "Litteraturreferensen '$3' besitter ingen unik ID ($1). På sidan '$2' finns det en annan litteraturreferens med den här ID. Vänligen byt ID:n, så referensen visas korrekt i bibliografin.",
 
 	"looplegacy-error-unsupported": "Taggen '''$1''' har tagits bort i $2",
+	"looplegacy-biblio": "Taggen '''biblio''' har tagits bort i LOOP2. Använd <loop_literature><literature>''Key''</literature></loop_literature> istället.",
+	"looplegacy-references": "Taggen '''references''' är inte länge nödvändig sedan LOOP2. Fotnoter visas automatiskt.",
+
 	"loopobject-error-unknown-renderoption" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",

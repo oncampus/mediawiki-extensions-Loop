@@ -290,7 +290,10 @@
 	"loopliterature-error-invalid-export": "The following literature entries cannot be exported, as the key does not match BibTeX format: ",
 	"loopliterature-error-dublicate-id" : "The literature reference '$3' does not have a unique ID ($1). On page '$2' is another reference with that same ID. Please change the ID so the reference can be taken into account in bibliography.",
 
-	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
+	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",	
+	"looplegacy-biblio": "The tag '''biblio''' is not supported since LOOP2. Please use the new tag '''<loop_literature>'''.",
+	"looplegacy-references": "The tag '''references''' is obsolete since LOOP2. Footnotes are automatically displayed at the end of the page as soon as there is a <ref> tag in use.",
+
 	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
