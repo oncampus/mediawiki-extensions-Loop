@@ -31,6 +31,7 @@
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>	
 		<fo:root>
 			<xsl:attribute name="hyphenate">true</xsl:attribute>
+			
 			<fo:layout-master-set>
 				<fo:simple-page-master master-name="cover-page"
 					page-height="{$pageheight}" page-width="{$pagewidth}" margin-top="10mm"
@@ -70,7 +71,7 @@
 			<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($listing_exists='1') or ($task_exists='1') or ($index_exists='1') or ($glossary_exists='1')">
 				<xsl:call-template name="page-sequence-appendix"></xsl:call-template>
 			</xsl:if>
-			
+
 		</fo:root>
 	</xsl:template>
 	
@@ -1179,6 +1180,11 @@
 			<fo:static-content font-family="{$font_family}"
 				flow-name="xsl-region-after">
 				<xsl:call-template name="default-footer"></xsl:call-template>
+			</fo:static-content>
+			<fo:static-content flow-name="xsl-footnote-separator">
+				<fo:block>
+					<fo:leader leader-length="30%" leader-pattern="rule"/>
+				</fo:block>
 			</fo:static-content>
 			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body"
 				text-align="justify" font-size="11.5pt" line-height="15.5pt"
@@ -2710,7 +2716,40 @@
 			
 		</xsl:if>
 	</xsl:template>
+
 	
+	<!-- loop_audio -->
+	<xsl:template match="extension[@extension_name='ref']">
+
+		<fo:footnote>
+			<fo:inline baseline-shift="super" font-size="70%">
+				<xsl:text>[</xsl:text>
+					<xsl:value-of select="count(preceding-sibling::extension[@extension_name='ref'])+1"/>
+				<xsl:text>]</xsl:text>
+			</fo:inline>
+			<fo:footnote-body>
+				<fo:list-block provisional-distance-between-starts="1mm" line-height="11.5pt">
+					<fo:list-item>
+						<fo:list-item-label>
+							<fo:block>
+								<fo:inline baseline-shift="super" font-size="60%">
+									<xsl:text>[</xsl:text>
+										<xsl:value-of select="count(preceding-sibling::extension[@extension_name='ref'])+1"/>
+									<xsl:text>]</xsl:text>
+								</fo:inline>
+							</fo:block>
+						</fo:list-item-label>
+						<fo:list-item-body>
+							<fo:block margin-left="3.5mm" font-size="85%">
+								<xsl:apply-templates></xsl:apply-templates>
+							</fo:block>
+						</fo:list-item-body>
+					</fo:list-item>
+				</fo:list-block>
+			</fo:footnote-body>
+		</fo:footnote>
+	
+	</xsl:template>
 
 	
 </xsl:stylesheet>
