@@ -22,13 +22,26 @@ class LoopIndex {
     }	
     
 	static function renderLoopIndex( $input, array $args, Parser $parser, PPFrame $frame ) {
-        
-       # dd($args);
-        $id = "";
+
+		$html = '';
         if ( isset ( $args["id"] ) ) {
-            $id = "id='" . $args["id"] . "' ";
-        }
-        $html = "<span class='loop_index_anchor' $id></span>";
+			$id = $args["id"];
+            $htmlid = "id='" . $id . "' ";
+		}
+		
+		$item = self::getIndexItem( $id );
+		if ( $item ) {
+			$articleId = $parser->getTitle()->getArticleID();
+			# check if a dublicate id has been used
+			if ( $input != $item->li_index || $articleId != $item->li_pageid ) { 
+				$otherTitle = Title::newFromId( $item->li_pageid );
+				$e = new LoopException( wfMessage( 'loopindex-error-dublicate-id', $id, $otherTitle->mTextform, $item->li_index ) );
+				$parser->addTrackingCategory( 'loop-tracking-category-error' );
+				$html .= $e . "\n";
+			}
+		}
+        $htmlid = "";
+        $html .= "<span class='loop_index_anchor' $htmlid></span>";
         return $html;
     }
 
@@ -69,6 +82,33 @@ class LoopIndex {
         SpecialPurgeCache::purge();
         
         return true;
+
+	}
+	
+    /**
+	 * Returns index item
+	 * @return bool true
+	 */
+	public static function getIndexItem( $refId ) {
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'loop_index',
+			array(
+				'li_refid',
+                'li_index',
+                'li_pageid'
+			),
+			array(
+				'li_refid = "' . $refId .'"'
+			),
+			__METHOD__
+		);
+		
+        foreach( $res as $row ) {
+			return $row;
+		}
+        
+        return false;
 
     }
     
@@ -176,18 +216,12 @@ class LoopIndex {
 	        $stableRevId = $fwp->getStable();
 	        
 	        if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-	            # In Loop Upgrade process, use user LOOP_SYSTEM for edits and review.
-	            $user = null;
-	            $systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> false, 'validate' => true ] );
-	            if ( $systemUser->getId() == $userId ) {
-	                $user = $systemUser;
-	            }
-	            
-	            self::handleIndexItems( $wikiPage, $title, $content, $user );
+	            self::handleIndexItems( $wikiPage, $title, $content->getText() );
 	        }
 	    }
 	    return true;
 	}
+
 	/**
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion()
 	 * @param Title $title
@@ -210,43 +244,31 @@ class LoopIndex {
 	}
 	
 	/**
-	 * Checks revision status after saving content and starts db writing function in case of stable revision.
-	 * Attached to LinksUpdateConstructed hook.
-	 * @param LinksUpdate $linksUpdate
-	 */
-	public static function onLinksUpdateConstructed( $linksUpdate ) { 
-		$title = $linksUpdate->getTitle();
-		$wikiPage = WikiPage::factory( $title );
-		$latestRevId = $title->getLatestRevID();
-		if ( isset($title->flaggedRevsArticle) ) {
-			$stableRevId = $title->flaggedRevsArticle;
-			$stableRevId = $stableRevId->getStable();
-
-			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				self::handleIndexItems( $wikiPage, $title );
-			}
-		}
-
-		return true;
-	}
-	
-	/**
 	 * Adds index items to db. Called by onLinksUpdateConstructed and onAfterStabilizeChange (custom Hook)
 	 * @param WikiPage $wikiPage
 	 * @param Title $title
-	 * @param Content $content
-	 * @param User $user
+	 * @param String $contentText
 	 */
-	public static function handleIndexItems( &$wikiPage, $title, $content = null, $user = null ) {
+	public static function handleIndexItems( &$wikiPage, $title, $contentText = null ) {
 		
-		if ($content == null) {
-			$content = $wikiPage->getContent();
+		$content = $wikiPage->getContent();
+		if ($contentText == null) {
+			$contentText = $content->getText();
 		}
+
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
-			$loopIndex = new LoopIndex();
-			self::removeAllPageItemsFromDb ( $title->getArticleID() );
-			$contentText = ContentHandler::getContentText( $content );
+			
 			$parser = new Parser();
+			$loopIndex = new LoopIndex();
+			$fwp = new FlaggableWikiPage ( $title );
+			$stableRevId = $fwp->getStable();
+			$latestRevId = $title->getLatestRevID();
+			$stable = false;
+			if ( $stableRevId == $latestRevId ) {
+				$stable = true;
+				# on edit, delete all objects of that page from db. 
+				self::removeAllPageItemsFromDb ( $title->getArticleID() );
+			}
 
 			# check if loop_index is in page content
 			$has_reference = false;
@@ -264,6 +286,7 @@ class LoopIndex {
 				$loopStructure->loadStructureItems();
 				foreach ( $object_tags as $object ) {
 					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
+						$valid = true;
 						$tmpLoopIndex = new LoopIndex();
 						$tmpLoopIndex->pageId = $title->getArticleID();
 						$tmpLoopIndex->index = $object[1];
@@ -272,18 +295,13 @@ class LoopIndex {
 							if ( $tmpLoopIndex->checkDublicates( $object[2]["id"] ) ) {
 								$tmpLoopIndex->refId = $object[2]["id"];
 							} else {
-								# dublicate id must be replaced
-								$newRef = uniqid();
-								$newContentText = preg_replace('/(id="'. $object[2]["id"].'")/', 'id="'. $newRef.'"'  , $newContentText, 1 );
-								$tmpLoopIndex->refId = $newRef; 
+								# dublicate id!
+								$valid = false;
 							}
-						} else {
-							# create new id
-							$newRef = uniqid();
-							$newContentText = LoopObject::setReferenceId( $newContentText, $newRef, 'loop_index' ); 
-							$tmpLoopIndex->refId = $newRef; 
+						} 
+						if ( $valid && $stable ) {
+							$tmpLoopIndex->addToDatabase();
 						}
-						$tmpLoopIndex->addToDatabase();
 					}
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
@@ -294,19 +312,11 @@ class LoopIndex {
 					LoopGlossary::updateGlossaryPageTouched();
 				}
 				if ( $contentText !== $newContentText ) {
-					
-					$fwp = new FlaggableWikiPage ( $title );
-					$stableRev = $fwp->getStable();
-					if ( $stableRev == 0 ) {
-						$stableRev = $wikiPage->getRevision()->getId();
-					} 
-
-					$summary = wfMessage("loop-summary-id")->text();
-					$content = $content->getContentHandler()->unserializeContent( $newContentText );
-					$wikiPage->doEditContent ( $content, $summary, EDIT_UPDATE, $stableRev, $user );
+					return $newContentText;
 				}	
 			}
 		}
+		return $contentText;
 	}
 
 }

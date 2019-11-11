@@ -288,12 +288,14 @@
 	"loopliterature-error-keyalreadyexists": "Der Zitatschlüssel ist bereits vorhanden. Bitte wählen Sie einen anderen oder überschreiben Sie die Daten.",
 	"loopliterature-error-keyunknown": "Der Zitatschlüssel '''$1''' ist nicht vorhanden. Bitte [[Special:LoopLiteratureEdit| legen Sie den Literatureintrag an]]. ",
 	"loopliterature-error-invalid-export": "Die folgenden Literatureinträge können nicht exportiert werden, da die Zitatschlüssel nicht dem BibTeX-Format entsprechen: ",
+	"loopliterature-error-dublicate-id" : "Die Literaturreferenz '$3' besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist eine weitere Referenz mit der ID vorhanden. Bitte ändern Sie die ID, damit auch diese Referenz im Literaturverzeichnis berücksichtigt werden kann.",
 	
 	"looplegacy-error-unsupported": "Der Tag '''$1''' wird seit $2 nicht mehr unterstützt.",
 	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-unknown-showcopyrightoption" : "Die Auszeichnung besitzt für den Parameter Copyright anzeigen (show_copyright) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
+	"loopobject-error-dublicate-id" : "Die Objektauszeichnung besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiteres Objekt mit der ID vorhanden. Bitte ändern Sie die ID und speichern Sie die Seiten neu ab, um eine korrekte Zählung sicherzustellen.",
 	"loopmedia-error-unknown-mediatype" : "Das Medienelement besitzt für den Parameter Medientyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Medienelementen: XXX",
 	"loopreference-error-unknown-titleoption" : "Die Referenz besitzt für den Parameter Titelanzeige (title) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
@@ -301,7 +303,6 @@
 	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
 	"loopexternalcontent-prezi-on": "auf", 
-
 	"namespace-special": "Spezial",
 	"loop-glossary-namespace": "Glossar",
 	"loop-glossary-objectnumber-prefix": "G-",
@@ -309,7 +310,7 @@
 	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen.",
 
 	"loopindex": "Index",
-	"loop-summary-id": "ID automatisch zu Tag hinzugefügt.",
+	"loopindex-error-dublicate-id" : "Der Indexbegriff '$3' besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiterer Begriff mit der ID vorhanden. Bitte ändern Sie die ID, damit auch dieser Begriff indexiert werden kann.",
 
 	"loopwikieditor-section-loop": "LOOP",
 	"loopwikieditor-section-references": "Referenzen",

@@ -111,13 +111,19 @@ class LoopUpdater {
 				# Fill a new page in NS_GLOSSARY with the same title as before with the old content
 				$newGlossaryPage = WikiPage::factory( Title::newFromText( $title->mTextform, NS_GLOSSARY ));
 				$newGlossaryPageContent = new WikitextContent( preg_replace( '/(\[\[)(Kategorie){0,1}(Category){0,1}(:Glossar\]\])/i', '', $content ) ); // removes [[Kategorie:Glossar]] and [[Category:Glossar]] 
-				$newGlossaryPage->doEditContent( $newGlossaryPageContent, '', EDIT_NEW, false, $user );
+				$newGlossaryPageUpdater = $newGlossaryPage->newPageUpdater( $user );
+				$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 glossary migration' );
+				$newGlossaryPageUpdater->setContent( "main", $newGlossaryPageContent );
+				$newGlossaryPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
 				$lsi = LoopStructureItem::newFromIds( $title->mArticleID );
 				if ( !$lsi ) {
 					# Redirecting the old page to the new glossary namespace page, if it is not in structure
 					$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "loop-glossary-namespace" )->inContentLanguage()->text() . ":" . $title->mTextform . "]]" );
-					$oldWikiPage->doEditContent( $newRedirectContent, 'Redirect', EDIT_UPDATE, false, $user );
+					$oldWikiPageUpdater = $oldWikiPage->newPageUpdater( $user );
+					$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 glossary migration' );
+					$oldWikiPageUpdater->setContent( "main", $newRedirectContent );
+					$oldWikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 					error_log("Moving and redirecting glossary page " . $title->mArticleID . " (rev " . $stableRev .  ")");
 				} else {
 					error_log("Copying glossary page " . $title->mArticleID . " (rev " . $stableRev .  ")");
@@ -145,18 +151,24 @@ class LoopUpdater {
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
 		
+		$wikiPageContent = $wikiPage->getRevision()->getContent();
+		$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+		$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 Upgrade' );
+		$wikiPageUpdater->setContent( "main", $wikiPageContent );
+		$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		
 		if ( isset( $fwp ) ) {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) { # page is stable or does not have any stable version
-				$content = null;
 				$contentText = null;
 			} else {
 				$revision = $wikiPage->getRevision();
-				$content = $revision->getContent();
 				$contentText = $revision->getContent()->getText();
 			}
-			LoopObject::doIndexLoopObjects( $wikiPage, $title, $content, $systemUser );
+			
+
+			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
 			self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
 		}
@@ -222,7 +234,10 @@ class LoopUpdater {
 			}
 			if ( $literaturePage ) {
 				$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "namespace-special" )->inContentLanguage()->text() . ":" . wfMessage( "loopliterature" )->inContentLanguage()->text() . "]]" );
-				$wikiPage->doEditContent( $newRedirectContent, 'Redirect to new bibliography', EDIT_UPDATE, false, $systemUser );	
+				$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+				$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new bibliography' );
+				$wikiPageUpdater->setContent( "main", $newRedirectContent );
+				$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 			} 
 		}
 
@@ -255,7 +270,10 @@ class LoopUpdater {
 		}
 		if ( $newContentText != $contentText ) {
 			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
-			$wikiPage->doEditContent( $editContent, 'Splitted loop_index tags', EDIT_UPDATE, false, $systemUser );	
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'Splitted loop_index tags' );
+			$wikiPageUpdater->setContent( "main", $editContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 		} 
 	}
 	
@@ -281,7 +299,10 @@ class LoopUpdater {
 		}
 		if ( $newContentText != $contentText ) {
 			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
-			$wikiPage->doEditContent( $editContent, 'Added scale=true to loop_zip', EDIT_UPDATE, false, $systemUser );	
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'Added scale=true to loop_zip' );
+			$wikiPageUpdater->setContent( "main", $editContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );	
 		} 
 	}
 

@@ -288,12 +288,14 @@
 	"loopliterature-error-keyalreadyexists": "Citatnyckeln finns redan. Vänligen välj ett annat eller skriv över uppgifter.",
 	"loopliterature-error-keyunknown": "Citatnyckeln '''$1''' finns inte. Vänligen [[Special:LoopLiteratureEdit| lägg till den]]. ",
 	"loopliterature-error-invalid-export": "Dem här citatnycklar överenstämmar inte med BibTeX-formatet och kan inte exporteras: ",
-	
+	"loopliterature-error-dublicate-id" : "Litteraturreferensen '$3' besitter ingen unik ID ($1). På sidan '$2' finns det en annan litteraturreferens med den här ID. Vänligen byt ID:n, så referensen visas korrekt i bibliografin.",
+
 	"looplegacy-error-unsupported": "Taggen '''$1''' har tagits bort i $2",
 	"loopobject-error-unknown-renderoption" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-showcopyrightoption" : "Värdet av parametern (show_copyright) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
+	"loopobject-error-dublicate-id" : "Objektet besitter ingen unik ID ($1). På sidan '$2' finns det ett annat objekt med den här ID. Vänligen byt ID:n och spara sidor igen, så objektet kan numereras korrekt.",
 	"loopmedia-error-unknown-mediatype" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopreference-error-unknown-titleoption" : "Värdet av parametern (title) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
@@ -308,7 +310,7 @@
 	"loop-glossary-empty": "Ordlistan är fortfarande tom. Lägg till en post genom att skapa en sida som ''[[Glossary:Ord]]''.",
 	
 	"loopindex": "Index",
-	"loop-summary-id": "ID lades till automatiskt.",
+	"loopindex-error-dublicate-id" : "Index termen '$3' besitter ingen unik ID ($1). På sidan '$2' finns det en annan index term med den här ID. Vänligen byt ID:n, så termen kan indexeras.",
 
 	"loopwikieditor-section-loop": "LOOP",
 	"loopwikieditor-section-references": "Referenser",

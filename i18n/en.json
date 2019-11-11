@@ -288,12 +288,14 @@
 	"loopliterature-error-keyalreadyexists": "The literature key exists already. Please choose a different one or overwrite the data.",
 	"loopliterature-error-keyunknown": "The literature key '''$1''' does not exist. Please [[Special:LoopLiteratureEdit| create it]]. ",
 	"loopliterature-error-invalid-export": "The following literature entries cannot be exported, as the key does not match BibTeX format: ",
-	
+	"loopliterature-error-dublicate-id" : "The literature reference '$3' does not have a unique ID ($1). On page '$2' is another reference with that same ID. Please change the ID so the reference can be taken into account in bibliography.",
+
 	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
 	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
 	"loopobject-error-unknown-showcopyrightoption" : "The object's show copyright option (show_copyright) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
+	"loopobject-error-dublicate-id" : "The object's ID is not unique ($1). On page '$2' is another object with that same ID. Please change the ID and save the pages again so the numbering will be correct.",
 	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopreference-error-unknown-titleoption" : "The reference's show title option (title) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
@@ -308,7 +310,7 @@
 	"loop-glossary-empty": "The glossary is still empty. Add an entry by creating a page like ''[[Glossary:Term]]''.",
 	
 	"loopindex": "Index",
-	"loop-summary-id": "ID added automatically.",
+	"loopindex-error-dublicate-id" : "The indexed term '$3' does not have a unique ID ($1). On page '$2' is another term with that same ID. Please change the ID so the term can be properly indexed.",
 
 	"loopwikieditor-section-loop": "LOOP",
 	"loopwikieditor-section-references": "References",

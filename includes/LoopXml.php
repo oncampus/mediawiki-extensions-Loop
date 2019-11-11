@@ -40,14 +40,14 @@ class LoopXml {
 		$toc = self::structureItemToc($loopStructureItems[0]);
 		$xml .= "<toc>".$toc."</toc>\n";
 		
-
-		
-		$xml .= "<articles>";
+		$articles = "<articles>";
 		foreach ( $loopStructureItems as $loopStructureItem ) {
-		    $xml .= self::structureItem2xml ( $loopStructureItem, $modifiers );
+		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
-		$xml .= "</articles>\n";
+		$articles .= "</articles>\n";
 		
+		$xml .= self::handleDublicateIds( $articles ); # double ids of various items are eliminated
+
 		$xml .= "<loop_objects>\n";
 		
 		$xml .= self::objectsTable2xml ( $loopStructureItems, $loopStructure );
@@ -62,7 +62,7 @@ class LoopXml {
 		$xml .= "</glossary>\n";
 		
 		$xml .= "</loop>";
-		#dd($xml);
+
 		return $xml;
 	}
 	
@@ -111,7 +111,6 @@ class LoopXml {
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/U', "$1$2$3\n$4", $content);
 		
-		#dd($content);
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
@@ -135,6 +134,43 @@ class LoopXml {
 		return $xml;
 	}
 
+	/**
+	 * Removes non-unique IDs from elements from their second occurence.
+	 * Elements with dublicate IDs cause severe problems in PDF
+	 * @param String $contentText
+	 */
+	public static function handleDublicateIds( $contentText ) {
+
+		$idCache = array();
+		$objectTags = array(  );
+		$dom = new DOMDocument( "1.0", "utf-8" );
+		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
+		$xml = $contentText;
+		$dom->loadXml($xml);
+		$selector = new DOMXPath( $dom );
+		$nodes = $selector->query( '//extension' );
+
+		foreach ( $nodes as $node ) {
+			
+			if ( in_array( $node->getAttribute("extension_name"), $objectTags ) ) {
+
+				if ( !empty( $node->getAttribute("id") )) {
+					if ( ! in_array( $node->getAttribute("id"), $idCache ) )  {
+						$idCache[] = $node->getAttribute("id");
+					} else {
+						$node->removeAttribute("id");
+					}
+				} 
+			}
+		}
+		$newContentText = substr( $dom->saveXML(), 22, -1);
+		
+		if ( $contentText != $newContentText ) {
+			$contentText = $newContentText;
+		}
+		
+		return $contentText;
+	}
 	
 	/**
 	 * Converts article to XML code

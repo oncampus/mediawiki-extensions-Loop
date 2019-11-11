@@ -126,11 +126,6 @@
 		"ParserMakeImageParams":[
 			"LoopHooks::onParserMakeImageParams"
 		],
-		"LinksUpdateConstructed": [
-			"LoopObject::onLinksUpdateConstructed",
-			"LoopLiterature::onLinksUpdateConstructed",
-			"LoopIndex::onLinksUpdateConstructed"
-		],
 		"ArticleDeleteComplete": [
 			"LoopObject::onArticleDeleteComplete",
 			"LoopLiterature::onArticleDeleteComplete",
@@ -148,7 +143,8 @@
 		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
-		"UploadComplete": "LoopZip::onUploadComplete"
+		"UploadComplete": "LoopZip::onUploadComplete",
+		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
