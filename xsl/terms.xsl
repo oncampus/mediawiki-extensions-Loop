@@ -141,5 +141,6 @@
 	<xsl:variable name="word_bibliography"  select="functx:get_term_name('word_bibliography')" />
 	<xsl:variable name="phrase_interactive_element"  select="functx:get_term_name('phrase_interactive_element')" />
 	<xsl:variable name="word_index"  select="functx:get_term_name('word_index')" />
+	<xsl:variable name="phrase_quiz"  select="functx:get_term_name('phrase_quiz')" />
 
 </xsl:stylesheet>
