@@ -1803,17 +1803,10 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_quiz"/>
-				
-			<xsl:variable name="pageurl">
-				<xsl:value-of select="php:function('LoopXsl::get_page_link', ancestor::article/@id)"></xsl:value-of>
-			</xsl:variable>	
-			<xsl:if test="$pageurl">
-				<fo:basic-link><!-- qr? -->
-					<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
-					<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
-					<xsl:text> </xsl:text>
-				</fo:basic-link>
-			</xsl:if>
+
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
 		</fo:block>		
 	</xsl:template>
 
