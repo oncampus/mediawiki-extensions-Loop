@@ -93,7 +93,10 @@
 		"LoopSidebar": "includes/LoopSidebar.php",
 		"LoopMediaHandler": "includes/LoopMediaHandler.php",
 		"LoopWikitextContentHandler": "includes/LoopWikitextContent.php",
-		"LoopWikitextContent": "includes/LoopWikitextContent.php"
+		"LoopWikitextContent": "includes/LoopWikitextContent.php",
+		"LoopTerminology": "includes/LoopTerminology.php",
+		"SpecialLoopTerminology": "includes/LoopTerminology.php",
+		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -170,7 +173,9 @@
 		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
 		"LoopLiteratureExport": "SpecialLoopLiteratureExport",
 		"LoopGlossary": "SpecialLoopGlossary",
-		"LoopIndex": "SpecialLoopIndex"
+		"LoopIndex": "SpecialLoopIndex",
+		"LoopTerminology": "SpecialLoopTerminology",
+		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

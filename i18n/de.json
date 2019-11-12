@@ -361,5 +361,12 @@
 	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
 	
 	"loop-error-missingrequired": "In dem Tag $1 fehlt der notwendige Parameter $2. Das Element kann nicht dargestellt werden.",
-	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}"
+	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}",
+	
+	"loopterminology": "Abkürzungsverzeichnis",
+	"loopterminologyedit": "Abkürzungsverzeichnis bearbeiten",
+	"loopterminology-warning-deleted": "Alle Einträge wurden aus dem Abkürzungsverzeichnis gelöscht. Im Textfeld sehen Sie den letzten Inhalt.",
+	"loopterminology-save-success": "Das Abkürzungsverzeichnis wurde erfolgreich aktualisiert.",
+	"loopterminology-hint": "Bearbeiten Sie hier das Abkürzungsverzeichnis. Unter dem Textfeld finden Sie ein Beispiel für die Formatierung.",
+	"loopterminology-example": "Benutzen Sie ein Semikolon vor dem abgekürzten Begriff, um ihn zu definieren. In der nächsten Zeile beschreiben Sie den Begriff, indem Sie die Zeile mit einem Doppelpunkt beginnen. Es können mehrere Begriffe zu mehreren Definitionen eingesetzt werden. Beispiel:<br>;USA<br>;U.S.A.<br>:Vereinte Staaten von Amerika<br>:United States of America"
 }

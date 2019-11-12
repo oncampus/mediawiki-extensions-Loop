@@ -55,7 +55,7 @@ class Loop {
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
-		$wgContentHandlers;
+		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -138,6 +138,10 @@ class Loop {
 		$wgNamespaceProtection[NS_TEMPLATE_TALK] = ['*'];
 		$wgNamespaceProtection[NS_HELP_TALK] = ['*'];
 		$wgNamespaceProtection[NS_CATEGORY_TALK] = ['*'];
+
+		# Lingo configuration
+		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
+		$wgexLingoDisplayOnce = true;
 
 		return true;
 	}
