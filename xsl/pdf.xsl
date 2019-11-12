@@ -1800,6 +1800,22 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- Extension: Quiz -->
+	<xsl:template match="extension[@extension_name='quiz']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_task"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_quiz"/>
+
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
+		</fo:block>		
+	</xsl:template>
+
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
 		<fo:table keep-together.within-page="always" table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
