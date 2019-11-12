@@ -18,7 +18,12 @@
 			"WikiEditor": "*",
 			"Math": "*",
 			"SyntaxHighlight": "*",
-			"EmbedVideo": ">= 2.8.0"
+			"EmbedVideo": ">= 2.8.0",
+			"Cite": "*",
+			"Lingo": "*",
+			"MsUpload": "*",
+			"Score": "*",
+			"Quiz": "*"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -86,7 +91,9 @@
 		"LoopWikiEditor": "includes/LoopWikiEditor.php",
 		"LoopZip": "includes/LoopZip.php",
 		"LoopSidebar": "includes/LoopSidebar.php",
-		"LoopMediaHandler": "includes/LoopMediaHandler.php"
+		"LoopMediaHandler": "includes/LoopMediaHandler.php",
+		"LoopWikitextContentHandler": "includes/LoopWikitextContent.php",
+		"LoopWikitextContent": "includes/LoopWikitextContent.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
