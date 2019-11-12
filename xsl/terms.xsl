@@ -145,5 +145,6 @@
 	<xsl:variable name="phrase_video" select="functx:get_term_name('phrase_video')"/>
 	<xsl:variable name="phrase_youtube_video" select="functx:get_term_name('phrase_youtube_video')"/>
 	<xsl:variable name="phrase_audio" select="functx:get_term_name('phrase_audio')"/>
+	<xsl:variable name="phrase_quiz"  select="functx:get_term_name('phrase_quiz')" />
 
 </xsl:stylesheet>
