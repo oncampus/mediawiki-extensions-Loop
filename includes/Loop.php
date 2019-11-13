@@ -150,17 +150,29 @@ class Loop {
 	 * Set up LOOP-specific pages so they are not red links
 	 */
 	public static function setupLoopPages() {
-		
-		$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-		$user->addGroup("sysop");
+
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+		$systemUser->addGroup("sysop");
+		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" ); 
 			
 		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
-		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $user );
+		$loopExceptionPageUpdater = $loopExceptionPage->newPageUpdater( $systemUser ); 
+		$loopExceptionPageUpdater->setContent( "main", $loopExceptionPageContent );
+		$loopExceptionPageUpdater->saveRevision ( $summary, EDIT_NEW );
+
 
 		$loopLegacyPage = WikiPage::factory( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopLegacyPageContent = new WikitextContent( wfMessage( 'looplegacy-tracking-category-desc' )->inContentLanguage()->text() );
-		$loopLegacyPage->doEditContent( $loopLegacyPageContent, '', EDIT_NEW, false, $user );
+		$loopLegacyPageUpdater = $loopLegacyPage->newPageUpdater( $systemUser ); 
+		$loopLegacyPageUpdater->setContent( "main", $loopLegacyPageContent );
+		$loopLegacyPageUpdater->saveRevision ( $summary, EDIT_NEW );
+
+		$loopTerminologyPage = WikiPage::factory( Title::newFromText( "LoopTerminologyPage", NS_MEDIAWIKI ));
+		$loopTerminologyPageContent = new WikitextContent( "" ); #empty
+		$loopTerminologyPageUpdater = $loopTerminologyPage->newPageUpdater( $systemUser ); 
+		$loopTerminologyPageUpdater->setContent( "main", $loopTerminologyPageContent );
+		$loopTerminologyPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
 	}
 

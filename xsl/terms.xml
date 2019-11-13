@@ -84,6 +84,7 @@
 	<msg name="phrase_table_number" lang="en">Here is the table </msg>
 	<msg name="word_list_of_tables" lang="en">List of tables</msg>	
 	<msg name="word_appendix" lang="en">Appendix</msg>
+	<msg name="word_terminology" lang="en">List of abbreviations</msg>
 	<msg name="word_looparea_task" lang="en">task</msg>
 	<msg name="word_looparea_timerequirement" lang="en">timerequirement</msg>
 	<msg name="word_looparea_learningobjectives" lang="en">learningobjectives</msg>
@@ -160,6 +161,7 @@
 	<msg name="phrase_table_number" lang="de">Hier befindet sich die Tabelle </msg>	
 	<msg name="word_list_of_tables" lang="de">Tabellenverzeichnis</msg>	
 	<msg name="word_appendix" lang="de">Anhang</msg>
+	<msg name="word_terminology" lang="de">Abkürzungsverzeichnis</msg>
 	<msg name="word_looparea_task" lang="de">Aufgabe</msg>
 	<msg name="word_looparea_timerequirement" lang="de">Zeitumfang</msg>
 	<msg name="word_looparea_learningobjectives" lang="de">Lernziele</msg>
@@ -237,6 +239,7 @@
 	<msg name="phrase_table_number" lang="sv">Här är tabellen </msg>	
 	<msg name="word_list_of_tables" lang="sv">Tabellförteckning</msg>	
 	<msg name="word_appendix" lang="sv">Appendix</msg>
+	<msg name="word_terminology" lang="sv">Förkortningar</msg>
 	<msg name="word_looparea_task" lang="sv">Uppgift</msg>
 	<msg name="word_looparea_timerequirement" lang="sv">Tidslinje</msg>
 	<msg name="word_looparea_learningobjectives" lang="sv">Utbildningsmål</msg>

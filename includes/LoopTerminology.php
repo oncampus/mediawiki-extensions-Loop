@@ -52,7 +52,10 @@ class LoopTerminology {
         $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
         $wikiPage = WikiPage::factory( $title );
         $revision = $wikiPage->getRevision();
-        $contentWikitext = $revision->getContent()->getText();
+        $contentWikitext = '';
+        if ( $revision ) {
+            $contentWikitext = $revision->getContent()->getText();
+        }
 
         return $contentWikitext;
 

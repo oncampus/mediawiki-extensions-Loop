@@ -60,6 +60,8 @@ class LoopXml {
 		$xml .= self::glossary2xml ();
 		
 		$xml .= "</glossary>\n";
+
+		$xml .= self::terminology2xml ();
 		
 		$xml .= "</loop>";
 
@@ -410,7 +412,6 @@ class LoopXml {
 	
 	}	
 
-	
 	public static function glossary2xml( ) {
 
 		$articles = LoopGlossary::getGlossaryPages( "idArray" );
@@ -425,7 +426,23 @@ class LoopXml {
 
 		return $return;
 	}
-	
+
+	public static function terminology2xml( ) {
+
+		$terminology = LoopTerminology::getTerminologyWikiText();
+		$return = '';
+
+		if ( !empty( $terminology ) ) {
+			$wiki2xml = new wiki2xml ();
+			$return .= "<terminology>\n";
+			$return .= "<article>\n";
+			$return .= $wiki2xml->parse( $terminology )."\n";
+			$return .= "</article>\n";
+			$return .= "</terminology>\n";
+		}
+		
+		return $return;
+	}
 	
 }
 
