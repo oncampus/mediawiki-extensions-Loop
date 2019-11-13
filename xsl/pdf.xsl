@@ -2845,5 +2845,87 @@
 		</fo:footnote>
 	
 	</xsl:template>
+
+	<xsl:template match="list">
+		<xsl:variable name="listlevel">
+			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
+		</xsl:variable>
+		<fo:list-block
+			start-indent="inherited-property-value(&apos;start-indent&apos;) + 2mm"
+			provisional-label-separation="2mm" space-before="4pt" space-after="4pt"
+			display-align="before">
+			<xsl:choose>
+				<xsl:when test="@type='numbered'">
+					<xsl:choose>
+						<xsl:when test="$listlevel=0">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'6mm'"></xsl:value-of></xsl:attribute>
+						</xsl:when>
+						<xsl:when test="$listlevel=1">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'8mm'"></xsl:value-of></xsl:attribute>
+						</xsl:when>
+						<xsl:when test="$listlevel=2">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'10mm'"></xsl:value-of></xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'12mm'"></xsl:value-of></xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'6mm'"></xsl:value-of></xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:list-block>
+	</xsl:template>
+		<xsl:template match="listitem">
+		<xsl:variable name="listlevel">
+			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
+		</xsl:variable>
+		<fo:list-item>
+			<fo:list-item-label end-indent="label-end()">
+				<xsl:choose>
+					<xsl:when test="../@type='numbered'">
+						
+						<xsl:choose>
+								<xsl:when test="$listlevel=1">
+									<fo:block><xsl:number level="single" count="listitem" format="1." /></fo:block>
+								</xsl:when>
+								<xsl:when test="$listlevel=2">
+									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
+								</xsl:when>
+								<xsl:when test="$listlevel=3">
+									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
+								</xsl:when>
+								<xsl:otherwise>
+									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
+								</xsl:otherwise>
+						</xsl:choose>
+						
+					</xsl:when>
+					<xsl:when test="../@type='ident'">
+						<fo:block padding-before="2pt"></fo:block>
+					</xsl:when>						
+					<xsl:otherwise>
+						<fo:block padding-before="2pt">
+							<xsl:choose>
+								<xsl:when test="$listlevel=1">&#x2022;</xsl:when>
+								<xsl:when test="$listlevel=2">&#x20D8;</xsl:when>
+								<xsl:when test="$listlevel=3">&#x220E;</xsl:when>
+								<xsl:otherwise>&#x220E;</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:list-item-label>
+			<fo:list-item-body start-indent="body-start()">
+				<fo:block>
+					<xsl:apply-templates select="*[not(name()='list')] | text()"></xsl:apply-templates>
+				</fo:block>
+				<xsl:apply-templates select="list"></xsl:apply-templates>
+			</fo:list-item-body>
+		</fo:list-item>
+	</xsl:template>	
+
 	
 </xsl:stylesheet>
