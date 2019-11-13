@@ -2813,7 +2813,7 @@
 	</xsl:template>
 
 	
-	<!-- loop_audio -->
+	<!-- Extension:Cite ref-Tag - Footnotes -->
 	<xsl:template match="extension[@extension_name='ref']">
 
 		<fo:footnote>
