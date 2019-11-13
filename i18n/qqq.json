@@ -361,5 +361,12 @@
 	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
 	
 	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
-	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} "
+	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} ",
+	"loopterminology": "Special Page title of terminology/abbreviations page",
+	"loopterminologyedit": "Special Page title of terminology/abbreviations edit page",
+	"loopterminology-warning-deleted": "Feedback message for deleting all abbreviations",
+	"loopterminology-save-success": "Feedback message for successful updating of abbreviations.",
+	"loopterminology-hint": "Page description at the top of the terminology edit page",
+	"loopterminology-example": "Formatting information for the abbreviations edit page"
+
 }
