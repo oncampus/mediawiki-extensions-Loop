@@ -2927,5 +2927,76 @@
 		</fo:list-item>
 	</xsl:template>	
 
+	<xsl:template match="table">
+	<fo:table table-layout="auto" border-style="solid" border-width="0.5pt" border-color="black" border-collapse="collapse" padding="0.6pt" space-after="12.5pt">
+			<fo:table-body>
+				<xsl:apply-templates></xsl:apply-templates>
+			</fo:table-body>
+	</fo:table>
+	</xsl:template>
+
+	<xsl:template match="tablerow">
+
+		<fo:table-row keep-together.within-column="auto">
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:table-row>
+
+	</xsl:template>
+
+    <xsl:template match="tablecell">
+        <fo:table-cell>
+        	<xsl:attribute name="padding">3pt</xsl:attribute>
+        	<xsl:attribute name="border-style">solid</xsl:attribute>
+        	<xsl:attribute name="border-width">0.5pt</xsl:attribute>
+        	<xsl:attribute name="border-color">black</xsl:attribute>
+        	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
+			
+			<xsl:call-template name="css-style-attributes"></xsl:call-template>
+			
+			
+        	<xsl:if test="@colspan">
+				<xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan"></xsl:value-of></xsl:attribute>
+        	</xsl:if>
+        	<xsl:if test="@rowspan">
+				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
+        	</xsl:if>    
+		   	                	
+        	    	                	
+        		<fo:block keep-together.within-column="auto">
+        			<xsl:apply-templates></xsl:apply-templates>
+			</fo:block>
+			
+        </fo:table-cell>
+    </xsl:template>
+
+    <xsl:template match="tablehead">
+        <fo:table-cell>
+        	<xsl:attribute name="padding">3pt</xsl:attribute>
+        	<xsl:attribute name="border-style">solid</xsl:attribute>
+        	<xsl:attribute name="border-width">0.5pt</xsl:attribute>
+        	<xsl:attribute name="border-color">black</xsl:attribute>
+        	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
+			
+			<xsl:call-template name="css-style-attributes"></xsl:call-template>
+			
+        	<xsl:if test="@colspan">
+				<xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan"></xsl:value-of></xsl:attribute>
+        	</xsl:if>
+        	<xsl:if test="@rowspan">
+				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
+        	</xsl:if>        	           	        	
+        	
+        	<!-- 
+			<fo:block font-weight="bold" break-before="column">
+        			<xsl:apply-templates></xsl:apply-templates>
+			</fo:block>
+ 			-->
+			<fo:block font-weight="bold" >
+        			<xsl:apply-templates></xsl:apply-templates>
+			</fo:block>		
+		
+        </fo:table-cell>
+    </xsl:template>	
 	
+
 </xsl:stylesheet>
