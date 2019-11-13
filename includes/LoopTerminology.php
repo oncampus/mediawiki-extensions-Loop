@@ -211,7 +211,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
         if( $userIsPermitted ) {
 
         	# user is permitted to edit the toc, print edit form here
-			if ( !empty ($newterminologyWikitext) && $success ) {
+			if ( $success ) {
 				$displayedWikitext = $newterminologyWikitext;
 			} else {
 				$displayedWikitext = $terminologyWikitext;
