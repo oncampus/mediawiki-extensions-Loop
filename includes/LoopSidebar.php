@@ -18,7 +18,7 @@ class LoopSidebar {
     public static function renderSidebar( $input, array $args, Parser $parser, PPFrame $frame ) {
         $html = "";
         try {
-            if ( isset ( $args[ "page" ] ) ) {
+            if ( isset ( $args[ "page" ] ) && !empty( $args[ "page" ] ) ) {
                 $sidebarTitle = Title::newFromText( $args["page"] );
                 $sidebarWP = new WikiPage( $sidebarTitle );
                 if ( $sidebarWP->getID() == 0 ) {
