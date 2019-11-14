@@ -125,8 +125,9 @@ class LoopHooks {
 					$params['frame']['no-link'] = false;
 					$params['frame']['frame'] = true;
 				} else {
+					$params['frame']['frame'] = false;
+					$params['frame']['framed'] = true;
 					$params['frame']['no-link'] = true;
-					$params['frame']['frame'] = true;
 				}
 				if ( isset( $params['frame']['align'] ) ) {
 					$params['horizAlign'][ $params['frame']['align'] ] = true;
