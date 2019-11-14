@@ -96,7 +96,8 @@
 		"LoopWikitextContent": "includes/LoopWikitextContent.php",
 		"LoopTerminology": "includes/LoopTerminology.php",
 		"SpecialLoopTerminology": "includes/LoopTerminology.php",
-		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php"
+		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php",
+		"LoopScreenshot": "includes/LoopScreenshot.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -125,10 +126,12 @@
 			"LoopIndex::onParserSetup",
 			"LoopSidebar::onParserSetup",
 			"LoopZip::onParserSetup",
-			"LoopMediaHandler::onParserSetup"
+			"LoopMediaHandler::onParserSetup",
+			"LoopScreenshot::onParserSetup"
 		],
 		"ParserAfterTidy": [
-			"LoopObject::onParserAfterTidy"
+			"LoopObject::onParserAfterTidy",
+			"LoopScreenshot::onParserAfterTidy"
 		],
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
