@@ -2813,7 +2813,7 @@
 	</xsl:template>
 
 	
-	<!-- Extension:Cite ref-Tag - Footnotes -->
+	<!-- loop_audio -->
 	<xsl:template match="extension[@extension_name='ref']">
 
 		<fo:footnote>
@@ -2878,7 +2878,8 @@
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:list-block>
 	</xsl:template>
-		<xsl:template match="listitem">
+
+	<xsl:template match="listitem">
 		<xsl:variable name="listlevel">
 			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
 		</xsl:variable>
@@ -2928,11 +2929,11 @@
 	</xsl:template>	
 
 	<xsl:template match="table">
-	<fo:table table-layout="auto" border-style="solid" border-width="0.5pt" border-color="black" border-collapse="collapse" padding="0.6pt" space-after="12.5pt">
-			<fo:table-body>
-				<xsl:apply-templates></xsl:apply-templates>
-			</fo:table-body>
-	</fo:table>
+		<fo:table table-layout="auto" border-style="solid" border-width="0.5pt" border-color="black" border-collapse="collapse" padding="0.6pt" space-after="12.5pt">
+				<fo:table-body>
+					<xsl:apply-templates></xsl:apply-templates>
+				</fo:table-body>
+		</fo:table>
 	</xsl:template>
 
 	<xsl:template match="tablerow">

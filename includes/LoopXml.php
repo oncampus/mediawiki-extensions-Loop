@@ -429,19 +429,40 @@ class LoopXml {
 
 	public static function terminology2xml( ) {
 
-		$terminology = LoopTerminology::getTerminologyWikiText();
-		$return = '';
+		$terminology = LoopTerminology::getTerminologyPageContentText();
+		$items = LoopTerminology::getSortedTerminology( $terminology );
 
-		if ( !empty( $terminology ) ) {
-			$wiki2xml = new wiki2xml ();
-			$return .= "<terminology>\n";
-			$return .= "<article>\n";
-			$return .= $wiki2xml->parse( $terminology )."\n";
-			$return .= "</article>\n";
-			$return .= "</terminology>\n";
+		$xml = "";
+
+		if ( !empty( $items ) ) {
+			$xml .= "<terminology>\n";
+			$xml .= "<article>\n";
+			ksort( $items );
+			$xml .= "<list>";
+            foreach ( $items as $item => $content ) {
+                if ( array_key_exists( "dt", $content ) &&  array_key_exists( "dd", $content ) ) {
+                    $xml .= '<listitem><defkey>';
+                    $i = 0;
+                    foreach ( $content["dt"] as $term ) {
+                        $xml .= ( $i == 0 ? "" : ", " );
+                        $xml .= $term;
+                        $i++;
+                    }
+                    $xml .= "</defkey>\n";
+                   # $xml .= "<div class='loopterminology-definition'>";
+                    foreach ( $content["dd"] as $def ) {
+                        $xml .= "<paragraph>" . $def . "</paragraph>\n";
+                    }
+                    $xml .= "</listitem>\n";
+                }
+            }
+			$xml .= "</list>";
+			$xml .= "</article>\n";
+			$xml .= "</terminology>\n";
 		}
-		
-		return $return;
+		#$return = $xml;
+		#dd($return, $items, $terminology);
+		return $xml;
 	}
 	
 }
