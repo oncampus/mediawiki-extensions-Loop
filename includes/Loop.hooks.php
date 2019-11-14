@@ -123,9 +123,8 @@ class LoopHooks {
 				$params['frame']['class'] = 'responsive-image';
 				if ($loopEditMode) {
 					$params['frame']['no-link'] = false;
-					$params['frame']['frame'] = true;
+					$params['frame']['framed'] = true;
 				} else {
-					$params['frame']['frame'] = false;
 					$params['frame']['framed'] = true;
 					$params['frame']['no-link'] = true;
 				}

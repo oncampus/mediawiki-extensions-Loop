@@ -39,9 +39,45 @@ class LoopTerminology {
         $parser = new Parser( $wgParserConf );
         $tmpTitle = Title::newFromText( 'NO TITLE' );
         $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
-        $return = $parserOutput->getText();
+        $output = $parserOutput->getText();
 
-        return $return;
+        $items = array();
+        $dom = new DomDocument();
+        $dom->loadXml($output);
+        $tags = $dom->getElementsByTagName( "dl" );
+        foreach ( $tags as $tag ) {
+            $childNodes = $tag->childNodes;
+            if ( !empty( $childNodes ) ) {
+                $currentELementTitle = $childNodes[0]->nodeValue;
+                foreach ( $childNodes as $child ) {
+                    $items[ $currentELementTitle ][ $child->nodeName ][] = $child->nodeValue;
+                }
+            }
+        }
+        $html = '';
+        if ( !empty( $items ) ) {
+            ksort( $items );
+            foreach ( $items as $item => $content ) {
+                if ( array_key_exists( "dt", $content ) &&  array_key_exists( "dd", $content ) ) {
+                    $html .= "<div class='loopterminology-term font-weight-bold'><span>";
+                    $i = 0;
+                    foreach ( $content["dt"] as $term ) {
+                        $html .= ( $i == 0 ? "" : ", " );
+                        $html .= $term;
+                        $i++;
+                    }
+                    $html .= "</span></div>\n";
+                    $html .= "<div class='loopterminology-definition'>";
+                    foreach ( $content["dd"] as $def ) {
+                        $html .= "<span>" . $def . "</span>\n";
+                    }
+                    $html .= "</div>\n";
+                }
+            }
+        }
+       # dd($html, $dom, $tags);
+
+        return $html;
 
     }
     
