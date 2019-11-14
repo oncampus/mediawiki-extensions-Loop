@@ -25,7 +25,9 @@ $specialPageAliases['en'] = array(
 	'LoopLiteratureImport' => array( 'Import literature' ),
 	'LoopLiteratureExport' => array( 'Export bibliography' ),
 	'LoopGlossary' => array( 'Glossary' ),
-	'LoopIndex' => array( 'Index' )
+	'LoopIndex' => array( 'Index' ),
+	'LoopTerminology' => array( 'List of abbreviations' ),
+	'LoopTerminologyEdit' => array( 'Edit list of abbreviations' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -45,7 +47,9 @@ $specialPageAliases['de'] = array(
 	'LoopLiteratureImport' => array( 'Literatur importieren' ),
 	'LoopLiteratureExport' => array( 'Literatur exportieren' ),
 	'LoopGlossary' => array( 'Glossar', 'Glossary' ),
-	'LoopIndex' => array( 'Index' )
+	'LoopIndex' => array( 'Index' ),
+	'LoopTerminology' => array( 'Abkürzungsverzeichnis' ),
+	'LoopTerminologyEdit' => array( 'Abkürzungsverzeichnis bearbeiten' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -65,7 +69,9 @@ $specialPageAliases['sv'] = array(
 	'LoopLiteratureImport' => array( 'Importera litteraturen' ),
 	'LoopLiteratureExport' => array( 'Exportera bibliografi' ),
 	'LoopGlossary' => array( 'Glossary', 'Ordlista' ),
-	'LoopIndex' => array( 'Index' )
+	'LoopIndex' => array( 'Index' ),
+	'LoopTerminology' => array( 'Förkortningar' ),
+	'LoopTerminologyEdit' => array( 'Regidera förkortningar' )
 	);
 
 

@@ -55,7 +55,7 @@ class Loop {
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
-		$wgContentHandlers;
+		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -139,6 +139,10 @@ class Loop {
 		$wgNamespaceProtection[NS_HELP_TALK] = ['*'];
 		$wgNamespaceProtection[NS_CATEGORY_TALK] = ['*'];
 
+		# Lingo configuration
+		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
+		$wgexLingoDisplayOnce = true;
+
 		return true;
 	}
 	
@@ -146,17 +150,29 @@ class Loop {
 	 * Set up LOOP-specific pages so they are not red links
 	 */
 	public static function setupLoopPages() {
-		
-		$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-		$user->addGroup("sysop");
+
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+		$systemUser->addGroup("sysop");
+		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" ); 
 			
 		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
-		$loopExceptionPage->doEditContent( $loopExceptionPageContent, '', EDIT_NEW, false, $user );
+		$loopExceptionPageUpdater = $loopExceptionPage->newPageUpdater( $systemUser ); 
+		$loopExceptionPageUpdater->setContent( "main", $loopExceptionPageContent );
+		$loopExceptionPageUpdater->saveRevision ( $summary, EDIT_NEW );
+
 
 		$loopLegacyPage = WikiPage::factory( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopLegacyPageContent = new WikitextContent( wfMessage( 'looplegacy-tracking-category-desc' )->inContentLanguage()->text() );
-		$loopLegacyPage->doEditContent( $loopLegacyPageContent, '', EDIT_NEW, false, $user );
+		$loopLegacyPageUpdater = $loopLegacyPage->newPageUpdater( $systemUser ); 
+		$loopLegacyPageUpdater->setContent( "main", $loopLegacyPageContent );
+		$loopLegacyPageUpdater->saveRevision ( $summary, EDIT_NEW );
+
+		$loopTerminologyPage = WikiPage::factory( Title::newFromText( "LoopTerminologyPage", NS_MEDIAWIKI ));
+		$loopTerminologyPageContent = new WikitextContent( "" ); #empty
+		$loopTerminologyPageUpdater = $loopTerminologyPage->newPageUpdater( $systemUser ); 
+		$loopTerminologyPageUpdater->setContent( "main", $loopTerminologyPageContent );
+		$loopTerminologyPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
 	}
 
@@ -198,41 +214,4 @@ class Loop {
 		}
 	}
 
-}
-
-class LoopWikitextContentHandler extends WikitextContentHandler {
-    protected function getContentClass() {
-        return 'LoopWikitextContent';
-    }
-}
-class LoopWikitextContent extends WikitextContent {	
-	/**
-	* Copied from WikitextContent.php, overriding it with our own content and a custom Hook
-	*
-	* Returns a Content object with pre-save transformations applied using
-	* Parser::preSaveTransform().
-	*
-	* @param Title $title
-	* @param User $user
-	* @param ParserOptions $popts
-	*
-	* @return Content
-	*/
-   public function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
-	   global $wgParser;
-	   $text = $this->getText();
-	   $pst = $wgParser->preSaveTransform( $text, $title, $user, $popts );
-
-	   # Custom Hook for changing content before it's saved
-	   Hooks::run( 'PreSaveTransformComplete', [ &$pst, $title, $user ] );
-
-	   if ( $text === $pst ) {
-		   return $this;
-	   }
-	   $ret = new static( $pst );
-	   if ( $wgParser->getOutput()->getFlag( 'user-signature' ) ) {
-		   $ret->hadSignature = true;
-	   }
-	   return $ret;
-   }
 }

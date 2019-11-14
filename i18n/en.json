@@ -290,7 +290,10 @@
 	"loopliterature-error-invalid-export": "The following literature entries cannot be exported, as the key does not match BibTeX format: ",
 	"loopliterature-error-dublicate-id" : "The literature reference '$3' does not have a unique ID ($1). On page '$2' is another reference with that same ID. Please change the ID so the reference can be taken into account in bibliography.",
 
-	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
+	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",	
+	"looplegacy-biblio": "The tag '''biblio''' is not supported since LOOP2. Please use the new tag '''<loop_literature>'''.",
+	"looplegacy-references": "The tag '''references''' is obsolete since LOOP2. Footnotes are automatically displayed at the end of the page as soon as there is a <ref> tag in use.",
+
 	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
@@ -358,5 +361,12 @@
 	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
 	
 	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
-	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}"
+	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}",
+	"loopterminology": "List of abbreviations",
+	"loopterminologyedit": "Edit list of abbreviations",
+	"loopterminology-warning-deleted": "All entries have been removed from the list of abbreviations.",
+	"loopterminology-save-success": "The abbreviations have been updated successfully.",
+	"loopterminology-hint": "You can edit the list of abbreviations here. For information about formatting see below the textfield.",
+	"loopterminology-example": "Use a semicolon in front of the abbreviation to define it. In an new row use a colon as the first character and describe the previously defined term. You can use multiple terms for multiple definitions. Example:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform"
+
 }

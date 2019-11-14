@@ -291,6 +291,9 @@
 	"loopliterature-error-dublicate-id" : "Litteraturreferensen '$3' besitter ingen unik ID ($1). På sidan '$2' finns det en annan litteraturreferens med den här ID. Vänligen byt ID:n, så referensen visas korrekt i bibliografin.",
 
 	"looplegacy-error-unsupported": "Taggen '''$1''' har tagits bort i $2",
+	"looplegacy-biblio": "Taggen '''biblio''' har tagits bort i LOOP2. Använd <loop_literature><literature>''Key''</literature></loop_literature> istället.",
+	"looplegacy-references": "Taggen '''references''' är inte länge nödvändig sedan LOOP2. Fotnoter visas automatiskt.",
+
 	"loopobject-error-unknown-renderoption" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
@@ -358,5 +361,12 @@
 	"loopzip-error-nostartfile": "Den angivit HTML-fil $1 (parameter start)  kunde inte hittas i ZIP-filen $2.",
 	
 	"loop-error-missingrequired": "Taggen $1 saknas parametern $2. Elementet visas inte.",
-	"loop-error-missingfile": "Filen $2 som har angivits i taggen $1 kunde inte hittas. Vänligen ladda upp den. {{PLURAL:$3|Elementet visas uten filen.|Elementet visas inte.}}"
+	"loop-error-missingfile": "Filen $2 som har angivits i taggen $1 kunde inte hittas. Vänligen ladda upp den. {{PLURAL:$3|Elementet visas uten filen.|Elementet visas inte.}}",
+	"loopterminology": "Förkortningar",
+	"loopterminologyedit": "Regidera förkortningar",
+	"loopterminology-warning-deleted": "Alla förkortningar har tagits bort.",
+	"loopterminology-save-success": "Förkortningarna har uppdaterats.",
+	"loopterminology-hint": "Regidera förkortningar här. Untdr textfältet finns information om formateringskrav.",
+	"loopterminology-example": "Använd ett semikolon framför förkortningen i en linje. Börja nästa linjen med en kolon och beskriva förkortningen. Man kan använda flera förkortningar med flera definitioner. Exempel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform"
+
 }

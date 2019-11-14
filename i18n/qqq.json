@@ -290,7 +290,10 @@
 	"loopliterature-error-invalid-export": "Error message for literature: key invalid for export",
 	"loopliterature-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used; $3 -> Key/Term of the original object",
 	
-	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
+	"looplegacy-error-unsupported": "General error message for deprecated functions. $1 -> The deprecated tag; $2 -> Since when the tag is deprecated.",
+	"looplegacy-biblio": "Special error message for biblio tag which has been deprecated in LOOP2 and replaced by loop_literature tag.",
+	"looplegacy-references": "Special error message for references tag is been obsolte since LOOP2.",
+
 	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
 	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options",
 	"loopobject-error-unknown-indexingoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - indexing option\n* $2 supported index options",
@@ -358,5 +361,12 @@
 	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
 	
 	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
-	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} "
+	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} ",
+	"loopterminology": "Special Page title of terminology/abbreviations page",
+	"loopterminologyedit": "Special Page title of terminology/abbreviations edit page",
+	"loopterminology-warning-deleted": "Feedback message for deleting all abbreviations",
+	"loopterminology-save-success": "Feedback message for successful updating of abbreviations.",
+	"loopterminology-hint": "Page description at the top of the terminology edit page",
+	"loopterminology-example": "Formatting information for the abbreviations edit page"
+
 }

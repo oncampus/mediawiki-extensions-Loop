@@ -103,6 +103,7 @@
 	<xsl:variable name="word_list_of_tasks" select="functx:get_term_name('word_list_of_tasks')"/>
 	
 	<xsl:variable name="word_appendix" select="functx:get_term_name('word_appendix')"/>
+	<xsl:variable name="word_terminology" select="functx:get_term_name('word_terminology')"/>
 	
 	<xsl:variable name="word_looparea_task" select="functx:get_term_name('word_looparea_task')"/>
 	<xsl:variable name="word_looparea_timerequirement" select="functx:get_term_name('word_looparea_timerequirement')"/>

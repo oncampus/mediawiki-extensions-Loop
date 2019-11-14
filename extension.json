@@ -18,7 +18,12 @@
 			"WikiEditor": "*",
 			"Math": "*",
 			"SyntaxHighlight": "*",
-			"EmbedVideo": ">= 2.8.0"
+			"EmbedVideo": ">= 2.8.0",
+			"Cite": "*",
+			"Lingo": "*",
+			"MsUpload": "*",
+			"Score": "*",
+			"Quiz": "*"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -86,7 +91,12 @@
 		"LoopWikiEditor": "includes/LoopWikiEditor.php",
 		"LoopZip": "includes/LoopZip.php",
 		"LoopSidebar": "includes/LoopSidebar.php",
-		"LoopMediaHandler": "includes/LoopMediaHandler.php"
+		"LoopMediaHandler": "includes/LoopMediaHandler.php",
+		"LoopWikitextContentHandler": "includes/LoopWikitextContent.php",
+		"LoopWikitextContent": "includes/LoopWikitextContent.php",
+		"LoopTerminology": "includes/LoopTerminology.php",
+		"SpecialLoopTerminology": "includes/LoopTerminology.php",
+		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -163,7 +173,9 @@
 		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
 		"LoopLiteratureExport": "SpecialLoopLiteratureExport",
 		"LoopGlossary": "SpecialLoopGlossary",
-		"LoopIndex": "SpecialLoopIndex"
+		"LoopIndex": "SpecialLoopIndex",
+		"LoopTerminology": "SpecialLoopTerminology",
+		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

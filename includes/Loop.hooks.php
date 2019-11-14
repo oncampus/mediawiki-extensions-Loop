@@ -123,10 +123,10 @@ class LoopHooks {
 				$params['frame']['class'] = 'responsive-image';
 				if ($loopEditMode) {
 					$params['frame']['no-link'] = false;
-					$params['frame']['frame'] = true;
+					$params['frame']['framed'] = true;
 				} else {
+					$params['frame']['framed'] = true;
 					$params['frame']['no-link'] = true;
-					$params['frame']['frame'] = true;
 				}
 				if ( isset( $params['frame']['align'] ) ) {
 					$params['horizAlign'][ $params['frame']['align'] ] = true;

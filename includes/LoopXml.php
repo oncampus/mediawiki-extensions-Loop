@@ -60,6 +60,8 @@ class LoopXml {
 		$xml .= self::glossary2xml ();
 		
 		$xml .= "</glossary>\n";
+
+		$xml .= self::terminology2xml ();
 		
 		$xml .= "</loop>";
 
@@ -410,7 +412,6 @@ class LoopXml {
 	
 	}	
 
-	
 	public static function glossary2xml( ) {
 
 		$articles = LoopGlossary::getGlossaryPages( "idArray" );
@@ -425,7 +426,44 @@ class LoopXml {
 
 		return $return;
 	}
-	
+
+	public static function terminology2xml( ) {
+
+		$terminology = LoopTerminology::getTerminologyPageContentText();
+		$items = LoopTerminology::getSortedTerminology( $terminology );
+
+		$xml = "";
+
+		if ( !empty( $items ) ) {
+			$xml .= "<terminology>\n";
+			$xml .= "<article>\n";
+			ksort( $items );
+			$xml .= "<list>";
+            foreach ( $items as $item => $content ) {
+                if ( array_key_exists( "dt", $content ) &&  array_key_exists( "dd", $content ) ) {
+                    $xml .= '<listitem><defkey>';
+                    $i = 0;
+                    foreach ( $content["dt"] as $term ) {
+                        $xml .= ( $i == 0 ? "" : ", " );
+                        $xml .= $term;
+                        $i++;
+                    }
+                    $xml .= "</defkey>\n";
+                   # $xml .= "<div class='loopterminology-definition'>";
+                    foreach ( $content["dd"] as $def ) {
+                        $xml .= "<paragraph>" . $def . "</paragraph>\n";
+                    }
+                    $xml .= "</listitem>\n";
+                }
+            }
+			$xml .= "</list>";
+			$xml .= "</article>\n";
+			$xml .= "</terminology>\n";
+		}
+		#$return = $xml;
+		#dd($return, $items, $terminology);
+		return $xml;
+	}
 	
 }
 

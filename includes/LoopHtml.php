@@ -67,7 +67,7 @@ class LoopHtml{
             }
 
             # Create special page files
-            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary', 'LoopIndex' ); 
+            $specialPages = array ( 'LoopStructure', 'LoopFigures', 'LoopFormulas', 'LoopMedia', 'LoopListings', 'LoopLiterature', 'LoopTables', 'LoopTasks', 'LoopGlossary', 'LoopIndex', 'LoopTerminology' ); 
             foreach( $specialPages as $page ) {
                 $tmpTitle = Title::newFromText( $page, NS_SPECIAL );
                 LoopHtml::writeSpecialPageToFile( $tmpTitle, "", $exportSkin );
@@ -200,8 +200,10 @@ class LoopHtml{
             case "LoopIndex":
                 $content = SpecialLoopIndex::renderLoopIndexSpecialPage();
                 break;
+            case "LoopTerminology":
+                $content = SpecialLoopTerminology::renderLoopTerminologySpecialPage();
+                break;
             default:
-                #dd($specialPage);
                 $content = '';
         }
         
@@ -610,6 +612,18 @@ class LoopHtml{
                             }
                         }
                     }
+                }
+            }
+        }
+        # edit links from cite extension
+        $citeLinks = $this->getElementsByClass( $body[0], "sup", "reference" );
+        $citeLinks2 = $this->getElementsByClass( $body[0], "span", "mw-cite-backlink" );
+        $citeLinks = array_merge( $citeLinks, $citeLinks2 );
+        if ( $citeLinks ) {
+            foreach ( $citeLinks as $element ) {
+                foreach ( $element->childNodes as $child ) {
+                    $newhref = strstr($child->getAttribute( 'href' ), "#");
+                    $child->setAttribute( 'href', $newhref );
                 }
             }
         }
