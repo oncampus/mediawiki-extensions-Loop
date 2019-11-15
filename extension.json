@@ -807,6 +807,10 @@
 		"LoopLegacyShowTitles": {
 			"value": true,
 			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
+		},
+		"ScreenshotUrl": {
+			"value": "",
+			"description" : "URL for rendering screenshots service"
 		}
 
 	},
