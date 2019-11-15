@@ -2999,5 +2999,8 @@
         </fo:table-cell>
     </xsl:template>	
 	
+	<xsl:template match="extension[@extension_name='loop_screenshot']">
+		
+    </xsl:template>	
 
 </xsl:stylesheet>
