@@ -190,7 +190,7 @@ class Loop {
 		
 		$xpath = new DOMXPath( $dom );
 		
-		$objectTags = array( '//loop_figure', '//loop_formula', '//loop_listing', '//loop_media', '//loop_table', '//loop_task', '//cite', '//loop_index' );
+		$objectTags = array( '//loop_figure', '//loop_formula', '//loop_listing', '//loop_media', '//loop_table', '//loop_task', '//cite', '//loop_index', '//loop_screenshot' );
 		
 		$query = implode(' | ', $objectTags);
 		$nodes = $xpath->query( $query );
