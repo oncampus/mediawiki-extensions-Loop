@@ -1,5 +1,14 @@
 <?php 
 
+/**
+ * @description Screenshot tag. Content will have a screenshot taken to be displayed in PDF instead of the otherwise regularily rendered content
+ * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ */
+
+if ( !defined( 'MEDIAWIKI' ) ) {
+    die( "This file cannot be run standalone.\n" );
+}
+
 class LoopScreenshot {
 	
 	public static function onParserSetup( Parser $parser ) {
@@ -30,16 +39,18 @@ class LoopScreenshot {
 		
 		if ( array_key_exists( "width", $args ) ) {
 			$width = intval($args["width"]);
+			$orig_width = $width;
 			if ( $width < 600 ) {
 				$width = 600;
 			}
 		} else {
 			$width = 700;
+			$orig_width = $width;
 		}
 		if ( array_key_exists( "height", $args ) ) {
 			$height = intval( $args["height"]);
 		} else {
-			$height = 600;
+			$height = 500;
 		}
 		$refId = $args["id"];
 
@@ -57,10 +68,11 @@ class LoopScreenshot {
 			$parser->getOutput()->addModules( 'loop.spoiler.js' );
 			$tmpId = uniqid();
 			$return .= '<div class="loopspoiler-container">';
-			$return .= '<span class="btn loopspoiler loopspoiler_type_in_text '. $tmpId .'">' . "Screenshot" . '</span>';
+			$return .= '<span class="btn loopspoiler loopspoiler_type_in_text '. $tmpId .'">' . wfMessage( "loopscreenshot" )->text() . '</span>';
 			$return .= '<div id="'. $tmpId . '" class="loopspoiler_content_wrapper loopspoiler_type_in_text">';
 			$return .= '<div class="loopspoiler_content">';
 			$screenshotUrl = $wgCanonicalServer . "/mediawiki/images/screenshots/$articleId/$refId.png";
+			#$return .= wfMessage( "loopscreenshot-hint", $orig_width, $height )->text() . "<br/><hr/>";
 			$return .= '<img class="responsive-image" src="'.$screenshotUrl.'"/>';
 			$return .= "\n</div></div></div>";
 		}
@@ -78,11 +90,9 @@ class LoopScreenshot {
 			$html .= '<html>';
 			$html .= '<head>';
 			$html .= '<meta charset="UTF-8" />';
-			$html .= '<link rel="stylesheet" href="'.$wgCanonicalServer.'/mediawiki/resources/src/mediawiki.legacy/shared.css">';
-			$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . "/mediawiki/load.php?lang=". $wgLanguageCode ."&amp;modules=skins.loop-bootstrap%2Cloop-common%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
-			$html .= '<style>.screenshotviewport{
-				transform: scale(4);
-				transform-origin: 0 0;}</style>';
+			$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . '/mediawiki/resources/src/mediawiki.legacy/shared.css">';
+			$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . "/mediawiki/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2Cloop-common%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
+			$html .= '<style>.screenshotviewport{ transform: scale(4); transform-origin: 0 0;}</style>';
 			$html .= '</head>';
 			$html .= '<body><div class="screenshotviewport">' . $content . '</div></body></html>';
 
@@ -120,11 +130,8 @@ class LoopScreenshot {
 			if ( file_exists( $screenshotHtmlFile ) ) {
 				unlink( $screenshotHtmlFile );
 			}
-			#dd($image_content);
 		}
 
 		return true;
 	}
 }
-
-?>

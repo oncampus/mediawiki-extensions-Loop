@@ -367,6 +367,6 @@
 	"loopterminology-warning-deleted": "Feedback message for deleting all abbreviations",
 	"loopterminology-save-success": "Feedback message for successful updating of abbreviations.",
 	"loopterminology-hint": "Page description at the top of the terminology edit page",
-	"loopterminology-example": "Formatting information for the abbreviations edit page"
-
+	"loopterminology-example": "Formatting information for the abbreviations edit page",
+	"loopscreenshot": "Screenshot"
 }
