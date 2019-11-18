@@ -56,7 +56,9 @@ class SpecialPurgeCache extends SpecialPage {
 			$dbw->delete( 'objectcache', '*', __METHOD__ );
 					
 			$exportPath = $wgUploadDirectory . "/export/";
+			$screenshotPath = $wgUploadDirectory . "/screenshots/";
 			SpecialPurgeCache::deleteAll($exportPath);
+			SpecialPurgeCache::deleteAll($screenshotPath);
 			LoopObject::updateStructurePageTouched();
 			LoopGlossary::updateGlossaryPageTouched();
 		}
