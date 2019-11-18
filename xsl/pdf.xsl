@@ -3001,6 +3001,15 @@
 	
 	<xsl:template match="extension[@extension_name='loop_screenshot']">
 		
+		<xsl:variable name="page" select="ancestor::article/@id"/>
+		<xsl:variable name="id" select="@id"/>
+		<xsl:variable name="img" select="php:function('LoopXsl::xsl_fetch_screenshot', $id, $page)"/>
+
+		<xsl:if test="$img!=''">
+			<fo:external-graphic scaling="uniform" content-width="scale-down-to-fit" max-width="145mm">
+				<xsl:attribute name="src"><xsl:value-of select="$img"></xsl:value-of></xsl:attribute>
+			</fo:external-graphic>
+		</xsl:if>
     </xsl:template>	
 
 </xsl:stylesheet>

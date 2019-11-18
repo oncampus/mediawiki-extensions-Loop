@@ -441,4 +441,29 @@ class LoopXsl {
 		return $dom;
 	}
 
+    public static function xsl_fetch_screenshot( $id_input, $articleId_input ) {
+
+		global $wgUploadDirectory, $wgCanonicalServer;
+		$id = $id_input[0]->value;
+		$articleId = str_replace( "article", "", $articleId_input[0]->value );
+
+		$screenshotPath = $wgUploadDirectory . '/screenshots/' . $articleId . "/" . $id . ".png";
+		$publicScreenshotPath = $wgCanonicalServer . '/mediawiki/images/screenshots/' . $articleId . "/" . $id . ".png";
+			
+		if ( file_exists( $screenshotPath ) ) {
+			return $publicScreenshotPath;
+		} else { # parse the page so images are rendered and can be returned
+			global $wgParserConf;
+			$title = Title::newFromId( $articleId );
+			$wikiPage = WikiPage::factory( $title );
+			$content = $wikiPage->getContent();
+
+			$parser = new Parser( $wgParserConf );
+			$parser->parse( $content->getText(), $title, new ParserOptions() );
+			if ( file_exists( $screenshotPath ) ) {
+				return $publicScreenshotPath;
+			} 
+		}
+		return "";		
+	}
 }
