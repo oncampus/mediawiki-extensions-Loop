@@ -631,6 +631,17 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
+                                    'loopsnippets-screenshot': {
+                                        labelMsg: 'loopscreenshot',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_screenshot width="700" height="500">',
+                                                peri: 'Druckbereich',
+                                                post: '</loop_screenshot>'
+                                            }
+                                        }
+                                    },
                                 }
                             } // end of snippets
 
