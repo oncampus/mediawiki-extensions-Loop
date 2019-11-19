@@ -64,14 +64,14 @@ class LoopScreenshot {
 		$return .= '</div><div class="loop_screenshot_end"></div>';		
 
 		if ( $loopeditmode ) {
-			global $wgCanonicalServer;
+			global $wgCanonicalServer, $wgUploadPath;
 			$parser->getOutput()->addModules( 'loop.spoiler.js' );
 			$tmpId = uniqid();
 			$return .= '<div class="loopspoiler-container">';
 			$return .= '<span class="btn loopspoiler loopspoiler_type_in_text '. $tmpId .'">' . wfMessage( "loopscreenshot" )->text() . '</span>';
 			$return .= '<div id="'. $tmpId . '" class="loopspoiler_content_wrapper loopspoiler_type_in_text">';
 			$return .= '<div class="loopspoiler_content">';
-			$screenshotUrl = $wgCanonicalServer . "/mediawiki/images/screenshots/$articleId/$refId.png";
+			$screenshotUrl = $wgCanonicalServer . $wgUploadPath."/screenshots/$articleId/$refId.png";
 			#$return .= wfMessage( "loopscreenshot-hint", $orig_width, $height )->text() . "<br/><hr/>";
 			$return .= '<img class="responsive-image" src="'.$screenshotUrl.'"/>';
 			$return .= "\n</div></div></div>";
@@ -82,7 +82,7 @@ class LoopScreenshot {
 		
 	public static function html2png ( $content, $id, $articleId, $width, $height ) {
 
-		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode;
+		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath;
 		#dd($content);
 		if ( !empty ( $wgScreenshotUrl ) ) {
 
@@ -106,7 +106,9 @@ class LoopScreenshot {
 			}
 			
 			$screenshotHtmlFile = $screenshotPageDir.'/'.$id.'.html';
-			$canonicalHtmlUrl = $wgCanonicalServer."/mediawiki/images/screenshots/".$articleId."/".$id.'.html';
+
+			#dd($wgCanonicalServer . $wgUploadPath);
+			$canonicalHtmlUrl = $wgCanonicalServer.$wgUploadPath.'/screenshots/'.$articleId."/".$id.'.html';
 			$screenshotPngFile = $screenshotPageDir.'/'.$id.'.png';
 			#dd($wgCanonicalServer."/mediawiki/images/screenshot/".$articleId."/".$id.'.html');
 			$fh = fopen( $screenshotHtmlFile, 'w+' );

@@ -443,12 +443,12 @@ class LoopXsl {
 
     public static function xsl_fetch_screenshot( $id_input, $articleId_input ) {
 
-		global $wgUploadDirectory, $wgCanonicalServer;
+		global $wgUploadDirectory, $wgCanonicalServer, $wgUploadPath;
 		$id = $id_input[0]->value;
 		$articleId = str_replace( "article", "", $articleId_input[0]->value );
 
 		$screenshotPath = $wgUploadDirectory . '/screenshots/' . $articleId . "/" . $id . ".png";
-		$publicScreenshotPath = $wgCanonicalServer . '/mediawiki/images/screenshots/' . $articleId . "/" . $id . ".png";
+		$publicScreenshotPath = $wgCanonicalServer . $wgUploadPath. '/screenshots/' . $articleId . "/" . $id . ".png";
 			
 		if ( file_exists( $screenshotPath ) ) {
 			return $publicScreenshotPath;
