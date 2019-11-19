@@ -1107,7 +1107,7 @@ class LoopLiteratureReference {
             __METHOD__
 		);
         $this->id = $dbw->insertId();
-        SpecialPurgeCache::purge();
+        # SpecialPurgeCache::purge();
         
         return true;
 
