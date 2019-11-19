@@ -446,16 +446,20 @@ class LoopXsl {
 		global $wgUploadDirectory, $wgCanonicalServer, $wgUploadPath;
 		$id = $id_input[0]->value;
 		$articleId = str_replace( "article", "", $articleId_input[0]->value );
+		$title = Title::newFromId( $articleId );
+		$wikiPage = WikiPage::factory( $title );
+		$fwp = new FlaggableWikiPage ( $title );
+		$rev = $wikiPage->getRevision();
+		$revId = $rev->getId();
+		$stableRevId = $fwp->getStable();
 
-		$screenshotPath = $wgUploadDirectory . '/screenshots/' . $articleId . "/" . $id . ".png";
-		$publicScreenshotPath = $wgCanonicalServer . $wgUploadPath. '/screenshots/' . $articleId . "/" . $id . ".png";
+		$screenshotPath = $wgUploadDirectory . '/screenshots/' . $articleId . "/" . $stableRevId . "_" . $id . ".png";
+		$publicScreenshotPath = $wgCanonicalServer . $wgUploadPath. '/screenshots/' . $articleId . "/" . $stableRevId . "_" . $id . ".png";
 			
 		if ( file_exists( $screenshotPath ) ) {
 			return $publicScreenshotPath;
 		} else { # parse the page so images are rendered and can be returned
 			global $wgParserConf;
-			$title = Title::newFromId( $articleId );
-			$wikiPage = WikiPage::factory( $title );
 			$content = $wikiPage->getContent();
 
 			$parser = new Parser( $wgParserConf );

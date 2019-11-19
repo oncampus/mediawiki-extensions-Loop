@@ -20,16 +20,14 @@ class LoopScreenshot {
 
 		$matches = array();
 		preg_match_all( '/(<div class="loop_screenshot_begin" id=")(\w*)(" data-width=")(\d*)(" data-height=")(\d*)(">)(.*)(<\/div><div class="loop_screenshot_end"><\/div>)/iUs', $text, $matches );
-		$articleId = $parser->getTitle()->getArticleID();
-		#dd($matches, $text);
+		$title = $parser->getTitle();
+		$articleId = $title->getArticleID();
 
 		if ( $matches ) {
 			$c = count( $matches[0] ); 
-			
 			for ( $i = 0; $i < $c; $i++ ) {
-				$png = LoopScreenshot::html2png( $matches[8][$i], $matches[2][$i], $articleId, $matches[4][$i], $matches[6][$i] );
+				$png = LoopScreenshot::html2png( $title, $matches[8][$i], $matches[2][$i], $articleId, $matches[4][$i], $matches[6][$i] );
 			}
-			
 		}
 
 		return true;
@@ -37,6 +35,10 @@ class LoopScreenshot {
 	
 	public static function renderLoopScreenshot( $input, array $args, $parser, $frame ) {
 		
+		$title = $parser->getTitle();
+		$fwp = new FlaggableWikiPage ( $title );
+		$stableRevId = $fwp->getStable();
+
 		if ( array_key_exists( "width", $args ) ) {
 			$width = intval($args["width"]);
 			$orig_width = $width;
@@ -52,14 +54,14 @@ class LoopScreenshot {
 		} else {
 			$height = 500;
 		}
-		$refId = $args["id"];
+		$refId = $stableRevId ."_". $args["id"];
+		$return = '';
 
 		$user = $parser->getUser();
 		$articleId = $parser->getTitle()->getArticleID();
 		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
-		$return = '';
 
-		$return .= '<div class="loop_screenshot_begin" id="'.$args['id'].'" data-width="'.$width.'" data-height="'.$height.'">';
+		$return .= '<div class="loop_screenshot_begin" id="'.$refId.'" data-width="'.$width.'" data-height="'.$height.'">';
 		$return .= $parser->recursiveTagParseFully( $input );
 		$return .= '</div><div class="loop_screenshot_end"></div>';		
 
@@ -76,62 +78,94 @@ class LoopScreenshot {
 			$return .= '<img class="responsive-image" src="'.$screenshotUrl.'"/>';
 			$return .= "\n</div></div></div>";
 		}
+		
+		
 		return $return;
 
 	}
 		
-	public static function html2png ( $content, $id, $articleId, $width, $height ) {
+	public static function html2png ( $title, $content, $id, $articleId, $width, $height ) {
 
 		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath;
-		#dd($content);
+
 		if ( !empty ( $wgScreenshotUrl ) ) {
+
+			$wikiPage = WikiPage::factory( $title );
+			$fwp = new FlaggableWikiPage ( $title );
 			
-			$html = '<!DOCTYPE html>';
-			$html .= '<html>';
-			$html .= '<head>';
-			$html .= '<meta charset="UTF-8" />';
-			$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . '/resources/src/mediawiki.legacy/shared.css">';
-			$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . "/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2Cloop-common%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
-			$html .= '<style>.screenshotviewport{ transform: scale(4); transform-origin: 0 0;}</style>';
-			$html .= '</head>';
-			$html .= '<body><div class="screenshotviewport">' . $content . '</div></body></html>';
-
-			$screenshotDir = $wgUploadDirectory.'/screenshots';
-			if ( !is_dir( $screenshotDir ) ) {
-				@mkdir( $screenshotDir, 0774, true );
-			}
-			$screenshotPageDir = $screenshotDir.'/'.$articleId;
-			if ( !is_dir( $screenshotPageDir ) ) {
-				@mkdir( $screenshotPageDir, 0774, true );
-			}
+			$rev = $wikiPage->getRevision();
+			$revId = $rev->getId();
+			$stableRevId = $fwp->getStable();
 			
-			$screenshotHtmlFile = $screenshotPageDir.'/'.$id.'.html';
+			if ( isset( $fwp ) ) {
+				
+				$html = '<!DOCTYPE html>';
+				$html .= '<html>';
+				$html .= '<head>';
+				$html .= '<meta charset="UTF-8" />';
+				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . '/resources/src/mediawiki.legacy/shared.css">';
+				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . "/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2Cloop-common%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
+				$html .= '<style>.screenshotviewport{ transform: scale(4); transform-origin: 0 0;}</style>';
+				$html .= '</head>';
+				$html .= '<body><div class="screenshotviewport">' . $content . '</div></body></html>';
 
-			#dd($wgCanonicalServer . $wgUploadPath);
-			$canonicalHtmlUrl = $wgCanonicalServer.$wgUploadPath.'/screenshots/'.$articleId."/".$id.'.html';
-			$screenshotPngFile = $screenshotPageDir.'/'.$id.'.png';
-			#dd($wgCanonicalServer."/mediawiki/images/screenshot/".$articleId."/".$id.'.html');
-			$fh = fopen( $screenshotHtmlFile, 'w+' );
-			fwrite ( $fh, $html );
-			fclose( $fh );
-			chmod( $screenshotHtmlFile, 0774);
-			$ch = curl_init();
-			curl_setopt ( $ch, CURLOPT_POST, true );
-			curl_setopt ( $ch, CURLOPT_URL, $wgScreenshotUrl );
-			curl_setopt ( $ch, CURLOPT_POSTFIELDS, "url=".$canonicalHtmlUrl."&width=".$width."&height=".$height );
-			curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
-			$imageContent = curl_exec( $ch );
-			curl_close( $ch );
+				$screenshotDir = $wgUploadDirectory.'/screenshots';
+				if ( !is_dir( $screenshotDir ) ) {
+					@mkdir( $screenshotDir, 0774, true );
+				}
+				$screenshotPageDir = $screenshotDir.'/'.$articleId;
+				if ( !is_dir( $screenshotPageDir ) ) {
+					@mkdir( $screenshotPageDir, 0774, true );
+				}
+				
+				$screenshotHtmlFile = $screenshotPageDir.'/'.$id.'.html';
+				$canonicalHtmlUrl = $wgCanonicalServer.$wgUploadPath.'/screenshots/'.$articleId."/".$id.'.html';
+				$screenshotPngFile = $screenshotPageDir.'/'.$id.'.png';
+				
+				if ( !file_exists( $screenshotPngFile ) ) {
 
-			if ( !empty( $imageContent ) ) {
-				$fh = fopen( $screenshotPngFile, 'w+' );
-				fwrite ( $fh, $imageContent );
-				fclose( $fh );
-				chmod( $screenshotPngFile, 0774);
+					$fh = fopen( $screenshotHtmlFile, 'w+' );
+					fwrite ( $fh, $html );
+					fclose( $fh );
+					chmod( $screenshotHtmlFile, 0774);
+					$ch = curl_init();
+					curl_setopt ( $ch, CURLOPT_POST, true );
+					curl_setopt ( $ch, CURLOPT_URL, $wgScreenshotUrl );
+					curl_setopt ( $ch, CURLOPT_POSTFIELDS, "url=".$canonicalHtmlUrl."&width=".$width."&height=".$height );
+					curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
+					$imageContent = curl_exec( $ch );
+					curl_close( $ch );
+
+					if ( !empty( $imageContent ) ) {
+						$fh = fopen( $screenshotPngFile, 'w+' );
+						fwrite ( $fh, $imageContent );
+						fclose( $fh );
+						chmod( $screenshotPngFile, 0774);
+					}
+					if ( file_exists( $screenshotHtmlFile ) ) {
+						unlink( $screenshotHtmlFile );
+					}
+				}
 			}
-			if ( file_exists( $screenshotHtmlFile ) ) {
-				unlink( $screenshotHtmlFile );
-			}
+		}
+
+		return true;
+	}
+
+	public static function onPageContentSaveComplete( $wikiPage, $user, $mainContent, $summaryText, $isMinor, $isWatch, $section, &$flags, $revision, $status, $originalRevId, $undidRevId ) {
+
+		global $wgUploadDirectory;
+		$title = $wikiPage->getTitle();
+		$articleId = $title->getArticleID();
+
+		$fwp = new FlaggableWikiPage ( $title );
+		$rev = $wikiPage->getRevision();
+		$revId = $rev->getId();
+		$stableRevId = $fwp->getStable();
+		
+		if ( isset( $fwp ) && $revId == $stableRevId ) {
+			$screenshotPath = $wgUploadDirectory . "/screenshots/$articleId/";
+			SpecialPurgeCache::deleteAll($screenshotPath); # delete all images of a page before saving new ones
 		}
 
 		return true;

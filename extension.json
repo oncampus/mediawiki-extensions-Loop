@@ -157,7 +157,8 @@
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
 		"UploadComplete": "LoopZip::onUploadComplete",
-		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete"
+		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
+		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
