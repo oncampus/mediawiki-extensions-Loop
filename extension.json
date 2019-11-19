@@ -309,7 +309,6 @@
 			"editmyoptions": true,
 			"viewmyprivateinfo": true,
 			"editmyprivateinfo": true,
-			
 			"loop-toc-edit": false,
 			"loop-export-pdf": false,
 			"loop-export-xml": false,
@@ -507,6 +506,21 @@
 			"writeapi": true
 		},
 		"student_no_edit": {
+			"loop-export-pdf": true,
+			"loop-export-xml": false,
+			"loop-export-mp3": true,
+			"loop-export-epub": true,
+			"loop-export-html": false,
+			"loop-export-scorm": true,
+			"loop-pageaudio": true,
+			"loop-settings-edit": false,
+			"loop-edit-literature": false,
+			"loop-view-special-pages": false
+		},
+		"shared": {
+			"editmyoptions": false,
+			"viewmyprivateinfo": false,
+			"editmyprivateinfo": false,
 			"loop-export-pdf": true,
 			"loop-export-xml": false,
 			"loop-export-mp3": true,

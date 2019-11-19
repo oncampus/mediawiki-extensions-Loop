@@ -72,25 +72,29 @@ class LoopHooks {
 			$hideSpecialPages = true;
 		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
-		}
 
+			#if ( ! $wgOut->getUser()->isAllowed( "loop-change-credentials" ) ) {
+			#	unset( $specialPages[ "ChangeCredentials" ] );
+			#}
+		}
 		if ( $hideSpecialPages ) {
-			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects',  'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
+			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects', 'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
 				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
 				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers', 
 				'MergeHistory', 'Randompage', 'Protectedpages', 'Wantedfiles', 'Listgrouprights', 'EditWatchlist', 'Blockme', 'FileDuplicateSearch', 
 				'Withoutinterwiki', 'Randomredirect', 'BlockList', 'Popularpages', 'Emailuser', 'Booksources', 'Upload', 'Confirmemail', 'Watchlist', 
-				'MIMEsearch', 'Allpages', 'Fewestrevisions', 'Unblock', 'ComparePages', 'Uncategorizedimages', 'Mostinterwikis', 'Preferences', 
+				'MIMEsearch', 'Allpages', 'Fewestrevisions', 'Unblock', 'ComparePages', 'Uncategorizedimages', 'Mostinterwikis', 
 				'Categories', 'Statistics', 'Version', 'UploadStash', 'Undelete', 'Whatlinkshere', 'Lockdb', 'Lonelypages', 'Mostimages', 
 				'Unwatchedpages', 'Shortpages', 'Protectedtitles', 'Revisiondelete', 'Newpages', 'Unusedtemplates', 'Allmessages', 'CachedPage', 
 				'Filepath', 'Wantedpages', 'LinkSearch', 'Prefixindex', 'BrokenRedirects', 'Mostlinked', 'Tags', 'LoopStructureEdit', 'LoopSettings', 
 				'Longpages', 'Uncategorizedpages', 'Newimages', 'Blankpage', 'Disambiguations', 'Unusedcategories', 'Wantedcategories', 
 				'Unlockdb', 'PagesWithProp', 'Listfiles', 'Contributions', 'Listusers', 'Wantedtemplates', 'TrackingCategories', 'Stabilization',
-				'AutoblockList',  'ResetTokens', 'Listgrants', 'Listadmins', 'Listbots', 'PasswordPolicies', 'MediaStatistics', 'ListDuplicatedFiles', 
+				'AutoblockList', 'ResetTokens', 'Listgrants', 'Listadmins', 'Listbots', 'PasswordPolicies', 'MediaStatistics', 'ListDuplicatedFiles', 
 				'ApiSandbox', 'RandomInCategory', 'Randomrootpage', 'GoToInterwiki', 'ExpandTemplates', 'ApiHelp', 'Diff', 'EditTags', 'Mycontributions', 
 				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel', 
-				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'ChangeCredentials', 'RemoveCredentials',
-				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages'
+				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'RemoveCredentials',
+				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages',
+				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit'
 			);
 			foreach( $hidePages as $page ){ 
 				unset( $specialPages[$page] );
