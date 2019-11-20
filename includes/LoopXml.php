@@ -40,7 +40,7 @@ class LoopXml {
 		$toc = self::structureItemToc($loopStructureItems[0]);
 		$xml .= "<toc>".$toc."</toc>\n";
 		
-		$articles = "<articles>";
+		$articles = '<articles xmlns:xhtml="http://www.w3.org/1999/xhtml">';
 		foreach ( $loopStructureItems as $loopStructureItem ) {
 		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
@@ -146,9 +146,11 @@ class LoopXml {
 		$idCache = array();
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
+		#$dom->createAttributeNS( "http://www.w3.org/1999/xhtml", "xmlns:xhtml");
 		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
 		$xml = $contentText;
 		$dom->loadXml($xml);
+		#dd($xml);
 		$selector = new DOMXPath( $dom );
 		$nodes = $selector->query( '//extension' );
 
@@ -315,8 +317,14 @@ class LoopXml {
 	
 		$return_xml = '';
 	
-		if ($link_parts['type']=='external') {
-			$return_xml =  '<php_link_external href="'.$link_parts['href'].'">'.$link_parts['text'].'</php_link_external>' ;
+		if ($link_parts['type']=='external' ) {
+			if ( array_key_exists( "href", $link_parts ) ) {
+				$return_xml = '<php_link_external href="'.$link_parts['href'].'">';
+				$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : " ";
+				$return_xml .= '</php_link_external>' ;
+			} else {
+				$return_xml = "";
+			}
 		} else {
 			if (isset($link_parts['target'])) {
 				$target_title = Title::newFromText($link_parts['target']);
@@ -2026,6 +2034,13 @@ class wiki2xml
 				$xml = str_replace ( " <" , "<space/><" , $xml ) ;
 			}
 			$xml = str_replace ( '<tablerow></tablerow>' , '' , $xml ) ;
+			#$xml = str_replace ( '<xhtml:cite' , '<xhtml:cite xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); #remove error log warning "Namespace prefix xhtml on cite is not defined on cite"
+			#$xml = str_replace ( '<xhtml:br' , '<xhtml:br xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
+			#$xml = str_replace ( '<xhtml:code' , '<xhtml:code xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
+			#$xml = str_replace ( '<xhtml:tt' , '<xhtml:tt xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
+			#$xml = str_replace ( '<xhtml:pre' , '<xhtml:pre xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
+			#$xml = str_replace ( '<xhtml:p' , '<xhtml:p xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
+		#	$xml = str_replace ( '<xhtml:br' , '<xhtml:br xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
 
 			return $xml ;
 	}

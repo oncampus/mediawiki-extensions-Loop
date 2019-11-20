@@ -97,7 +97,8 @@
 		"LoopTerminology": "includes/LoopTerminology.php",
 		"SpecialLoopTerminology": "includes/LoopTerminology.php",
 		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php",
-		"LoopScreenshot": "includes/LoopScreenshot.php"
+		"LoopScreenshot": "includes/LoopScreenshot.php",
+		"SpecialLoopExportPdfTest": "includes/LoopPdf.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -179,7 +180,8 @@
 		"LoopGlossary": "SpecialLoopGlossary",
 		"LoopIndex": "SpecialLoopIndex",
 		"LoopTerminology": "SpecialLoopTerminology",
-		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit"
+		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
+		"LoopExportPdfTest": "SpecialLoopExportPdfTest"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

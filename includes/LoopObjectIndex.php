@@ -139,13 +139,16 @@ class LoopObjectIndex {
                 );
                 
                 $lsi = LoopStructureItem::newFromIds($row->loi_pageid);
-                if ( $lsi ) {
-                    $pageData = array( "structure", $lsi, $loopStructure );
-                    $numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
-                } elseif ( isset ( $previousObjects[ $row->loi_pageid ] ) ) {
-					$pageData = array( "glossary", $row->loi_pageid );
-					$numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
+                if ( in_array( $row->loi_pageid, $previousObjects ) ) {
+                    if ( $lsi ) {
+                        $pageData = array( "structure", $lsi, $loopStructure );
+                        $numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
+                    } elseif ( isset ( $previousObjects[ $row->loi_pageid ] ) ) {
+                        $pageData = array( "glossary", $row->loi_pageid );
+                        $numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
+                    }
                 }
+                
             }
         
             $objects[$row->loi_refid] = array(
