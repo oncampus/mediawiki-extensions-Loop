@@ -171,7 +171,12 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 			$trackingCategoryItems = $trackingCategory->getMembers();
 	
 			if ( !empty( $trackingCategoryItems ) ) {
-				$out->addHtml( '<div class="alert alert-warning" role="alert">' . $this->msg( 'loopexport-pdf-test-notice', $this->msg("loop-tracking-category-error")->text() ) . $this->msg("loop-tracking-category-error")->text(). '</div>' );
+				$link = $linkRenderer->makelink(
+					Title::newFromText( $this->msg( "loop-tracking-category-error" )->text(), NS_CATEGORY ), 
+					new HtmlArmor( $this->msg( "loop-tracking-category-error" )->text() ),
+					array('target' => '_blank' )
+					);
+				$out->addHtml( '<div class="alert alert-warning" role="alert">' . $this->msg( 'loopexport-pdf-test-notice', $link )->text() . '</div>' . $link . "<br>" );
 			}
 
 		} else {
