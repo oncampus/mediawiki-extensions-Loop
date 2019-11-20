@@ -79,7 +79,7 @@ class LoopIndex {
             ),
             __METHOD__
 		);
-        SpecialPurgeCache::purge();
+        # SpecialPurgeCache::purge();
         
         return true;
 

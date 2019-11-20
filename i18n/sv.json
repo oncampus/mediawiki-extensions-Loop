@@ -367,6 +367,6 @@
 	"loopterminology-warning-deleted": "Alla förkortningar har tagits bort.",
 	"loopterminology-save-success": "Förkortningarna har uppdaterats.",
 	"loopterminology-hint": "Regidera förkortningar här. Untdr textfältet finns information om formateringskrav.",
-	"loopterminology-example": "Använd ett semikolon framför förkortningen i en linje. Börja nästa linjen med en kolon och beskriva förkortningen. Man kan använda flera förkortningar med flera definitioner. Exempel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform"
-
+	"loopterminology-example": "Använd ett semikolon framför förkortningen i en linje. Börja nästa linjen med en kolon och beskriva förkortningen. Man kan använda flera förkortningar med flera definitioner. Exempel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform",
+	"loopscreenshot": "Screenshot"
 }

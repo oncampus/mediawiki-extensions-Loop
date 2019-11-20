@@ -367,5 +367,6 @@
 	"loopterminology-warning-deleted": "Alle Einträge wurden aus dem Abkürzungsverzeichnis gelöscht.",
 	"loopterminology-save-success": "Das Abkürzungsverzeichnis wurde erfolgreich aktualisiert.",
 	"loopterminology-hint": "Bearbeiten Sie hier das Abkürzungsverzeichnis. Unter dem Textfeld finden Sie ein Beispiel für die Formatierung.",
-	"loopterminology-example": "Benutzen Sie ein Semikolon vor dem abgekürzten Begriff, um ihn zu definieren. In der nächsten Zeile beschreiben Sie den Begriff, indem Sie die Zeile mit einem Doppelpunkt beginnen. Es können mehrere Begriffe zu mehreren Definitionen eingesetzt werden. Beispiel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform"
+	"loopterminology-example": "Benutzen Sie ein Semikolon vor dem abgekürzten Begriff, um ihn zu definieren. In der nächsten Zeile beschreiben Sie den Begriff, indem Sie die Zeile mit einem Doppelpunkt beginnen. Es können mehrere Begriffe zu mehreren Definitionen eingesetzt werden. Beispiel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform",
+	"loopscreenshot": "Screenshot"
 }

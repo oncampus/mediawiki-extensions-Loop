@@ -53,10 +53,12 @@ class SpecialPurgeCache extends SpecialPage {
 
 		if ( $wgOut->getUser()->isAllowed( 'purgecache' ) ) {
 			$dbw = wfGetDB( DB_MASTER );
-			$dbw->delete( 'objectcache', '*', __METHOD__ );
+			$dbw->delete( 'objectcache', "keyname NOT LIKE '%MWSession%'", __METHOD__ );
 					
 			$exportPath = $wgUploadDirectory . "/export/";
+			$screenshotPath = $wgUploadDirectory . "/screenshots/";
 			SpecialPurgeCache::deleteAll($exportPath);
+			SpecialPurgeCache::deleteAll($screenshotPath);
 			LoopObject::updateStructurePageTouched();
 			LoopGlossary::updateGlossaryPageTouched();
 		}

@@ -156,7 +156,9 @@ class SpecialLoopTerminology extends SpecialPage {
 	public function execute( $sub ) {
         
 		$out = $this->getOutput();
+		$request = $this->getRequest();
         $user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
 		$this->setHeaders();

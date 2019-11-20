@@ -96,7 +96,8 @@
 		"LoopWikitextContent": "includes/LoopWikitextContent.php",
 		"LoopTerminology": "includes/LoopTerminology.php",
 		"SpecialLoopTerminology": "includes/LoopTerminology.php",
-		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php"
+		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php",
+		"LoopScreenshot": "includes/LoopScreenshot.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -125,10 +126,12 @@
 			"LoopIndex::onParserSetup",
 			"LoopSidebar::onParserSetup",
 			"LoopZip::onParserSetup",
-			"LoopMediaHandler::onParserSetup"
+			"LoopMediaHandler::onParserSetup",
+			"LoopScreenshot::onParserSetup"
 		],
 		"ParserAfterTidy": [
-			"LoopObject::onParserAfterTidy"
+			"LoopObject::onParserAfterTidy",
+			"LoopScreenshot::onParserAfterTidy"
 		],
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
@@ -154,7 +157,8 @@
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
 		"UploadComplete": "LoopZip::onUploadComplete",
-		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete"
+		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
+		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -285,13 +289,15 @@
 				"loopwikieditor-loop-snippets-noprint",
 				"loopwikieditor-loop-contents",
 				"loopwikieditor-loop-content-video",
+				"loopwikieditor-loop-content-audio",
 				"loopwikieditor-loop-content-youtube",
 				"loopwikieditor-loop-content-h5p",
 				"loopwikieditor-loop-content-learningapps",
 				"loopwikieditor-loop-content-padlet",
 				"loopwikieditor-loop-content-prezi",
 				"loopwikieditor-loop-content-slideshare",
-				"loopwikieditor-loop-content-quizlet"
+				"loopwikieditor-loop-content-quizlet",
+				"loopscreenshot"
 			]
 		}
 	
@@ -305,7 +311,6 @@
 			"editmyoptions": true,
 			"viewmyprivateinfo": true,
 			"editmyprivateinfo": true,
-			
 			"loop-toc-edit": false,
 			"loop-export-pdf": false,
 			"loop-export-xml": false,
@@ -503,6 +508,21 @@
 			"writeapi": true
 		},
 		"student_no_edit": {
+			"loop-export-pdf": true,
+			"loop-export-xml": false,
+			"loop-export-mp3": true,
+			"loop-export-epub": true,
+			"loop-export-html": false,
+			"loop-export-scorm": true,
+			"loop-pageaudio": true,
+			"loop-settings-edit": false,
+			"loop-edit-literature": false,
+			"loop-view-special-pages": false
+		},
+		"shared": {
+			"editmyoptions": false,
+			"viewmyprivateinfo": false,
+			"editmyprivateinfo": false,
 			"loop-export-pdf": true,
 			"loop-export-xml": false,
 			"loop-export-mp3": true,
@@ -804,6 +824,10 @@
 		"LoopLegacyShowTitles": {
 			"value": true,
 			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
+		},
+		"ScreenshotUrl": {
+			"value": "",
+			"description" : "URL for rendering screenshots service"
 		}
 
 	},
