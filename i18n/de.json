@@ -84,6 +84,9 @@
 	"loopexport-audio-intro-url": "Das Loop ist online unter $1 zu finden. ",
 	"loopexport-audio-intro-date": "Es ist auf dem Stand von $1.",
 	"loopexportpdftest": "PDF seitenweise testen",
+	"loopexport-pdf-test-success": "Es ist kein Fehler aufgetreten! Funktioniert die PDF dennoch nicht, [[Special:PurgeCache|löschen Sie den Cache]] und/oder kontaktieren Sie die/den AdministratorIn",
+	"loopexport-pdf-test-failure": "Auf der Seite [[$1]] ist ein Fehler aufgetreten. Sie können sich den Fehlerbericht unten ansehen.",
+	"loopexport-pdf-test-notice": "In der [[Kategorie:$1|Trackingkategorie für LOOP-Fehler]] sind Seiten gelistet, die Fehler beinhalten. Sie können sich diese im Bearbeitungsmodus auf den jeweiligen Seiten ansehen.",
 
 	"right-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"right-loop-export-pdf": "Export LOOP als PDF",

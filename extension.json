@@ -326,7 +326,8 @@
 			"createpage": false,
 			"writeapi": false,
 			"loop-view-special-pages": false,
-			"loop-edit-literature": false
+			"loop-edit-literature": false,
+			"loop-pdf-test": false
 		},
 		"user" : {
 			"read": true
@@ -368,7 +369,8 @@
 			"editsitecss": true,
 			"editsitejs": true,
 			"editinterface": true,
-			"writeapi": true
+			"writeapi": true,
+			"loop-pdf-test": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -405,7 +407,8 @@
 			"editsitecss": true,
 			"editsitejs": true,
 			"editinterface": true,
-			"writeapi": true
+			"writeapi": true,
+			"loop-pdf-test": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -442,7 +445,8 @@
 			"editsitecss": true,
 			"editsitejs": true,
 			"editinterface": true,
-			"writeapi": true
+			"writeapi": true,
+			"loop-pdf-test": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -473,7 +477,8 @@
 			"protect": true,
 			"loop-view-special-pages": true,
 			"loop-edit-literature": true,
-			"writeapi": true
+			"writeapi": true,
+			"loop-pdf-test": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -507,7 +512,8 @@
 			"browsearchive": true,
 			"loop-view-special-pages": true,
 			"loop-edit-literature": true,
-			"writeapi": true
+			"writeapi": true,
+			"loop-pdf-test": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,

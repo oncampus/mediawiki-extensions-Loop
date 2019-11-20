@@ -21,11 +21,7 @@ class LoopPdf {
 	*/
 	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
 		global $IP, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
-	
-		#require_once ($IP."/extensions/Loop/xsl/LoopXsl.php");
-	
-		#$unique = uniqid();
-	
+
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';
 		#var_dump($wiki_xml);exit;
@@ -60,10 +56,10 @@ class LoopPdf {
 					$tag->setAttribute( "internal-destination", "article".$structure->mainPage );
 				}
 				foreach ( $refTags as $tag ) {
-						$tag->setAttribute( "ref-id", "article".$structure->mainPage );
+					$tag->setAttribute( "ref-id", "article".$structure->mainPage );
 				}
 				foreach ( $lastRefTags as $tag ) {
-						$tag->setAttribute( "ref-id", "article".$structure->mainPage );
+					$tag->setAttribute( "ref-id", "article".$structure->mainPage );
 				}
 				$xmlfo = $dom->saveXML();
 				
@@ -72,7 +68,6 @@ class LoopPdf {
 		} catch (Exception $e) {
 			$errors .= $e . "<br>";
 		}
-		
 
 		#dd($xmlfo);
 		$url = $wgXmlfo2PdfServiceUrl. '?token='.$wgXmlfo2PdfServiceToken;
@@ -83,10 +78,6 @@ class LoopPdf {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$pdf = curl_exec($ch);
 		curl_close($ch);
-
-
-		#dd($pdf);
-
 		
 		if ( is_array( $modifiers ) && $modifiers["pagetest"] == true ) { 
 			return array( "pdf" => $pdf, "errors" => $errors, "xmlfo" => $xmlfo );
@@ -94,8 +85,8 @@ class LoopPdf {
 			if ( !empty($errors) ) {
 				var_dump($errors);
 			}
-			
 			if ( strpos( $pdf, "%PDF") !== 0 ) {
+				#es werden keine leeren/fehlerhaften PDFs mehr heruntergeladen, solange das hier aktiv ist.
 				var_dump( "Error!", $pdf, $xmlfo, $wiki_xml );exit;
 			}
 			#var_dump( "Debug! PDF funktioniert eigentlich. ", $xmlfo, $wiki_xml );exit;
@@ -114,8 +105,6 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 	}
 	
 	public function execute( $sub ) {
-	
-		#global $IP, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
@@ -132,10 +121,11 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 		$out->addHtml ('</h1>');
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
-		
-		if ( $user->isAllowed('loop-edit-literature') ) {
+		$error = false;
 
-			$html = "";
+		if ( $user->isAllowed('loop-pdf-test') ) {
+
+			$html = "<br>";
 			foreach ( $loopStructure->structureItems as $item ) {
 				#reset item
 				$item->previousArticle = 0;
@@ -149,21 +139,14 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$fakeTmpStructure->structureItems = array( $item );
 				$fakeTmpStructure->mainPage = $item->article;
 				
-
-				#dd($loopStructure, $item);
-				$tmpXml = LoopXml::structure2xml( $fakeTmpStructure );
+				#$tmpXml = LoopXml::structure2xml( $fakeTmpStructure );
 				$tmpPdf = LoopPdf::structure2pdf( $fakeTmpStructure, array( "pagetest" => true ) );
 
-
-				if ( $item->article == 28 ) {
-					#dd( $tmpXml, $tmpPdf );
-				}
-
 				if ( strpos( $tmpPdf["pdf"], "%PDF") === 0 ) {
-					#dd("this is a pdf!", $tmpXml);
-				#$data = 
+					# pdf :)
 					$html .= $item->tocNumber . " " . $item->tocText . " OK!<br>";
 				} else {
+					# not a pdf!
 					$html .= $linkRenderer->makelink(
 						Title::newFromID( $item->article ), 
 						new HtmlArmor( "<b>".$item->tocNumber . " " . $item->tocText . " NOT OK!</b> (ID $item->article)" ),
@@ -173,18 +156,28 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 					$html .= "<br><br>";
 					$html .= "<nowiki>". $tmpPdf["pdf"] . "</nowiki><br>";
 					$html .= $tmpPdf["errors"] . "<br>";
-					
-					#dd("this is not a pdf, it's " . $item->article . "'s fault!", $tmpXml, $tmpPdf);
+					$error = $item->tocText;
 					break;
 				}
-				#dd($loopStructure, $item, $item->getDirectChildItems());
-				#dd($item, $loopStructure, $fakeTmpStructure->getStructureItems(), $tmpXml, $tmpPdf);
-				#$
+				
 			}
+			if ( !$error ) {
+				$out->addHtml( '<div class="alert alert-success" role="alert">' . $this->msg( 'loopexport-pdf-test-success' ) . '</div>' );
+			} else {
+				$out->addHtml( '<div class="alert alert-danger" role="alert">' . $this->msg( 'loopexport-pdf-test-failure', $error ) . '</div>' );
+			}
+			
+			$trackingCategory = Category::newFromName( $this->msg("loop-tracking-category-error")->text() );
+			$trackingCategoryItems = $trackingCategory->getMembers();
+	
+			if ( !empty( $trackingCategoryItems ) ) {
+				$out->addHtml( '<div class="alert alert-warning" role="alert">' . $this->msg( 'loopexport-pdf-test-notice', $this->msg("loop-tracking-category-error")->text() ) . $this->msg("loop-tracking-category-error")->text(). '</div>' );
+			}
+
 		} else {
 			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
 		}
-		
+
 		$out->addHtml($html);
 
 	}
