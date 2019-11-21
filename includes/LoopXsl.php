@@ -78,10 +78,13 @@ class LoopXsl {
 		try {
 		    $math = new MathMathML($mathcontent);
 		    $math->render();
-		    $return = $math->getHtmlOutput();
+			$return = $math->getHtmlOutput();
+			
+			#dd($return);
 		} catch (Exception $e) {
 		    $return = '<math></math>';
 		}
+		$return1 = $return;
 		
 		$dom = new DOMDocument;
 		$dom->loadXML( $return );
@@ -99,6 +102,9 @@ class LoopXsl {
 		
 		}
 		restore_error_handler();
+		if ( strpos( $mathcontent, "\\eta" ) !== false ) {
+			#dd("!!!", $mathcontent, $return1, $return, $doc->saveXML(),$math, $mathnode->C14N() );
+		}
 		#dd($input,$doc->saveXML(),$math);
 		return $return;	
 		
@@ -310,22 +316,23 @@ class LoopXsl {
 	
 	public static function xsl_get_bibliography( $input ) {
 	    global $wgLoopLiteratureCiteType;
-	    #dd($input[0]);
-	    $input_object = $input[0];
 		$dom = new DOMDocument( "1.0", "utf-8" );
-	    
-	    if ( empty ( $input_object ) ) {
-	        $xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
-	        $dom->loadXML($xml);
-	    } else {
-	        $dom->appendChild($dom->importNode($input_object, true));
-	        $tags = $dom->getElementsByTagName ("extension"); 
-	        $input = $tags[0]->nodeValue;
-	        $xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
-	        $dom = new DOMDocument( "1.0", "utf-8" );
-	        $dom->loadXML($xml);
-	    }
-	    return $dom;
+		if ( !empty( $input ) ) {
+			$input_object = $input[0];
+			
+			if ( empty ( $input_object ) ) {
+				$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
+				$dom->loadXML($xml);
+			} else {
+				$dom->appendChild($dom->importNode($input_object, true));
+				$tags = $dom->getElementsByTagName ("extension"); 
+				$input = $tags[0]->nodeValue;
+				$xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
+				$dom = new DOMDocument( "1.0", "utf-8" );
+				$dom->loadXML($xml);
+			}
+		}
+		return $dom;
 	}
 
 	public static function get_page_link( $input ) {

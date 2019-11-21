@@ -19,8 +19,8 @@ class LoopStructure {
 	public $mainPage; // article id of the main page
 	public $structureItems = array(); // array of structure items
 
-	function __construct() {
-		$this->id = 0;
+	function __construct( $id = 0 ) {
+		$this->id = $id;
 	}
 
 	public function getId() {

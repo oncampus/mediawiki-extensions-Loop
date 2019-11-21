@@ -2537,13 +2537,13 @@
 			<xsl:choose>
 				<xsl:when test="@pages">
 					<xsl:text>, </xsl:text>	
-					<xsl:value-of select="$word_cite_pages"></xsl:value-of>
+					<xsl:value-of select="$word_literature_pages"></xsl:value-of>
 					<xsl:value-of select="@pages"></xsl:value-of>
 					<xsl:text> </xsl:text>	
 				</xsl:when>
 				<xsl:when test="@page">
 					<xsl:text>, </xsl:text>	
-					<xsl:value-of select="$word_cite_page"></xsl:value-of>
+					<xsl:value-of select="$word_literature_page"></xsl:value-of>
 					<xsl:value-of select="@page"></xsl:value-of>
 					<xsl:text> </xsl:text>	
 				</xsl:when>
@@ -2927,7 +2927,7 @@
 			</fo:list-item-body>
 		</fo:list-item>
 	</xsl:template>	
-
+	
 	<xsl:template match="table">
 		<fo:table table-layout="auto" border-style="solid" border-width="0.5pt" border-color="black" border-collapse="collapse" padding="0.6pt" space-after="12.5pt">
 				<fo:table-body>
@@ -2952,7 +2952,7 @@
         	<xsl:attribute name="border-color">black</xsl:attribute>
         	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
 			
-			<xsl:call-template name="css-style-attributes"></xsl:call-template>
+			<!-- <xsl:call-template name="css-style-attributes"></xsl:call-template> -->
 			
 			
         	<xsl:if test="@colspan">
@@ -2978,7 +2978,7 @@
         	<xsl:attribute name="border-color">black</xsl:attribute>
         	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
 			
-			<xsl:call-template name="css-style-attributes"></xsl:call-template>
+			<!-- <xsl:call-template name="css-style-attributes"></xsl:call-template> -->
 			
         	<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan"></xsl:value-of></xsl:attribute>
@@ -2987,17 +2987,78 @@
 				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
         	</xsl:if>        	           	        	
         	
-        	<!-- 
-			<fo:block font-weight="bold" break-before="column">
-        			<xsl:apply-templates></xsl:apply-templates>
-			</fo:block>
- 			-->
 			<fo:block font-weight="bold" >
         			<xsl:apply-templates></xsl:apply-templates>
 			</fo:block>		
 		
         </fo:table-cell>
-    </xsl:template>	
+    </xsl:template>
+
+	<xsl:template name="css-style-attributes">
+		<xsl:variable name="cssentries">
+			<xsl:call-template name="str:tokenize">
+				<xsl:with-param name="string" select="translate(@style,' ','')" />
+				<xsl:with-param name="delimiters" select="';'" />
+			</xsl:call-template>
+		</xsl:variable>		
+		<xsl:for-each select="exsl:node-set($cssentries)/node()">
+			<xsl:call-template name="css-style-attribute">
+				<xsl:with-param name="cssentry" select="." />
+			</xsl:call-template>
+		</xsl:for-each>
+	</xsl:template>
+	
+	
+	<xsl:template name="css-style-attribute">
+		<xsl:param name="cssentry"></xsl:param>
+		
+		<xsl:variable name="cssparts">
+			<xsl:call-template name="str:tokenize">
+				<xsl:with-param name="string" select="$cssentry" />
+				<xsl:with-param name="delimiters" select="':'" />
+			</xsl:call-template>
+		</xsl:variable>			
+		
+		<xsl:variable name="csskey">
+			<xsl:value-of select="exsl:node-set($cssparts)/node()[1]"/>
+		</xsl:variable>
+		<xsl:variable name="cssvalue">
+			<xsl:value-of select="exsl:node-set($cssparts)/node()[2]"/>
+		</xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="$csskey='background-color'">
+				<xsl:attribute name="background-color">
+					<xsl:value-of select="$cssvalue"/>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$csskey='background'">
+				<xsl:attribute name="background-color">
+					<xsl:value-of select="$cssvalue"/>
+				</xsl:attribute>
+			</xsl:when>			
+			<xsl:when test="$csskey='color'">
+				<xsl:attribute name="color">
+					<xsl:value-of select="$cssvalue"/>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test="$csskey='text-align'">
+				<xsl:attribute name="text-align">
+					<xsl:choose>
+						<xsl:when test="$cssvalue='right'">
+							<xsl:text>end</xsl:text>
+						</xsl:when>
+						<xsl:when test="$cssvalue='center'">
+							<xsl:text>center</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:text>start</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+			</xsl:when>			
+		</xsl:choose>
+	</xsl:template>
 	
 	<xsl:template match="extension[@extension_name='loop_screenshot']">
 		
