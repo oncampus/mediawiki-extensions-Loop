@@ -83,6 +83,9 @@
 	"loopexport-audio-intro-title": "Audiobook introduction, $1 is the loop title",
 	"loopexport-audio-intro-url": "Audiobook introduction about where to find loop, $1 is url to loop ",
 	"loopexport-audio-intro-date": "Audiobook introduction about it's state, $1 is the last-changed date of downloaded files",
+	"loopexport-pdf-test-success": "Success message after testing pdf per-page. In case the pdf still does not work, a link to Special:PurgeCache should be added.",
+	"loopexport-pdf-test-failure": "Failure message after testing pdf per-page.",
+	"loopexport-pdf-test-notice": "Notice about pages in loop error tracking category. After testing pdf per-page.",
 
 	"right-loop-toc-edit": "Right to edit toc",
 	"right-loop-export-pdf": "Right to export LOOP as PDF",
