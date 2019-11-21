@@ -2034,13 +2034,6 @@ class wiki2xml
 				$xml = str_replace ( " <" , "<space/><" , $xml ) ;
 			}
 			$xml = str_replace ( '<tablerow></tablerow>' , '' , $xml ) ;
-			#$xml = str_replace ( '<xhtml:cite' , '<xhtml:cite xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); #remove error log warning "Namespace prefix xhtml on cite is not defined on cite"
-			#$xml = str_replace ( '<xhtml:br' , '<xhtml:br xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
-			#$xml = str_replace ( '<xhtml:code' , '<xhtml:code xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
-			#$xml = str_replace ( '<xhtml:tt' , '<xhtml:tt xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
-			#$xml = str_replace ( '<xhtml:pre' , '<xhtml:pre xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
-			#$xml = str_replace ( '<xhtml:p' , '<xhtml:p xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
-		#	$xml = str_replace ( '<xhtml:br' , '<xhtml:br xmlns:xhtml="http://www.w3.org/1999/xhtml" ', $xml ); 
 
 			return $xml ;
 	}

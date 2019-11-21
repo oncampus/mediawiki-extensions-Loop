@@ -26,7 +26,6 @@ class LoopPdf {
 		$errors = '';
 		
 		$xmlfo = self::transformToXmlfo( $wiki_xml );
-		
 		$pdf = self::makePdfRequest( $xmlfo["xmlfo"] );
 		
 		if ( !empty($errors) ) {
@@ -34,7 +33,7 @@ class LoopPdf {
 		}
 		if ( strpos( $pdf, "%PDF") !== 0 ) {
 			#es werden keine leeren/fehlerhaften PDFs mehr heruntergeladen, solange das hier aktiv ist.
-			var_dump( "Error!", $pdf, $xmlfo, $wiki_xml );exit; #dd ist zu JS-ressourcenintensiv
+			var_dump( "Error! Anstatt eine leere PDF auszugeben, gibt es jetzt den content hier. #debug", $pdf, $xmlfo, $wiki_xml );exit; #dd ist zu JS-ressourcenintensiv
 		}
 		#var_dump( "Debug! PDF funktioniert eigentlich. ", $xmlfo, $wiki_xml );exit;
 		return $pdf;
