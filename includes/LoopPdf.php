@@ -24,7 +24,29 @@ class LoopPdf {
 
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';
-		#var_dump($wiki_xml);exit;
+		
+		$xmlfo = self::transformToXmlfo( $wiki_xml );
+		
+		$pdf = self::makePdfRequest( $xmlfo["xmlfo"] );
+		
+		if ( !empty($errors) ) {
+			var_dump($errors);
+		}
+		if ( strpos( $pdf, "%PDF") !== 0 ) {
+			#es werden keine leeren/fehlerhaften PDFs mehr heruntergeladen, solange das hier aktiv ist.
+			var_dump( "Error!", $pdf, $xmlfo, $wiki_xml );exit; #dd ist zu JS-ressourcenintensiv
+		}
+		#var_dump( "Debug! PDF funktioniert eigentlich. ", $xmlfo, $wiki_xml );exit;
+		return $pdf;
+		
+	
+	}	
+	
+	public static function transformToXmlfo( $wiki_xml ) {
+		global $IP;
+		
+		$errors = '';
+		$xmlfo = '';
 		try {
 			$xml = new DOMDocument();
 			$xml->loadXML($wiki_xml);
@@ -34,42 +56,28 @@ class LoopPdf {
 	
 		try {
 			$xsl = new DOMDocument;
-			$xsl->load($IP.'/extensions/Loop/xsl/pdf.xsl');
-		} catch (Exception $e) {
+			$xsl->load( $IP.'/extensions/Loop/xsl/pdf.xsl' );
+		} catch ( Exception $e ) {
 			$errors .= $e . "\n";
 		}
 	
 		try {
 			$proc = new XSLTProcessor;
 			$proc->registerPHPFunctions();
-			$proc->importStyleSheet($xsl);
-			$xmlfo = $proc->transformToXML($xml);
-
-			if ( is_array( $modifiers ) && !empty( $xmlfo ) && $modifiers["pagetest"] == true ) { 
-				#modify content so pdf still works in single-page test mode
-				$dom = new DomDocument();
-				$dom->loadXML( $xmlfo );
-				$linkTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "basic-link"); 
-				$refTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation"); 
-				$lastRefTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation-last");
-				foreach ( $linkTags as $tag ) {
-					$tag->setAttribute( "internal-destination", "article".$structure->mainPage );
-				}
-				foreach ( $refTags as $tag ) {
-					$tag->setAttribute( "ref-id", "article".$structure->mainPage );
-				}
-				foreach ( $lastRefTags as $tag ) {
-					$tag->setAttribute( "ref-id", "article".$structure->mainPage );
-				}
-				$xmlfo = $dom->saveXML();
-				
-			}
-
+			$proc->importStyleSheet( $xsl );
+			$xmlfo = $proc->transformToXML( $xml );
 		} catch (Exception $e) {
-			$errors .= $e . "<br>";
+			$errors .= $e . "\n";
 		}
+		$return = array( "xmlfo" => $xmlfo, "errors" => $errors );
 
-		#dd($xmlfo);
+		return $return;
+	}
+
+	public static function makePdfRequest( $xmlfo ) {
+
+		global $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
+
 		$url = $wgXmlfo2PdfServiceUrl. '?token='.$wgXmlfo2PdfServiceToken;
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_POST, 1);
@@ -78,25 +86,12 @@ class LoopPdf {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$pdf = curl_exec($ch);
 		curl_close($ch);
-		
-		if ( is_array( $modifiers ) && $modifiers["pagetest"] == true ) { 
-			return array( "pdf" => $pdf, "errors" => $errors, "xmlfo" => $xmlfo );
-		} else {
-			if ( !empty($errors) ) {
-				var_dump($errors);
-			}
-			if ( strpos( $pdf, "%PDF") !== 0 ) {
-				#es werden keine leeren/fehlerhaften PDFs mehr heruntergeladen, solange das hier aktiv ist.
-				var_dump( "Error!", $pdf, $xmlfo, $wiki_xml );exit;
-			}
-			#var_dump( "Debug! PDF funktioniert eigentlich. ", $xmlfo, $wiki_xml );exit;
-			return $pdf;
-		}
-	
-	}	
+
+		return $pdf;
+
+	}
 	
 }
-
 
 class SpecialLoopExportPdfTest extends SpecialPage {
 
@@ -108,19 +103,34 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
-
+		
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
 		$out->setPageTitle( $this->msg( 'loopexportpdftest' ) );
-
 		$out->addHtml ('<h1>');
 		$out->addWikiMsg( 'loopexportpdftest' );
 		$out->addHtml ('</h1>');
 		$loopStructure = new LoopStructure();
-		$loopStructure->loadStructureItems();
+
+		$query = $request->getQueryValues();
+		# you use ?articleId=1 to debug to test only one page
+		if ( array_key_exists( "articleId", $query ) ) {
+			$title = Title::newFromId( $query["articleId"] );
+			if ( isset( $title ) ) {
+				$item = new LoopStructureItem();
+				$item->id = 1;
+				$item->article = $title->getArticleID();
+				$item->tocText = $title->mTextform;
+				$loopStructure->structureItems = array( $item );
+			} else {
+				$loopStructure->loadStructureItems();
+			}
+		} else {
+			$loopStructure->loadStructureItems();
+		}
 		$error = false;
 
 		if ( $user->isAllowed('loop-pdf-test') ) {
@@ -139,10 +149,12 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$fakeTmpStructure->structureItems = array( $item );
 				$fakeTmpStructure->mainPage = $item->article;
 				
-				#$tmpXml = LoopXml::structure2xml( $fakeTmpStructure );
-				$tmpPdf = LoopPdf::structure2pdf( $fakeTmpStructure, array( "pagetest" => true ) );
+				$xml = LoopXml::structure2xml( $fakeTmpStructure );
+				$xmlfo = LoopPdf::transformToXmlfo( $xml );
+				$modifiedXmlfo = self::modifyXmlfoForTest( $xmlfo["xmlfo"], $fakeTmpStructure );
+				$tmpPdf = LoopPdf::makePdfRequest( $modifiedXmlfo );
 
-				if ( strpos( $tmpPdf["pdf"], "%PDF") === 0 ) {
+				if ( strpos( $tmpPdf, "%PDF") === 0 ) {
 					# pdf :)
 					$html .= $item->tocNumber . " " . $item->tocText . " OK!<br>";
 				} else {
@@ -154,8 +166,8 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 						);
 
 					$html .= "<br><br>";
-					$html .= "<nowiki>". $tmpPdf["pdf"] . "</nowiki><br>";
-					$html .= $tmpPdf["errors"] . "<br>";
+					$html .= "<nowiki>". $tmpPdf . "</nowiki><br>";
+					$html .= $xmlfo["errors"] . "<br>";
 					$error = $item->tocText;
 					break;
 				}
@@ -176,7 +188,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 					new HtmlArmor( $this->msg( "loop-tracking-category-error" )->text() ),
 					array('target' => '_blank' )
 					);
-				$out->addHtml( '<div class="alert alert-warning" role="alert">' . $this->msg( 'loopexport-pdf-test-notice', $link )->text() . '</div>' . $link . "<br>" );
+				$out->addHtml( '<div class="alert alert-warning" role="alert">' . $this->msg( 'loopexport-pdf-test-notice', $link )->text() . '</div>'  );
 			}
 
 		} else {
@@ -184,8 +196,33 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 		}
 
 		$out->addHtml($html);
-
 	}
+
+	static function modifyXmlfoForTest( $xmlfo, $structure ) {
+
+		if ( !empty( $xmlfo ) ) { 
+			#modify content so pdf still works in single-page test mode
+			$dom = new DomDocument();
+			$dom->loadXML( $xmlfo );
+			$linkTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "basic-link"); 
+			$refTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation"); 
+			$lastRefTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation-last");
+			foreach ( $linkTags as $tag ) {
+				$tag->setAttribute( "internal-destination", "article".$structure->mainPage );
+			}
+			foreach ( $refTags as $tag ) {
+				$tag->setAttribute( "ref-id", "article".$structure->mainPage );
+			}
+			foreach ( $lastRefTags as $tag ) {
+				$tag->setAttribute( "ref-id", "article".$structure->mainPage );
+			}
+			$modifiedXmlfo = $dom->saveXML();
+			
+			return $modifiedXmlfo;
+		}
+		return false;
+	}
+
 	protected function getGroupName() {
 		return 'loop';
 	}
