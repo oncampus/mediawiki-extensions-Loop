@@ -24,9 +24,9 @@ class LoopSidenote {
             }
         }
 
-        $html = '<span class="loopsidenote loopsidenote_' . $type . '">';
+        $html = '<div class="loopsidenote loopsidenote_' . $type . '">';
         $html .= $parser->recursiveTagParseFully( $input );
-        $html .= '</span>';
+        $html .= '</div>';
 
         return $html;
     }
