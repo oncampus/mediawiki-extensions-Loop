@@ -20,7 +20,7 @@ class LoopParagraph {
         $html .= '<div class="loopparagraph_left">';
         $html .= '<span class="ic ic-citation"></span>';
         $html .= '</div>';
-        $html .= '<div class="loopparagraph_right">';
+        $html .= '<div class="loopparagraph_right"><blockquote>';
         $html .= $parser->recursiveTagParseFully( $input );
         $html .= '</div>';
         
@@ -28,7 +28,7 @@ class LoopParagraph {
             $html .= '<span class="loopparagraph_copyright">' . $args['copyright'] . '</span>';
         }
 
-        $html .= '</div>';
+        $html .= '</blockquote></div>';
 
         return $html;
     }
