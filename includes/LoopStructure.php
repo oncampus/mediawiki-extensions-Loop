@@ -682,8 +682,10 @@ class LoopStructureItem {
 
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
+		
+		//preventing home page occouring on breadcrumb nav
+		$breadcrumb = (empty($this->tocNumber)) ? '' : '<li class="active">' . $this->tocNumber . ' ' . $this->tocText .'</li>';
 
-		$breadcrumb = '<li class="active">' . $this->tocNumber . ' ' . $this->tocText .'</li>';
 		$len = strlen( $this->tocNumber ) + strlen( $this->tocText ) + 1;
 		$level = $this->tocLevel;
 
@@ -706,15 +708,19 @@ class LoopStructureItem {
 		$max_item_text_len = floor( $max_text_len / $level );
 
 		foreach( $items as $item ) {
+			
+			// if home page -> skip
+			if(empty($item->tocNumber)) continue;
 
-			if( strlen( $item->tocText ) > $max_item_text_len ) {
+			if( strlen( $item->tocText ) > $max_item_text_len) {
 				$link_text = mb_substr( $item->tocText, 0, ( $max_item_text_len - 2 ) ) . '..';
 			} else {
 				$link_text = $item->tocText;
 			}
-
+			
 			$title = Title::newFromID( $item->article );
 			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $item->tocNumber .' '. $link_text ) );
+			
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 
 		}
