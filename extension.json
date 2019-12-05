@@ -813,6 +813,10 @@
 			"value": true,
 			"description" : "Default value for activating object numberings"
 		},
+		"LoopPageNumbering": {
+			"value": "true",
+			"description" : "Default value for activating page numberings"
+		},
 		"LoopNumberingType": {
 			"value": "ongoing",
 			"description" : "Setting default type for numbering of objects [ongoing|chapter]"
@@ -837,7 +841,6 @@
 			"value": "",
 			"description" : "URL for rendering screenshots service"
 		}
-
 	},
 	"LogTypes": [ "loopexport" ],
     "LogNames": {

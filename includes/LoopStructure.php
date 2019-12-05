@@ -29,6 +29,8 @@ class LoopStructure {
 
 	public function render() {
 
+		global $wgLoopPageNumbering;
+
 		$text = '';
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
@@ -48,15 +50,21 @@ class LoopStructure {
 				}
 				$title = Title::newFromID( $structureItem->article );
 				$link = $structureItem->tocNumber . ' '. $structureItem->tocText;
+
+				if( $wgLoopPageNumbering ) {
+					$pageNumber = '<span class="loopstructure-number">' . $structureItem->tocNumber . '</span> ';
+				} else {
+					$pageNumber = '';
+				}
+
 				if ( $title ) {
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( '<span class="loopstructure-number">'.$structureItem->tocNumber .'</span> '. $structureItem->tocText )
+						new HtmlArmor( $pageNumber . $structureItem->tocText )
 					);
 					
 				} 
-				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat('	',  $tabLevel ) . $link . '</div>';
-				
+				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
 				
 			}
 
@@ -680,11 +688,19 @@ class LoopStructureItem {
 
 	public function getBreadcrumb ( $max_len = 100 ) {
 
+		global $wgLoopPageNumbering;
+
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
 		
+		if( $wgLoopPageNumbering ) {
+			$pageNumber = $this->tocNumber . ' ';
+		} else {
+			$pageNumber = '';
+		}
+
 		//preventing home page occouring on breadcrumb nav
-		$breadcrumb = (empty($this->tocNumber)) ? '' : '<li class="active">' . $this->tocNumber . ' ' . $this->tocText .'</li>';
+		$breadcrumb = (empty($this->tocNumber)) ? '' : '<li class="active">' . $pageNumber . ' ' . $this->tocText .'</li>';
 
 		$len = strlen( $this->tocNumber ) + strlen( $this->tocText ) + 1;
 		$level = $this->tocLevel;
@@ -719,7 +735,14 @@ class LoopStructureItem {
 			}
 			
 			$title = Title::newFromID( $item->article );
-			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $item->tocNumber .' '. $link_text ) );
+
+			if( $wgLoopPageNumbering ) {
+				$pageNumber = $item->tocNumber . ' ';
+			} else {
+				$pageNumber = '';
+			}
+
+			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $pageNumber . $link_text ) );
 			
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 
