@@ -67,17 +67,17 @@ class LoopToc extends LoopStructure {
 							$tmp_pageNumber = '';
 						}
 
-						if( isset( $tmp_lsi->tocLevel ) && $tmp_lsi->tocLevel > 0 ) {
+						//if( isset( $tmp_lsi->tocLevel ) && $tmp_lsi->tocLevel > 0 ) {
 							$tabLevel = $tmp_lsi->tocLevel;
-						} else {
-							$tabLevel = 1;
-						}
+					//	} else {
+						//	$tabLevel = 1;
+						//}
 
 						$link = $linkRenderer->makeLink(
 							Title::newFromID( $tmp_lsi->article ),
 							new HtmlArmor( '<span class="loopstructure-number">' . $tmp_pageNumber .'</span>' . $tmp_lsi->tocText )
 						);
-						$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
+						$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '">' . ' ' . $link . '</div>';
                         $xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="article'.$tmp_lsi->article.'"><bold>'. $tmp_pageNumber .'</bold> '. $tmp_lsi->tocText . '</php_link_internal></loop_toc_list>';
 
 					} else {
