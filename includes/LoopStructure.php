@@ -29,7 +29,7 @@ class LoopStructure {
 
 	public function render() {
 
-		global $wgLoopPageNumbering;
+		global $wgLegacyPageNumbering;
 
 		$text = '';
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
@@ -51,7 +51,7 @@ class LoopStructure {
 				$title = Title::newFromID( $structureItem->article );
 				$link = $structureItem->tocNumber . ' '. $structureItem->tocText;
 
-				if( $wgLoopPageNumbering ) {
+				if( $wgLegacyPageNumbering ) {
 					$pageNumber = '<span class="loopstructure-number">' . $structureItem->tocNumber . '</span> ';
 				} else {
 					$pageNumber = '';
@@ -688,12 +688,12 @@ class LoopStructureItem {
 
 	public function getBreadcrumb ( $max_len = 100 ) {
 
-		global $wgLoopPageNumbering;
+		global $wgLegacyPageNumbering;
 
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
 		
-		if( $wgLoopPageNumbering ) {
+		if( $wgLegacyPageNumbering ) {
 			$pageNumber = $this->tocNumber . ' ';
 		} else {
 			$pageNumber = '';
@@ -736,7 +736,7 @@ class LoopStructureItem {
 			
 			$title = Title::newFromID( $item->article );
 
-			if( $wgLoopPageNumbering ) {
+			if( $wgLegacyPageNumbering ) {
 				$pageNumber = $item->tocNumber . ' ';
 			} else {
 				$pageNumber = '';

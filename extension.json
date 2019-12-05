@@ -813,7 +813,7 @@
 			"value": true,
 			"description" : "Default value for activating object numberings"
 		},
-		"LoopPageNumbering": {
+		"LegacyPageNumbering": {
 			"value": "true",
 			"description" : "Default value for activating page numberings"
 		},
