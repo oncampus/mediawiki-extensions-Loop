@@ -8,7 +8,6 @@ if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file cannot be run standalone.\n" );
 }
 
-
 class LoopHtml{
 
     protected static $_instance = null;
@@ -32,7 +31,7 @@ class LoopHtml{
 
         if(is_array($loopStructureItems)) {
 
-            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath;
+            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
             
             $loopSettings = new LoopSettings();
             $loopSettings->loadSettings();
@@ -106,6 +105,27 @@ class LoopHtml{
                         LoopHtml::writeArticleToFile( $privacyTitle, "", $exportSkin );
                     }
                 }
+            }
+
+            # add pdf to zip
+            if ( !empty( $wgXmlfo2PdfServiceUrl ) && !empty( $wgXmlfo2PdfServiceToken ) ) {
+                # get pdf
+                $pdfdir = LoopHtml::getInstance()->exportDirectory . "resources/pdf";
+                if ( !file_exists( $pdfdir ) ) {
+                    mkdir( $pdfdir, 0775, true );
+                }
+
+                $exportPdf = new LoopExportPdf( $loopStructure );
+                if ( !$exportPdf->getExistingExportFile() ) {
+                    $exportPdf->generateExportContent();
+                    $content = $exportPdf->exportContent;
+                } else {
+                    $existingFile = $exportPdf->getExistingExportFile();
+                    $content = file_get_contents( $existingFile );
+                }
+                
+                $fileName = $exportPdf->getExportFilename();
+                file_put_contents($pdfdir . "/" . $fileName, $content);
             }
 
             //dd($html);
@@ -280,10 +300,6 @@ class LoopHtml{
         
     }
 
-    private function loadResources() {
-
-        
-    }
      /**
      * Replaces resources provided by resource loader
      * @param string $html
@@ -628,6 +644,14 @@ class LoopHtml{
             }
         }
 
+        $pdfLink = $doc->getElementByID( "loop-pdf-download" );
+        if ( !empty( $pdfLink ) ) {
+            $loopStructure = new LoopStructure();
+            $exportPdf = new LoopExportPdf( $loopStructure );
+            $fileLink = $prependHref . "resources/pdf/" . $exportPdf->getExportFilename();
+            $pdfLink->setAttribute( "href", $fileLink );
+        }
+        
         $html = $doc->saveHtml();
         return $html;
     }
