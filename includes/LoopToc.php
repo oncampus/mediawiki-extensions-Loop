@@ -42,7 +42,7 @@ class LoopToc extends LoopStructure {
 			$next = $lsi->getNextItem();
 			$tocNumber =  $lsi->getTocNumber();
 			
-			if( $wgLegacyPageNumbering ) {
+			if ( $wgLegacyPageNumbering ) {
 				$pageNumber = $tocNumber . ' ';
 			} else {
 				$pageNumber = '';

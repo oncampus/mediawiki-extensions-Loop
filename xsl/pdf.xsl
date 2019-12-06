@@ -298,6 +298,7 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'terminology'"></xsl:with-param>
 				</xsl:call-template>
+				
 				<xsl:text> </xsl:text>			
 				<xsl:value-of select="$word_terminology"></xsl:value-of>
 			</fo:marker>
@@ -389,11 +390,11 @@
 		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>	
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
-				<xsl:value-of select="//loop/meta/title"></xsl:value-of>
+				<xsl:value-of select="//loop/meta/title"></xsl:value-of> 
 			</fo:marker>
 		</fo:block>
 		<fo:block>
-			<fo:marker marker-class-name="page-title-right">
+			<fo:marker marker-class-name="page-title-right"> 
 				<xsl:value-of select="$word_content"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
@@ -402,7 +403,7 @@
 			<xsl:value-of select="$word_content"></xsl:value-of>
 		</fo:block>
 		
-		<xsl:call-template name="make-toc"></xsl:call-template>	
+		<xsl:call-template name="make-toc"></xsl:call-template>
 		
 		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($task_exists='1') or ($index_exists='1') or ($glossary_exists='1')">
 			<fo:block margin-bottom="1em"></fo:block>
@@ -1213,7 +1214,11 @@
 				<xsl:value-of select="generate-id()"/> -->
 				<xsl:value-of select="@id"></xsl:value-of>
 				</xsl:attribute>
-				<xsl:value-of select="@tocnumber"></xsl:value-of>
+				
+				<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
+					<xsl:value-of select="@tocnumber"></xsl:value-of>
+				</xsl:if>
+
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="@toctext"></xsl:value-of>
 			</fo:basic-link>
@@ -1303,7 +1308,9 @@
 								<xsl:value-of select="//loop/@title"></xsl:value-of>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:value-of select="preceding-sibling::node()[@toclevel &lt; $toclevel][1]/@tocnumber"></xsl:value-of>
+								<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
+									<xsl:value-of select="preceding-sibling::node()[@toclevel &lt; $toclevel][1]/@tocnumber"></xsl:value-of>
+								</xsl:if>
 								<xsl:text> </xsl:text>
 								<xsl:value-of select="preceding-sibling::node()[@toclevel &lt; $toclevel][1]/@toctext"></xsl:value-of>
 							</xsl:otherwise>					
@@ -1312,7 +1319,10 @@
 					</fo:block>
 					<fo:block>
 						<fo:marker marker-class-name="page-title-right">
-							<xsl:value-of select="@tocnumber"></xsl:value-of>
+							<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
+								<xsl:value-of select="@tocnumber"></xsl:value-of>
+							</xsl:if>
+							
 							<xsl:text> </xsl:text>
 							<xsl:choose>
 								<xsl:when test="string-length(@toctext) &gt; 63">
@@ -1326,7 +1336,9 @@
 					</fo:block>
 					<fo:block keep-with-next.within-page="always">
 						<xsl:call-template name="font_head"></xsl:call-template>
-						<xsl:value-of select="@tocnumber"></xsl:value-of>
+						<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
+							<xsl:value-of select="@tocnumber"></xsl:value-of>
+						</xsl:if>
 						<xsl:text> </xsl:text>
 						<xsl:value-of select="@toctext"></xsl:value-of>
 					</fo:block>

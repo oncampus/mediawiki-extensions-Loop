@@ -51,7 +51,7 @@ class LoopStructure {
 				$title = Title::newFromID( $structureItem->article );
 				$link = $structureItem->tocNumber . ' '. $structureItem->tocText;
 
-				if( $wgLegacyPageNumbering ) {
+				if ( $wgLegacyPageNumbering ) {
 					$pageNumber = '<span class="loopstructure-number">' . $structureItem->tocNumber . '</span> ';
 				} else {
 					$pageNumber = '';
@@ -693,7 +693,7 @@ class LoopStructureItem {
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
 		
-		if( $wgLegacyPageNumbering ) {
+		if ( $wgLegacyPageNumbering ) {
 			$pageNumber = $this->tocNumber . ' ';
 		} else {
 			$pageNumber = '';
@@ -736,7 +736,7 @@ class LoopStructureItem {
 			
 			$title = Title::newFromID( $item->article );
 
-			if( $wgLegacyPageNumbering ) {
+			if ( $wgLegacyPageNumbering ) {
 				$pageNumber = $item->tocNumber . ' ';
 			} else {
 				$pageNumber = '';
