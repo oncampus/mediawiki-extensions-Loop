@@ -271,19 +271,20 @@ class LoopMp3 {
 			$node->appendChild( $loopObjectsNodes[0] ); 
 			$tmpData = LoopMp3::getArticleXmlFromStructureXml( $node );
 			//dd($introSsml); # exit at first article xml
-			$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
-			$tmpTrack = $getID3->analyze($mp3FilePath)["id3v2"]["TRCK"][0]["data"];
-			$tmpTrack = sprintf('%03d',$tmpTrack);
-			
-			$fileName = $tmpTrack;
-			if (!empty($hashtag)) {
-				$fileName .= "_" . $hashtag;
+			if ( !empty( $tmpData ) ) {
+				$mp3FilePath = LoopMp3::page2Mp3( $loopStructure, $tmpData["articleXml"], $tmpData["articleId"], $tmpData["lastChanged"] );
+				$tmpTrack = $getID3->analyze($mp3FilePath)["id3v2"]["TRCK"][0]["data"];
+				$tmpTrack = sprintf('%03d',$tmpTrack);
+				
+				$fileName = $tmpTrack;
+				if (!empty($hashtag)) {
+					$fileName .= "_" . $hashtag;
+				}
+				$mp3Files[] = array( 
+					"path" => $mp3FilePath,
+					"fileName" => $fileName
+				);
 			}
-			$mp3Files[] = array( 
-				"path" => $mp3FilePath,
-				"fileName" => $fileName
-			);
-
 		}
 		#dd($mp3Files);
 
@@ -351,28 +352,30 @@ class LoopMp3 {
 
 		$data["articleId"] = str_replace("article", "", $node->getAttribute("id"));
 
-		$tmpDom = new domDocument('1.0', 'utf-8');
-		$tmpNode = $tmpDom->importNode($node, true);
-		
-		# create meta tag for languages
-		$metaNode = $tmpDom->createElement("meta"); 
-		$langContent = $tmpDom->createTextNode($langParts[0]);
-		$langNode = $tmpDom->createElement("lang");
-		$langNode->appendChild($langContent);
-		$metaNode->appendChild($langNode);
-		$tmpNode->appendChild( $metaNode );
+		if ( !empty( $data["articleId"] ) ) {
+			$tmpDom = new domDocument('1.0', 'utf-8');
+			$tmpNode = $tmpDom->importNode($node, true);
+			
+			# create meta tag for languages
+			$metaNode = $tmpDom->createElement("meta"); 
+			$langContent = $tmpDom->createTextNode($langParts[0]);
+			$langNode = $tmpDom->createElement("lang");
+			$langNode->appendChild($langContent);
+			$metaNode->appendChild($langNode);
+			$tmpNode->appendChild( $metaNode );
 
-		$tmpDom->appendChild( $tmpNode );
+			$tmpDom->appendChild( $tmpNode );
 
-		$data["toctext"] = $tmpNode->getAttribute("toctext");
-		$data["tocnumber"] = $tmpNode->getAttribute("tocnumber");
-		$data["articleXml"] = $tmpDom->saveXml(); 
+			$data["toctext"] = $tmpNode->getAttribute("toctext");
+			$data["tocnumber"] = $tmpNode->getAttribute("tocnumber");
+			$data["articleXml"] = $tmpDom->saveXml(); 
 
-		$structureItem = LoopStructureItem::newFromIds($data["articleId"]);
-		$data["lastChanged"] = $structureItem->lastChanged();
-		
-		return $data;
-
+			$structureItem = LoopStructureItem::newFromIds($data["articleId"]);
+			$data["lastChanged"] = $structureItem->lastChanged();
+			
+			return $data;
+		}
+		return null;
 	}
 
 	/**
