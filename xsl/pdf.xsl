@@ -130,6 +130,16 @@
 						<xsl:with-param name="object_type">loop_task</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
+				<xsl:if test="$glossary_exists='1'">
+					<xsl:call-template name="page-content-glossary">
+						<xsl:with-param name="object_type">glossary</xsl:with-param>
+					</xsl:call-template>
+				</xsl:if>            
+				<xsl:if test="$terminology_exists='1'">
+					<xsl:call-template name="page-content-terminology">
+						<xsl:with-param name="object_type">terminology</xsl:with-param>
+					</xsl:call-template>
+				</xsl:if>
 
 			</fo:flow>
 		</fo:page-sequence>
@@ -147,35 +157,6 @@
 				</fo:flow>
 			</fo:page-sequence>	            	
         </xsl:if>      
-		
-		<xsl:if test="$glossary_exists='1'">
-			<fo:page-sequence master-reference="full-page" id="glossary_sequence">
-				<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
-					<xsl:call-template name="default-header"></xsl:call-template>			
-				</fo:static-content>			
-				<fo:static-content font-family="{$font_family}" flow-name="xsl-region-after">
-					<xsl:call-template name="default-footer"></xsl:call-template>
-				</fo:static-content>
-				<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
-					<xsl:call-template name="page-content-glossary"></xsl:call-template>
-				</fo:flow>
-			</fo:page-sequence>	         	
-        </xsl:if>
-
-		<xsl:if test="$terminology_exists='1'">
-			<fo:page-sequence master-reference="full-page" id="terminology_sequence">
-				<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
-					<xsl:call-template name="default-header"></xsl:call-template>			
-				</fo:static-content>			
-				<fo:static-content font-family="{$font_family}" flow-name="xsl-region-after">
-					<xsl:call-template name="default-footer"></xsl:call-template>
-				</fo:static-content>
-				<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
-					<xsl:call-template name="page-content-terminology"></xsl:call-template>
-				</fo:flow>
-			</fo:page-sequence>	         	
-        </xsl:if>	
-		
 		
 	</xsl:template>			
 	
@@ -1393,6 +1374,7 @@
 		<fo:block text-align="right">
 			<fo:page-number></fo:page-number>
 			/
+					<xsl:value-of select="$last-page-sequence-name"></xsl:value-of>
 			<fo:page-number-citation-last ref-id="{$last-page-sequence-name}"></fo:page-number-citation-last>
 		</fo:block>
 	</xsl:template>
