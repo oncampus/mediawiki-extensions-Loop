@@ -477,4 +477,10 @@ class LoopXsl {
 		}
 		return "";		
 	}
+
+	public static function xsl_showPageNumbering() {
+		global $wgLegacyPageNumbering;
+
+		return $wgLegacyPageNumbering;
+	}
 }
