@@ -1374,7 +1374,6 @@
 		<fo:block text-align="right">
 			<fo:page-number></fo:page-number>
 			/
-					<xsl:value-of select="$last-page-sequence-name"></xsl:value-of>
 			<fo:page-number-citation-last ref-id="{$last-page-sequence-name}"></fo:page-number-citation-last>
 		</fo:block>
 	</xsl:template>
