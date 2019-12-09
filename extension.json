@@ -813,9 +813,9 @@
 			"value": true,
 			"description" : "Default value for activating object numberings"
 		},
-		"LegacyPageNumbering": {
+		"LoopLegacyPageNumbering": {
 			"value": "true",
-			"description" : "Default value for activating page numberings"
+			"description" : "Default value for activating page numberings. Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
 		},
 		"LoopNumberingType": {
 			"value": "ongoing",

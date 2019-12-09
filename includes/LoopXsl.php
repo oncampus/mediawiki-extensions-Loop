@@ -479,8 +479,8 @@ class LoopXsl {
 	}
 
 	public static function xsl_showPageNumbering() {
-		global $wgLegacyPageNumbering;
+		global $wgLoopLegacyPageNumbering;
 
-		return $wgLegacyPageNumbering;
+		return $wgLoopLegacyPageNumbering;
 	}
 }
