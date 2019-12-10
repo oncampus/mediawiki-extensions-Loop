@@ -20,11 +20,10 @@ class LoopZoom {
         $html = '<div id="loopzoom-'. $unique_id .'" class="loopzoom" data-toggle="modal" data-target=".loopzoom-'.$unique_id.'-modal">';
         $html .= $parser->recursiveTagParseFully( $input );
         $html .= '</div>';
-
-        $html .= '<div class="modal fade loopzoom-' . $unique_id . '-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        $html .= '<div class="modal fade loopzoom-modal loopzoom-' . $unique_id . '-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content"></div>
-        </div>
+            <div class="modal-content"><button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button></div>
+            </div>
         </div>';
 
         return $html;
