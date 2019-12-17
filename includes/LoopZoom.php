@@ -1,6 +1,6 @@
 <?php
 /**
- * @description Adds zoom functionality to choosen images
+ * @description Adds zoom functionality to choosen images or content
  * @ingroup Extensions
  * @author Dustin Neß <dustin.ness@th-luebeck.de> 
  */
@@ -22,7 +22,8 @@ class LoopZoom {
         $html .= '</div>';
         $html .= '<div class="modal fade loopzoom-modal loopzoom-' . $unique_id . '-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content"><button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button></div>
+        <div class="modal-header"><button type="button" class="close" aria-label="Close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button></div>
+            <div class="modal-content"></div>
             </div>
         </div>';
 
