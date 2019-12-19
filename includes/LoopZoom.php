@@ -15,7 +15,7 @@ class LoopZoom {
 
     static function renderLoopZoom( $input, array $args, Parser $parser, PPFrame $frame ) {
         
-        $unique_id =  str_replace(".", "", microtime(true));
+        $unique_id = uniqid();
         
         $html = '<div id="loopzoom-'. $unique_id .'" class="loopzoom" data-toggle="modal" data-target=".loopzoom-'.$unique_id.'-modal">';
         $html .= $parser->recursiveTagParseFully( $input );
