@@ -28,7 +28,7 @@ class LoopToc extends LoopStructure {
     
     public static function outputLoopToc( $rootArticleId, $output = "html" ) {
 
-		global $wgLegacyPageNumbering;
+		global $wgLoopLegacyPageNumbering;
 
 		$html = '';
 		$xml = '';
@@ -42,7 +42,7 @@ class LoopToc extends LoopStructure {
 			$next = $lsi->getNextItem();
 			$tocNumber =  $lsi->getTocNumber();
 			
-			if ( $wgLegacyPageNumbering ) {
+			if ( $wgLoopLegacyPageNumbering ) {
 				$pageNumber = $tocNumber . ' ';
 			} else {
 				$pageNumber = '';
@@ -61,7 +61,7 @@ class LoopToc extends LoopStructure {
 					if ( empty( $tocNumber ) || strpos ( $tmp_lsi->tocNumber, $tocNumber ) === 0 ) { # the root page's toc number must be inside the displayed toc number
 						$next = $tmp_lsi->getNextItem();
 						
-						if( $wgLegacyPageNumbering ) {
+						if( $wgLoopLegacyPageNumbering ) {
 							$tmp_pageNumber = $tmp_lsi->tocNumber . ' ';
 						} else {
 							$tmp_pageNumber = '';
