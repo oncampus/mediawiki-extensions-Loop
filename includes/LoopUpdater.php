@@ -18,7 +18,7 @@ class LoopUpdater {
 	 * @return bool true
 	 */
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
-		global $IP;
+		global $IP, $wgLoopAddToSettingsDB;
 		$schemaPath = $IP . '/extensions/Loop/schema/';
 
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_items', $schemaPath . 'loop_structure_items.sql', true ));
@@ -45,6 +45,12 @@ class LoopUpdater {
 			self::migrateLoopTerminology();
 			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_structure_items', $schemaPath . 'loopstructure_migrate.sql', true ));
 			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
+
+			if ( isset( $wgLoopAddToSettingsDB ) ) { # update settings DB from LocalSettings
+				if ( !empty( $wgLoopAddToSettingsDB )) {
+					self::addOldSettingsToDb();
+				}
+			}
 		}
 		
 		return true;
@@ -339,6 +345,23 @@ class LoopUpdater {
 		
 		error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
 
+	}
+
+	/**
+	 * Migrates LOOP 1 settings from moodalis to LOOP DB
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
+	private static function addOldSettingsToDb() {
+		global $wgLoopAddToSettingsDB;
+
+		$loopSettings = new LoopSettings();
+		$loopSettings->loadSettings();
+
+		foreach( $wgLoopAddToSettingsDB as $key => $value ) {
+			$loopSettings->$key = $value;
+		}
+		
+		$loopSettings->addToDatabase();
 	}
 
 }

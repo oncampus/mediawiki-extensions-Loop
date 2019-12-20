@@ -43,21 +43,23 @@
 				</xsl:attribute>
 			
 				<xsl:element name="p">
-					<xsl:choose>
-						<xsl:when test="@tocnumber=''">
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="$word_chapter"/>
-							<xsl:text> </xsl:text>
-							<xsl:value-of select="@tocnumber"></xsl:value-of>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-					<xsl:element name="break">
-						<xsl:attribute name="strength">
-							<xsl:text>medium</xsl:text>
-						</xsl:attribute>
-					</xsl:element>
+					<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
+						<xsl:choose>
+							<xsl:when test="@tocnumber=''">
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="$word_chapter"/>
+								<xsl:text> </xsl:text>
+								<xsl:value-of select="@tocnumber"></xsl:value-of>
+							</xsl:otherwise>
+						</xsl:choose>
+						
+						<xsl:element name="break">
+							<xsl:attribute name="strength">
+								<xsl:text>medium</xsl:text>
+							</xsl:attribute>
+						</xsl:element>
+					</xsl:if>
 
 					<xsl:if test="@toctext">
 						<xsl:value-of select="@toctext"></xsl:value-of>

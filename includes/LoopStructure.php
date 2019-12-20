@@ -29,6 +29,8 @@ class LoopStructure {
 
 	public function render() {
 
+		global $wgLoopLegacyPageNumbering;
+
 		$text = '';
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
@@ -48,15 +50,21 @@ class LoopStructure {
 				}
 				$title = Title::newFromID( $structureItem->article );
 				$link = $structureItem->tocNumber . ' '. $structureItem->tocText;
+
+				if ( $wgLoopLegacyPageNumbering ) {
+					$pageNumber = '<span class="loopstructure-number">' . $structureItem->tocNumber . '</span> ';
+				} else {
+					$pageNumber = '';
+				}
+
 				if ( $title ) {
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( '<span class="loopstructure-number">'.$structureItem->tocNumber .'</span> '. $structureItem->tocText )
+						new HtmlArmor( $pageNumber . $structureItem->tocText )
 					);
 					
 				} 
-				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat('	',  $tabLevel ) . $link . '</div>';
-				
+				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
 				
 			}
 
@@ -680,10 +688,20 @@ class LoopStructureItem {
 
 	public function getBreadcrumb ( $max_len = 100 ) {
 
+		global $wgLoopLegacyPageNumbering;
+
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
+		
+		if ( $wgLoopLegacyPageNumbering ) {
+			$pageNumber = $this->tocNumber . ' ';
+		} else {
+			$pageNumber = '';
+		}
 
-		$breadcrumb = '<li class="active">' . $this->tocNumber . ' ' . $this->tocText .'</li>';
+		//preventing home page occouring on breadcrumb nav
+		$breadcrumb = (empty($this->tocNumber)) ? '' : '<li class="active">' . $pageNumber . ' ' . $this->tocText .'</li>';
+
 		$len = strlen( $this->tocNumber ) + strlen( $this->tocText ) + 1;
 		$level = $this->tocLevel;
 
@@ -706,15 +724,26 @@ class LoopStructureItem {
 		$max_item_text_len = floor( $max_text_len / $level );
 
 		foreach( $items as $item ) {
+			
+			// if home page -> skip
+			if(empty($item->tocNumber)) continue;
 
-			if( strlen( $item->tocText ) > $max_item_text_len ) {
+			if( strlen( $item->tocText ) > $max_item_text_len) {
 				$link_text = mb_substr( $item->tocText, 0, ( $max_item_text_len - 2 ) ) . '..';
 			} else {
 				$link_text = $item->tocText;
 			}
-
+			
 			$title = Title::newFromID( $item->article );
-			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $item->tocNumber .' '. $link_text ) );
+
+			if ( $wgLoopLegacyPageNumbering ) {
+				$pageNumber = $item->tocNumber . ' ';
+			} else {
+				$pageNumber = '';
+			}
+
+			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $pageNumber . $link_text ) );
+			
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 
 		}
