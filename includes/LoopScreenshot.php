@@ -86,7 +86,7 @@ class LoopScreenshot {
 		
 	public static function html2png ( $title, $content, $id, $articleId, $width, $height ) {
 
-		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath;
+		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath, $wgDefaultUserOptions;
 
 		if ( !empty ( $wgScreenshotUrl ) ) {
 
@@ -104,7 +104,7 @@ class LoopScreenshot {
 				$html .= '<head>';
 				$html .= '<meta charset="UTF-8" />';
 				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . '/resources/src/mediawiki.legacy/shared.css">';
-				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . "/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2Cloop-common%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
+				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . "/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2C".$wgDefaultUserOptions["LoopSkinStyle"]."%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
 				$html .= '<style>.screenshotviewport{ transform: scale(4); transform-origin: 0 0;}</style>';
 				$html .= '</head>';
 				$html .= '<body><div class="screenshotviewport">' . $content . '</div></body></html>';
