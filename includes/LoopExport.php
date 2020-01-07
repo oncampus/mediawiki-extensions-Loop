@@ -176,6 +176,18 @@ class LoopExportPdf extends LoopExport {
 		$this->exportDirectory = '/export/pdf';
 		$this->fileExtension = 'pdf';
 	}
+
+	public static function isAvailable( $loopSettings = null ) {
+		global $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
+		if ( $loopSettings === null ) {
+			$loopSettings = new LoopSettings();
+			$loopSettings->loadSettings();
+		}
+		if ( ! empty( $wgXmlfo2PdfServiceUrl ) && ! empty( $wgXmlfo2PdfServiceToken ) && $loopSettings->exportPdf ) {
+			return true;
+		}
+		return false;
+	}
 	
 	public function generateExportContent() {
 		$this->exportContent = LoopPdf::structure2pdf($this->structure);
@@ -209,11 +221,23 @@ class LoopExportMp3 extends LoopExport {
 		$this->lsi = null;
 		
 	}
-	public function generateExportContent() {
-		
-		$this->exportContent = LoopMp3::structure2mp3($this->structure);
-		
+
+	public static function isAvailable( $loopSettings = null ) {
+		global $wgText2Speech, $wgText2SpeechServiceUrl;
+		if ( $loopSettings === null ) {
+			$loopSettings = new LoopSettings();
+			$loopSettings->loadSettings();
+		}
+		if ( ! empty( $wgText2Speech ) && ! empty( $wgText2SpeechServiceUrl ) && $loopSettings->exportAudio ) {
+			return true;
+		}
+		return false;
 	}
+
+	public function generateExportContent() {
+		$this->exportContent = LoopMp3::structure2mp3($this->structure);
+	}
+
 	public function sendExportHeader() {
 
 		$filename = $this->getExportFilename();
@@ -236,6 +260,19 @@ class LoopExportPageMp3 extends LoopExport {
 		$this->lsi = null;
 		
 	}
+
+	public static function isAvailable( $loopSettings = null ) {
+		global $wgText2Speech, $wgText2SpeechServiceUrl;
+		if ( $loopSettings === null ) {
+			$loopSettings = new LoopSettings();
+			$loopSettings->loadSettings();
+		}
+		if ( ! empty( $wgText2Speech ) && ! empty( $wgText2SpeechServiceUrl ) && $loopSettings->exportT2s ) {
+			return true;
+		}
+		return false;
+	}
+
 	public function generateExportContent() {
 		$query = $this->request->getQueryValues();
 		if ( isset( $query['articleId'] ) ) {
@@ -264,6 +301,17 @@ class LoopExportEpub extends LoopExport {
 		$this->structure = $structure;
 		$this->exportDirectory = '/export/epub';
 		$this->fileExtension = 'epub';
+	}
+
+	public static function isAvailable( $loopSettings = null ) {
+		if ( $loopSettings === null ) {
+			$loopSettings = new LoopSettings();
+			$loopSettings->loadSettings();
+		}
+		if ( $loopSettings->exportEpub ) {
+			return true;
+		}
+		return false;
 	}
 
 	public function generateExportContent() {
@@ -315,6 +363,17 @@ class LoopExportScorm extends LoopExport {
 		$this->structure = $structure;
 		$this->exportDirectory = '/export/Scorm';
 		$this->fileExtension = 'zip';
+	}
+
+	public static function isAvailable( $loopSettings = null ) {
+		if ( $loopSettings === null ) {
+			$loopSettings = new LoopSettings();
+			$loopSettings->loadSettings();
+		}
+		if ( $loopSettings->exportScorm ) {
+			return true;
+		}
+		return false;
 	}
 
 	public function generateExportContent() {
@@ -442,12 +501,12 @@ class SpecialLoopExport extends SpecialPage {
 				$out->addHtml ('<li>'.$xmlExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-pdf' ) && ! empty( $wgXmlfo2PdfServiceUrl ) && ! empty( $wgXmlfo2PdfServiceToken ) ) {
+			if ($user->isAllowed( 'loop-export-pdf' ) && LoopExportPdf::isAvailable() ) {
 				$pdfExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), new HtmlArmor(wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-mp3' ) && $wgText2Speech && ! empty( $wgText2SpeechServiceUrl ) ) { 
+			if ($user->isAllowed( 'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) { 
 				$mp3ExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), new HtmlArmor(wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$mp3ExportLink.'</li>');
 			}			

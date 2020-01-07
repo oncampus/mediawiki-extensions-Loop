@@ -20,7 +20,7 @@ class LoopPdf {
 	* 			-> "pagetest" = true: return will be modified for single page test support.
 	*/
 	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
-		global $IP, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
+		global $IP;
 
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';

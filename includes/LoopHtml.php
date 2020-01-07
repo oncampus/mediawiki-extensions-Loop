@@ -31,7 +31,7 @@ class LoopHtml{
 
         if(is_array($loopStructureItems)) {
 
-            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken;
+            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath;
             
             $loopSettings = new LoopSettings();
             $loopSettings->loadSettings();
@@ -108,7 +108,7 @@ class LoopHtml{
             }
 
             # add pdf to zip
-            if ( !empty( $wgXmlfo2PdfServiceUrl ) && !empty( $wgXmlfo2PdfServiceToken ) ) {
+            if ( LoopExportPdf::isAvailable( $loopSettings ) ) {
                 # get pdf
                 $pdfdir = LoopHtml::getInstance()->exportDirectory . "resources/pdf";
                 if ( !file_exists( $pdfdir ) ) {
