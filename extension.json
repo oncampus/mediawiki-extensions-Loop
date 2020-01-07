@@ -707,10 +707,6 @@
 			"value": "Datenschutz",
 			"description": "Link to privacy policy page; required"
 		},
-		"OncampusLink": {
-			"value": "showOncampusLink",
-			"description": "Whether a link to oncampus should be shown or not"
-		},
 		"extraFooter": {
 			"value" : {
 				"useExtraFooter": "false"
@@ -789,13 +785,6 @@
 				"customFilePath": ""
 			},
 			"description" : "Array of information about a custom logo for header"
-		},
-		"SkinStyles": {
-			"value": [
-				"loop-common",
-				"loop-oncampus"
-			],
-			"description" : "Array of available skin styles to use"
 		},
 		"SupportedLoopLanguages": {
 			"value": [

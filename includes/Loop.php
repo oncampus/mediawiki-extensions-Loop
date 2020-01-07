@@ -85,11 +85,10 @@ class Loop {
 				$wgRightsText = ( !isset( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
 				$wgRightsUrl = ( !isset( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
 				$wgRightsIcon = ( !isset( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
-				$wgLanguageCode = ( !isset( $data['lset_languagecode'] ) ? $wgLanguageCode : $data['lset_languagecode'] );
-				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? 'loop-common' : $data['lset_skinstyle'] );
+				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? $wgDefaultUserOptions['LoopSkinStyle'] : $data['lset_skinstyle'] );
 				$wgWhitelistRead[] = ( !isset( $data['lset_imprintlink'] ) ? $wgImprintLink : $data['lset_imprintlink'] );
 				$wgWhitelistRead[] = ( !isset( $data['lset_privacylink'] ) ? $wgPrivacyLink : $data['lset_privacylink'] );
-				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
+				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : boolval( $data['lset_numberingobjects'] ) );
 				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
 				$wgLoopLiteratureCiteType = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopLiteratureCiteType : $data['lset_citationstyle'] );
 
