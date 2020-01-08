@@ -86,9 +86,9 @@ class LoopScreenshot {
 		
 	public static function html2png ( $title, $content, $id, $articleId, $width, $height ) {
 
-		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath, $wgDefaultUserOptions;
+		global $wgLoopScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath, $wgDefaultUserOptions;
 
-		if ( !empty ( $wgScreenshotUrl ) ) {
+		if ( !empty ( $wgLoopScreenshotUrl ) ) {
 
 			$wikiPage = WikiPage::factory( $title );
 			$fwp = new FlaggableWikiPage ( $title );
@@ -130,7 +130,7 @@ class LoopScreenshot {
 					chmod( $screenshotHtmlFile, 0774);
 					$ch = curl_init();
 					curl_setopt ( $ch, CURLOPT_POST, true );
-					curl_setopt ( $ch, CURLOPT_URL, $wgScreenshotUrl );
+					curl_setopt ( $ch, CURLOPT_URL, $wgLoopScreenshotUrl );
 					curl_setopt ( $ch, CURLOPT_POSTFIELDS, "url=".$canonicalHtmlUrl."&width=".$width."&height=".$height );
 					curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
 					$imageContent = curl_exec( $ch );

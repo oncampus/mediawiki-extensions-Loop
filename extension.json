@@ -23,7 +23,8 @@
 			"Lingo": "*",
 			"MsUpload": "*",
 			"Score": "*",
-			"Quiz": "*"
+			"Quiz": "*",
+			"ConfirmEdit": ">= 1.6.0"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -329,10 +330,12 @@
 			"writeapi": false,
 			"loop-view-special-pages": false,
 			"loop-edit-literature": false,
-			"loop-pdf-test": false
+			"loop-pdf-test": false,
+			"skipcaptcha": false
 		},
 		"user" : {
-			"read": true
+			"read": true,
+			"skipcaptcha": false
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -410,7 +413,8 @@
 			"editsitejs": true,
 			"editinterface": true,
 			"writeapi": true,
-			"loop-pdf-test": true
+			"loop-pdf-test": true,
+			"skipcaptcha": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -448,7 +452,8 @@
 			"editsitejs": true,
 			"editinterface": true,
 			"writeapi": true,
-			"loop-pdf-test": true
+			"loop-pdf-test": true,
+			"skipcaptcha": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -480,7 +485,8 @@
 			"loop-view-special-pages": true,
 			"loop-edit-literature": true,
 			"writeapi": true,
-			"loop-pdf-test": true
+			"loop-pdf-test": true,
+			"skipcaptcha": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -493,7 +499,8 @@
 			"loop-settings-edit": false,
 			"purge": true,
 			"loop-view-special-pages": true,
-			"loop-edit-literature": false
+			"loop-edit-literature": false,
+			"skipcaptcha": true
 		},
 		"student_edit": {
 			"edit": true,
@@ -515,7 +522,8 @@
 			"loop-view-special-pages": true,
 			"loop-edit-literature": true,
 			"writeapi": true,
-			"loop-pdf-test": true
+			"loop-pdf-test": true,
+			"skipcaptcha": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -527,7 +535,8 @@
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"loop-edit-literature": false,
-			"loop-view-special-pages": false
+			"loop-view-special-pages": false,
+			"skipcaptcha": true
 		},
 		"shared": {
 			"editmyoptions": false,
@@ -542,7 +551,8 @@
 			"loop-pageaudio": true,
 			"loop-settings-edit": false,
 			"loop-edit-literature": false,
-			"loop-view-special-pages": false
+			"loop-view-special-pages": false,
+			"skipcaptcha": true
 		}
 	},
 	"DefaultUserOptions": {
@@ -639,8 +649,32 @@
 			"description" : "URL of the Service to convert text to speech"
 		},
 		"Text2Speech": {
-			"value" : "false",
-			"description" : "Possibility to disable text to speech feature if it is chargeable"
+			"value" : false,
+			"description" : "Possibility to enable text to speech feature from LocalSettings."
+		},
+		"PdfExport": {
+			"value" : false,
+			"description" : "Possibility to enable pdf export feature from LocalSettings."
+		},
+		"EpubExport": {
+			"value" : false,
+			"description" : "Possibility to enable ePub export feature from LocalSettings."
+		},
+		"HtmlExport": {
+			"value" : false,
+			"description" : "Possibility to enable html export feature from LocalSettings."
+		},
+		"XmlExport": {
+			"value" : false,
+			"description" : "Possibility to enable xml export feature from LocalSettings."
+		},
+		"ScormExport": {
+			"value" : false,
+			"description" : "Possibility to enable scorm export feature from LocalSettings."
+		},
+		"AudioExport": {
+			"value" : false,
+			"description" : "Possibility to enable audiobook export feature from LocalSettings."
 		},
 		"Xmlfo2PdfServiceUrl": {
 			"value" : "",
@@ -674,7 +708,7 @@
 			"value" : "https://www.quizlet.com/",
 			"description" : "URL for Quizlet elements"
 		},
-		"SocialIcons": {
+		"LoopSocialIcons": {
 			"value" : {
 				"Facebook": {
 					"icon": "",
@@ -699,19 +733,25 @@
 			},
 			"description" : "Array of settings to configure social icons in footer area"
 		},
-		"ImprintLink": {
+		"LoopImprintLink": {
 			"value": "Impressum",
 			"description": "Link to imprint page; required"
 		},
-		"PrivacyLink": {
+		"LoopPrivacyLink": {
 			"value": "Datenschutz",
 			"description": "Link to privacy policy page; required"
 		},
-		"extraFooter": {
-			"value" : {
-				"useExtraFooter": "false"
-			},
+		"LoopRightsType": {
+			"value": "",
+			"description": "Type of CC-Licenses to use"
+		},
+		"LoopExtraFooter": {
+			"value" : false,
 			"description": "Whether extra footer with content from MediaWiki:ExtraFooter should be shown or not"
+		},
+		"LoopExtraSidebar": {
+			"value" : false,
+			"description": "Whether a sidebar with content from MediaWiki:ExtraSidebar should be shown or not"
 		},
 		"AvailableLicenses": {
 			"value" : {
@@ -778,24 +818,14 @@
 			},
 			"description" : "Array of available Creative Commons licenses to apply"
 		},
-		"CustomLogo": {
+		"LoopCustomLogo": {
 			"value" : {
-				"useCustomLogo": "",
+				"useCustomLogo": false,
 				"customFileName": "",
 				"customFilePath": ""
 			},
 			"description" : "Array of information about a custom logo for header"
 		},
-		"SupportedLoopLanguages": {
-			"value": [
-				"de",
-				"de-formal",
-				"en",
-				"sv"
-			],
-			"description" : "Array of available languages to use"
-		},
-		
 		"LoopObjectDefaultRenderOption": {
 			"value": "icon",
 			"description" : ""
@@ -805,8 +835,12 @@
 			"description" : "Default value for activating object numberings"
 		},
 		"LoopLegacyPageNumbering": {
-			"value": "true",
+			"value": true,
 			"description" : "Default value for activating page numberings. Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
+		},
+		"LoopLegacyShowTitles": {
+			"value": true,
+			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
 		},
 		"LoopNumberingType": {
 			"value": "ongoing",
@@ -824,11 +858,7 @@
 			"value": "harvard",
 			"description" : "Setting default type citiations of literature"
 		},
-		"LoopLegacyShowTitles": {
-			"value": true,
-			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
-		},
-		"ScreenshotUrl": {
+		"LoopScreenshotUrl": {
 			"value": "",
 			"description" : "URL for rendering screenshots service"
 		}

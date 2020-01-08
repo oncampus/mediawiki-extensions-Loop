@@ -14,37 +14,39 @@ class LoopSettings {
 
     public $id;
     public $timeStamp;
-    public $imprintLink;
-    public $privacyLink;
-    public $rightsText;
-    public $rightsType;
-    public $rightsUrl;
-    public $rightsIcon;
-    public $customLogo;
-    public $customLogoFileName;
-    public $customLogoFilePath;
-    public $extraFooter;
-    public $skinStyle;
-    public $facebookIcon;
-    public $facebookLink;
-    public $twitterIcon;
-    public $twitterLink;
-    public $youtubeIcon;
-    public $youtubeLink;
-    public $githubIcon;
-    public $githubLink;
-    public $instagramIcon;
-    public $instagramLink;
-    public $numberingObjects;
-    public $numberingType;
-    public $citationStyle;
-    public $extraSidebar;
+    public $imprintLink; #wgLoopImprintLink
+    public $privacyLink; #wgLoopPrivacyLink
+    public $rightsText; #wgRightsText
+    public $rightsType; #wgLoopRightsType
+    public $rightsUrl; #wgRightsUrl
+    public $rightsIcon; #wgRightsIcon
+    public $customLogo; #wgLoopCustomLogo["useCustomLogo"]
+    public $customLogoFileName; #wgLoopCustomLogo["customFileName"]
+    public $customLogoFilePath; #wgLoopCustomLogo["customFilePath"]
+    public $extraFooter; #wgLoopExtraFooter
+    public $skinStyle; #wgDefaultUserOptions['LoopSkinStyle']
+    public $facebookIcon; #wgLoopSocialIcons['Facebook']['icon']
+    public $facebookLink; #wgLoopSocialIcons['Facebook']['link']
+    public $twitterIcon; #wgLoopSocialIcons['Twitter']['icon']
+    public $twitterLink; #wgLoopSocialIcons['Twitter']['link']
+    public $youtubeIcon; #wgLoopSocialIcons['Youtube']['icon']
+    public $youtubeLink; #wgLoopSocialIcons['Youtube']['link']
+    public $githubIcon; #wgLoopSocialIcons['Github']['icon']
+    public $githubLink; #wgLoopSocialIcons['Github']['link']
+    public $instagramIcon; #wgLoopSocialIcons['Instagram']['icon']
+    public $instagramLink; #wgLoopSocialIcons['Instagram']['link']
+    public $numberingObjects; #wgLoopObjectNumbering
+    public $numberingType; #wgLoopNumberingType
+    public $citationStyle; #wgLoopLiteratureCiteType
+    public $extraSidebar; #wgLoopExtraSidebar
 
-    public $exportT2s;
-    public $exportAudio;
-    public $exportPdf;
-    public $exportEpub;
-    public $exportScorm;
+    public $exportT2s; #GUI only
+    public $exportAudio; #GUI only
+    public $exportPdf; #GUI only
+    public $exportEpub; #GUI only
+    public $exportScorm; #GUI only
+    public $exportXml; #GUI only
+    public $exportHtml; #GUI only
     public $captchaEdit;
     public $captchaCreate;
     public $captchaAddurl;
@@ -85,6 +87,8 @@ class LoopSettings {
             'lset_exportt2s' => $this->exportT2s,
             'lset_exportaudio' => $this->exportAudio,
             'lset_exportpdf' => $this->exportPdf,
+            'lset_exportxml' => $this->exportXml,
+            'lset_exporthtml' => $this->exportHtml,
             'lset_exportepub' => $this->exportEpub,
             'lset_exportscorm' => $this->exportScorm,
             'lset_captchaedit' => $this->captchaEdit,
@@ -141,25 +145,48 @@ class LoopSettings {
             $data[$row->lset_property] = $row->lset_value;
         }
 
-        global $wgOut, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, $wgLoopObjectNumbering, 
-        $wgLoopNumberingType, $wgLoopLiteratureCiteType;
+        global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
+        $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
+        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers;
         
-        $this->skinStyle = $wgOut->getUser()->getOption( 'LoopSkinStyle', $wgDefaultUserOptions['LoopSkinStyle'], true );
-        $this->imprintLink = $wgImprintLink;
-        $this->privacyLink = $wgPrivacyLink;
+        # take values from presets in extension.json and LocalSettings if there is no DB entry
+        $this->imprintLink = $wgLoopImprintLink;
+        $this->privacyLink = $wgLoopPrivacyLink;
+        $this->rightsText = $wgRightsText;
+        $this->rightsType = $wgLoopRightsType;
+        $this->rightsUrl = $wgRightsUrl;
+        $this->rightsIcon = $wgRightsIcon;
+        $this->customLogo = $wgLoopCustomLogo["useCustomLogo"];
+        $this->customLogoFileName = $wgLoopCustomLogo["customFileName"];
+        $this->customLogoFilePath = $wgLoopCustomLogo["customFilePath"];
+        $this->extraFooter = $wgLoopExtraFooter;
+        $this->skinStyle = $wgDefaultUserOptions['LoopSkinStyle'];
+        $this->facebookIcon = $wgLoopSocialIcons['Facebook']['icon'];
+        $this->facebookLink = $wgLoopSocialIcons['Facebook']['link'];
+        $this->twitterIcon = $wgLoopSocialIcons['Twitter']['icon'];
+        $this->twitterLink = $wgLoopSocialIcons['Twitter']['link'];
+        $this->youtubeIcon = $wgLoopSocialIcons['Youtube']['icon'];
+        $this->youtubeLink = $wgLoopSocialIcons['Youtube']['link'];
+        $this->githubIcon = $wgLoopSocialIcons['Github']['icon'];
+        $this->githubLink = $wgLoopSocialIcons['Github']['link'];
+        $this->instagramIcon = $wgLoopSocialIcons['Instagram']['icon'];
+        $this->instagramLink = $wgLoopSocialIcons['Instagram']['link'];
         $this->numberingObjects = $wgLoopObjectNumbering;
         $this->numberingType = $wgLoopNumberingType;
         $this->citationStyle = $wgLoopLiteratureCiteType;
-        $this->exportT2s = true;
+        $this->extraSidebar = $wgLoopExtraSidebar;
+        $this->exportT2s = true; # allow all export options that are given
         $this->exportAudio = true;
         $this->exportPdf = true;
         $this->exportEpub = true;
         $this->exportScorm = true;
-        $this->captchaEdit = false;
-        $this->captchaCreate = false;
-        $this->captchaAddurl = false;
-        $this->captchaCreateAccount = false;
-        $this->captchaBadlogin = false;
+        $this->exportXml = true;
+        $this->exportHtml = true;
+        $this->captchaEdit = $wgCaptchaTriggers["edit"];
+        $this->captchaCreate = $wgCaptchaTriggers["create"];
+        $this->captchaAddurl = $wgCaptchaTriggers["addurl"];
+        $this->captchaCreateAccount = $wgCaptchaTriggers["createaccount"];
+        $this->captchaBadlogin = $wgCaptchaTriggers["badlogin"];
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = $data['lset_imprintlink'];
@@ -168,10 +195,10 @@ class LoopSettings {
             $this->rightsType = $data['lset_rightstype'];
             $this->rightsUrl = $data['lset_rightsurl'];
             $this->rightsIcon = $data['lset_rightsicon'];
-            $this->customLogo = boolval($data['lset_customlogo']);
-            $this->customLogoFileName = $data['lset_customlogofilename'];
-            $this->customLogoFilePath = $data['lset_customlogofilepath'];
-            $this->extraFooter = boolval($data['lset_extrafooter']);
+            $this->customLogo = boolval($data['lset_customlogo']);#
+            $this->customLogoFileName = $data['lset_customlogofilename'];#
+            $this->customLogoFilePath = $data['lset_customlogofilepath'];#
+            $this->extraFooter = boolval($data['lset_extrafooter']);#
             $this->skinStyle = $data['lset_skinstyle'];
             $this->facebookIcon = $data['lset_facebookicon'];
             $this->facebookLink = $data['lset_facebooklink'];
@@ -192,6 +219,8 @@ class LoopSettings {
             $this->exportPdf = boolval($data['lset_exportpdf']);
             $this->exportEpub = boolval($data['lset_exportepub']);
             $this->exportScorm = boolval($data['lset_exportscorm']);
+            $this->exportXml = boolval($data['lset_exportxml']);
+            $this->exportHtml = boolval($data['lset_exporthtml']);
             $this->captchaEdit = boolval($data['lset_captchaedit']);
             $this->captchaCreate = boolval($data['lset_captchacreate']);
             $this->captchaAddurl = boolval($data['lset_captchaddurl']);
@@ -227,7 +256,7 @@ class LoopSettings {
 
     public function getLoopSettingsFromRequest ( $request ) {
         
-        global $wgSocialIcons, $wgLoopSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
+        global $wgLoopSocialIcons, $wgLoopSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
         $this->errors = array();
 
         $this->rightsText = $request->getText( 'rights-text' ); # no validation required
@@ -240,7 +269,7 @@ class LoopSettings {
             'Instagram' => array()
         );
 
-        foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
+        foreach( $wgLoopSocialIcons as $socialIcons => $socialIcon ) {
             
             if ( empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) ) || $request->getText( 'footer-' . $socialIcons . '-icon' ) == $socialIcons ) {
             $socialArray[$socialIcons]['icon'] = $request->getText( 'footer-' . $socialIcons . '-icon' );
@@ -409,6 +438,22 @@ class LoopSettings {
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-scorm-label' ) );
         }
+        # Export xml
+        if ( $request->getText( 'export-xml' ) == 'on' ) { 
+            $this->exportXml = true;
+        } elseif ( empty ( $request->getText( 'export-xml' ) ) ) {
+            $this->exportXml = false;
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-xml-label' ) );
+        }
+        # Export html
+        if ( $request->getText( 'export-html' ) == 'on' ) { 
+            $this->exportHtml = true;
+        } elseif ( empty ( $request->getText( 'export-html' ) ) ) {
+            $this->exportHtml = false;
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-html-label' ) );
+        }
         
         # Captcha edit
         if ( $request->getText( 'captcha-edit' ) == 'on' ) { 
@@ -478,8 +523,8 @@ class SpecialLoopSettings extends SpecialPage {
 		
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
-			global $IP, $wgSecretKey, $wgSocialIcons, $wgAvailableLicenses, $wgSpecialPages, $wgText2SpeechServiceUrl,
-			$wgLoopSkinStyles, $wgXmlfo2PdfServiceUrl, $wgXmlfo2PdfServiceToken, $wgDefaultUserOptions;
+			global $IP, $wgSecretKey, $wgLoopSocialIcons, $wgAvailableLicenses, $wgSpecialPages,
+			$wgLoopSkinStyles, $wgDefaultUserOptions;
 				
 			$this->setHeaders();
 			
@@ -610,7 +655,7 @@ class SpecialLoopSettings extends SpecialPage {
 						'Instagram' => array( 'icon' => $currentLoopSettings->instagramIcon, 'link' => $currentLoopSettings->instagramLink )
                     );
                     $i = 1;
-					foreach( $wgSocialIcons as $socialIcons => $socialIcon ) {
+					foreach( $wgLoopSocialIcons as $socialIcons => $socialIcon ) {
                         if ( $i % 2 != 0 ) {
                             $html .= '<div class="form-row">';
                         }
@@ -626,35 +671,67 @@ class SpecialLoopSettings extends SpecialPage {
 								<div class="invalid-feedback" id="feedback-'. $socialIcons .'">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
                             </div>
                         </div>';
-                        if ( $i % 2 == 0 || $i == count( $wgSocialIcons ) ) {
+                        if ( $i % 2 == 0 || $i == count( $wgLoopSocialIcons ) ) {
                             $html .= '</div>';
                         } 
                         $i++;
                     } 
                     
-					### EXPORT BLOCK ###
-					$html .= '<h3>' . $this->msg( 'loopsettings-headline-export' ) . '</h3>'; 
-					$html .= '<div class="form-row mb-4">';
-					$html .= '<div class="col-6">';
-					
-                    if ( !empty( $wgXmlfo2PdfServiceUrl ) && !empty( $wgXmlfo2PdfServiceToken ) ) {
-                        $html .= '<div class="mb-1"><input type="checkbox" name="export-pdf" id="export-pdf" class="setting-input" ' . ( $currentLoopSettings->exportPdf == "exportPdf" ? 'checked' : '' ) .'>';
-                        $html .= '<label for="export-pdf">' . $this->msg( 'loopsettings-export-pdf-label' ) . '</label></div>';                   
-                    }
-					$html .= '<div class="mb-1"><input type="checkbox" name="export-epub" id="export-epub" class="setting-input" ' . ( $currentLoopSettings->exportEpub == "exportEpub" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="export-epub">' . $this->msg( 'loopsettings-export-epub-label' ) . '</label></div>';
-                    if ( !empty( $wgText2SpeechServiceUrl ) ) {
-                        $html .= '<div class="mb-1"><input type="checkbox" name="export-t2s" id="export-t2s" class="setting-input" ' . ( $currentLoopSettings->exportT2s == "exportT2s" ? 'checked' : '' ) .'>';
-                        $html .= '<label for="export-t2s">' . $this->msg( 'loopsettings-export-t2s-label' ) . '</label></div>';
-					    $html .= '<div class="mb-1"><input type="checkbox" name="export-audio" id="export-audio" class="setting-input" ' . ( $currentLoopSettings->exportAudio == "exportAudio" ? 'checked' : '' ) .'>';
-                        $html .= '<label for="export-audio">' . $this->msg( 'loopsettings-export-audio-label' ) . '</label></div>';
-                    }
-                    $html .= '<div class="mb-1"><input type="checkbox" name="export-scorm" id="export-scorm" class="setting-input" ' . ( $currentLoopSettings->exportScorm ? 'checked' : '' ) .'>';
-                    $html .= '<label for="export-scorm">' . $this->msg( 'loopsettings-export-scorm-label' ) . '</label></div>';
-					
-                    $html .= '</div>';
-                    $html .= '</div>';
+                    ### EXPORT BLOCK ###
+                    $showExportOptions = false;
+					$exporthtml = '<h3>' . $this->msg( 'loopsettings-headline-export' ) . '</h3>'; 
+					$exporthtml .= '<div class="form-row mb-4">';
+					$exporthtml .= '<div class="col-6">';
                     
+                    $dummyLoopSettings = new LoopSettings(); # check further requirements of export types without interfering LoopSettings
+                    $dummyLoopSettings->exportT2s = true;
+                    $dummyLoopSettings->exportAudio = true;
+                    $dummyLoopSettings->exportPdf = true;
+                    $dummyLoopSettings->exportEpub = true;
+                    $dummyLoopSettings->exportScorm = true;
+                    $dummyLoopSettings->exportXml = true;
+                    $dummyLoopSettings->exportHtml = true;
+
+                    if ( LoopExportPageMp3::isAvailable( $dummyLoopSettings ) ) {
+                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-t2s" id="export-t2s" class="setting-input" ' . ( $currentLoopSettings->exportT2s ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-t2s">' . $this->msg( 'loopsettings-export-t2s-label' ) . '</label></div>';
+                        $showExportOptions = true;
+                    }
+                    if ( LoopExportPdf::isAvailable( $dummyLoopSettings ) ) {
+                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-pdf" id="export-pdf" class="setting-input" ' . ( $currentLoopSettings->exportPdf ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-pdf">' . $this->msg( 'loopsettings-export-pdf-label' ) . '</label></div>';
+                        $showExportOptions = true;    
+                    }
+                    if ( LoopExportMp3::isAvailable( $dummyLoopSettings ) ) {
+					    $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-audio" id="export-audio" class="setting-input" ' . ( $currentLoopSettings->exportAudio ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-audio">' . $this->msg( 'loopsettings-export-audio-label' ) . '</label></div>';
+                        $showExportOptions = true;
+                    }
+                    if ( LoopExportEpub::isAvailable( $dummyLoopSettings ) ) {
+					    $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-epub" id="export-epub" class="setting-input" ' . ( $currentLoopSettings->exportEpub ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-epub">' . $this->msg( 'loopsettings-export-epub-label' ) . '</label></div>';
+                        $showExportOptions = true;
+                    }
+                    if ( LoopExportScorm::isAvailable( $dummyLoopSettings ) ) {
+                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-scorm" id="export-scorm" class="setting-input" ' . ( $currentLoopSettings->exportScorm ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-scorm">' . $this->msg( 'loopsettings-export-scorm-label' ) . '</label></div>';
+                        $showExportOptions = true;
+					}
+                    if ( LoopExportHtml::isAvailable( $dummyLoopSettings ) ) {
+                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-html" id="export-html" class="setting-input" ' . ( $currentLoopSettings->exportHtml ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-html">' . $this->msg( 'loopsettings-export-html-label' ) . '</label></div>';
+                        $showExportOptions = true;
+					}
+                    if ( LoopExportXml::isAvailable( $dummyLoopSettings ) ) {
+					    $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-xml" id="export-xml" class="setting-input" ' . ( $currentLoopSettings->exportXml ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-xml">' . $this->msg( 'loopsettings-export-xml-label' ) . '</label></div>';
+                        $showExportOptions = true;
+                    }
+                    $exporthtml .= '</div></div>';
+                    if ( $showExportOptions ) {
+                        $html .= $exporthtml;
+                    }
+
 				$html .= '</div>'; // end of general-tab
 				
 				/** 

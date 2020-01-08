@@ -31,7 +31,8 @@ class LoopHtml{
 
         if(is_array($loopStructureItems)) {
 
-            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath;
+            global $wgOut, $wgDefaultUserOptions, $wgResourceLoaderDebug, $wgUploadDirectory, $wgArticlePath, 
+            $wgLoopImprintLink, $wgLoopPrivacyLink;
             
             $loopSettings = new LoopSettings();
             $loopSettings->loadSettings();
@@ -86,8 +87,8 @@ class LoopHtml{
             foreach( $glossaryPages as $title ) {
                 LoopHtml::writeArticleToFile( $title, "", $exportSkin );
             }
-            if ( filter_var( htmlspecialchars_decode( $loopSettings->imprintLink ), FILTER_VALIDATE_URL ) == false ) {
-                $imprintTitle = Title::newFromText( $loopSettings->imprintLink );
+            if ( filter_var( htmlspecialchars_decode( $wgLoopImprintLink ), FILTER_VALIDATE_URL ) == false ) {
+                $imprintTitle = Title::newFromText( $wgLoopImprintLink );
                 if ( ! empty ( $imprintTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $imprintTitle );
                     $revision = $wikiPage->getRevision();
@@ -96,8 +97,8 @@ class LoopHtml{
                     }
                 }
             }
-            if ( filter_var( htmlspecialchars_decode( $loopSettings->privacyLink ), FILTER_VALIDATE_URL ) == false ) {
-                $privacyTitle = Title::newFromText( $loopSettings->privacyLink );
+            if ( filter_var( htmlspecialchars_decode( $wgLoopPrivacyLink ), FILTER_VALIDATE_URL ) == false ) {
+                $privacyTitle = Title::newFromText( $wgLoopPrivacyLink );
                 if ( ! empty ( $privacyTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $privacyTitle );
                     $revision = $wikiPage->getRevision();
@@ -533,13 +534,9 @@ class LoopHtml{
      */   
     private function replaceManualLinks( $html, $prependHref = "" ) {
         
-        global $wgServer;
+        global $wgServer, $wgDefaultUserOptions, $wgEditableSkinStyles, $wgLoopCustomLogo;
         $doc = new DOMDocument();
         $doc->loadHtml($html);
-        
-        $loopSettings = new LoopSettings();
-        $loopSettings->loadSettings();
-
         $body = $doc->getElementsByTagName('body');
 
         if ( !empty( $prependHref ) ) { # ONLY for start file - add folder to path
@@ -567,12 +564,13 @@ class LoopHtml{
         }
 
         # apply custom logo, if given
-        if ( !empty ( $loopSettings->customLogo ) ) {
+        $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
+        if ( !empty ( $wgLoopCustomLogo["useCustomLogo"] ) && in_array( $skinStyle, $wgEditableSkinStyles ) ) {
             $loopLogo = $doc->getElementById('logo');
-            $logoUrl = $loopSettings->customLogoFilePath;
+            $logoUrl = $wgLoopCustomLogo["customFilePath"];
             $logoFile = $this->requestContent( array($logoUrl) );
             
-            preg_match('/(.*)(\.{1})(.*)/', $loopSettings->customLogoFileName, $fileData);
+            preg_match('/(.*)(\.{1})(.*)/', $wgLoopCustomLogo["customFileName"], $fileData);
             $fileName = $this->resolveUrl($fileData[1], '.'.$fileData[3]); 
 
             $this->writeFile( "resources/images/", $fileName, $logoFile[$logoUrl] );
