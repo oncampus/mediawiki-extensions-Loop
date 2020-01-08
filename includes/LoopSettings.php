@@ -495,9 +495,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-badlogin-label' ) );
         }
         $this->addToDatabase();
-       # dd(3);
         SpecialPurgeCache::purge();
-        #dd(2);
         return true;
 
     }
@@ -680,7 +678,7 @@ class SpecialLoopSettings extends SpecialPage {
                     $showExportOptions = false;
 					$exporthtml = '<h3>' . $this->msg( 'loopsettings-headline-export' ) . '</h3>'; 
 					$exporthtml .= '<div class="form-row mb-4">';
-					$exporthtml .= '<div class="col-6">';
+					$exporthtml .= '<div class="col-12">';
                     
                     $dummyLoopSettings = new LoopSettings(); # check further requirements of export types without interfering LoopSettings
                     $dummyLoopSettings->exportT2s = true;
@@ -692,38 +690,38 @@ class SpecialLoopSettings extends SpecialPage {
                     $dummyLoopSettings->exportHtml = true;
 
                     if ( LoopExportPageMp3::isAvailable( $dummyLoopSettings ) ) {
-                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-t2s" id="export-t2s" class="setting-input" ' . ( $currentLoopSettings->exportT2s ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-t2s">' . $this->msg( 'loopsettings-export-t2s-label' ) . '</label></div>';
+                        $exporthtml .= '<div><input type="checkbox" name="export-t2s" id="export-t2s" class="setting-input mr-1" ' . ( $currentLoopSettings->exportT2s ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-t2s"><span class="mr-1 ic ic-audio"></span>' . $this->msg( 'loopsettings-export-t2s-label' ) . '</label></div>';
                         $showExportOptions = true;
                     }
                     if ( LoopExportPdf::isAvailable( $dummyLoopSettings ) ) {
-                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-pdf" id="export-pdf" class="setting-input" ' . ( $currentLoopSettings->exportPdf ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-pdf">' . $this->msg( 'loopsettings-export-pdf-label' ) . '</label></div>';
+                        $exporthtml .= '<div><input type="checkbox" name="export-pdf" id="export-pdf" class="setting-input mr-1" ' . ( $currentLoopSettings->exportPdf ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-pdf"><span class="mr-1 ic ic-file-pdf"></span>' . $this->msg( 'loopsettings-export-pdf-label' ) . '</label></div>';
                         $showExportOptions = true;    
                     }
                     if ( LoopExportMp3::isAvailable( $dummyLoopSettings ) ) {
-					    $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-audio" id="export-audio" class="setting-input" ' . ( $currentLoopSettings->exportAudio ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-audio">' . $this->msg( 'loopsettings-export-audio-label' ) . '</label></div>';
+					    $exporthtml .= '<div><input type="checkbox" name="export-audio" id="export-audio" class="setting-input mr-1" ' . ( $currentLoopSettings->exportAudio ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-audio"><span class="mr-1 ic ic-file-mp3"></span>' . $this->msg( 'loopsettings-export-audio-label' ) . '</label></div>';
                         $showExportOptions = true;
                     }
                     if ( LoopExportEpub::isAvailable( $dummyLoopSettings ) ) {
-					    $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-epub" id="export-epub" class="setting-input" ' . ( $currentLoopSettings->exportEpub ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-epub">' . $this->msg( 'loopsettings-export-epub-label' ) . '</label></div>';
+					    $exporthtml .= '<div><input type="checkbox" name="export-epub" id="export-epub" class="setting-input mr-1" ' . ( $currentLoopSettings->exportEpub ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-epub"><span class="mr-1 ic ic-file-epub"></span>' . $this->msg( 'loopsettings-export-epub-label' ) . '</label></div>';
                         $showExportOptions = true;
                     }
                     if ( LoopExportScorm::isAvailable( $dummyLoopSettings ) ) {
-                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-scorm" id="export-scorm" class="setting-input" ' . ( $currentLoopSettings->exportScorm ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-scorm">' . $this->msg( 'loopsettings-export-scorm-label' ) . '</label></div>';
+                        $exporthtml .= '<div><input type="checkbox" name="export-scorm" id="export-scorm" class="setting-input mr-1" ' . ( $currentLoopSettings->exportScorm ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-scorm"><span class="mr-1 ic ic-file-scorm"></span>' . $this->msg( 'loopsettings-export-scorm-label' ) . '</label></div>';
                         $showExportOptions = true;
 					}
                     if ( LoopExportHtml::isAvailable( $dummyLoopSettings ) ) {
-                        $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-html" id="export-html" class="setting-input" ' . ( $currentLoopSettings->exportHtml ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-html">' . $this->msg( 'loopsettings-export-html-label' ) . '</label></div>';
+                        $exporthtml .= '<div><input type="checkbox" name="export-html" id="export-html" class="setting-input mr-1" ' . ( $currentLoopSettings->exportHtml ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-html"><span class="mr-1 ic ic-file-xml"></span>' . $this->msg( 'loopsettings-export-html-label' ) . '</label></div>';
                         $showExportOptions = true;
 					}
                     if ( LoopExportXml::isAvailable( $dummyLoopSettings ) ) {
-					    $exporthtml .= '<div class="mb-1"><input type="checkbox" name="export-xml" id="export-xml" class="setting-input" ' . ( $currentLoopSettings->exportXml ? 'checked' : '' ) .'>';
-                        $exporthtml .= '<label for="export-xml">' . $this->msg( 'loopsettings-export-xml-label' ) . '</label></div>';
+					    $exporthtml .= '<div><input type="checkbox" name="export-xml" id="export-xml" class="setting-input mr-1" ' . ( $currentLoopSettings->exportXml ? 'checked' : '' ) .'>';
+                        $exporthtml .= '<label for="export-xml"><span class="mr-1 ic ic-file-xml"></span>' . $this->msg( 'loopsettings-export-xml-label' ) . '</label></div>';
                         $showExportOptions = true;
                     }
                     $exporthtml .= '</div></div>';
@@ -830,15 +828,15 @@ class SpecialLoopSettings extends SpecialPage {
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-captcha' )->text() . '</h3>'; 
                     $html .= '<p class="mb-1">'.$this->msg( "loopsettings-captcha-desc")->text().'</p>';
 					$html .= '<div class="col-12">';
-					$html .= '<div><input type="checkbox" name="captcha-edit" id="captcha-edit" class="setting-input mr-1" value="captchaEdit" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaEdit == "captchaEdit" ? 'checked' : '' ) .'>';
+					$html .= '<div><input type="checkbox" name="captcha-edit" id="captcha-edit" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaEdit == "captchaEdit" ? 'checked' : '' ) .'>';
                     $html .= '<label for="captcha-edit">' . $this->msg( 'loopsettings-captcha-edit-label' )->text() . '*</label></div>';
-					$html .= '<div><input type="checkbox" name="captcha-create" id="captcha-create" class="setting-input mr-1" value="captchaCreate" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaCreate == "captchaCreate" ? 'checked' : '' ) .'>';
+					$html .= '<div><input type="checkbox" name="captcha-create" id="captcha-create" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaCreate == "captchaCreate" ? 'checked' : '' ) .'>';
 					$html .= '<label for="captcha-create">' . $this->msg( 'loopsettings-captcha-create-label' )->text() . '*</label></div>';
-					$html .= '<div><input type="checkbox" name="captcha-addurl" id="captcha-addurl" class="setting-input mr-1" value="captchaAddurl" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaAddurl == "captchaAddurl" ? 'checked' : '' ) .'>';
+					$html .= '<div><input type="checkbox" name="captcha-addurl" id="captcha-addurl" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaAddurl == "captchaAddurl" ? 'checked' : '' ) .'>';
                     $html .= '<label for="captcha-addurl">' . $this->msg( 'loopsettings-captcha-addurl-label' )->text() . '*</label></div>';
-                    $html .= '<div><input type="checkbox" name="captcha-createaccount" id="captcha-createaccount" class="setting-input mr-1" value="captchaCreateAccount" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaCreateAccount == "captchaCreateAccount" ? 'checked' : '' ) .'>';
+                    $html .= '<div><input type="checkbox" name="captcha-createaccount" id="captcha-createaccount" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaCreateAccount == "captchaCreateAccount" ? 'checked' : '' ) .'>';
                     $html .= '<label for="captcha-createaccount">' . $this->msg( 'loopsettings-captcha-createaccount-label' )->text() . '</label></div>';
-					$html .= '<div><input type="checkbox" name="captcha-badlogin" id="captcha-badlogin" class="setting-input mr-1" value="captchaBadlogin" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaBadlogin == "captchaBadlogin" ? 'checked' : '' ) .'>';
+					$html .= '<div><input type="checkbox" name="captcha-badlogin" id="captcha-badlogin" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaBadlogin == "captchaBadlogin" ? 'checked' : '' ) .'>';
                     $html .= '<label for="captcha-badlogin">' . $this->msg( 'loopsettings-captcha-badlogin-label' ) . '</label></div>';
 					$html .= '<p><i>* '.$this->msg( "loopsettings-captcha-usergroup")->text().'</i></p>';
                     $html .= '</div>';
