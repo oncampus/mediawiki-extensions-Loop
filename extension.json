@@ -331,12 +331,10 @@
 			"writeapi": false,
 			"loop-view-special-pages": false,
 			"loop-edit-literature": false,
-			"loop-pdf-test": false,
-			"skipcaptcha": false
+			"loop-pdf-test": false
 		},
 		"user" : {
-			"read": true,
-			"skipcaptcha": false
+			"read": true
 		},
 		"bot": {
 			"loop-toc-edit": true,
