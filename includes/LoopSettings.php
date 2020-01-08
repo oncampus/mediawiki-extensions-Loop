@@ -39,7 +39,6 @@ class LoopSettings {
     public $numberingType; #wgLoopNumberingType
     public $citationStyle; #wgLoopLiteratureCiteType
     public $extraSidebar; #wgLoopExtraSidebar
-
     public $exportT2s; #GUI only
     public $exportAudio; #GUI only
     public $exportPdf; #GUI only
@@ -47,11 +46,11 @@ class LoopSettings {
     public $exportScorm; #GUI only
     public $exportXml; #GUI only
     public $exportHtml; #GUI only
-    public $captchaEdit;
-    public $captchaCreate;
-    public $captchaAddurl;
-    public $captchaCreateAccount;
-    public $captchaBadlogin;
+    public $captchaEdit; #wgCaptchaTriggers["edit"]
+    public $captchaCreate; #wgCaptchaTriggers["create"]
+    public $captchaAddurl; #wgCaptchaTriggers["addurl"]
+    public $captchaCreateAccount; #wgCaptchaTriggers["createaccount"]
+    public $captchaBadlogin; #wgCaptchaTriggers["badlogin"]
 
     /**
      * Add settings to the database
@@ -524,7 +523,7 @@ class SpecialLoopSettings extends SpecialPage {
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
 			global $IP, $wgSecretKey, $wgLoopSocialIcons, $wgAvailableLicenses, $wgSpecialPages,
-			$wgLoopSkinStyles, $wgDefaultUserOptions;
+			$wgLoopSkinStyles, $wgLoopEditableSkinStyles, $wgDefaultUserOptions;
 				
 			$this->setHeaders();
 			
@@ -574,7 +573,7 @@ class SpecialLoopSettings extends SpecialPage {
 					<a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general" aria-selected="true">' . $this->msg( 'loopsettings-tab-general' )->text() . '</a>
 					<a class="nav-item nav-link" id="nav-appearance-tab" data-toggle="tab" href="#nav-appearance" role="tab" aria-controls="nav-appearance" aria-selected="true">' . $this->msg( 'loopsettings-tab-appearance' )->text() . '</a>
                     <a class="nav-item nav-link" id="nav-content-tab" data-toggle="tab" href="#nav-content" role="tab" aria-controls="nav-content" aria-selected="true">' . $this->msg( 'loopsettings-tab-content' )->text() . '</a>
-                    <a class="nav-item nav-link" id="nav-tech-tab" data-toggle="tab" href="#nav-tech" role="tab" aria-controls="nav-tech" aria-selected="true">' . $this->msg( 'loopsettings-tab-tech' )->text() . '</a>
+                    <a class="nav-item nav-link" id="nav-tech-tab" data-toggle="tab" href="#nav-tech" role="tab" aria-controls="nav-tech" aria-selected="true">' . $this->msg( 'loopsettings-tab-advanced' )->text() . '</a>
 				</div>
 			</nav>
 			<form class="needs-validation mw-editform mt-3 mb-3" id="loopsettings-form" method="post" novalidate enctype="multipart/form-data">';
@@ -744,7 +743,7 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
 					$skinStyleOptions = '';
 					foreach( $wgLoopSkinStyles as $style ) { 
-					if ( $style == $currentLoopSettings->skinStyle ) { #TODO: Some styles should not be selectable from every loop
+					    if ( $style == $currentLoopSettings->skinStyle ) { 
 							$selected = 'selected';
 						} else {
 							$selected = '';
@@ -759,12 +758,19 @@ class SpecialLoopSettings extends SpecialPage {
                     $html .= '</div>'; #end of form-row
 
                     ### LOGO BLOCK ###
-					$html .= '<h3>' . $this->msg( 'loopsettings-headline-logo' ) . '</h3>';
-					# logo
+                    $editableStyles = "";
+                    foreach( $wgLoopEditableSkinStyles as $editableStyle ) {
+                        if ( !empty( $editableStyles ) ) {
+                            $editableStyles .= ", ";
+                        }
+                        $editableStyles .= $this->msg( 'loop-skin-'. $editableStyle );
+                    }
+                    $html .= '<h3>' . $this->msg( 'loopsettings-headline-logo' ) . '</h3>';
 					$html .= '<div class="form-row mb-4">';
 					$html .=    '<div class="col-6 col-sm-6 pl-1">';
 					$html .=        '<input type="checkbox" class="mr-1" name="logo-use-custom" id="logo-use-custom" '. ( ! empty( $currentLoopSettings->customLogo ) ? 'checked' : '' ) .'>';
-					$html .=        '<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>';
+                    $html .=        '<label for="logo-use-custom">' . $this->msg( 'loopsettings-customlogo-label' ) . '</label>';
+                    $html .=        '<span class="logo-hint ic ic-info pl-1 small" id="logo-hint" title="' . $this->msg( 'loopsettings-customlogo-editablestyles', $editableStyles ). '"></span>';
 					$html .=        '<input '. ( ! $currentLoopSettings->customLogo ? 'disabled' : '' ) .' name="custom-logo-filename" placeholder="Logo.png" id="custom-logo-filename" class="form-control setting-input" value="' . $currentLoopSettings->customLogoFileName.'">';
 					$html .=        '<div class="invalid-feedback">' . $this->msg( 'loopsettings-customlogo-hint' ) . '</div>';
 					$html .=        '<input type="hidden" name="custom-logo-filepath" id="custom-logo-filepath" value="' . $currentLoopSettings->customLogoFilePath.'">';
@@ -804,11 +810,8 @@ class SpecialLoopSettings extends SpecialPage {
 						array("target" => "blank", "class" => "ml-1")
 					);
                     $html .= '</div>';
-
-
                     $html .= '</div>'; #end of form-row
                     
-					#$html .= '</div>';
 				$html .= '</div>'; // end of appearence-tab
 				
 				/** 
@@ -816,21 +819,28 @@ class SpecialLoopSettings extends SpecialPage {
 				 */	
 				$html .= '<div class="tab-pane fade" id="nav-tech" role="tabpanel" aria-labelledby="nav-tech-tab">';
                 
-                ### CAPTCHA BLOCK ###
+                    ### CAPTCHA BLOCK ###
+                    global $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
+                    $captchaDisabled = "";
+                    if ( empty( $wgReCaptchaSiteKey ) || empty( $wgReCaptchaSecretKey ) ) {
+                        $captchaDisabled = "disabled";
+                        $captchaDisabledMsg = '<div class="error-box">'. $this->msg( 'loopsettings-captcha-nokeys' )->text().'</div>';
+                    }
 					$html .= '<div class="form-row mb-4">';
-					$html .= '<h3>' . $this->msg( 'loopsettings-headline-captcha' ) . '</h3>'; 
+                    $html .= '<h3>' . $this->msg( 'loopsettings-headline-captcha' )->text() . '</h3>'; 
+                    $html .= '<p class="mb-1">'.$this->msg( "loopsettings-captcha-desc")->text().'</p>';
 					$html .= '<div class="col-12">';
-					$html .= '<div class="mb-1"><input type="checkbox" name="captcha-edit" id="captcha-edit" class="setting-input" value="captchaEdit" ' . ( $currentLoopSettings->captchaEdit == "captchaEdit" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="captcha-edit">' . $this->msg( 'loopsettings-captcha-edit-label' ) . '</label></div>';
-					$html .= '<div class="mb-1"><input type="checkbox" name="captcha-create" id="captcha-create" class="setting-input" value="captchaCreate" ' . ( $currentLoopSettings->captchaCreate == "captchaCreate" ? 'checked' : '' ) .'>';
-					$html .= '<label for="captcha-create">' . $this->msg( 'loopsettings-captcha-create-label' ) . '</label></div>';
-					$html .= '<div class="mb-1"><input type="checkbox" name="captcha-addurl" id="captcha-addurl" class="setting-input" value="captchaAddurl" ' . ( $currentLoopSettings->captchaAddurl == "captchaAddurl" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="captcha-addurl">' . $this->msg( 'loopsettings-captcha-addurl-label' ) . '</label></div>';
-                    $html .= '<div class="mb-1"><input type="checkbox" name="captcha-createaccount" id="captcha-createaccount" class="setting-input" value="captchaCreateAccount" ' . ( $currentLoopSettings->captchaCreateAccount == "captchaCreateAccount" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="captcha-createaccount">' . $this->msg( 'loopsettings-captcha-createaccount-label' ) . '</label></div>';
-					$html .= '<div class="mb-1"><input type="checkbox" name="captcha-badlogin" id="captcha-badlogin" class="setting-input" value="captchaBadlogin" ' . ( $currentLoopSettings->captchaBadlogin == "captchaBadlogin" ? 'checked' : '' ) .'>';
+					$html .= '<div><input type="checkbox" name="captcha-edit" id="captcha-edit" class="setting-input mr-1" value="captchaEdit" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaEdit == "captchaEdit" ? 'checked' : '' ) .'>';
+                    $html .= '<label for="captcha-edit">' . $this->msg( 'loopsettings-captcha-edit-label' )->text() . '*</label></div>';
+					$html .= '<div><input type="checkbox" name="captcha-create" id="captcha-create" class="setting-input mr-1" value="captchaCreate" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaCreate == "captchaCreate" ? 'checked' : '' ) .'>';
+					$html .= '<label for="captcha-create">' . $this->msg( 'loopsettings-captcha-create-label' )->text() . '*</label></div>';
+					$html .= '<div><input type="checkbox" name="captcha-addurl" id="captcha-addurl" class="setting-input mr-1" value="captchaAddurl" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaAddurl == "captchaAddurl" ? 'checked' : '' ) .'>';
+                    $html .= '<label for="captcha-addurl">' . $this->msg( 'loopsettings-captcha-addurl-label' )->text() . '*</label></div>';
+                    $html .= '<div><input type="checkbox" name="captcha-createaccount" id="captcha-createaccount" class="setting-input mr-1" value="captchaCreateAccount" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaCreateAccount == "captchaCreateAccount" ? 'checked' : '' ) .'>';
+                    $html .= '<label for="captcha-createaccount">' . $this->msg( 'loopsettings-captcha-createaccount-label' )->text() . '</label></div>';
+					$html .= '<div><input type="checkbox" name="captcha-badlogin" id="captcha-badlogin" class="setting-input mr-1" value="captchaBadlogin" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaBadlogin == "captchaBadlogin" ? 'checked' : '' ) .'>';
                     $html .= '<label for="captcha-badlogin">' . $this->msg( 'loopsettings-captcha-badlogin-label' ) . '</label></div>';
-					
+					$html .= '<p><i>* '.$this->msg( "loopsettings-captcha-usergroup")->text().'</i></p>';
                     $html .= '</div>';
                     $html .= '</div>';
 

@@ -9,6 +9,8 @@ $( document ).ready( function () {
 		"logo-use-custom": "custom-logo-filename"
 	};
 	
+	$('#logo-hint').tooltip({ boundary: 'window' })
+	
 	$( "input, select, textfield" ).on("change", function() {
 		var clicked = $(this).attr("id");
 	

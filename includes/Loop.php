@@ -154,6 +154,9 @@ class Loop {
 		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
 		$wgexLingoDisplayOnce = true;
 
+		# Captcha configuration
+		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
+
 		return true;
 	}
 	

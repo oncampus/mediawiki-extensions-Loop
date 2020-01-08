@@ -534,7 +534,7 @@ class LoopHtml{
      */   
     private function replaceManualLinks( $html, $prependHref = "" ) {
         
-        global $wgServer, $wgDefaultUserOptions, $wgEditableSkinStyles, $wgLoopCustomLogo;
+        global $wgServer, $wgDefaultUserOptions, $wgLoopEditableSkinStyles, $wgLoopCustomLogo;
         $doc = new DOMDocument();
         $doc->loadHtml($html);
         $body = $doc->getElementsByTagName('body');
@@ -565,7 +565,7 @@ class LoopHtml{
 
         # apply custom logo, if given
         $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
-        if ( !empty ( $wgLoopCustomLogo["useCustomLogo"] ) && in_array( $skinStyle, $wgEditableSkinStyles ) ) {
+        if ( !empty ( $wgLoopCustomLogo["useCustomLogo"] ) && in_array( $skinStyle, $wgLoopEditableSkinStyles ) ) {
             $loopLogo = $doc->getElementById('logo');
             $logoUrl = $wgLoopCustomLogo["customFilePath"];
             $logoFile = $this->requestContent( array($logoUrl) );
