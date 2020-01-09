@@ -250,14 +250,14 @@ class LoopSettings {
      * Puts request content into array
      *
      * @param Request $request 
+     * @param User $user 
      * @return Bool
      */
 
-    public function getLoopSettingsFromRequest ( $request ) {
+    public function getLoopSettingsFromRequest ( $request, $user ) {
         
         global $wgLoopSocialIcons, $wgLoopSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
         $this->errors = array();
-
         $this->rightsText = $request->getText( 'rights-text' ); # no validation required
         
         $socialArray = array(
@@ -318,6 +318,8 @@ class LoopSettings {
         
         if ( in_array( $request->getText( 'skin-style' ), $wgLoopSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
+            $user->setOption( 'LoopSkinStyle', $this->skinStyle );
+			$user->saveSettings();
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
         }
@@ -542,7 +544,7 @@ class SpecialLoopSettings extends SpecialPage {
 
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
 				
-                    $currentLoopSettings->getLoopSettingsFromRequest( $request );
+                    $currentLoopSettings->getLoopSettingsFromRequest( $request, $user );
                     
                     if ( empty ( $currentLoopSettings->errors ) ) {
                         
