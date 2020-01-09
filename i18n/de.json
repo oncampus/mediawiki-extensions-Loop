@@ -81,7 +81,7 @@
 	"loopsettings-export-xml-label": "XML zum Download anbieten (nur berechtigte User)",
 	"loopsettings-export-html-label": "Offlineversion zum Download anbieten (nur berechtigte User)",
 	"loopsettings-headline-captcha": "Captcha",
-	"loopsettings-captcha-nokeys": "Captchas sind deaktiviert, da die reCaptcha-Konfiguration nicht abgeschlossen wurde.",
+	"loopsettings-captcha-nokeys": "Captchas stehen derzeit nicht zur Verfügung.",
 	"loopsettings-captcha-desc": "Bitte beachten Sie, dass beim Aktivieren von Captchas die Datenschutzerklärung ergänzt werden muss.",
 	"loopsettings-captcha-usergroup": "Gilt nur für selbstregistrierte Nutzer - bei offenem LOOP",
 	"loopsettings-captcha-edit-label": "... bei jeder Bearbeitung",

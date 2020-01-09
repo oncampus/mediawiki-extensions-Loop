@@ -822,12 +822,14 @@ class SpecialLoopSettings extends SpecialPage {
                     ### CAPTCHA BLOCK ###
                     global $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
                     $captchaDisabled = "";
+                    $captchaDisabledMsg = "";
                     if ( empty( $wgReCaptchaSiteKey ) || empty( $wgReCaptchaSecretKey ) ) {
                         $captchaDisabled = "disabled";
-                        $captchaDisabledMsg = '<div class="error-box">'. $this->msg( 'loopsettings-captcha-nokeys' )->text().'</div>';
+                        $captchaDisabledMsg = '<div class="alert alert-warning w-100">'. $this->msg( 'loopsettings-captcha-nokeys' )->text().'</div>';
                     }
 					$html .= '<div class="form-row mb-4">';
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-captcha' )->text() . '</h3>'; 
+                    $html .= $captchaDisabledMsg;
                     $html .= '<p class="mb-1">'.$this->msg( "loopsettings-captcha-desc")->text().'</p>';
 					$html .= '<div class="col-12">';
 					$html .= '<div><input type="checkbox" name="captcha-edit" id="captcha-edit" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaEdit == "captchaEdit" ? 'checked' : '' ) .'>';
