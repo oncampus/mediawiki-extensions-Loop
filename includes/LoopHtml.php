@@ -437,8 +437,13 @@ class LoopHtml{
             )
         );
 
-        $skinStyle = $wgDefaultUserOptions["LoopSkinStyle"];
-        $skinFolder = "resources/styles/less/skins/$skinStyle/img/";
+        $skinStyle = str_replace( "style-", "loop-", $wgDefaultUserOptions["LoopSkinStyle"]);
+        $skinFolder = "resources/styles/less/skins/common/$skinStyle/img/";        
+        $folderPath = "skins/Loop/$skinFolder";
+        if ( ! is_dir( $folderPath ) ) {
+            $skinFolder = "resources/styles/less/skins/custom/$skinStyle/img/";        
+            $folderPath = "skins/Loop/$skinFolder";
+        }
         $skinFiles = scandir("skins/Loop/$skinFolder");
         $skinFiles = array_slice($skinFiles, 2);
         
