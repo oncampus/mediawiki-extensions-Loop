@@ -86,9 +86,9 @@ class LoopScreenshot {
 		
 	public static function html2png ( $title, $content, $id, $articleId, $width, $height ) {
 
-		global $wgScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath;
+		global $wgLoopScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath, $wgDefaultUserOptions;
 
-		if ( !empty ( $wgScreenshotUrl ) ) {
+		if ( !empty ( $wgLoopScreenshotUrl ) ) {
 
 			$wikiPage = WikiPage::factory( $title );
 			$fwp = new FlaggableWikiPage ( $title );
@@ -104,7 +104,7 @@ class LoopScreenshot {
 				$html .= '<head>';
 				$html .= '<meta charset="UTF-8" />';
 				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . '/resources/src/mediawiki.legacy/shared.css">';
-				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . "/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2Cloop-common%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
+				$html .= '<link rel="stylesheet" href="' . $wgCanonicalServer . $wgScriptPath . "/load.php?lang=" . $wgLanguageCode . "&amp;modules=skins.loop-bootstrap%2C".$wgDefaultUserOptions["LoopSkinStyle"]."%2Cloop-icons%2Cloop-plyr&amp;only=styles&amp;skin=loop" . '">';
 				$html .= '<style>.screenshotviewport{ transform: scale(4); transform-origin: 0 0;}</style>';
 				$html .= '</head>';
 				$html .= '<body><div class="screenshotviewport">' . $content . '</div></body></html>';
@@ -130,7 +130,7 @@ class LoopScreenshot {
 					chmod( $screenshotHtmlFile, 0774);
 					$ch = curl_init();
 					curl_setopt ( $ch, CURLOPT_POST, true );
-					curl_setopt ( $ch, CURLOPT_URL, $wgScreenshotUrl );
+					curl_setopt ( $ch, CURLOPT_URL, $wgLoopScreenshotUrl );
 					curl_setopt ( $ch, CURLOPT_POSTFIELDS, "url=".$canonicalHtmlUrl."&width=".$width."&height=".$height );
 					curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
 					$imageContent = curl_exec( $ch );

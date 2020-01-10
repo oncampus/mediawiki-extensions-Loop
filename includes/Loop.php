@@ -51,11 +51,12 @@ class Loop {
 		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
 		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
 
-		global $wgRightsText, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgImprintLink, $wgPrivacyLink, 
+		global $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgLoopImprintLink,  
 		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
-		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce;
+		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
+		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -81,25 +82,40 @@ class Loop {
 				$data[$row->lset_property] = $row->lset_value;
 			}
 
+			#set global variables to content from settings
 			if ( isset( $row->lset_structure ) ) {
 				$wgRightsText = ( !isset( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
 				$wgRightsUrl = ( !isset( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
 				$wgRightsIcon = ( !isset( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
-				$wgLanguageCode = ( !isset( $data['lset_languagecode'] ) ? $wgLanguageCode : $data['lset_languagecode'] );
-				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? 'loop-common' : $data['lset_skinstyle'] );
-				$wgWhitelistRead[] = ( !isset( $data['lset_imprintlink'] ) ? $wgImprintLink : $data['lset_imprintlink'] );
-				$wgWhitelistRead[] = ( !isset( $data['lset_privacylink'] ) ? $wgPrivacyLink : $data['lset_privacylink'] );
-				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : $data['lset_numberingobjects'] );
+				$wgLoopRightsType = ( !isset( $data['lset_rightstype'] ) ? $wgLoopRightsType : $data['lset_rightstype'] );
+				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? $wgDefaultUserOptions['LoopSkinStyle'] : $data['lset_skinstyle'] );
+				$wgLoopImprintLink = ( !isset( $data['lset_imprintlink'] ) ? $wgLoopImprintLink : $data['lset_imprintlink'] );
+				$wgLoopPrivacyLink = ( !isset( $data['lset_privacylink'] ) ? $wgLoopPrivacyLink : $data['lset_privacylink'] );
+				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : boolval( $data['lset_numberingobjects'] ) );
 				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
 				$wgLoopLiteratureCiteType = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopLiteratureCiteType : $data['lset_citationstyle'] );
-
+				$wgLoopCustomLogo = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopCustomLogo : array( "useCustomLogo" => $data['lset_customlogo'], "customFileName" => $data['lset_customlogofilename'], "customFilePath" => $data['lset_customlogofilepath'] ) );
+				$wgLoopExtraFooter = ( !isset( $data['lset_extrafooter'] ) ? $wgLoopExtraFooter : $data['lset_extrafooter'] );
+				$wgLoopExtraSidebar = ( !isset( $data['lset_extrasidebar'] ) ? $wgLoopExtraSidebar : $data['lset_extrasidebar'] );
+				$wgLoopSocialIcons['Facebook'] = ( !isset( $data['lset_facebooklink'] ) ? $wgLoopSocialIcons['Facebook'] : array( "icon" => $data['lset_facebookicon'], "link" => $data['lset_facebooklink'] ) );
+				$wgLoopSocialIcons['Twitter'] = ( !isset( $data['lset_twitterlink'] ) ?$wgLoopSocialIcons['Twitter'] : array( "icon" => $data['lset_twittericon'], "link" => $data['lset_twitterlink'] ) );
+				$wgLoopSocialIcons['Youtube'] = ( !isset( $data['lset_youtubelink'] ) ? $wgLoopSocialIcons['Youtube'] : array( "icon" => $data['lset_youtubeicon'], "link" => $data['lset_youtubelink'] ) );
+				$wgLoopSocialIcons['Github'] = ( !isset( $data['lset_githublink'] ) ? $wgLoopSocialIcons['Github'] : array( "icon" => $data['lset_githubicon'], "link" => $data['lset_githublink'] ) );
+				$wgLoopSocialIcons['Instagram'] = ( !isset( $data['lset_instagramlink'] ) ? $wgLoopSocialIcons['Instagram'] : array( "icon" => $data['lset_instagramicon'], "link" => $data['lset_instagramlink'] ) );
+				$wgCaptchaTriggers["edit"] = ( !isset( $data['lset_captchaedit'] ) ?$wgCaptchaTriggers["edit"] : boolval( $data['lset_captchaedit'] ) );
+				$wgCaptchaTriggers["create"] = ( !isset( $data['lset_captchacreate'] ) ?$wgCaptchaTriggers["create"] : boolval( $data['lset_captchacreate'] ) );
+				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ?$wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
+				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ?$wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
+				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
 			}
 			
 			# Define new name for glossary
 			$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
 
 		}
-		
+
+		$wgWhitelistRead[] = $wgLoopImprintLink;
+		$wgWhitelistRead[] = $wgLoopPrivacyLink;
 		$wgWhitelistRead[] = "MediaWiki:Common.css";
 		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
@@ -142,6 +158,9 @@ class Loop {
 		# Lingo configuration
 		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
 		$wgexLingoDisplayOnce = true;
+
+		# Captcha configuration
+		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
 
 		return true;
 	}
