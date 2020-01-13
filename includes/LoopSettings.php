@@ -124,7 +124,7 @@ class LoopSettings {
      * Loads settings from DB
      */
     public function loadSettings() {
-        error_log("loadsettings");
+        
         $dbr = wfGetDB( DB_REPLICA );
         
         $res = $dbr->select(

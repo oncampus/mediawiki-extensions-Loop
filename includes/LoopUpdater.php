@@ -323,7 +323,7 @@ class LoopUpdater {
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
 		
-        $terminologyPage = Title::newFromName( $wgexLingoPage );
+        $terminologyPage = Title::newFromText( $wgexLingoPage );
 		$wikiPage = WikiPage::factory( $terminologyPage );
 		$oldPageContent = $wikiPage->getContent();
 
