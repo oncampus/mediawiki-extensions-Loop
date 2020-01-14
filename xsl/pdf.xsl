@@ -1892,6 +1892,13 @@
 		</fo:block>		
 	</xsl:template>
 
+	<!-- Loop Zoom -->
+	<xsl:template match="extension[@extension_name='loop_zoom']">
+		<fo:block>
+			<xsl:apply-templates/>
+		</fo:block>
+	</xsl:template>
+
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
 		<fo:table keep-together.within-page="always" table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
@@ -2184,14 +2191,11 @@
 			</fo:inline>			
 		</xsl:if>	
 		<xsl:choose>
-
-		
 			<xsl:when test="@extension_name='loop_figure'">
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
-		
 			<xsl:when test="@extension_name='loop_formula'">
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
