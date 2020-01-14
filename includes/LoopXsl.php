@@ -425,7 +425,7 @@ class LoopXsl {
 		if ( !empty ( $input[0]->value ) ) {
 			$title = Title::newFromText( $input[0]->value );
 			if ( $title->getArticleID() != 0 && $title->getNamespace() == NS_MAIN ) {
-				$page = "<paragraph>".LoopXml::articleFromId2xml( $title->getArticleID(), array( "nometa" => true,  "noarticle" => true ) )."</paragraph>";
+				$page = "<paragraph xmlns:xhtml='http://www.w3.org/1999/xhtml'>".LoopXml::articleFromId2xml( $title->getArticleID(), array( "nometa" => true,  "noarticle" => true ) )."</paragraph>";
 				$page = str_replace("extension_name='loop_sidebar'", "extension_name='loop_sidebar_dummy'", $page); # don't render sidebars of sidebar pages
 				$dom->loadXML($page);
 			}
