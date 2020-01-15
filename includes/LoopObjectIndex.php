@@ -139,7 +139,7 @@ class LoopObjectIndex {
                 );
                 
                 $lsi = LoopStructureItem::newFromIds($row->loi_pageid);
-                if ( in_array( $row->loi_pageid, $previousObjects ) ) {
+                if ( array_key_exists( $row->loi_pageid, $previousObjects ) ) {
                     if ( $lsi ) {
                         $pageData = array( "structure", $lsi, $loopStructure );
                         $numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
