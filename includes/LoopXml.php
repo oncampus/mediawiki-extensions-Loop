@@ -490,7 +490,7 @@ class wiki2xml
 	var $protocols = array ( "http" , "https" , "news" , "ftp" , "irc" , "mailto" ) ;
 	var $errormessage = "ERROR!" ;
 	var $compensate_markup_errors = true;
-	var $auto_fill_templates = 'all' ; # Will try and replace templates right inline, instead of using <template> tags; requires global $content_provider
+	var $auto_fill_templates = 'none' ; # Will try and replace templates right inline, instead of using <template> tags; requires global $content_provider
 	var $use_space_tag = true ; # Use <space/> instead of spaces before and after tags
 	var $allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 +-#:;.,%="\'\\' ;
 	var $directhtmltags = array (

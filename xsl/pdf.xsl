@@ -2199,9 +2199,11 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@extension_name='math'">
-				<fo:instream-foreign-object>
-					<xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of>  
-				</fo:instream-foreign-object>
+				<xsl:if test="php:function('LoopXsl::xsl_transform_math', .)">
+					<fo:instream-foreign-object>
+						<xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of>  
+					</fo:instream-foreign-object>
+				</xsl:if>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_reference'">
 				<xsl:call-template name="loop_reference">

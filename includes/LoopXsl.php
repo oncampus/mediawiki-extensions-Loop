@@ -79,10 +79,9 @@ class LoopXsl {
 		    $math = new MathMathML($mathcontent);
 		    $math->render();
 			$return = $math->getHtmlOutput();
-			
-			#dd($return);
 		} catch (Exception $e) {
-		    $return = '<math></math>';
+			# empty math-tag would cause error message "graphic file format unknown"
+			return false;
 		}
 		$return1 = $return;
 		
