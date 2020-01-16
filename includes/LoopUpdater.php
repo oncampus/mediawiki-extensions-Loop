@@ -28,10 +28,8 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', $schemaPath . 'loop_literature_items.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
-		
-		$dbr = wfGetDB( DB_REPLICA );
 
-		if ( $dbr->tableExists( 'loop_structure_items' ) ) {
+		if ( $updater->tableExists( 'loop_structure_items' ) ) {
 			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
 			if ( $systemUser ) { #why is system user null sometimes? #TODO investigate
 				$systemUser->addGroup("sysop");
@@ -39,18 +37,20 @@ class LoopUpdater {
 			Loop::setupLoopPages();
 		}
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
-		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
-			self::saveAllWikiPages();
-			self::migrateGlossary();
-			self::migrateLoopTerminology();
-			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_structure_items', $schemaPath . 'loopstructure_migrate.sql', true ));
-			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
-
+		if ( $updater->tableExists( 'loop_object_index' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
+			
 			if ( isset( $wgLoopAddToSettingsDB ) ) { # update settings DB from LocalSettings
 				if ( !empty( $wgLoopAddToSettingsDB )) {
 					self::addOldSettingsToDb();
 				}
 			}
+
+			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
+
+			self::saveAllWikiPages();
+			self::migrateGlossary();
+			self::migrateLoopTerminology();
+
 		}
 		
 		return true;
