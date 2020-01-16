@@ -124,7 +124,7 @@ class LoopSettings {
      * Loads settings from DB
      */
     public function loadSettings() {
-        error_log("loadsettings");
+        
         $dbr = wfGetDB( DB_REPLICA );
         
         $res = $dbr->select(
@@ -523,7 +523,7 @@ class SpecialLoopSettings extends SpecialPage {
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
 			
 			global $IP, $wgSecretKey, $wgLoopSocialIcons, $wgAvailableLicenses, $wgSpecialPages,
-			$wgLoopSkinStyles, $wgLoopEditableSkinStyles, $wgDefaultUserOptions;
+			$wgLoopSkinStyles, $wgLoopAvailableSkinStyles, $wgLoopEditableSkinStyles, $wgDefaultUserOptions;
 				
 			$this->setHeaders();
 			
@@ -741,8 +741,10 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<div class="form-row mb-4">';
 					$html .=    '<div class="col-6 pl-1">';
 					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
-					$skinStyleOptions = '';
-					foreach( $wgLoopSkinStyles as $style ) { 
+                    $skinStyleOptions = '';
+                    $styles = ! isset( $wgLoopAvailableSkinStyles ) ? $wgLoopSkinStyles : $wgLoopAvailableSkinStyles;
+                    
+					foreach( $styles as $style ) { 
 					    if ( $style == $currentLoopSettings->skinStyle ) { 
 							$selected = 'selected';
 						} else {

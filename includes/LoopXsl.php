@@ -79,10 +79,9 @@ class LoopXsl {
 		    $math = new MathMathML($mathcontent);
 		    $math->render();
 			$return = $math->getHtmlOutput();
-			
-			#dd($return);
 		} catch (Exception $e) {
-		    $return = '<math></math>';
+			# empty math-tag would cause error message "graphic file format unknown"
+			return false;
 		}
 		$return1 = $return;
 		
@@ -317,20 +316,15 @@ class LoopXsl {
 	public static function xsl_get_bibliography( $input ) {
 	    global $wgLoopLiteratureCiteType;
 		$dom = new DOMDocument( "1.0", "utf-8" );
-		if ( !empty( $input ) ) {
-			$input_object = $input[0];
-			
-			if ( empty ( $input_object ) ) {
-				$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
-				$dom->loadXML($xml);
-			} else {
-				$dom->appendChild($dom->importNode($input_object, true));
-				$tags = $dom->getElementsByTagName ("extension"); 
-				$input = $tags[0]->nodeValue;
-				$xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
-				$dom = new DOMDocument( "1.0", "utf-8" );
-				$dom->loadXML($xml);
-			}
+		if ( empty( $input ) ) {
+			$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
+			$dom->loadXML($xml);
+		} else {
+			$dom->appendChild($dom->importNode($input[0], true));
+			$tags = $dom->getElementsByTagName ("extension"); 
+			$input = $tags[0]->nodeValue;
+			$xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
+			$dom->loadXML($xml);
 		}
 		return $dom;
 	}
@@ -425,7 +419,7 @@ class LoopXsl {
 		if ( !empty ( $input[0]->value ) ) {
 			$title = Title::newFromText( $input[0]->value );
 			if ( $title->getArticleID() != 0 && $title->getNamespace() == NS_MAIN ) {
-				$page = "<paragraph>".LoopXml::articleFromId2xml( $title->getArticleID(), array( "nometa" => true,  "noarticle" => true ) )."</paragraph>";
+				$page = "<paragraph xmlns:xhtml='http://www.w3.org/1999/xhtml'>".LoopXml::articleFromId2xml( $title->getArticleID(), array( "nometa" => true,  "noarticle" => true ) )."</paragraph>";
 				$page = str_replace("extension_name='loop_sidebar'", "extension_name='loop_sidebar_dummy'", $page); # don't render sidebars of sidebar pages
 				$dom->loadXML($page);
 			}

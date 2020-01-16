@@ -28,10 +28,8 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', $schemaPath . 'loop_literature_items.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
-		
-		$dbr = wfGetDB( DB_REPLICA );
 
-		if ( $dbr->tableExists( 'loop_structure_items' ) ) {
+		if ( $updater->tableExists( 'loop_structure_items' ) ) {
 			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
 			if ( $systemUser ) { #why is system user null sometimes? #TODO investigate
 				$systemUser->addGroup("sysop");
@@ -39,18 +37,20 @@ class LoopUpdater {
 			Loop::setupLoopPages();
 		}
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
-		if ( $dbr->tableExists( 'loop_object_index' ) && $dbr->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
-			self::saveAllWikiPages();
-			self::migrateGlossary();
-			self::migrateLoopTerminology();
-			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_structure_items', $schemaPath . 'loopstructure_migrate.sql', true ));
-			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
-
+		if ( $updater->tableExists( 'loop_object_index' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
+			
 			if ( isset( $wgLoopAddToSettingsDB ) ) { # update settings DB from LocalSettings
 				if ( !empty( $wgLoopAddToSettingsDB )) {
 					self::addOldSettingsToDb();
 				}
 			}
+
+			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
+
+			self::saveAllWikiPages();
+			self::migrateGlossary();
+			self::migrateLoopTerminology();
+
 		}
 		
 		return true;
@@ -318,33 +318,32 @@ class LoopUpdater {
 	 */
 	public static function migrateLoopTerminology() {
 
-		global $wgexLingoPage;
-
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
-		
-        $terminologyPage = Title::newFromName( $wgexLingoPage );
+
+        $terminologyPage = Title::newFromText( "Abkuerzungen" );
 		$wikiPage = WikiPage::factory( $terminologyPage );
 		$oldPageContent = $wikiPage->getContent();
 
-		$newTerminologyPage = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
-		$newWikiPage = WikiPage::factory( $newTerminologyPage );
-
-		# Add old content to new page
-		$newWikiPageUpdater = $newWikiPage->newPageUpdater( $systemUser );
-		$summary = CommentStoreComment::newUnsavedComment( "Migrated terminology page" ); 
-		$newWikiPageUpdater->setContent( "main", $oldPageContent );
-		$newWikiPageUpdater->saveRevision ( $summary, EDIT_NEW );
-
-		# Add redirect to old page
-		$newRedirectContent = new WikitextContent( "#REDIRECT [[Special:LoopTerminology]]" );
-		$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
-		$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new terminology page' );
-		$wikiPageUpdater->setContent( "main", $newRedirectContent );
-		$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-		
-		error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
-
+		if ( !empty ( $oldPageContent ) ) {
+			$newTerminologyPage = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
+			$newWikiPage = WikiPage::factory( $newTerminologyPage );
+	
+			# Add old content to new page
+			$newWikiPageUpdater = $newWikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( "Migrated terminology page" ); 
+			$newWikiPageUpdater->setContent( "main", $oldPageContent );
+			$newWikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+	
+			# Add redirect to old page
+			$newRedirectContent = new WikitextContent( "#REDIRECT [[Special:LoopTerminology]]" );
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new terminology page' );
+			$wikiPageUpdater->setContent( "main", $newRedirectContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+			
+			error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
+		}
 	}
 
 	/**
