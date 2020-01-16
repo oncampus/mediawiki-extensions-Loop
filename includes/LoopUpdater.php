@@ -318,33 +318,32 @@ class LoopUpdater {
 	 */
 	public static function migrateLoopTerminology() {
 
-		global $wgexLingoPage;
-
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
-		
-        $terminologyPage = Title::newFromText( $wgexLingoPage );
+
+        $terminologyPage = Title::newFromText( "Abkuerzungen" );
 		$wikiPage = WikiPage::factory( $terminologyPage );
 		$oldPageContent = $wikiPage->getContent();
 
-		$newTerminologyPage = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
-		$newWikiPage = WikiPage::factory( $newTerminologyPage );
-
-		# Add old content to new page
-		$newWikiPageUpdater = $newWikiPage->newPageUpdater( $systemUser );
-		$summary = CommentStoreComment::newUnsavedComment( "Migrated terminology page" ); 
-		$newWikiPageUpdater->setContent( "main", $oldPageContent );
-		$newWikiPageUpdater->saveRevision ( $summary, EDIT_NEW );
-
-		# Add redirect to old page
-		$newRedirectContent = new WikitextContent( "#REDIRECT [[Special:LoopTerminology]]" );
-		$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
-		$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new terminology page' );
-		$wikiPageUpdater->setContent( "main", $newRedirectContent );
-		$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-		
-		error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
-
+		if ( !empty ( $oldPageContent ) ) {
+			$newTerminologyPage = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
+			$newWikiPage = WikiPage::factory( $newTerminologyPage );
+	
+			# Add old content to new page
+			$newWikiPageUpdater = $newWikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( "Migrated terminology page" ); 
+			$newWikiPageUpdater->setContent( "main", $oldPageContent );
+			$newWikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+	
+			# Add redirect to old page
+			$newRedirectContent = new WikitextContent( "#REDIRECT [[Special:LoopTerminology]]" );
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new terminology page' );
+			$wikiPageUpdater->setContent( "main", $newRedirectContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+			
+			error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
+		}
 	}
 
 	/**
