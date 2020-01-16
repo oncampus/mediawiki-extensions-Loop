@@ -56,7 +56,7 @@ class Loop {
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
 		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
-		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers;
+		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -161,6 +161,14 @@ class Loop {
 
 		# Captcha configuration
 		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
+		if ( empty( $wgReCaptchaSecretKey ) && empty( $wgReCaptchaSiteKey ) ) {
+			# no captchas if there is no captcha service
+			$wgCaptchaTriggers["edit"] = false;
+			$wgCaptchaTriggers["create"] = false;
+			$wgCaptchaTriggers["addurl"] = false;
+			$wgCaptchaTriggers["createaccount"] = false;
+			$wgCaptchaTriggers["badlogin"] = false;
+		}
 
 		return true;
 	}
