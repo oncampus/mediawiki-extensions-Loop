@@ -316,20 +316,15 @@ class LoopXsl {
 	public static function xsl_get_bibliography( $input ) {
 	    global $wgLoopLiteratureCiteType;
 		$dom = new DOMDocument( "1.0", "utf-8" );
-		if ( !empty( $input ) ) {
-			$input_object = $input[0];
-			
-			if ( empty ( $input_object ) ) {
-				$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
-				$dom->loadXML($xml);
-			} else {
-				$dom->appendChild($dom->importNode($input_object, true));
-				$tags = $dom->getElementsByTagName ("extension"); 
-				$input = $tags[0]->nodeValue;
-				$xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
-				$dom = new DOMDocument( "1.0", "utf-8" );
-				$dom->loadXML($xml);
-			}
+		if ( empty( $input ) ) {
+			$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
+			$dom->loadXML($xml);
+		} else {
+			$dom->appendChild($dom->importNode($input[0], true));
+			$tags = $dom->getElementsByTagName ("extension"); 
+			$input = $tags[0]->nodeValue;
+			$xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
+			$dom->loadXML($xml);
 		}
 		return $dom;
 	}

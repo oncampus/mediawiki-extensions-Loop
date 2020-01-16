@@ -897,10 +897,18 @@ class LoopLiterature {
 		}
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
 		if ( $li->author ) {
-			$return .= $li->author." ";
+			if ( $type == 'xml' ) {
+				$return .= '<bold>' . $li->author."<bold> ";
+			} else {
+				$return .= $li->author." ";
+			}
 		} elseif ( $li->itemTitle ) {
 			if ( $li->itemType == "LOOP1" ) {
-				$return .= $li->itemTitle." ";
+				if ( $type == 'xml' ) {
+					$return .= '<bold>' . $li->itemTitle."</bold> ";
+				} else {
+					$return .= $li->itemTitle." ";
+				}
 			} else {
 				$return .= $italic. $li->itemTitle. $italicEnd . ". ";
 			}
@@ -1015,7 +1023,7 @@ class LoopLiterature {
 			$return .= '<span class="literature-itemkey font-italic text-black-50">'.wfMessage("loopliterature-text-note")->text() . ": " . $li->note.'. </span>';
 		} 
 
-		if ( $li->itemType == "LOOP1" && $li->note && $type == 'html' ) {
+		if ( $li->itemType == "LOOP1" && $li->note ) {
 			$return .= $li->note . " ";
 		}
 

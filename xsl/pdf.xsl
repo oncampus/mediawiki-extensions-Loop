@@ -1497,7 +1497,7 @@
 	</xsl:template>
 	
 	<xsl:template match="paragraph" mode="bibliography">
-		<fo:block margin-bottom="5pt" text-indent="-5mm" line-height="20mm" margin-left="5mm">
+		<fo:block margin-bottom="5pt" text-indent="-25mm" line-height="20mm" margin-left="25mm">
 			<xsl:call-template name="font_normal"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:block>
