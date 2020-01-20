@@ -2845,9 +2845,10 @@
 		</xsl:variable>
 		<!-- start-indent="inherited-property-value(&apos;start-indent&apos;) + 2mm" -->
 		<fo:list-block
-			start-indent="inherited-property-value(&apos;start-indent&apos;) + 2mm"
+			start-indent="inherited-property-value(&apos;start-indent&apos;) + 4mm"
 			provisional-label-separation="2mm"
-			display-align="before">
+			display-align="before"
+			margin-top="4mm">
 			<xsl:choose>
 				<xsl:when test="@type='numbered'">
 					<xsl:choose>
@@ -2882,18 +2883,18 @@
 				<xsl:choose>
 					<xsl:when test="../@type='numbered'">
 						<xsl:choose>
-								<xsl:when test="$listlevel=1">
-									<fo:block><xsl:number level="single" count="listitem" format="1." /></fo:block>
-								</xsl:when>
-								<xsl:when test="$listlevel=2">
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
-								</xsl:when>
-								<xsl:when test="$listlevel=3">
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
-								</xsl:otherwise>
+							<xsl:when test="$listlevel=1">
+								<fo:block><xsl:number level="single" count="listitem" format="1."/></fo:block>
+							</xsl:when>
+							<xsl:when test="$listlevel=2">
+								<fo:block><xsl:number level="multiple" count="listitem" format="1."/></fo:block>
+							</xsl:when>
+							<xsl:when test="$listlevel=3">
+								<fo:block><xsl:number level="multiple" count="listitem" format="1."/></fo:block>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block><xsl:number level="multiple" count="listitem" format="1."/></fo:block>
+							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
 					<xsl:when test="../@type='ident'">
@@ -2922,9 +2923,9 @@
 	
 	<xsl:template match="table">
 		<fo:table table-layout="auto" border-style="solid" border-width="0.5pt" border-color="black" border-collapse="collapse" padding="0.6pt" space-after="12.5pt">
-				<fo:table-body>
-					<xsl:apply-templates></xsl:apply-templates>
-				</fo:table-body>
+			<fo:table-body>
+				<xsl:apply-templates></xsl:apply-templates>
+			</fo:table-body>
 		</fo:table>
 	</xsl:template>
 
