@@ -56,7 +56,8 @@ class Loop {
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
 		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
-		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
+		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
+		$wgLoopTicketsEmail;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -107,6 +108,7 @@ class Loop {
 				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ?$wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
 				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ?$wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
 				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
+				$wgLoopTicketsEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopTicketsEmail : $data['lset_ticketemail'] );
 			}
 			
 			# Define new name for glossary

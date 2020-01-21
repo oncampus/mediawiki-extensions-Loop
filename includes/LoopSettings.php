@@ -51,6 +51,7 @@ class LoopSettings {
     public $captchaAddurl; #wgCaptchaTriggers["addurl"]
     public $captchaCreateAccount; #wgCaptchaTriggers["createaccount"]
     public $captchaBadlogin; #wgCaptchaTriggers["badlogin"]
+    public $ticketsEmail; #wgLoopTicketsEmail
 
     /**
      * Add settings to the database
@@ -94,7 +95,8 @@ class LoopSettings {
             'lset_captchacreate' => $this->captchaCreate,
             'lset_captchaddurl' => $this->captchaAddurl,
             'lset_captchacreateaccount' => $this->captchaCreateAccount,
-            'lset_captchabadlogin' => $this->captchaBadlogin
+            'lset_captchabadlogin' => $this->captchaBadlogin,
+            'lset_ticketemail' => $this->ticketsEmail
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -146,7 +148,7 @@ class LoopSettings {
 
         global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
-        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers;
+        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopTicketsEmail;
         
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
@@ -186,6 +188,7 @@ class LoopSettings {
         $this->captchaAddurl = $wgCaptchaTriggers["addurl"];
         $this->captchaCreateAccount = $wgCaptchaTriggers["createaccount"];
         $this->captchaBadlogin = $wgCaptchaTriggers["badlogin"];
+        $this->ticketsEmail = $wgLoopTicketsEmail;
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = isset( $data['lset_imprintlink'] ) ? $data['lset_imprintlink'] : $this->imprintLink;
@@ -225,6 +228,7 @@ class LoopSettings {
             $this->captchaAddurl =  isset( $data['lset_captchaddurl'] ) ? boolval($data['lset_captchaddurl']) : $this->captchaAddurl;
             $this->captchaCreateAccount =  isset( $data['lset_captchacreateaccount'] ) ? boolval($data['lset_captchacreateaccount']) : $this->captchaCreateAccount;
             $this->captchaBadlogin =  isset( $data['lset_captchabadlogin'] ) ? boolval($data['lset_captchabadlogin']) : $this->captchaBadlogin;
+            $this->ticketsEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->ticketsEmail;
         }
         
         return true;
@@ -496,6 +500,15 @@ class LoopSettings {
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-badlogin-label' ) );
         }
+
+        # Feedback Mail
+        if  ( empty ( $request->getText( 'ticket-email' ) ) ) { 
+            $this->ticketsEmail = null;
+        } elseif ( filter_var( $request->getText( 'ticket-email' ), FILTER_VALIDATE_EMAIL ) ) {
+            $this->ticketsEmail = $request->getText( 'ticket-email' );
+        } else {
+            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-ticket-email-label' ) );
+        }
         $this->addToDatabase();
         SpecialPurgeCache::purge();
         return true;
@@ -596,7 +609,7 @@ class SpecialLoopSettings extends SpecialPage {
 						if ( $license == $currentLoopSettings->rightsType ) {
 							$selected = 'selected';
 						} else {
-							$selected = '';
+							$selected = ''; 
 						}
 						if ( $license == '' ) {
 							$licenseText = $this->msg( 'Htmlform-chosen-placeholder' );
@@ -847,6 +860,19 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<p><i>* '.$this->msg( "loopsettings-captcha-usergroup")->text().'</i></p>';
                     $html .= '</div>';
                     $html .= '</div>';
+
+                    
+                    $html .= '<div class="form-row mb-4">';
+
+                    if ( LoopTicket::isAvailable() != "external" ) {
+                        $html .= '<div class="col-6">';
+                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-tickets' )->text() . '</h3>'; 
+                        $html .= '<label for="ticket-email">'. $this->msg("loopsettings-tickets-email-label")->text().'</label>';
+                        $html .= '<input class="mb-2 form-control" type="email" placeholder="'.$this->msg("email")->text().'" value="'.$currentLoopSettings->ticketsEmail.'" name="ticket-email"/>';
+                        $html .= '</div>';
+                    }
+                    $html .= '</div>';
+
 
 				$html .= '</div>'; // end of tech-tab
 
