@@ -120,25 +120,28 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		
+
 		if ( is_object( $file ) ) {
+			//dd($file);
 			$mediaType = $file->getMediaType();
 			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
-				$params['frame']['class'] = 'responsive-image';
+				#$params['frame']['class'] = 'responsive-image';
 				if ($loopEditMode) {
-					$params['frame']['no-link'] = false;
-					$params['frame']['framed'] = true;
+					//$params['frame']['framed'] = true;
+					//$params['frame']['no-link'] = false;
 				} else {
-					$params['frame']['framed'] = true;
-					$params['frame']['no-link'] = true;
+					//$params['frame']['framed'] = true;
+					//$params['frame']['no-link'] = true;
 				}
 				if ( isset( $params['frame']['align'] ) ) {
 					$params['horizAlign'][ $params['frame']['align'] ] = true;
 				}
+				//dd($params);
+		
 			} elseif ( $mediaType == "VIDEO" ) { 
 				$params['frame']['class'] = 'responsive-video';
 				if ( !isset( $params['handler']['width'] ) ) {
-					$params['handler']['width']= "800";
+					$params['handler']['width'] = "800";
 				}
 			}  elseif ( $mediaType == "AUDIO" ) { 
 				$params['frame']['class'] = 'responsive-audio';
