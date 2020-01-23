@@ -198,7 +198,19 @@ class LoopObject {
 				$showNumbering = false;
 			}
 		} 
-		$html .= 'class="loop_object '.$this->getTag().' '.$floatclass.' loop_object_render_'.$this->getRenderOption().'"';
+
+		if ( preg_match ( '<div class="thumb tright">', $this->getContent(), $float_matches ) === 1 ) {
+			$align = 'tright';
+		} else if ((preg_match ( '<div class="thumb tleft">', $this->getContent(), $float_matches ) === 1) ) {
+			$align = 'tleft';
+		} else {
+			$align = '';
+		}
+		
+		$objectContent = str_replace(['tleft', 'tright'], '', $this->getContent());
+		$objectContent = strip_tags($objectContent, '<div><img>'); //alternative finden
+
+		$html .= 'class="loop_object '.$this->getTag().' ' .$align. ' '.$floatclass.' loop_object_render_'.$this->getRenderOption().'"';
 		$html .= '>';
 		
 		if ( isset( $this->error ) ) {
@@ -207,7 +219,7 @@ class LoopObject {
 	
 		$html .= '<div class="loop_object_content">';
 
-		$html .= $this->getContent();
+		$html .= $objectContent;
 		
 		$html .= '</div>';
 			

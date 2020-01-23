@@ -131,15 +131,15 @@ class LoopFigure extends LoopObject{
 			$this->setFile($filename);
 		} 
 		
-		dd($this);
+		//dd($this);
 		if (preg_match ( '<loop_figure align="left">', $this->getContent(), $float_matches ) === 1) {
-			$this->setAlignment('left');
+			//$this->setAlignment('left');
 		} elseif (preg_match ( '<loop_figure align="right">', $this->getContent(), $float_matches ) === 1) {
-			$this->setAlignment('right');
+			//$this->setAlignment('right');
+			//$this->mContent();
 		}		
 		
 	}
-	
 	
 	/**
 	 * Render loop_figure for list of figures
