@@ -71,6 +71,8 @@
 	"loopsettings-extra-sidebar-linktext": "Editera yttligare sidebar",
 	"loopsettings-extra-sidebar-label": "Visa yttligare sidebar.",
 	"loopsettings-headline-sidebar": "Sidebar",
+	"loopsettings-headline-bugreport": "Felrapport",
+	"loopsettings-bugreport-email-label": "Användarnas felrapport skickas till den här e-postadress. Lämna tömt för att inaktivera.",
 
 	"loopsettings-headline-export": "Export",
 	"loopsettings-export-pdf-label": "Erbjuda PDF för nedladdning",
@@ -388,5 +390,18 @@
 	"loopterminology-save-success": "Förkortningarna har uppdaterats.",
 	"loopterminology-hint": "Regidera förkortningar här. Untdr textfältet finns information om formateringskrav.",
 	"loopterminology-example": "Använd ett semikolon framför förkortningen i en linje. Börja nästa linjen med en kolon och beskriva förkortningen. Man kan använda flera förkortningar med flera definitioner. Exempel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform",
-	"loopscreenshot": "Screenshot"
+	"loopscreenshot": "Screenshot",
+
+	"loopbugreport": "Rapportera fel",
+	"loopbugreport-specialpage-title": "Rapportera fel",
+	"loopbugreport-message-label": "Beskrivning",
+	"loopbugreport-page-label": "Sida",
+	"loopbugreport-send": "Skicka",
+	"loopbugreport-email-subject": "LOOP Felrapport $1 $2",
+	"loopbugreport-email": "I LOOP [$1 $1] rapporterades ett fel.\nAvsändare: $2<br>Sida: [$3 $3]<br>Felrapport:<br>$4",
+	"loopbugreport-success": "Tack!",
+	"loopbugreport-error-configuration": "Denna funktion är inte konfigurerad.",
+	"loopbugreport-error-nodata": "Vänligen öppna den här sida via länken pa sida.",
+	"loopbugreport-fail": "Meddelandet kunde inte skickas.",
+	"loopbugreport-desc": "Hittade du ett fel?<br>\nVänligen hjälp oss och berätta.<br>Tack!"
 }

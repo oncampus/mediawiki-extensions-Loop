@@ -51,7 +51,7 @@ class LoopSettings {
     public $captchaAddurl; #wgCaptchaTriggers["addurl"]
     public $captchaCreateAccount; #wgCaptchaTriggers["createaccount"]
     public $captchaBadlogin; #wgCaptchaTriggers["badlogin"]
-    public $ticketsEmail; #wgLoopTicketsEmail
+    public $bugReportEmail; #wgLoopBugReportEmail
 
     /**
      * Add settings to the database
@@ -96,7 +96,7 @@ class LoopSettings {
             'lset_captchaddurl' => $this->captchaAddurl,
             'lset_captchacreateaccount' => $this->captchaCreateAccount,
             'lset_captchabadlogin' => $this->captchaBadlogin,
-            'lset_ticketemail' => $this->ticketsEmail
+            'lset_ticketemail' => $this->bugReportEmail
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -148,7 +148,7 @@ class LoopSettings {
 
         global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
-        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopTicketsEmail;
+        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail;
         
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
@@ -188,7 +188,7 @@ class LoopSettings {
         $this->captchaAddurl = $wgCaptchaTriggers["addurl"];
         $this->captchaCreateAccount = $wgCaptchaTriggers["createaccount"];
         $this->captchaBadlogin = $wgCaptchaTriggers["badlogin"];
-        $this->ticketsEmail = $wgLoopTicketsEmail;
+        $this->bugReportEmail = $wgLoopBugReportEmail;
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = isset( $data['lset_imprintlink'] ) ? $data['lset_imprintlink'] : $this->imprintLink;
@@ -228,7 +228,7 @@ class LoopSettings {
             $this->captchaAddurl =  isset( $data['lset_captchaddurl'] ) ? boolval($data['lset_captchaddurl']) : $this->captchaAddurl;
             $this->captchaCreateAccount =  isset( $data['lset_captchacreateaccount'] ) ? boolval($data['lset_captchacreateaccount']) : $this->captchaCreateAccount;
             $this->captchaBadlogin =  isset( $data['lset_captchabadlogin'] ) ? boolval($data['lset_captchabadlogin']) : $this->captchaBadlogin;
-            $this->ticketsEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->ticketsEmail;
+            $this->bugReportEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->bugReportEmail;
         }
         
         return true;
@@ -503,9 +503,9 @@ class LoopSettings {
 
         # Feedback Mail
         if  ( empty ( $request->getText( 'ticket-email' ) ) ) { 
-            $this->ticketsEmail = null;
+            $this->bugReportEmail = null;
         } elseif ( filter_var( $request->getText( 'ticket-email' ), FILTER_VALIDATE_EMAIL ) ) {
-            $this->ticketsEmail = $request->getText( 'ticket-email' );
+            $this->bugReportEmail = $request->getText( 'ticket-email' );
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-ticket-email-label' ) );
         }
@@ -861,14 +861,13 @@ class SpecialLoopSettings extends SpecialPage {
                     $html .= '</div>';
                     $html .= '</div>';
 
-                    
                     $html .= '<div class="form-row mb-4">';
 
-                    if ( LoopTicket::isAvailable() != "external" ) {
+                    if ( LoopBugReport::isAvailable() != "external" ) {
                         $html .= '<div class="col-6">';
-                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-tickets' )->text() . '</h3>'; 
-                        $html .= '<label for="ticket-email">'. $this->msg("loopsettings-tickets-email-label")->text().'</label>';
-                        $html .= '<input class="mb-2 form-control" type="email" placeholder="'.$this->msg("email")->text().'" value="'.$currentLoopSettings->ticketsEmail.'" name="ticket-email"/>';
+                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-bugreport' )->text() . '</h3>'; 
+                        $html .= '<label for="ticket-email">'. $this->msg("loopsettings-bugreport-email-label")->text().'</label>';
+                        $html .= '<input class="mb-2 form-control" type="email" placeholder="'.$this->msg("email")->text().'" value="'.$currentLoopSettings->bugReportEmail.'" name="ticket-email"/>';
                         $html .= '</div>';
                     }
                     $html .= '</div>';

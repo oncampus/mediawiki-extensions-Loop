@@ -71,8 +71,8 @@
 	"loopsettings-extra-sidebar-linktext": "Inhalt des zusätzlichen Sidebar-Panels bearbeiten",
 	"loopsettings-extra-sidebar-label": "Extra Sidebar-Panel einblenden.",
 	"loopsettings-headline-sidebar": "Sidebar",
-	"loopsettings-headline-tickets": "Tickets/Fehlermeldungen",
-	"loopsettings-tickets-email-label": "An diese E-Mail Adresse werden Fehlermeldungen von BenutzerInnen gesendet.",
+	"loopsettings-headline-bugreport": "Fehlermeldungen",
+	"loopsettings-bugreport-email-label": "An diese E-Mail Adresse werden Fehlermeldungen von BenutzerInnen gesendet. Lassen Sie das Feld leer, um Fehlermeldungen zu deaktivieren.",
 
 	"loopsettings-headline-export": "Ausgabeangebot",
 	"loopsettings-export-pdf-label": "PDF zum Download anbieten",
@@ -392,15 +392,16 @@
 	"loopterminology-example": "Benutzen Sie ein Semikolon vor dem abgekürzten Begriff, um ihn zu definieren. In der nächsten Zeile beschreiben Sie den Begriff, indem Sie die Zeile mit einem Doppelpunkt beginnen. Es können mehrere Begriffe zu mehreren Definitionen eingesetzt werden. Beispiel:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform",
 	"loopscreenshot": "Screenshot",
 
-	"loopticket": "Fehler melden",
-	"looptickets-specialpage-title": "Fehler melden",
-	"looptickets-message-label": "Fehlerbeschreibung",
-	"looptickets-page-label": "Betroffene Seite",
-	"looptickets-send": "Senden",
-	"looptickets-email-subject": "LOOP Ticket $1 $2",
-	"looptickets-email": "Im LOOP [$1 $1] wurde ein neues Ticket erstellt. Sie erhalten diese Nachricht, weil diese E-Mail Adresse in den LOOP-Einstellungen angegeben wurde.\nAbsender E-Mail: $2<br>Seite des Fehlers: [$3 $3]<br>Fehlerbeschreibung:<br>$4",
-	"looptickets-success": "Vielen Dank für Ihre Mithilfe!",
-	"looptickets-error-configuration": "Diese Funktion wurde noch nicht konfiguriert.",
-	"looptickets-error-nodata": "Diese Seite muss über den Link unter dem Inhalt aufgerufen werden.",
-	"looptickets-fail": "Die Nachricht konnte nicht abgeschickt werden."
+	"loopbugreport": "Fehler melden",
+	"loopbugreport-specialpage-title": "Fehler melden",
+	"loopbugreport-message-label": "Fehlerbeschreibung",
+	"loopbugreport-page-label": "Betroffene Seite",
+	"loopbugreport-send": "Senden",
+	"loopbugreport-email-subject": "LOOP Ticket $1 $2",
+	"loopbugreport-email": "Im LOOP [$1 $1] wurde ein neues Ticket erstellt. Sie erhalten diese Nachricht, weil diese E-Mail Adresse in den LOOP-Einstellungen angegeben wurde.\nAbsender E-Mail: $2<br>Seite des Fehlers: [$3 $3]<br>Fehlerbeschreibung:<br>$4",
+	"loopbugreport-success": "Vielen Dank für Ihre Mithilfe!",
+	"loopbugreport-error-configuration": "Diese Funktion wurde noch nicht konfiguriert.",
+	"loopbugreport-error-nodata": "Diese Seite muss über den Link unter dem Inhalt aufgerufen werden.",
+	"loopbugreport-fail": "Die Nachricht konnte nicht abgeschickt werden.",
+	"loopbugreport-desc": "Haben Sie einen Fehler entdeckt?<br>\nObwohl wir bemüht sind, unsere Lerninhalte stets aktuell und fehlerfrei zu halten, ist es wahrscheinlich, dass wir den einen oder anderen Fehler übersehen haben. Fehler können aber nur behoben werden, wenn sie auch gemeldet werden.<br><br>Wenn Sie einen Fehler gefunden haben, dann schreiben Sie uns bitte, wo er sich eingeschlichen hat. Wir werden den Fehler dann beim nächsten Update (in der Regel zum Beginn des nächsten Kurses) beseitigen.<br><br>Für eventuelle Rückfragen bitten wir Sie, Ihre E-Mail Adresse einzutragen.<br>Danke für Ihre Mithilfe!"
 }

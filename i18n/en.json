@@ -71,6 +71,8 @@
 	"loopsettings-extra-sidebar-linktext": "Edit the additional sidebar panel's content",
 	"loopsettings-extra-sidebar-label": "Show a custom sidebar panel globally.",
 	"loopsettings-headline-sidebar": "Sidebar",
+	"loopsettings-headline-bugreport": "Bug report",
+	"loopsettings-bugreport-email-label": "User's bug reports will be sent to this email. Leave empty to disable bug reports.",
 
 	"loopsettings-headline-export": "Export options",
 	"loopsettings-export-pdf-label": "offer PDF for download",
@@ -388,5 +390,18 @@
 	"loopterminology-save-success": "The abbreviations have been updated successfully.",
 	"loopterminology-hint": "You can edit the list of abbreviations here. For information about formatting see below the textfield.",
 	"loopterminology-example": "Use a semicolon in front of the abbreviation to define it. In an new row use a colon as the first character and describe the previously defined term. You can use multiple terms for multiple definitions. Example:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform",
-	"loopscreenshot": "Screenshot"
+	"loopscreenshot": "Screenshot",
+
+	"loopbugreport": "Report bug",
+	"loopbugreport-specialpage-title": "Report bug",
+	"loopbugreport-message-label": "Bug description",
+	"loopbugreport-page-label": "Page",
+	"loopbugreport-send": "Send",
+	"loopbugreport-email-subject": "LOOP bug report $1 $2",
+	"loopbugreport-email": "In LOOP [$1 $1] a bug has been reported. Your email address has been added to this LOOP's settings for bug reports.\nSender address: $2<br>Page of bug: [$3 $3]<br>Description:<br>$4",
+	"loopbugreport-success": "Thanks for your help!",
+	"loopbugreport-error-configuration": "This function has not been configured yet.",
+	"loopbugreport-error-nodata": "This page must be opened from a link in the content area.",
+	"loopbugreport-fail": "The message could not be sent.",
+	"loopbugreport-desc": "Did you find a bug?<br>\nPlease tell us and add your e-mail address for further questions. <br>\nThank you for your help!"
 }

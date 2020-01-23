@@ -10,12 +10,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 
 use MediaWiki\MediaWikiServices;
 
-class LoopTicket {
-
-    public $loop;
-    public $page;
-    public $useremail;
-    public $message;
+class LoopBugReport {
 
     public static function isAvailable() {
         if ( self::externalTicketService() ) {
@@ -25,22 +20,21 @@ class LoopTicket {
         } else {
             return false;
         }
-
     }
 
     public static function externalTicketService() {
-        global $wgLoopExternalServiceUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
+        global $wgLoopBugReportEnabled, $wgLoopExternalServiceUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
 
-        if ( !empty ( $wgLoopExternalServiceUrl ) && !empty ( $wgLoopExternalServiceUser ) && !empty ( $wgLoopExternalServicePw ) ) {
+        if ( !empty ( $wgLoopExternalServiceUrl ) && !empty ( $wgLoopExternalServiceUser ) && !empty ( $wgLoopExternalServicePw ) && $wgLoopBugReportEnabled ) {
             return true;
         }
         return false;
     }
 
     public static function emailTickets() {
-        global $wgLoopTicketsEmail;
+        global $wgLoopBugReportEnabled, $wgLoopBugReportEmail;
 
-        if ( !empty ( $wgLoopTicketsEmail ) ) {
+        if ( !empty ( $wgLoopBugReportEmail ) && $wgLoopBugReportEnabled ) {
             return true;
         }
         return false;
@@ -49,10 +43,10 @@ class LoopTicket {
 }
 
 
-class SpecialLoopTicket extends SpecialPage {
+class SpecialLoopBugReport extends SpecialPage {
 
 	public function __construct() {
-		parent::__construct ( 'LoopTicket' );
+		parent::__construct ( 'LoopBugReport' );
 	}
 
 	public function execute( $sub ) {
@@ -62,12 +56,12 @@ class SpecialLoopTicket extends SpecialPage {
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		
-		$out->setPageTitle ( $this->msg ( 'looptickets-specialpage-title' ) );
+		$out->setPageTitle ( $this->msg ( 'loopbugreport-specialpage-title' ) );
 	    $html = '<h1>';
-	    $html .= wfMessage( 'looptickets-specialpage-title' )->text();
+	    $html .= wfMessage( 'loopbugreport-specialpage-title' )->text();
         $html .= '</h1>';
         
-        $service = LoopTicket::isAvailable();
+        $service = LoopBugReport::isAvailable();
         $page = urldecode ( $request->getText('page') );
         $url = urldecode ( $request->getText('url') );
         
@@ -77,27 +71,27 @@ class SpecialLoopTicket extends SpecialPage {
         if ( $user->isLoggedIn() ) {
             if ( $service != false ) {
                 if ( !empty( $page ) && !empty( $url ) ) {
-
+                    $html .= '<p>' . $this->msg( 'loopbugreport-desc' ) . '</p>';
                     $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2" id="bugreport-form" enctype="multipart/form-data">';
                     $html .= '<div class="form-group">';
                     
                     $html .= '<div class="form-row">';
-                    $html .= '<label for="page">'. $this->msg("looptickets-page-label")->text().'</label>';
+                    $html .= '<label for="page" class="font-weight-bold">'. $this->msg("loopbugreport-page-label")->text().'</label>';
                     $html .= '<input class="mb-2 form-control" type="text" name="page" value="'.$page.'" disabled/>';
                     $html .= '<input class="d-none" type="text" name="url" value="'.$url.'"/>';
                     $html .= '</div>';
 
                     $html .= '<div class="form-row">';
-                    $html .= '<label for="email">'. $this->msg("email")->text().'</label>';
-                    $html .= '<input class="mb-2 form-control" type="email" name="email" value="'. $user->getEmail() .'" required/>';
+                    $html .= '<label for="email" class="font-weight-bold">'. $this->msg("email")->text().'</label>';
+                    $html .= '<input class="mb-2 form-control" type="email" name="email" required/>';
                     $html .= '</div>';
                     
                     $html .= '<div class="form-row">';
-                    $html .= '<label for="message">'. $this->msg("looptickets-message-label")->text().'</label>';
+                    $html .= '<label for="message" class="font-weight-bold">'. $this->msg("loopbugreport-message-label")->text().'</label>';
                     $html .= '<textarea  class="mb-2 form-control" type="text" name="message" required></textarea>';
                     $html .= '</div>';
                     
-                    $html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="bugreport-submit" value="' . $this->msg( 'looptickets-send' ) . '"></input>';
+                    $html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="bugreport-submit" value="' . $this->msg( 'loopbugreport-send' ) . '"></input>';
                     
                     $html .= '</div></form>';
 
@@ -146,33 +140,33 @@ class SpecialLoopTicket extends SpecialPage {
                         $webservice_result = $tmp["webservice/func"];
                         
                         if ( $webservice_result == 1 ) {
-                            $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "looptickets-success" )->text() .'</div>';
+                            $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
                         } else {
-                            $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "looptickets-fail" )->text() .'</div>';
+                            $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
                         }
                         
                     } elseif ( $service == "internal" ) {
-                        global $wgLoopTicketsEmail;
+                        global $wgLoopBugReportEmail;
 
-                        $subject = $this->msg( "looptickets-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text(); 
-                        $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("looptickets-email", $wgCanonicalServer, $email, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
+                        $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text(); 
+                        $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $email, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
                         $header[] = 'MIME-Version: 1.0';
                         $header[] = 'Content-type: text/html; charset=iso-8859-1';
 
-                        $success = mail( $wgLoopTicketsEmail, $subject, $email, implode("\r\n", $header) );
+                        $success = mail( $wgLoopBugReportEmail, $subject, $email, implode("\r\n", $header) );
                         
                         if ( $success ) {
-                            $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "looptickets-success" )->text() .'</div>';
+                            $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
                         } else {
-                            $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "looptickets-fail" )->text() .'</div>';
+                            $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
                         }
                     }
 
                 } else {
-                    $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "looptickets-error-nodata" )->text() .'</div>';
+                    $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nodata" )->text() .'</div>';
                 }
             } else {
-                $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "looptickets-error-configuration" )->text() .'</div>';
+                $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-configuration" )->text() .'</div>';
             }
         } else {
             $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' )->text() .'</div>';

@@ -57,7 +57,7 @@ class Loop {
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
 		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
-		$wgLoopTicketsEmail;
+		$wgLoopBugReportEmail;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -104,11 +104,11 @@ class Loop {
 				$wgLoopSocialIcons['Github'] = ( !isset( $data['lset_githublink'] ) ? $wgLoopSocialIcons['Github'] : array( "icon" => $data['lset_githubicon'], "link" => $data['lset_githublink'] ) );
 				$wgLoopSocialIcons['Instagram'] = ( !isset( $data['lset_instagramlink'] ) ? $wgLoopSocialIcons['Instagram'] : array( "icon" => $data['lset_instagramicon'], "link" => $data['lset_instagramlink'] ) );
 				$wgCaptchaTriggers["edit"] = ( !isset( $data['lset_captchaedit'] ) ?$wgCaptchaTriggers["edit"] : boolval( $data['lset_captchaedit'] ) );
-				$wgCaptchaTriggers["create"] = ( !isset( $data['lset_captchacreate'] ) ?$wgCaptchaTriggers["create"] : boolval( $data['lset_captchacreate'] ) );
-				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ?$wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
-				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ?$wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
+				$wgCaptchaTriggers["create"] = ( !isset( $data['lset_captchacreate'] ) ? $wgCaptchaTriggers["create"] : boolval( $data['lset_captchacreate'] ) );
+				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ? $wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
+				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ? $wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
 				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
-				$wgLoopTicketsEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopTicketsEmail : $data['lset_ticketemail'] );
+				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
 			}
 			
 			# Define new name for glossary
