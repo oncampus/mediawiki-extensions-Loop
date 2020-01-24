@@ -11,7 +11,7 @@ $specialPageAliases = array();
 $specialPageAliases['en'] = array(
 	'LoopStructure' => array( 'Table of Contents' ),
 	'LoopStructureEdit' => array( 'Edit TOC' ),
-	'LoopSettings' => array( 'LOOP settings', 'LOOP inställningar', 'LOOP-Einstellungen' ),
+	'LoopSettings' => array( 'LOOP settings' ),
 	'PurgeCache' => array( 'Purge Cache' ),
 	'LoopExport' => array( 'LOOP Export' ),
 	'LoopFigures' => array( 'List of figures' ),
@@ -34,7 +34,7 @@ $specialPageAliases['en'] = array(
 $specialPageAliases['de'] = array(
 	'LoopStructure' => array( 'Inhaltsverzeichnis' ),
 	'LoopStructureEdit' => array( 'Inhaltsverzeichnis bearbeiten' ),
-	'LoopSettings' => array( 'LOOP-Einstellungen', 'LOOP settings', 'LOOP inställningar' ),
+	'LoopSettings' => array( 'LOOP-Einstellungen' ),
 	'PurgeCache' => array( 'Cache Leeren' ),
 	'LoopExport' => array( 'LOOP Export' ),
 	'LoopFigures' => array( 'Abbildungsverzeichnis' ),
@@ -57,7 +57,7 @@ $specialPageAliases['de'] = array(
 $specialPageAliases['sv'] = array(
 	'LoopStructure' => array( 'Innehåll' ),
 	'LoopStructureEdit' => array( 'Regidera innehåll' ),
-	'LoopSettings' => array( 'LOOP inställningar', 'LOOP-Einstellungen', 'LOOP settings' ),
+	'LoopSettings' => array( 'LOOP inställningar' ),
 	'PurgeCache' => array( 'Rensa cache' ),
 	'LoopExport' => array( 'LOOP Export' ),
 	'LoopFigures' => array( 'Figurförteckning' ),
@@ -77,6 +77,28 @@ $specialPageAliases['sv'] = array(
 	'LoopExportPdfTest' => array( 'Testa PDF sida för sida' )
 	);
 
+	$specialPageAliases['es'] = array(
+		'LoopStructure' => array( 'Índice de Contenido' ),
+		'LoopStructureEdit' => array( 'Editar Índice de Contenido' ),
+		'LoopSettings' => array( 'Configuración del LOOP' ),
+		'PurgeCache' => array( 'Borrar caché' ),
+		'LoopExport' => array( 'Exportación del LOOP' ),
+		'LoopFigures' => array( 'Lista de figuras' ),
+		'LoopFormulas' => array( 'Lista de fórmulas' ),
+		'LoopListings' => array( 'Lista de listados' ),
+		'LoopMedia' => array( 'Lista de multimedia' ),
+		'LoopTables' => array( 'Lista de tablas' ),
+		'LoopTasks' => array( 'Lista de tareas' ),
+		'LoopLiterature' => array( 'Bibliografía' ),
+		'LoopLiteratureEdit' => array( 'Editar referencias' ),
+		'LoopLiteratureImport' => array( 'Importar referencias' ),
+		'LoopLiteratureExport' => array( 'Exportar bibliografía' ),
+		'LoopGlossary' => array( 'Glosario' ),
+		'LoopIndex' => array( 'Índice' ),
+		'LoopTerminology' => array( 'Lista de abreviaciones' ),
+		'LoopTerminologyEdit' => array( 'Editar lista de abreviaciones' ),
+		'LoopExportPdfTest' => array( 'Prueba del PDF por página' )
+	);
 
 
 ?>

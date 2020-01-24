@@ -124,7 +124,7 @@
 	<msg name="phrase_video" lang="en">There is a video at this point on the website.</msg>
 	<msg name="phrase_youtube_video" lang="en">There is a YouTube video at this point on the website.</msg>
 	<msg name="phrase_audio" lang="en">There is an audio file at this point on the website.</msg>
-	<msg name="phrase_quiz" lang="de">There is a quiz at this point on the website.</msg>
+	<msg name="phrase_quiz" lang="en">There is a quiz at this point on the website.</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -279,6 +279,86 @@
 	<msg name="phrase_video" lang="sv">På webbsidan finns det en video här.</msg>
 	<msg name="phrase_youtube_video" lang="sv">På webbsidan finns det en YouTube video här.</msg>
 	<msg name="phrase_audio" lang="sv">På webbsidan finns det en audio fil här.</msg>
-	<msg name="phrase_quiz" lang="de">På webbsidan finns det frågor här.</msg>
+	<msg name="phrase_quiz" lang="sv">På webbsidan finns det frågor här.</msg>
 	
+	
+	<msg name="word_chapter" lang="es">Capítulo</msg>
+	<msg name="word_state" lang="es">Estado</msg>
+	<msg name="word_content" lang="es">Contenido</msg>
+	<msg name="word_figure" lang="es">Figura</msg>
+	<msg name="word_figure_short" lang="es">Fig.</msg>
+	<msg name="phrase_figure" lang="es">Aquí se encuentra una figura</msg>
+	<msg name="phrase_figure_number" lang="es">Aquí está la figura</msg>
+	<msg name="word_list_of_figures" lang="es">Lista de figuras</msg>
+	<msg name="word_formula" lang="es">Formula</msg>
+	<msg name="word_formula_short" lang="es">Form.</msg>
+	<msg name="phrase_formula" lang="es">Aquí se encuentra una fórmula.</msg>
+	<msg name="phrase_formula_number" lang="es">Aquí está la fórmula</msg>
+	<msg name="word_list_of_formulas" lang="es">Lista de fórmulas</msg>
+	<msg name="word_listing" lang="es">Listados</msg>
+	<msg name="word_listing_short" lang="es">List.</msg>
+	<msg name="phrase_listing" lang="es">Aquí se encuentra un listado.</msg>
+	<msg name="phrase_listing_number" lang="es">Aquí está el listado</msg>
+	<msg name="word_list_of_listings" lang="es">Lista de listados</msg>
+	<msg name="word_media" lang="es">Multimedia</msg>
+	<msg name="word_media_short" lang="es">Med.</msg>
+	<msg name="phrase_media" lang="es">Aquí se encuentra un elemento multimedia.</msg>
+	<msg name="phrase_media_number" lang="es">Aquí está el elemento multimedia</msg>
+	<msg name="word_list_of_media" lang="es">Lista de multimedia</msg>		
+	<msg name="word_task" lang="es">Tarea</msg>
+	<msg name="word_task_short" lang="es">Tarea</msg>
+	<msg name="phrase_task" lang="es">Aquí se encuentra una tarea.</msg>
+	<msg name="phrase_task_number" lang="es">Aquí está la tarea</msg>
+	<msg name="word_list_of_tasks" lang="es">Lista de tareas</msg>	
+	<msg name="word_table" lang="es">Tabla</msg>
+	<msg name="word_table_short" lang="es">Tab.</msg>
+	<msg name="phrase_table" lang="es">Aquí se encuentra una tabla.</msg>
+	<msg name="phrase_table_number" lang="es">Aquí está la tabla</msg>
+	<msg name="word_list_of_tables" lang="es">Lista de tablas</msg>	
+	<msg name="word_appendix" lang="es">Apéndice</msg>
+	<msg name="word_terminology" lang="es">Lista de abreviaciones</msg>
+	<msg name="word_looparea_task" lang="es">tarea</msg>
+	<msg name="word_looparea_timerequirement" lang="es">tiempo
+	requerido</msg>
+	<msg name="word_looparea_learningobjectives" lang="es">objetivos de aprendizaje</msg>
+	<msg name="word_looparea_arrangement" lang="es">estructura</msg>
+	<msg name="word_looparea_example" lang="es">ejemplo</msg>
+	<msg name="word_looparea_reflection" lang="es">reflexión</msg>
+	<msg name="word_looparea_notice" lang="es">nota</msg>
+	<msg name="word_looparea_important" lang="es">importante</msg>
+	<msg name="word_looparea_annotation" lang="es">anotación</msg>
+	<msg name="word_looparea_definition" lang="es">definición</msg>
+	<msg name="word_looparea_formula" lang="es">fórmula</msg>
+	<msg name="word_looparea_markedsentence" lang="es">cláusula 
+	mnemotécnica</msg>
+	<msg name="word_looparea_sourcecode" lang="es">código fuente</msg>
+	<msg name="word_looparea_summary" lang="es">resumen</msg>
+	<msg name="word_looparea_indentation" lang="es">consolidación</msg>
+	<msg name="word_looparea_norm" lang="es">norma</msg>
+	<msg name="word_looparea_law" lang="es">ley</msg>
+	<msg name="word_looparea_question" lang="es">pregunta</msg>
+	<msg name="word_looparea_practice" lang="es">práctica</msg>
+	<msg name="word_looparea_exercise" lang="es">ejercicio</msg>
+	<msg name="word_looparea_experiment" lang="es">experimento</msg>
+	<msg name="word_looparea_websource" lang="es">fuente de 
+	internet</msg>
+	<msg name="word_looparea_citation" lang="es">cita</msg>
+	<msg name="word_spoiler_defaulttitle" lang="es">Solución</msg>
+	<msg name="phrase_syntaxhighlight" lang="es">Aquí se encuentra el código de fuente con resaltado de sintaxis. </msg>
+	<msg name="phrase_looparea_start" lang="es"></msg> <!--Aquí inicia el área de página</msg>-->
+	<msg name="phrase_looparea_end" lang="es"></msg> <!--Auí termina el área de página</msg>-->
+	<msg name="phrase_spoiler_start" lang="es">Aquí inicia el contenido oculto.</msg>
+	<msg name="phrase_spoiler_end" lang="es">Aquí termina el contenido oculto.</msg>
+	<msg name="word_glossary" lang="es">Glosario</msg>
+	<msg name="phrase_literature_list" lang="es">Aquí se muestra una lista bibliográfica.</msg>
+	<msg name="word_literature_page" lang="es">p.</msg>
+	<msg name="word_literature_pages" lang="es">pp.</msg>
+	<msg name="word_bibliography" lang="es">Bibliografía</msg>
+	<msg name="phrase_interactive_element" lang="es">En este punto de la página Web existe un elemento interactivo.</msg>
+	<msg name="word_index" lang="es">Índice</msg>
+	<msg name="phrase_video" lang="es">En este punto de la página Web existe un archivo de video.</msg>
+	<msg name="phrase_youtube_video" lang="es">En este punto de la página Web se encuentra un video de YouTube.</msg>
+	<msg name="phrase_audio" lang="es">En este punto de la página Web existe un archivo de audio.</msg>
+	<msg name="phrase_quiz" lang="es">En este punto de la página Web existe una prueba rápida.</msg>
+
 </terms> 
