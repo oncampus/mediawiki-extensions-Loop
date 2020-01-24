@@ -101,7 +101,9 @@
 		"SpecialLoopTerminology": "includes/LoopTerminology.php",
 		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php",
 		"LoopScreenshot": "includes/LoopScreenshot.php",
-		"SpecialLoopExportPdfTest": "includes/LoopPdf.php"
+		"SpecialLoopExportPdfTest": "includes/LoopPdf.php",
+		"LoopBugReport": "includes/LoopBugReport.php",
+		"SpecialLoopBugReport": "includes/LoopBugReport.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -185,7 +187,8 @@
 		"LoopIndex": "SpecialLoopIndex",
 		"LoopTerminology": "SpecialLoopTerminology",
 		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
-		"LoopExportPdfTest": "SpecialLoopExportPdfTest"
+		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
+		"LoopBugReport": "SpecialLoopBugReport"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -860,6 +863,26 @@
 		"LoopScreenshotUrl": {
 			"value": "",
 			"description" : "URL for rendering screenshots service"
+		},
+		"LoopExternalServiceUrl": {
+			"value": "",
+			"description" : "URL for external ticket handling service. Overrides LoopBugReportEmail."
+		},
+		"LoopExternalServiceUser": {
+			"value": "",
+			"description" : "External service user"
+		},
+		"LoopExternalServicePw": {
+			"value": "",
+			"description" : "Password for external service user"
+		},
+		"LoopBugReportEmail": {
+			"value": "",
+			"description" : "E-Mail address for ticket handling. Will be ignored if LoopExternalTicketsServiceUrl is set."
+		},
+		"LoopBugReportEnabled": {
+			"value": true,
+			"description" : "Enable bug reports for users."
 		}
 	},
 	"LogTypes": [ "loopexport" ],

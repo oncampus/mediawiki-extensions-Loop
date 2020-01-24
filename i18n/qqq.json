@@ -71,6 +71,8 @@
 	"loopsettings-extra-sidebar-linktext": "Link text for link to extra sidebar page",
 	"loopsettings-extra-sidebar-label": "Label for additional sidebar checkbox.",
 	"loopsettings-headline-sidebar": "Headline on settings page, Sidebar",
+	"loopsettings-headline-bugreport": "Headline on settings page, bug report",
+	"loopsettings-bugreport-email-label": "Description for e-mail field for bug reports. No entered email will disable the bug report service.",
 
 	"loopsettings-headline-export": "Export options",
 	"loopsettings-export-pdf-label": "offer PDF for download",
@@ -388,5 +390,18 @@
 	"loopterminology-save-success": "Feedback message for successful updating of abbreviations.",
 	"loopterminology-hint": "Page description at the top of the terminology edit page",
 	"loopterminology-example": "Formatting information for the abbreviations edit page",
-	"loopscreenshot": "Screenshot"
+	"loopscreenshot": "Screenshot",
+
+	"loopbugreport": "Special page title for bug reports",
+	"loopbugreport-specialpage-title": "Special page title for bug reports",
+	"loopbugreport-message-label": "Bug report field label for bug description",
+	"loopbugreport-page-label": "ug report field label for page that has the bug",
+	"loopbugreport-send": "Button label for sending a message",
+	"loopbugreport-email-subject": "Email subject of a bug report. $1 is the domain; $2 is a ticket number",
+	"loopbugreport-email": "Email text for the person who receives bug reports. $1 is the url to the LOOP; $2 is the bug reporter's email address; $3 is the page the bug is on; $4 is the error message",
+	"loopbugreport-success": "Success message after sending a bug report",
+	"loopbugreport-error-configuration": "info that the bug report function is not active yet",
+	"loopbugreport-error-nodata": "the page has not been accessed through the UI link",
+	"loopbugreport-fail": "Failure message after sending a bug report.",
+	"loopbugreport-desc": "Description of bug report page"
 }
