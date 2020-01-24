@@ -195,7 +195,8 @@
 		"LoopTerminology": "SpecialLoopTerminology",
 		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
 		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
-		"LoopBugReport": "SpecialLoopBugReport"
+		"LoopBugReport": "SpecialLoopBugReport",
+		"LoopFeedback": "SpecialLoopFeedback"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

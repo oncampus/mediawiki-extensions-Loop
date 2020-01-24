@@ -233,7 +233,7 @@ class LoopFeedback {
 		
 		$dbr = wfGetDB( DB_REPLICA );
 		
-		if (!$page) {
+		if ( !$page ) {
 			$lfs = $dbr->select(
 				'loop_feedback',
 				array( 
@@ -269,12 +269,12 @@ class LoopFeedback {
 			$timestamps[] = $row[ 'lf_archive_timestamp' ];
 		}
 		
-		if (count( $timestamps)>0) {
+		if ( count( $timestamps) > 0 ) {
 			
-			$periods[]=array(
+			$periods[] = array(
 						'begin' => $timestamps[0],
 						'end' => '00000000000000',
-						'begin_text' => self::formatTimestamp( $timestamps[0]),
+						'begin_text' => self::formatTimestamp( $timestamps[0] ),
 						'end_text' => wfMessage( 'loopfeedback-specialpage-period-now' )->text()
 						);
 			
@@ -284,18 +284,18 @@ class LoopFeedback {
 					$lasttimestamp = $timestamp;
 				} else {
 				
-					$periods[]=array(
+					$periods[] = array(
 						'begin' => $timestamp,
 						'end' => $lasttimestamp,
-						'begin_text' => self::formatTimestamp( $timestamp),
-						'end_text' => self::formatTimestamp( $lasttimestamp)
+						'begin_text' => self::formatTimestamp( $timestamp ),
+						'end_text' => self::formatTimestamp( $lasttimestamp )
 						);
 
 					$lasttimestamp = $timestamp;
 				}
 			}
 			
-			$periods[]=array(
+			$periods[] = array(
 				'begin' => '00000000000000',
 				'end' => $timestamp,
 				'begin_text' => wfMessage( 'loopfeedback-specialpage-period-begin' )->text(),
@@ -304,7 +304,7 @@ class LoopFeedback {
 		
 		} else{
 
-			$periods[]=array(
+			$periods[] = array(
 				'begin' => '00000000000000',
 				'end' => '00000000000000',
 				'begin_text' => wfMessage( 'loopfeedback-specialpage-period-begin' )->text(),
@@ -376,24 +376,6 @@ class LoopFeedback {
 		return $return;
 	}
 	
-	function getModulePage() {
-		$dbr = wfGetDB( DB_REPLICA );
-		$lf = $dbr->selectRow(
-			'loopstructure',
-			array( 'ArticleId' ),
-			array(
-				'TocLevel' => 0
-			),
-			__METHOD__
-		);	
-		if (isset( $lf->ArticleId) ) {
-			return $lf->ArticleId;
-		} else {
-			return false;
-		}
-	}
-	
-	
 	function formatTimestamp( $ts) {
 		$ts_unix = wfTimestamp( TS_UNIX, $ts );
 		//$ts_display = wfTimestamp( TS_DB, $ts_unix );
@@ -406,24 +388,31 @@ class LoopFeedback {
 
 
 class SpecialLoopFeedback extends SpecialPage {
+
 	function __construct() {
 		parent::__construct( 'LoopFeedback' );
 	}
 
 	function execute( $par ) {
-		global $wgOut, $wgParser, $wgUser, $wgParserConf, $wgLoopLegacyPageNumbering, $wgRequest, $wgLoopFeedbackLevel;
+		global $wgParser, $wgParserConf, $wgLoopLegacyPageNumbering, $wgLoopFeedbackLevel;
 
-		$wgOut->addModules( 'ext.LoopFeedbackSpecial' );
-		
-		
-		
+        
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
-		$action = $wgRequest->getVal( 'action' );
-		$view 	= $wgRequest->getVal( 'view' );
-		$page 	= $wgRequest->getVal( 'page' );
-		$period_begin = $wgRequest->getVal( 'period_begin' );
-		$period_end = $wgRequest->getVal( 'period_end' );
-		$token  = $wgRequest->getVal( 'token' );
+		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$out->setPageTitle( $this->msg('loopfeedback') );
+        
+		#$wgOut->addModules( 'ext.LoopFeedbackSpecial' );
+
+		$action = $request->getText( 'action' );
+		$view 	= $request->getText( 'view' );
+		$page 	= $request->getText( 'page' );
+		$period_begin = $request->getText( 'period_begin' );
+		$period_end = $request->getText( 'period_end' );
+		$token  = $request->getText( 'token' );
 		
 		if ( $action == 'reset_page' )  {
 			if ( $page != '' ) {
@@ -453,8 +442,9 @@ class SpecialLoopFeedback extends SpecialPage {
 				$view = 'none';
 			} elseif ( $wgLoopFeedbackLevel == 'module' ) {
 				if ( $page == '' ) {
-					$loopFeedback = new LoopFeedback;
-					$page = $loopFeedback->getModulePage();	
+                    $loopStructure = new LoopStructure();
+                    $loopStructure->loadStructureItems();
+					$page = $loopStructure->getMainpage();	
 				}
 				$view = 'page';
 			} elseif ( $wgLoopFeedbackLevel == 'chapter' ) {
@@ -468,8 +458,6 @@ class SpecialLoopFeedback extends SpecialPage {
 			$period_end = '00000000000000';
 		}		
 		
-		
-		
 		$return = '';
 		if ( $view == 'none' ) {
 			$return .= self::printInactive();
@@ -478,13 +466,13 @@ class SpecialLoopFeedback extends SpecialPage {
 			if ( !$this->getUser()->isAllowed( 'loopfeedback-reset' ) ) {
 				throw new PermissionsError( 'loopfeedback-reset' );
 			}
-			$return .= self::printConfirmResetPage( $page,$period_begin,$period_end);
+			$return .= self::printConfirmResetPage( $page, $period_begin, $period_end );
 		}
 		if ( $view == 'confirm_reset_all' ) {
 			if ( !$this->getUser()->isAllowed( 'loopfeedback-reset' ) ) {
 				throw new PermissionsError( 'loopfeedback-reset' );
 			}		
-			$return .= self::printConfirmResetAll( $period_begin,$period_end);
+			$return .= self::printConfirmResetAll( $page, $period_begin, $period_end );
 		}
 		if ( $view == 'overview' ) {
 			if ( !$this->getUser()->isAllowed( 'loopfeedback-view-results' ) ) {
@@ -506,7 +494,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		}				
 		
 		$this->setHeaders();
-		$wgOut->addHTML( $return);
+		$out->addHTML( $return );
 
 	}
 
@@ -527,7 +515,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		$return .= '<h1>'.wfMessage( 'loopfeedback-specialpage-header' )->text().'</h1>';
 		$return .= '<h2>'.wfMessage( 'loopfeedback-specialpage-header-overview-archive' )->text().'</h2>';
 		
-		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL);
+		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
 		
 		$loopFeedback = new LoopFeedback;
 		$periods = $loopFeedback->getPeriods();
@@ -549,8 +537,6 @@ class SpecialLoopFeedback extends SpecialPage {
 
 		return $return;
 	}
-	
-	
 
 	private function printConfirmResetPage ( $page,$period_begin,$period_end) {
 		$return = '';
@@ -561,7 +547,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		
 		$return .= '<br/><br/>';
 		
-        $specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL);
+        $specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
         
         $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
         $linkRenderer->setForceArticlePath(true); #required for readable links
@@ -599,41 +585,40 @@ class SpecialLoopFeedback extends SpecialPage {
 		return $return;
 	}
 	
-	private function printConfirmResetAll ( $period_begin,$period_end) {
+	private function printConfirmResetAll ( $page, $period_begin, $period_end ) {
 		$return = '';
 		
-		$title = Title::newFromID( $page);
+		$title = Title::newFromID( $page );
 		
 		$return .= wfMessage( 'loopfeedback-specialpage-confirm-reset-all' )->text();
-		
 		$return .= '<br/><br/>';
 		
-		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL);
+		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
         $linkRenderer->setForceArticlePath(true); #required for readable links
-        $return .= $linkRenderer->makeLink(
-            $specialtitle,
-			new HtmlArmor( wfMessage( 'loopfeedback-specialpage-cancel' )->text() ),
-			array(
-					'class' => 'loopfeedback-button'
-				),
-			array(
-				'view' => 'all',
-				'period_begin' => $period_begin,
-				'period_end' => $period_end
-			)
-		);
 		$return .= ' ';
 		$reset_token = $this->getUser()->getEditToken( 'reset-feedback' );
         $return .= $linkRenderer->makeLink(
             $specialtitle,
 			new HtmlArmor( wfMessage( 'loopfeedback-specialpage-confirm-reset-all-link' )->text() ),
 			array(
-					'class' => 'loopfeedback-button'
+					'class' => 'loopfeedback-button mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block float-right ml-3'
 				),
 			array (
 				'action' => 'reset_all',
 				'token' => $reset_token,
+				'view' => 'all',
+				'period_begin' => $period_begin,
+				'period_end' => $period_end
+			)
+		);
+        $return .= $linkRenderer->makeLink(
+            $specialtitle,
+			new HtmlArmor( wfMessage( 'loopfeedback-specialpage-cancel' )->text() ),
+			array(
+					'class' => 'loopfeedback-button mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block float-right ml-3'
+				),
+			array(
 				'view' => 'all',
 				'period_begin' => $period_begin,
 				'period_end' => $period_end
@@ -762,7 +747,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		}		
 
 		$return .= '<br/><hr/><br/>';
-		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL);
+		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
 		
 		if ( $wgLoopFeedbackLevel == 'chapter' ) {
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
@@ -818,13 +803,8 @@ class SpecialLoopFeedback extends SpecialPage {
 		$return .= '<h1>'.wfMessage( 'loopfeedback-specialpage-header' )->text().'</h1>';
 		
 		
-		$return .= '<table class="loopfeedback-special_table">
-			<colgroup>
-				<col />
-				<col width="110"/>
-				<col width="240"/>
-			</colgroup>';
-		$return .= '<tr><th>';
+		$return .= '<table class="table-striped loopfeedback-special-table">';
+		$return .= '<tr><th class="pl-2 pr-1">';
 		
 		if ( $wgLoopFeedbackLevel == 'chapter' ) {
 			$return .= wfMessage( 'loopfeedback-specialpage-feedback-for-chapter' )->text();
@@ -844,11 +824,16 @@ class SpecialLoopFeedback extends SpecialPage {
 		
 		
 		if ( $wgLoopFeedbackLevel == 'module' ) {
-			$condition = 'TocLevel = 0';
+			$condition = 'TocLevel = 0'; #TODO was macht das für einen unterschied?
 		} elseif ( $wgLoopFeedbackLevel == 'chapter' ) {
 			$condition = 'TocLevel = 1';
 		}
         
+        
+        $loopStructure = new LoopStructure();
+        $loopStructureItems = $loopStructure->getStructureItems();
+        
+/*
         #TODO STRUCTURE
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
@@ -872,78 +857,66 @@ class SpecialLoopFeedback extends SpecialPage {
                 array(
 				'ORDER BY' => 'Sequence ASC'
 				)
-				);		
-		$n=0;
-		foreach ( $res as $row) {
+                );		*/
+                
+		$n = 0;
+		foreach ( $loopStructureItems as $lsi ) {
 			$n++;
-			$return .= '<tr class="';
-			if ( $n % 2 == 0) {$return .= 'even';} else {$return .= 'odd';}
-			$return .= '"><td>';
+			$return .= '<tr><td class="pl-2 pr-1">';
 			
-			
-				
-			$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL);
+			$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
 			$lf_item_text = '';
-			if ( $wgLoopLegacyPageNumbering) {
-				$lf_item_text.=$row->TocNumber.' ';
+			if ( $wgLoopLegacyPageNumbering ) {
+				$lf_item_text .= $lsi->tocNumber .' ';
 			}
-			$lf_item_text.=$row->TocText;
+			$lf_item_text .= $lsi->tocText;
 			$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
             $linkRenderer->setForceArticlePath(true); #required for readable links
+
             $return .= $linkRenderer->makeLink(
                     $specialtitle,
 					new HtmlArmor( $lf_item_text ),
 					array(),
 					array (
 						'view' => 'page',
-						'page' =>$row->ArticleId
+						'page' => $lsi->article
 					)
 				);
-			
-			
-			
 			$return .= '</td>';
 			
 			$loopFeedback = new LoopFeedback;
-			$feedback_detail = $loopFeedback->getDetails( $row->ArticleId);	
+			$feedback_detail = $loopFeedback->getDetails( $lsi->article );	
 			
-				
-			$return .= '<td>'. self::printStars( $feedback_detail[ 'average' ],'article_'.$row->ArticleId.'_rating' ).'</td>';					
+			$return .= '<td class="pl-2 pr-1">'. self::printStars( $feedback_detail[ 'average' ], 'article_'. $lsi->article .'_rating' ).'</td>';					
 			
-			$return .= '<td>';
+			$return .= '<td class="pl-2 pr-1">';
 			
 			if ( $feedback_detail[ 'count' ][ 'all' ] > 0) {
-				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-sum-all', $feedback_detail[ 'count' ][ 'all' ])->text().'<br/>';
-				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-average-stars', round( $feedback_detail[ 'average' ],2) )->text().'<br/>';				
+				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-sum-all', $feedback_detail[ 'count' ][ 'all' ] )->text().'<br/>';
+				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-average-stars', round( $feedback_detail[ 'average' ], 2 ) )->text().'<br/>';				
 			} else {
 				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-no-feedback' )->text().'<br/>';
 			}			
 			if ( $feedback_detail[ 'count' ][ 'comments' ] > 0) {
-				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-count-comments', $feedback_detail[ 'count' ][ 'comments' ])->text();
+				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-count-comments', $feedback_detail[ 'count' ][ 'comments' ] )->text();
 			} else {
 				$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-no-comments' )->text();
 			}
 			$return .= '</td>';
 
-			
-			
-			
-			
 			$return .= '</tr>';
 		}
 		
 		$return .= '</table>';
-		
-		$return .= '<br/><hr/><br/>';
-
+		$return .= '<br/><hr/>';
 		
         $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
         $linkRenderer->setForceArticlePath(true); #required for readable links
         $return .= $linkRenderer->makeLink(
                 $specialtitle,
-				new HtmlArmor( wfMessage( 'loopfeedback-specialpage-reset-all-link' ) ),
+				new HtmlArmor( wfMessage( 'loopfeedback-specialpage-reset-all-link' ) . "*" ),
 				array(
-					'class' => 'loopfeedback-button'
+					'class' => 'loopfeedback-button float-right mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block'
 				),
 				array (
 					'action' => 'reset_all'
@@ -956,44 +929,38 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 	
 	
-	private function printStars( $rating,$name,$title='' ) {
+	private function printStars( $rating, $name, $title = '' ) {
 		if ( $title == '' ) {
-			$title=$rating;
+			$title = $rating;
 			}
-		$rating = round( $rating);
-		$printreturn = '';
+		$rating = round( $rating );
 		
-		
-		
-	$printreturn.= '<div class="lf_rating_wrapper">
-<input name="'.$name.'" type="radio" class="star" title="'.$title.'" value="'.$rating.'" disabled="disabled" '. ( $rating == 1 ? 'checked="checked"' : '' ) .'/>
-<input name="'.$name.'" type="radio" class="star" title="'.$title.'" value="2.0" disabled="disabled" '. ( $rating == 2 ? 'checked="checked"' : '' ) .'/>
-<input name="'.$name.'" type="radio" class="star" title="'.$title.'" value="3.0" disabled="disabled" '. ( $rating == 3 ? 'checked="checked"' : '' ) .'/>
-<input name="'.$name.'" type="radio" class="star" title="'.$title.'" value="4.0" disabled="disabled" '. ( $rating == 4 ? 'checked="checked"' : '' ) .'/>
-<input name="'.$name.'" type="radio" class="star" title="'.$title.'" value="5.0" disabled="disabled" '. ( $rating == 5 ? 'checked="checked"' : '' ) .'/>
+	$printreturn = '<div class="lf_rating_wrapper">
+<input name="'.$name.'" type="radio" class="loopfeedback-star" title="'.$title.'" value="'.$rating.'" disabled '. ( $rating == 1 ? 'checked' : '' ) .'/>
+<input name="'.$name.'" type="radio" class="loopfeedback-star" title="'.$title.'" value="2.0" disabled '. ( $rating == 2 ? 'checked' : '' ) .'/>
+<input name="'.$name.'" type="radio" class="loopfeedback-star" title="'.$title.'" value="3.0" disabled '. ( $rating == 3 ? 'checked' : '' ) .'/>
+<input name="'.$name.'" type="radio" class="loopfeedback-star" title="'.$title.'" value="4.0" disabled '. ( $rating == 4 ? 'checked' : '' ) .'/>
+<input name="'.$name.'" type="radio" class="loopfeedback-star" title="'.$title.'" value="5.0" disabled '. ( $rating == 5 ? 'checked' : '' ) .'/>
 </div>';
-	
-	
-
 	
 		return $printreturn;
 	}
 	
 	
-	function toNearestHalf( $val) {
-		return round( $val*2) / 2; 
+	function toNearestHalf( $val ) {
+		return round( $val * 2 ) / 2; 
 	}	
 
-	function formatTimestamp( $ts) {
+	function formatTimestamp( $ts ) {
 		$ts_unix = wfTimestamp( TS_UNIX, $ts );
 		$ts_display = wfTimestamp( TS_DB, $ts_unix );
 		return $ts_display;
 	}
 	
 	
-	function resetPage ( $page) {
+	function resetPage ( $page ) {
 		
-		$dbw =& wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_MASTER );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array( 
@@ -1007,7 +974,7 @@ class SpecialLoopFeedback extends SpecialPage {
 	
 	function resetAll () {
 		
-		$dbw =& wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_MASTER );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array( 
@@ -1016,5 +983,15 @@ class SpecialLoopFeedback extends SpecialPage {
 		__METHOD__ );		
 		
 		return true;
-	}
+    }
+    
+	/**
+	 * Specify the specialpages-group loop
+	 *
+	 * @return string
+	 */
+	protected function getGroupName() {
+		return 'loop';
+    }
+    
 }

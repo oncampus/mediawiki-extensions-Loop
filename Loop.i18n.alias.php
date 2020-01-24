@@ -29,7 +29,8 @@ $specialPageAliases['en'] = array(
 	'LoopTerminology' => array( 'List of abbreviations' ),
 	'LoopTerminologyEdit' => array( 'Edit list of abbreviations' ),
 	'LoopExportPdfTest' => array( 'Test PDF page by page' ),
-	'LoopBugReport' => array( 'Bugreport' )
+	'LoopBugReport' => array( 'Bugreport' ),
+	'LoopFeedback' => array( 'Feedback' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -53,7 +54,8 @@ $specialPageAliases['de'] = array(
 	'LoopTerminology' => array( 'Abkürzungsverzeichnis' ),
 	'LoopTerminologyEdit' => array( 'Abkürzungsverzeichnis bearbeiten' ),
 	'LoopExportPdfTest' => array( 'PDF seitenweise testen' ),
-	'LoopBugReport' => array( 'Fehler melden' )
+	'LoopBugReport' => array( 'Fehler melden' ),
+	'LoopFeedback' => array( 'Feedback' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -77,7 +79,8 @@ $specialPageAliases['sv'] = array(
 	'LoopTerminology' => array( 'Förkortningar' ),
 	'LoopTerminologyEdit' => array( 'Regidera förkortningar' ),
 	'LoopExportPdfTest' => array( 'Testa PDF sida för sida' ),
-	'LoopBugReport' => array( 'Rapportera fel' )
+	'LoopBugReport' => array( 'Rapportera fel' ),
+	'LoopFeedback' => array( 'Feedback' )
 	);
 
 ?>
