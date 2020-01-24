@@ -28,7 +28,8 @@ $specialPageAliases['en'] = array(
 	'LoopIndex' => array( 'Index' ),
 	'LoopTerminology' => array( 'List of abbreviations' ),
 	'LoopTerminologyEdit' => array( 'Edit list of abbreviations' ),
-	'LoopExportPdfTest' => array( 'Test PDF page by page' )
+	'LoopExportPdfTest' => array( 'Test PDF page by page' ),
+	'LoopBugReport' => array( 'Bugreport' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -51,7 +52,8 @@ $specialPageAliases['de'] = array(
 	'LoopIndex' => array( 'Index' ),
 	'LoopTerminology' => array( 'Abkürzungsverzeichnis' ),
 	'LoopTerminologyEdit' => array( 'Abkürzungsverzeichnis bearbeiten' ),
-	'LoopExportPdfTest' => array( 'PDF seitenweise testen' )
+	'LoopExportPdfTest' => array( 'PDF seitenweise testen' ),
+	'LoopBugReport' => array( 'Fehler melden' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -74,31 +76,33 @@ $specialPageAliases['sv'] = array(
 	'LoopIndex' => array( 'Index' ),
 	'LoopTerminology' => array( 'Förkortningar' ),
 	'LoopTerminologyEdit' => array( 'Regidera förkortningar' ),
-	'LoopExportPdfTest' => array( 'Testa PDF sida för sida' )
+	'LoopExportPdfTest' => array( 'Testa PDF sida för sida' ),
+	'LoopBugReport' => array( 'Rapportera fel' )
 	);
 
-	$specialPageAliases['es'] = array(
-		'LoopStructure' => array( 'Índice de Contenido' ),
-		'LoopStructureEdit' => array( 'Editar Índice de Contenido' ),
-		'LoopSettings' => array( 'Configuración del LOOP' ),
-		'PurgeCache' => array( 'Borrar caché' ),
-		'LoopExport' => array( 'Exportación del LOOP' ),
-		'LoopFigures' => array( 'Lista de figuras' ),
-		'LoopFormulas' => array( 'Lista de fórmulas' ),
-		'LoopListings' => array( 'Lista de listados' ),
-		'LoopMedia' => array( 'Lista de multimedia' ),
-		'LoopTables' => array( 'Lista de tablas' ),
-		'LoopTasks' => array( 'Lista de tareas' ),
-		'LoopLiterature' => array( 'Bibliografía' ),
-		'LoopLiteratureEdit' => array( 'Editar referencias' ),
-		'LoopLiteratureImport' => array( 'Importar referencias' ),
-		'LoopLiteratureExport' => array( 'Exportar bibliografía' ),
-		'LoopGlossary' => array( 'Glosario' ),
-		'LoopIndex' => array( 'Índice' ),
-		'LoopTerminology' => array( 'Lista de abreviaciones' ),
-		'LoopTerminologyEdit' => array( 'Editar lista de abreviaciones' ),
-		'LoopExportPdfTest' => array( 'Prueba del PDF por página' )
-	);
+$specialPageAliases['es'] = array(
+	'LoopStructure' => array( 'Índice de Contenido' ),
+	'LoopStructureEdit' => array( 'Editar Índice de Contenido' ),
+	'LoopSettings' => array( 'Configuración del LOOP' ),
+	'PurgeCache' => array( 'Borrar caché' ),
+	'LoopExport' => array( 'Exportación del LOOP' ),
+	'LoopFigures' => array( 'Lista de figuras' ),
+	'LoopFormulas' => array( 'Lista de fórmulas' ),
+	'LoopListings' => array( 'Lista de listados' ),
+	'LoopMedia' => array( 'Lista de multimedia' ),
+	'LoopTables' => array( 'Lista de tablas' ),
+	'LoopTasks' => array( 'Lista de tareas' ),
+	'LoopLiterature' => array( 'Bibliografía' ),
+	'LoopLiteratureEdit' => array( 'Editar referencias' ),
+	'LoopLiteratureImport' => array( 'Importar referencias' ),
+	'LoopLiteratureExport' => array( 'Exportar bibliografía' ),
+	'LoopGlossary' => array( 'Glosario' ),
+	'LoopIndex' => array( 'Índice' ),
+	'LoopTerminology' => array( 'Lista de abreviaciones' ),
+	'LoopTerminologyEdit' => array( 'Editar lista de abreviaciones' ),
+	'LoopExportPdfTest' => array( 'Prueba del PDF por página' ),
+	'LoopBugReport' => array( 'Reportar error' )
+);
 
 
 ?>
