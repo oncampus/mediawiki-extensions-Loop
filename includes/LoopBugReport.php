@@ -23,9 +23,9 @@ class LoopBugReport {
     }
 
     public static function externalTicketService() {
-        global $wgLoopBugReportEnabled, $wgLoopExternalServiceUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
+        global $wgLoopBugReportEnabled, $wgLoopExternalServiceBugReportUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
 
-        if ( !empty ( $wgLoopExternalServiceUrl ) && !empty ( $wgLoopExternalServiceUser ) && !empty ( $wgLoopExternalServicePw ) && $wgLoopBugReportEnabled ) {
+        if ( !empty ( $wgLoopExternalServiceBugReportUrl ) && !empty ( $wgLoopExternalServiceUser ) && !empty ( $wgLoopExternalServicePw ) && $wgLoopBugReportEnabled ) {
             return true;
         }
         return false;
@@ -100,7 +100,7 @@ class SpecialLoopBugReport extends SpecialPage {
                     global $wgCanonicalServer;
 
                     if ( $service == "external" ) {
-                        global $wgLoopExternalServiceUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
+                        global $wgLoopExternalServiceBugReportUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
 
                         $params = array(
                             'bugreport_page' => $wgCanonicalServer . $url,
@@ -125,7 +125,7 @@ class SpecialLoopBugReport extends SpecialPage {
 
                         $postfields = http_build_query( $postfields );
                         $ch = curl_init();
-                        curl_setopt( $ch, CURLOPT_URL, $wgLoopExternalServiceUrl);
+                        curl_setopt( $ch, CURLOPT_URL, $wgLoopExternalServiceBugReportUrl);
                         curl_setopt( $ch, CURLOPT_FAILONERROR, 1 );
                         curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
                         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
