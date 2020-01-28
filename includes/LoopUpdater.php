@@ -159,11 +159,14 @@ class LoopUpdater {
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
 		
-		$wikiPageContent = $wikiPage->getRevision()->getContent();
-		$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
-		$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 Upgrade' );
-		$wikiPageUpdater->setContent( "main", $wikiPageContent );
-		$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		$wikiPageRev = $wikiPage->getRevision();
+		if ( isset( $wikiPageRev ) ) {
+			$wikiPageContent = $wikiPageRev->getContent();
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 Upgrade' );
+			$wikiPageUpdater->setContent( "main", $wikiPageContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		}
 		
 		if ( isset( $fwp ) ) {
 			$stableRevId = $fwp->getStable();
@@ -174,7 +177,6 @@ class LoopUpdater {
 				$revision = $wikiPage->getRevision();
 				$contentText = $revision->getContent()->getText();
 			}
-			
 
 			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
@@ -201,7 +203,11 @@ class LoopUpdater {
 		}
 		if ( $contentText == null ) {
 			$revision = $wikiPage->getRevision();
-			$contentText = $revision->getContent()->getText();
+			if ( $revision != null ) {
+				$contentText = $revision->getContent()->getText();
+			} else {
+				return true;
+			}
 		}
 		$parser = new Parser();
 		$biblio_tags = array ();
@@ -292,8 +298,13 @@ class LoopUpdater {
 	public static function migrateLoopZip( $wikiPage, $title, $contentText = null, $systemUser ) {
 
 		$revision = $wikiPage->getRevision();
+		
 		if ( $contentText == null ) {
-			$contentText = $revision->getContent()->getText();
+			if ( $revision != null ) {
+				$contentText = $revision->getContent()->getText();
+			} else {
+				return true;
+			}
 		}
 		$parser = new Parser();
 		$zip_tags = array ();

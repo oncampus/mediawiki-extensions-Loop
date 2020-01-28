@@ -1291,6 +1291,9 @@ class LoopLiteratureReference {
 									__METHOD__
 								);
 								$item->firstItemGlobal = $val;
+								if ( $item->firstItemGlobal === null ) {
+									$item->firstItemGlobal = false;#todo?
+								}
 								$item->addToDatabase();	
 							} else {
 								$this->firstItemGlobal = $val;
@@ -1300,6 +1303,9 @@ class LoopLiteratureReference {
 				}
 			} else {
 				$this->firstItemGlobal = false;
+			}
+			if ( $this->firstItemGlobal === null ) {
+				$this->firstItemGlobal = false;#todo?
 			}
 		
 		return;

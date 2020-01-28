@@ -878,10 +878,17 @@ class LoopObject {
 	 */
 	public static function handleObjectItems( &$wikiPage, $title, $contentText = null ) {
 		
-		$content = $wikiPage->getContent();
-		if ($contentText == null) {
-			$contentText = $content->getText();
+		if ( $wikiPage != null) {
+			$content = $wikiPage->getContent();
+			if ( $contentText == null) {
+				if ( $wikiPage->getContent() != null ) {
+					$contentText = $content->getText();
+				} else {
+					return '';
+				}
+			}
 		}
+		
 		
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 				
