@@ -449,49 +449,53 @@ class SpecialLoopFeedback extends SpecialPage {
 		$period_end = $request->getText( 'period_end' );
 		$token  = $request->getText( 'token' );
 		
-		if ( $action == 'reset_page' )  {
-			if ( $page != '' ) {
+		if ( $wgLoopFeedbackLevel == 'none' ) {
+			$view = 'none';
+		} else {
+			if ( $action == 'reset_page' )  {
+				if ( $page != '' ) {
+					if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
+						self::resetPage( $page );
+						$view = 'all';
+						$period_begin = '00000000000000';
+						$period_end = '00000000000000';
+					} else {
+						$view = 'confirm_reset_page';
+					}
+				}
+			}
+			if ( $action == 'reset_all' )  {
 				if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
-					self::resetPage( $page );
+					self::resetAll();
 					$view = 'all';
 					$period_begin = '00000000000000';
 					$period_end = '00000000000000';
 				} else {
-					$view = 'confirm_reset_page';
+					$view = 'confirm_reset_all';
+				}
+			}		
+			
+			if ( $view == '' ) {
+				if ( $wgLoopFeedbackLevel == 'none' ) {
+					$view = 'none';
+				} elseif ( $wgLoopFeedbackLevel == 'module' ) {
+					if ( $page == '' ) {
+						$loopStructure = new LoopStructure();
+						$loopStructure->loadStructureItems();
+						$page = $loopStructure->getMainpage();	
+					}
+					$view = 'page';
+				} elseif ( $wgLoopFeedbackLevel == 'chapter' ) {
+					$view = 'all';
 				}
 			}
-		}
-		if ( $action == 'reset_all' )  {
-			if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
-				self::resetAll();
-				$view = 'all';
+			if ( $period_begin == '' ) {
 				$period_begin = '00000000000000';
+			}		
+			if ( $period_end == '' ) {
 				$period_end = '00000000000000';
-			} else {
-				$view = 'confirm_reset_all';
-			}
-		}		
-		
-		if ( $view == '' ) {
-			if ( $wgLoopFeedbackLevel == 'none' ) {
-				$view = 'none';
-			} elseif ( $wgLoopFeedbackLevel == 'module' ) {
-				if ( $page == '' ) {
-                    $loopStructure = new LoopStructure();
-                    $loopStructure->loadStructureItems();
-					$page = $loopStructure->getMainpage();	
-				}
-				$view = 'page';
-			} elseif ( $wgLoopFeedbackLevel == 'chapter' ) {
-				$view = 'all';
-			}
-		}
-		if ( $period_begin == '' ) {
-			$period_begin = '00000000000000';
-		}		
-		if ( $period_end == '' ) {
-			$period_end = '00000000000000';
-		}		
+			}		
+		} 
 		
 		$return = '';
 		if ( $view == 'none' ) {

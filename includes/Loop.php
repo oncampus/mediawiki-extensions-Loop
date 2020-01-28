@@ -57,7 +57,7 @@ class Loop {
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
 		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
-		$wgLoopBugReportEmail;
+		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -109,6 +109,8 @@ class Loop {
 				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ? $wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
 				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
 				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
+				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
+				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
 			}
 			
 			# Define new name for glossary

@@ -52,6 +52,8 @@ class LoopSettings {
     public $captchaCreateAccount; #wgCaptchaTriggers["createaccount"]
     public $captchaBadlogin; #wgCaptchaTriggers["badlogin"]
     public $bugReportEmail; #wgLoopBugReportEmail
+    public $feedbackLevel; #wgLoopFeedbackLevel
+    public $feedbackMode; #wgLoopFeedbackMode
 
     /**
      * Add settings to the database
@@ -96,7 +98,9 @@ class LoopSettings {
             'lset_captchaddurl' => $this->captchaAddurl,
             'lset_captchacreateaccount' => $this->captchaCreateAccount,
             'lset_captchabadlogin' => $this->captchaBadlogin,
-            'lset_ticketemail' => $this->bugReportEmail
+            'lset_ticketemail' => $this->bugReportEmail,
+            'lset_feedbacklevel' => $this->feedbackLevel,
+            'lset_feedbackmode' => $this->feedbackMode
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -148,7 +152,8 @@ class LoopSettings {
 
         global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
-        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail;
+        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
+        $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
         
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
@@ -189,6 +194,8 @@ class LoopSettings {
         $this->captchaCreateAccount = $wgCaptchaTriggers["createaccount"];
         $this->captchaBadlogin = $wgCaptchaTriggers["badlogin"];
         $this->bugReportEmail = $wgLoopBugReportEmail;
+        $this->feedbackLevel = $wgLoopFeedbackLevel;
+        $this->feedbackMode = $wgLoopFeedbackMode;
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = isset( $data['lset_imprintlink'] ) ? $data['lset_imprintlink'] : $this->imprintLink;
@@ -229,6 +236,8 @@ class LoopSettings {
             $this->captchaCreateAccount =  isset( $data['lset_captchacreateaccount'] ) ? boolval($data['lset_captchacreateaccount']) : $this->captchaCreateAccount;
             $this->captchaBadlogin =  isset( $data['lset_captchabadlogin'] ) ? boolval($data['lset_captchabadlogin']) : $this->captchaBadlogin;
             $this->bugReportEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->bugReportEmail;
+            $this->feedbackLevel =  isset( $data['lset_feedbacklevel'] ) ? $data['lset_feedbacklevel'] : $this->feedbackLevel;
+            $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode;
         }
         
         return true;
@@ -449,7 +458,7 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'export-xml' ) ) ) {
             $this->exportXml = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-xml-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-export-xml-label' ) );
         }
         # Export html
         if ( $request->getText( 'export-html' ) == 'on' ) { 
@@ -457,7 +466,7 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'export-html' ) ) ) {
             $this->exportHtml = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-html-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-export-html-label' ) );
         }
         
         # Captcha edit
@@ -466,7 +475,7 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'captcha-ecit' ) ) ) {
             $this->captchaEdit = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-edit-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-edit-label' ) );
         }
         # Captcha create
         if ( $request->getText( 'captcha-create' ) == 'on' ) { 
@@ -474,7 +483,7 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'captcha-create' ) ) ) {
             $this->captchaCreate = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-create-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-create-label' ) );
         }
         # Captcha createaccount
         if ( $request->getText( 'captcha-createaccount' ) == 'on' ) { 
@@ -482,7 +491,7 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'captcha-createaccount' ) ) ) {
             $this->captchaAddurl = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-createaccount-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-createaccount-label' ) );
         }
         # Captcha addurl
         if ( $request->getText( 'captcha-addurl' ) == 'on' ) { 
@@ -490,7 +499,7 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'captcha-addurl' ) ) ) {
             $this->captchaCreateAccount = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-addurl-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-addurl-label' ) );
         }
         # Captcha badlogin
         if ( $request->getText( 'captcha-badlogin' ) == 'on' ) { 
@@ -498,17 +507,40 @@ class LoopSettings {
         } elseif ( empty ( $request->getText( 'captcha-badlogin' ) ) ) {
             $this->captchaBadlogin = false;
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-captcha-badlogin-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-badlogin-label' ) );
         }
 
-        # Feedback Mail
+        # Bugreport Mail
         if  ( empty ( $request->getText( 'ticket-email' ) ) ) { 
             $this->bugReportEmail = null;
         } elseif ( filter_var( $request->getText( 'ticket-email' ), FILTER_VALIDATE_EMAIL ) ) {
             $this->bugReportEmail = $request->getText( 'ticket-email' );
         } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-ticket-email-label' ) );
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-ticket-email-label' ) );
         }
+
+        # Feedback mode
+        if  ( empty ( $request->getText( 'feedback-mode' ) ) ) { 
+            $this->feedbackMode = "second_half";
+        } elseif ( in_array( $request->getText( 'feedback-mode' ), array( "always", "last_sublevel", "second_half" ) ) ) {
+            $this->feedbackMode = $request->getText( 'feedback-mode' );
+        } else {
+            global $wgLoopFeedbackMode;
+            $this->feedbackMode = $wgLoopFeedbackMode;
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-feedback-mode-label' ) );
+        }
+
+        # Feedback level
+        if  ( empty ( $request->getText( 'feedback-level' ) ) ) { 
+            $this->feedbackLevel = "none";
+        } elseif ( in_array( $request->getText( 'feedback-level' ), array( "none", "module", "chapter" ) ) ) {
+            $this->feedbackLevel = $request->getText( 'feedback-level' );
+        } else {
+            global $wgLoopFeedbackLevel;
+            $this->feedbackLevel = $wgLoopFeedbackLevel;
+            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-feedback-level-label' ) );
+        }
+
         $this->addToDatabase();
         SpecialPurgeCache::purge();
         return true;
@@ -834,6 +866,38 @@ class SpecialLoopSettings extends SpecialPage {
 				 */	
 				$html .= '<div class="tab-pane fade" id="nav-tech" role="tabpanel" aria-labelledby="nav-tech-tab">';
                 
+                    $html .= '<div class="form-row mb-4">';
+                    
+                    ### FEEDBACK ###
+                        $html .= '<div class="col-6">';
+                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-feedback' )->text() . '</h3>'; 
+                        
+                        $html .= '<label for="feedback-level">'. $this->msg("loopsettings-feedback-level-label")->text().'</label>';
+                        $html .= '<select class="form-control mb-2" name="feedback-level" id="feedback-level" selected="'.$currentLoopSettings->feedbackLevel.'">';
+                        $html .= '<option value="none" ' . ( $currentLoopSettings->feedbackLevel == "none" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-level-none")->text() .'</option>';
+                        $html .= '<option value="chapter" ' . ( $currentLoopSettings->feedbackLevel == "chapter" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-level-chapter")->text() .'</option>';
+                        $html .= '<option value="module" ' . ( $currentLoopSettings->feedbackLevel == "module" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-level-module")->text() .'</option>';
+                        $html .= '</select>';
+
+                        $html .= '<label for="feedback-mode">'. $this->msg("loopsettings-feedback-mode-label")->text().'</label>';
+                        $html .= '<select class="form-control" name="feedback-mode" id="feedback-mode" selected="'.$currentLoopSettings->feedbackMode.'" ' . ( $currentLoopSettings->feedbackLevel == "none" ? "disabled" : "" ) .'>';
+                        $html .= '<option value="always" ' . ( $currentLoopSettings->feedbackMode == "always" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-mode-always")->text() .'</option>';
+                        $html .= '<option value="last_sublevel" ' . ( $currentLoopSettings->feedbackMode == "last_sublevel" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-mode-last_sublevel")->text() .'</option>';
+                        $html .= '<option value="second_half" ' . ( $currentLoopSettings->feedbackMode == "second_half" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-mode-second_half")->text() .'</option>';
+                        $html .= '</select>';
+
+                        $html .= '</div>';
+
+                    ### BUGREPORT ###
+                    if ( LoopBugReport::isAvailable() != "external" ) {
+                        $html .= '<div class="col-6">';
+                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-bugreport' )->text() . '</h3>'; 
+                        $html .= '<label for="ticket-email">'. $this->msg("loopsettings-bugreport-email-label")->text().'</label>';
+                        $html .= '<input class="mb-2 mt-2 form-control" type="email" placeholder="'.$this->msg("email")->text().'" value="'.$currentLoopSettings->bugReportEmail.'" name="ticket-email"/>';
+                        $html .= '</div>';
+                    }
+                    $html .= '</div>';
+
                     ### CAPTCHA BLOCK ###
                     global $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
                     $captchaDisabled = "";
@@ -860,18 +924,6 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .= '<p><i>* '.$this->msg( "loopsettings-captcha-usergroup")->text().'</i></p>';
                     $html .= '</div>';
                     $html .= '</div>';
-
-                    $html .= '<div class="form-row mb-4">';
-
-                    if ( LoopBugReport::isAvailable() != "external" ) {
-                        $html .= '<div class="col-6">';
-                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-bugreport' )->text() . '</h3>'; 
-                        $html .= '<label for="ticket-email">'. $this->msg("loopsettings-bugreport-email-label")->text().'</label>';
-                        $html .= '<input class="mb-2 form-control" type="email" placeholder="'.$this->msg("email")->text().'" value="'.$currentLoopSettings->bugReportEmail.'" name="ticket-email"/>';
-                        $html .= '</div>';
-                    }
-                    $html .= '</div>';
-
 
 				$html .= '</div>'; // end of tech-tab
 
@@ -906,8 +958,8 @@ class SpecialLoopSettings extends SpecialPage {
 				
 			$html .= '</div>'; // end of tab-content
 			
-			$html .= '<input type="hidden" name="t" id="loopsettings-token" value="' . $saltedToken . '"></input>
-					<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="loopsettings-submit" value="' . $this->msg( 'submit' ) . '"></input>';
+			$html .= '<input type="hidden" name="t" id="loopsettings-token" value="' . $saltedToken . '"></input>';
+			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="loopsettings-submit" value="' . $this->msg( 'submit' ) . '"></input>';
 			
 			$html .= '</form>';
 			
