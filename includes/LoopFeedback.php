@@ -158,7 +158,7 @@ class LoopFeedback {
 						$return .= '<input class="d-none" id="loopfeedback-5" name="lf_rating" type="radio" value="5"/>';
 					$return .= '</div>';
 				$return .= '<textarea id="lf_comment" class="form-control" placeholder="'. wfMessage( 'loopfeedback-comment-placeholder' )->text() .'"></textarea>';
-				$return .= '<input type="button" rows="3" class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block cursor-pointer text-right" value="'. wfMessage( 'loopfeedback-submit-button-text' )->text() .'" id="lf_send"/>';
+				$return .= '<input type="button" disabled rows="3" class="btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block cursor-pointer text-right" value="'. wfMessage( 'loopfeedback-submit-button-text' )->text() .'" id="lf_send"/>';
 			$return .= '</form>';
 		} else {
 			$return .= wfMessage( 'loopfeedback-already-done' )->text();
@@ -220,7 +220,6 @@ class LoopFeedback {
 					),
 					__METHOD__
 				);
-				#dd($lf, $lf_articleid);
 				
 				if ( !isset( $lf->lf_id ) ) {
 					$lf_title = Title::newFromID( $lf_articleid );
@@ -731,7 +730,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		}
 		$return .= '</div>';
 		$return .= '<div class="row mt-2 mb-3 loopfeedback-bar-stars">';
-		$return .= self::prinStars( $feedback_detail[ 'average' ] );		
+		$return .= self::printStars( $feedback_detail[ 'average' ] );		
 		
 		if ( $feedback_detail[ 'count' ][ 'all' ] > 0) {
 			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-sum-all', $feedback_detail[ 'count' ][ 'all' ])->text().', ';
@@ -750,7 +749,7 @@ class SpecialLoopFeedback extends SpecialPage {
 				$f = 0;
 			}
 			$return .= '<div class="row loopfeedback-bar">';
-			$return .= '<div class="loopfeedback-bar-stars">'.self::prinStars( $i ).'</div>';
+			$return .= '<div class="loopfeedback-bar-stars">'.self::printStars( $i ).'</div>';
 			$return .= '<div class="progress mt-1"><div class="progress-bar" role="progressbar" aria-valuenow="'.$f.'" aria-valuemin="0" aria-valuemax="100"></div></div>';
 
 			$return .= '<div class="loopfeedback-bar-info ml-2">( '.$feedback_detail[ 'count' ][$i].' )</div>';
@@ -877,7 +876,7 @@ class SpecialLoopFeedback extends SpecialPage {
 				$loopFeedback = new LoopFeedback;
 				$feedback_detail = $loopFeedback->getDetails( $lsi->article );	
 				
-				$return .= '<td class="pl-2 pr-1">'. self::prinStars( $feedback_detail[ 'average' ] ).'</td>';					
+				$return .= '<td class="pl-2 pr-1">'. self::printStars( $feedback_detail[ 'average' ] ).'</td>';					
 				
 				$return .= '<td class="pl-2 pr-1">';
 				
@@ -917,7 +916,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		return $return;
 	}
 	
-	private static function prinStars( $rating ) {
+	private static function printStars( $rating ) {
 		
 	$printreturn = '<div class="lf_rating_wrapper">
 <span class="ic ic-star ' . ( $rating >= 1 ? 'lf-colour-active' : 'lf-colour-idle' ) . '"></span>

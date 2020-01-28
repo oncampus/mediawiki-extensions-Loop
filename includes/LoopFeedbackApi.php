@@ -275,8 +275,8 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 
 		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
+				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
+				'nopermission'
 			);
 		}		
 		
@@ -415,8 +415,8 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		
 		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
+				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
+				'nopermission'
 			);
 		}			
 
