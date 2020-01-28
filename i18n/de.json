@@ -92,6 +92,16 @@
 	"loopsettings-captcha-createaccount-label": "... beim Anlegen eines Accounts",
 	"loopsettings-captcha-badlogin-label": "... bei einem zweiten Loginversuch nach Fehlanmeldung",
 
+	"loopsettings-headline-feedback": "Feedback",
+	"loopsettings-feedback-level-label": "Art der Erhebung",
+	"loopsettings-feedback-level-none": "Kein Feedback erheben",
+	"loopsettings-feedback-level-chapter": "Kapitelweise erheben",
+	"loopsettings-feedback-level-module": "Für das ganze LOOP erheben",
+	"loopsettings-feedback-mode-label": "Anzeige des Feedback-Panels",
+	"loopsettings-feedback-mode-always": "Auf jeder Seite",
+	"loopsettings-feedback-mode-last_sublevel": "Auf dem letzten Unterkapitel",
+	"loopsettings-feedback-mode-second_half": "In der zweiten Hälfte",
+
 	"loopexport-specialpage-title": "Loop exportieren",
 	"loopexport": "Loop exportieren",
 	"loopexport-audio-chapter": "Kap.",
@@ -451,10 +461,11 @@
 	"loopfeedback-specialpage-all-link": "Übersicht",
 	"loopfeedback-specialpage-inactive": "Zur Zeit werden in diesem LOOP keine Feedbcaks erhoben!",
 	"loopfeedback-specialpage-feedback-resultlink": "Details",
-	"loopfeedback-specialpage-reset-info": "<br/><br/>(* Das <strong>Zurücksetzen</strong> der Feedbacks sollte nach einer größeren Überarbeitung der Lerninhalte durchgeführt werden. Bisher abgegebene Feedbacks werden dabei archiviert.)",
+	"loopfeedback-specialpage-reset-info": "&#42; Das <strong>Zurücksetzen</strong> der Feedbacks sollte nach einer größeren Überarbeitung der Lerninhalte durchgeführt werden. Bisher abgegebene Feedbacks werden dabei archiviert.",
 	"action-loopfeeback-view": "Feedback abgeben",
 	"action-loopfeeback-view-results": "Feedback Ergebnisse ansehen",
 	"action-loopfeeback-view-comments": "Feedback Kommentare ansehen",
-	"action-loopfeeback-reset": "Feedbacks zurücksetzen"
+	"action-loopfeeback-reset": "Feedbacks zurücksetzen",
+	"loopfeedback-already-done": "Sie haben auf dieser Seite bereits Feedback abgegeben. Vielen Dank!"
 
 }
