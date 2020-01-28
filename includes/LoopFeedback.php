@@ -686,9 +686,9 @@ class SpecialLoopFeedback extends SpecialPage {
 		$return .= '<div class="col-12"><div class="row">';
 		
 		if ( $wgLoopFeedbackLevel == 'chapter' ) {
-			$return .= '<h2>'.wfMessage( 'loopfeedback-specialpage-feedback-for-chapter' )->text() . ' "' . $title->getPrefixedText().'"</h2>';
+			$return .= '<h3>'.wfMessage( 'loopfeedback-specialpage-feedback-for-chapter' )->text() . ' "' . $title->getPrefixedText().'"</h3>';
 		} else {
-			$return .= '<h2>'.wfMessage( 'loopfeedback-specialpage-feedback-for-module' )->text() . ' "' . $title->getPrefixedText().'"</h2>';
+			$return .= '<h3>'.wfMessage( 'loopfeedback-specialpage-feedback-for-module' )->text() . ' "' . $title->getPrefixedText().'"</h3>';
 		}		
 		$return .= '</div>';
 		
@@ -697,12 +697,14 @@ class SpecialLoopFeedback extends SpecialPage {
 
 		
 		if ( count( $feedback_periods) > 1) {
-			$return .= wfMessage( 'loopfeedback-specialpage-header-period' )->text();
+			
+			$return .= '<div class="row">';
+			$return .= '<p>'.wfMessage( 'loopfeedback-specialpage-header-period' )->text().'</p>';
 			$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
 			foreach ( $feedback_periods as $feedback_period ) {
 			
 				if ( ( $feedback_period[ 'end' ] == $period_end ) ) {
-					$css_class='loopfeedback-period_button_active';
+					$css_class='font-weight-bold';
 				} else {
 					$css_class='loopfeedback-period_button';
 				}
@@ -711,7 +713,7 @@ class SpecialLoopFeedback extends SpecialPage {
                     $specialtitle,
 					new HtmlArmor( $feedback_period[ 'begin_text' ].' - '.$feedback_period[ 'end_text' ] ),
 					array(
-						'class' => $css_class
+						'class' => $css_class . " ml-2"
 					),
 					array (
 						'view' => 'page',
@@ -720,7 +722,7 @@ class SpecialLoopFeedback extends SpecialPage {
 						'period_end' => $feedback_period[ 'end' ]
 					) ).' ';				
 			}
-			$return .= '<br/>';
+			$return .= '</div>';
 		}	
 	
 
@@ -733,18 +735,45 @@ class SpecialLoopFeedback extends SpecialPage {
 			$return .= wfMessage( 'loopfeedback-rating-descr-module' )->text();
 		}
 		$return .= '</div>';
-		$return .= '<div class="row mt-2 mb-3 loopfeedback-bar-stars">';
-		$return .= self::printStars( $feedback_detail[ 'average' ] );		
+		$return .= '<div class="row mt-2 mb-3">';
+		$return .= '<div class="col-12 col-md-6">';
 		
-		if ( $feedback_detail[ 'count' ][ 'all' ] > 0) {
-			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-sum-all', $feedback_detail[ 'count' ][ 'all' ])->text().', ';
-			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-average-stars', $feedback_detail[ 'average' ])->text().'<br/>';				
-		} else {
-			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-no-feedback' )->text().'<br/>';
-		}			
+		$return .= '<div class="row mt-2 mb-0">';
+		
+		$return .= '<div class="loopfeedback-bar-stars float-left">';
+		$return .= self::printStars( $feedback_detail[ 'average' ] );	
 		$return .= '</div>';
 		
+		if ( $feedback_detail[ 'count' ][ 'all' ] > 0) {
+			$return .= "<p class='float-left'>" . wfMessage( 'loopfeedback-specialpage-feedback-info-average-stars', $feedback_detail[ 'average' ])->text() . '</p><br/>';
+			$return .= '</div>';
+			
+			$return .= '<div class="row">';
+			$return .= "<p class='float-left'>" . wfMessage( 'loopfeedback-specialpage-feedback-info-sum-all', $feedback_detail[ 'count' ][ 'all' ])->text() . '</p>';
+			$return .= '</div>';		
+		} else {
+			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-no-feedback' )->text();
+			$return .= '</div>';
+		}			
+
+		$return .= '<div class="row">';
+		if ( $feedback_detail[ 'count' ][ 'comments' ] > 0) {
+			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-count-comments', $feedback_detail[ 'count' ][ 'comments' ])->text().'</p>';
+		} else {
+			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-no-comments' )->text().'</p>';
+		}
+
+		if ( $this->getUser()->isAllowed( 'loopfeedback-view-comments' ) ) {
+			foreach ( $feedback_detail[ 'comments' ] as $comment) {
+				$return .= '<p><strong>'.$comment[ 'timestamp_text' ].'</strong><br/>'.$comment[ 'comment' ].'</p>';
+			}				
+		}	
+		$return .= '</div>';
+
 		$a = $feedback_detail[ 'count' ][ 'all' ];
+		
+		$return .= '</div>';
+		$return .= '<div class="col-12 col-md-6">';
 		for ( $i = 5; $i >= 1; $i--)  {
 			if ( $a > 0) {
 				$c = $feedback_detail[ 'count' ][$i];
@@ -759,20 +788,12 @@ class SpecialLoopFeedback extends SpecialPage {
 			$return .= '<div class="loopfeedback-bar-info ml-2">( '.$feedback_detail[ 'count' ][$i].' )</div>';
 			$return .= '</div>';
 		}
-		$return .= '</div>';
-		
-		$return .= '<br/>';
-		if ( $feedback_detail[ 'count' ][ 'comments' ] > 0) {
-			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-count-comments', $feedback_detail[ 'count' ][ 'comments' ])->text();
-		} else {
-			$return .= wfMessage( 'loopfeedback-specialpage-feedback-info-no-comments' )->text();
-		}
 
-		if ( $this->getUser()->isAllowed( 'loopfeedback-view-comments' ) ) {
-			foreach ( $feedback_detail[ 'comments' ] as $comment) {
-				$return .= '<p><strong>'.$comment[ 'timestamp_text' ].'</strong><br/>'.$comment[ 'comment' ].'</p>';
-			}				
-		}		
+		
+			
+		$return .= '</div>';
+		$return .= '</div>';
+		$return .= '</div>';
 
 		$return .= '<hr/>';
 		$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );

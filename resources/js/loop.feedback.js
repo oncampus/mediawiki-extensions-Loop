@@ -62,20 +62,20 @@ $( "#lf_send" ).click( function() {
 					if ( 'loopfeedback-page-details' in data && 'pageDetails' in data['loopfeedback-page-details'] ) {
 						var pageDetails = data['loopfeedback-page-details']['pageDetails'];
 						
-							var resultStars = '<div class="lf_rating_wrapper">';
-							
+							var resultStars = '<div class="lf_rating_wrapper mb-1">';
 							resultStars = resultStars + '<span class="ic ic-star ' + ( parseInt( pageDetails.average_stars ) >= 1 ? 'lf-colour-active' : 'lf-colour-idle' ) + '"></span>';
 							resultStars = resultStars + '<span class="ic ic-star ' + ( parseInt( pageDetails.average_stars ) >= 2 ? 'lf-colour-active' : 'lf-colour-idle' ) + '"></span>';
 							resultStars = resultStars + '<span class="ic ic-star ' + ( parseInt( pageDetails.average_stars ) >= 3 ? 'lf-colour-active' : 'lf-colour-idle' ) + '"></span>';
 							resultStars = resultStars + '<span class="ic ic-star ' + ( parseInt( pageDetails.average_stars ) >= 4 ? 'lf-colour-active' : 'lf-colour-idle' ) + '"></span>';
 							resultStars = resultStars + '<span class="ic ic-star ' + ( parseInt( pageDetails.average_stars ) >= 5 ? 'lf-colour-active' : 'lf-colour-idle' ) + '"></span>';
 							resultStars = resultStars + '</div>';
-							resulthtml = resulthtml + mw.message(  'loopfeedback-specialpage-feedback-info-sum-all', pageDetails.count_all ) + '<br/>';
-							resulthtml = resulthtml + resultStars+'<br/>';
-							resulthtml = resulthtml + mw.message(  'loopfeedback-specialpage-feedback-info-average-stars', pageDetails.average ) + '<br/>';				
+
+							resulthtml = resulthtml + '<div class="´mb-2"' + mw.message(  'loopfeedback-specialpage-feedback-info-sum-all', pageDetails.count_all ) + '</div>';
+							resulthtml = resulthtml + resultStars;
+							resulthtml = resulthtml + '<div class="´mb-2"' + mw.message(  'loopfeedback-specialpage-feedback-info-average-stars', pageDetails.average ) + '</div>';				
 
 							if ( view_comments == 1 ) {	
-								if ( parseInt(pageDetails.count_comments) > 0 ) {
+								if ( parseInt(pageDetails.count_comments ) > 0 ) {
 									resulthtml = resulthtml + mw.message(  'loopfeedback-specialpage-feedback-info-count-comments', pageDetails.count_comments);
 								} else {
 									resulthtml = resulthtml + mw.message(  'loopfeedback-specialpage-feedback-info-no-comments');
@@ -83,7 +83,7 @@ $( "#lf_send" ).click( function() {
 							}
 							var resultlink = mw.config.get( 'lfArticle' ).resultlink;
 							
-							resulthtml = resulthtml + '<br/><br/>'+resultlink;
+							resulthtml = resulthtml + '<br/>'+resultlink;
 						
 							$("#lf_form").html(resulthtml);
 							
