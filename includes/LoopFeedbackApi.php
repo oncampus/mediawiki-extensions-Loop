@@ -15,22 +15,22 @@ class ApiLoopFeedbackSave extends ApiBase {
 	}
 
 	public function execute() {
-		wfProfileIn( __METHOD__ );
+		
 
 		$result   = $this->getResult();
 		
 		$user = $this->getUser();
 		if ( $user->isBlocked() ) {
-			$this->dieUsage(
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
 			);
 		}
 
-		if (!$user->isAllowed( 'loopfeedback_view' ) ) {
-			$this->dieUsage(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
+		if (!$user->isAllowed( 'loopfeedback-view' ) ) {
+			$this->dieWithError(
+				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
+				'nopermission'
 			);
 		}		
 		
@@ -40,7 +40,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 		// get page object
 		$pageObj = $this->getTitleOrPageId( $params, 'fromdb' );
 		if ( !$pageObj->exists() ) {
-			$this->dieUsage(
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
@@ -55,7 +55,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$feedback['lf_timestamp'] = wfTimestampNow();
 		$feedback['lf_archive_timestamp'] = '00000000000000';
 		
-		$dbw =& wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_MASTER );
 		$dbw->insert(
 			'loop_feedback',
 			$feedback,
@@ -65,7 +65,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$result->addValue( $this->getModuleName(), 'lf_id', $feedback['lf_id'] );
 
 		
-		wfProfileOut( __METHOD__ );
+		
 	}
 
 	public function getAllowedParams() {
@@ -162,59 +162,36 @@ class ApiLoopFeedbackStructure extends ApiBase {
 	}
 
 	public function execute() {
-		wfProfileIn( __METHOD__ );
+		
 
 		$result   = $this->getResult();
 		
 
 		$user = $this->getUser();
 		if ( $user->isBlocked() ) {
-			$this->dieUsage(
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
 			);
 		}
 		
-		if (!$user->isAllowed( 'loopfeedback_view_results' ) ) {
-			$this->dieUsage(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
+		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+			$this->dieWithError(
+				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
+				'nopermission'
 			);
 		}			
+		$loopStructure = new LoopStructure();
+        $loopStructureItems = $loopStructure->getStructureItems();
 
-		$dbr = wfGetDB( DB_REPLICA );
-		$res = $dbr->select(
-		'loopstructure',
-		array(
-			'Id',
-			'IndexArticleId',
-			'TocLevel',
-			'TocNumber',
-			'TocText',
-			'Sequence',
-			'ArticleId',
-			'PreviousArticleId',
-			'NextArticleId',
-			'ParentArticleId',
-			'IndexOrder'
-			),
-			array(
-			//'TocLevel' => 0
-			),
-			__METHOD__,
-			array(
-			'ORDER BY' => 'Sequence ASC'
-			)
-			);		
-		$structureitems = array();
-		foreach ( $res as $row ) {
-			if ($row->TocLevel < 2) {
-				$tn = ($row->TocNumber == '' ) ? 0 : $row->TocNumber;
-				$tl = ($row->TocLevel == '' ) ? 0 : $row->TocLevel;
+		foreach ( $loopStructureItems as $lsi ) {
+			if ($lsi->tocLevel < 2) {
+				$tn = ($lsi->tocNumber == '' ) ? 0 : $lsi->tocNumber;
+				$tl = ($lsi->tocLevel == '' ) ? 0 : $lsi->tocLevel;
 
-				#$result->addValue( $this->getModuleName(), 'structureitem_'.$row->Sequence , array ( 'tocnumber'=>$tn,'toctext'=>$row->TocText,'article'=>$row->ArticleId) );
+				#$result->addValue( $this->getModuleName(), 'structureitem_'.$row->Sequence , array ( 'tocnumber'=>$tn,'toctext'=>$row->tocText,'article'=>$row->article) );
 			
-				$structureitems[] = array ( 'toclevel'=>$tl,'tocnumber'=>$tn,'toctext'=>$row->TocText,'article'=>$row->ArticleId);
+				$structureitems[] = array ( 'toclevel' => $tl,'tocnumber' => $tn,'toctext'=> $lsi->tocText,'article'=>$lsi->article);
 			}	
 		}
 		
@@ -225,7 +202,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 		
 
 		
-		wfProfileOut( __METHOD__ );
+		
 	}
 
 	public function getAllowedParams() {
@@ -262,7 +239,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 
 	protected function getExamples() {
 		return array(
-			'api.php?action=loop-get-structure'
+			'api.php?action=loopfeedback-structure'
 		);
 	}
 
@@ -278,7 +255,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 	}
 
 	public function execute() {
-		wfProfileIn( __METHOD__ );
+		
 
         // Tell squids to cache
         $this->getMain()->setCacheMode( 'public' );
@@ -290,14 +267,14 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 
 		$user = $this->getUser();
 		if ( $user->isBlocked() ) {
-			$this->dieUsage(
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
 			);
 		}
 
-		if (!$user->isAllowed( 'loopfeedback_view_results' ) ) {
-			$this->dieUsage(
+		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
 			);
@@ -324,7 +301,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 		// get page object
 		$pageObj = $this->getTitleOrPageId( $params, 'fromdb' );
 		if ( !$pageObj->exists() ) {
-			$this->dieUsage(
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
@@ -349,7 +326,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 			$result->addValue( null, $this->getModuleName(), array( 'comments'=> $feedback_detail['comments']) );
 		}
 		
-		wfProfileOut( __METHOD__ );
+		
 	}
 
 	public function getAllowedParams() {
@@ -424,20 +401,20 @@ class ApiLoopFeedbackOverview extends ApiBase {
 	}
 
 	public function execute() {
-		wfProfileIn( __METHOD__ );
+		
 
 		$result   = $this->getResult();
 		
 		$user = $this->getUser();
 		if ( $user->isBlocked() ) {
-			$this->dieUsage(
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
 			);
 		}
 		
-		if (!$user->isAllowed( 'loopfeedback_view_results' ) ) {
-			$this->dieUsage(
+		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
 			);
@@ -464,9 +441,9 @@ class ApiLoopFeedbackOverview extends ApiBase {
 			$fr[$row->rating] = $row->quantity;
 		}
 		
-		$result_array=array();
-		for ($i=1;$i<6;$i++) {
-			if ($fr[$i]) {
+		$result_array = array();
+		for ( $i = 1; $i < 6; $i++ ) {
+			if ( array_key_exists( $i, $fr ) ) {
 				$result_array[$i] = $fr[$i];
 			} else {
 				$result_array[$i] = 0;
@@ -476,7 +453,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		
 		$result->addValue( $this->getModuleName(), 'ratings', $result_array);
 		
-		wfProfileOut( __METHOD__ );
+		
 	}
 
 	public function getAllowedParams() {
@@ -513,7 +490,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 
 	protected function getExamples() {
 		return array(
-			'api.php?action=loop-get-overview'
+			'api.php?action=loopfeedback-overview'
 		);
 	}
 
