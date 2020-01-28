@@ -754,7 +754,7 @@ class SpecialLoopFeedback extends SpecialPage {
 			}
 			$return .= '<div class="row loopfeedback-bar">';
 			$return .= '<div class="loopfeedback-bar-stars">'.self::printStars( $i ).'</div>';
-			$return .= '<div class="progress mt-1"><div class="progress-bar" role="progressbar" aria-valuenow="'.$f.'" aria-valuemin="0" aria-valuemax="100"></div></div>';
+			$return .= '<div class="progress mt-1"><div class="progress-bar" role="progressbar" style="width: '.$f.'%" aria-valuenow="'.$f.'" aria-valuemin="0" aria-valuemax="100"></div></div>';
 
 			$return .= '<div class="loopfeedback-bar-info ml-2">( '.$feedback_detail[ 'count' ][$i].' )</div>';
 			$return .= '</div>';
