@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	console.log("LoopFeedback"); //debug
 	/*
 	* helper for star css, enable button
 	*/
