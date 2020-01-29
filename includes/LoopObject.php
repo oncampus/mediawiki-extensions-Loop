@@ -801,20 +801,22 @@ class LoopObject {
 		);
 		$text = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
 		
+		$objectData = LoopObjectIndex::getObjectData($this->mId);
+
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
 					#if ($fullparse == true) {
-						$this->setTitleFullyParsed($this->extraParse( $subtag [1], false ));
+						$this->setTitleFullyParsed($this->extraParse( $objectData["title"], false ));
 					#} else {
-						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
+						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["title"] ) ));
 					#}
 					break;
 				case 'loop_description' :
 					#if ($fullparse == true) {
-						$this->setDescriptionFullyParsed($this->extraParse( $subtag [1], false ));
+						$this->setDescriptionFullyParsed($this->extraParse( $objectData["description"], false ));
 					#} else {
-						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
+						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["description"] ) ));
 					#}
 					break;
 				case 'loop_copyright' :
@@ -877,7 +879,6 @@ class LoopObject {
 	 * @param String $contentText
 	 */
 	public static function handleObjectItems( &$wikiPage, $title, $contentText = null ) {
-		
 		if ( $wikiPage != null) {
 			$content = $wikiPage->getContent();
 			if ( $contentText == null) {
