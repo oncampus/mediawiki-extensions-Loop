@@ -323,25 +323,11 @@
 				"resources/js/loop.feedback.js"
 			],
 			"messages": [
-				"loopfeedback-sidebar-headertext",
-				"loopfeedback-feedback-for-module",
-				"loopfeedback-feedback-for-chapter",
-				"loopfeedback-rating-descr-module",
-				"loopfeedback-rating-descr-chapter",
-				"loopfeedback-rating-value1",
-				"loopfeedback-rating-value2",
-				"loopfeedback-rating-value3",
-				"loopfeedback-rating-value4",
-				"loopfeedback-rating-value5",
-				"loopfeedback-comment-placeholder",
-				"loopfeedback-submit-button-text",
 				"loopfeedback-thanks-after-submit",
 				"loopfeedback-specialpage-feedback-info-sum-all",
 				"loopfeedback-specialpage-feedback-info-average-stars",
-				"loopfeedback-specialpage-feedback-info-no-feedback",
 				"loopfeedback-specialpage-feedback-info-count-comments",
-				"loopfeedback-specialpage-feedback-info-no-comments",
-				"loopfeedback-specialpage-feedback-resultlink"
+				"loopfeedback-specialpage-feedback-info-no-comments"
 			]
 		}
 	

@@ -138,13 +138,13 @@ class LoopFeedback {
 		return $show_feedback;
 	}
 
-	public static function renderFeedbackBox( $title, $user ) {
+	public static function renderFeedbackBox() {
 
 		global $wgOut;
 		$return = '';
 		if ( in_array( "loop.feedback.js", $wgOut->getModules() ) ) {
 			$return .= '<form id="lf_form">';
-				$return .= '<p id="lf_feedback_for" class="mb-1">' . wfMessage( 'loopfeedback-feedback-for-module', $title->mTextform )->text() . '</p>';
+				$return .= '<p id="lf_feedback_for" class="mb-1">' . wfMessage( 'loopfeedback-feedback-for-module') . '</p>';
 					$return .= '<div class="lf-rating-wrapper">';
 						$return .= '<label for="loopfeedback-1" title="'.wfMessage( 'loopfeedback-rating-value1' )->text().'" ><span class="ic ic-star cursor-pointer loopfeedback-star"></span></label>';
 						$return .= '<input class="d-none" id="loopfeedback-1" name="lf_rating" type="radio" value="1" required/>';
