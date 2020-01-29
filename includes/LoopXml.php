@@ -8,6 +8,8 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
 }
 
+use MediaWiki\MediaWikiServices;
+
 class LoopXml {
 	
 	/**
@@ -305,6 +307,7 @@ class LoopXml {
 					$child_name = 'align';
 	
 				}
+				
 			}
 			$link_parts[$child_name]=$child_value;
 		}
@@ -317,6 +320,10 @@ class LoopXml {
 	
 		$return_xml = '';
 	
+		$services = MediaWikiServices::getInstance();
+		$magicWords = $services->getContentLanguage()->getMagicWords();
+
+
 		if ($link_parts['type']=='external' ) {
 			if ( array_key_exists( "href", $link_parts ) ) {
 				$return_xml = '<php_link_external href="'.$link_parts['href'].'">';
@@ -356,12 +363,25 @@ class LoopXml {
 									}
 								}
 									
-								$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
-								if (isset($link_parts['align'])) {
-									$return_xml .= ' align="'.$link_parts['align'].'" ';
+								$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'"';
+
+
+								$align_arr = ['img_right', 'img_left', 'img_none', 'img_center'];
+
+								foreach ($align_arr as $arr) {
+									if($link_parts['part'] == $magicWords[$arr][1]){
+										$align = $magicWords[$arr][2];
+										break;
+									}
 								}
+								
+								if (isset($align)) {
+									$return_xml .= ' align="'.$align.'"';
+								}
+
 								$return_xml .=  '></php_link_image>';
-									
+								
+								// dd($return_xml);
 									
 							} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
 								$return_xml .= '<paragraph>';

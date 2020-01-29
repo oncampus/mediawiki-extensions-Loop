@@ -1315,7 +1315,7 @@
 							</xsl:choose>
 						</fo:marker>
 					</fo:block>
-					<fo:block keep-with-next.within-page="always">
+					<fo:block keep-with-next.within-page="always" intrusion-displace="line">
 						<xsl:call-template name="font_head"></xsl:call-template>
 						<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
 							<xsl:value-of select="@tocnumber"></xsl:value-of>
@@ -1323,7 +1323,7 @@
 						<xsl:text> </xsl:text>
 						<xsl:value-of select="@toctext"></xsl:value-of>
 					</fo:block>
-					<fo:block keep-with-previous.within-page="always">
+					<fo:block keep-with-previous.within-page="always" intrusion-displace="line">
 						<xsl:call-template name="font_normal"></xsl:call-template>
 						<xsl:apply-templates></xsl:apply-templates>
 					</fo:block>
@@ -2016,12 +2016,39 @@
 	</xsl:template>			
 
 	<xsl:template match="link">
-		<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
-	</xsl:template> 
-	<xsl:template match="link" mode="loop_object">
-		<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
+		<xsl:variable name="align">
+			<xsl:choose>
+				<xsl:when test="contains(.,'rechts')">end</xsl:when>
+				<xsl:when test="contains(.,'links')">start</xsl:when>
+				<xsl:otherwise>none</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<!--<fo:float>-->
+			<!--<xsl:attribute name="float" value="$align"></xsl:attribute>				
+			<xsl:choose>
+				<xsl:when test="$align='start'">
+					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
+				</xsl:when>			
+				<xsl:when test="$align='end'">
+					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>-->
+			<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
+	<!--	</fo:float>-->
 	</xsl:template> 
 	
+	
+	<xsl:template match="link" mode="loop_object">
+
+			<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
+
+	</xsl:template> 
+	
+
+
+
 	<xsl:template match="php_link">
 		<xsl:value-of select="."></xsl:value-of>
 	</xsl:template>
@@ -2048,40 +2075,40 @@
 				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">inside</xsl:when>			
 				<xsl:when test="@align='left'">start</xsl:when>
 				<xsl:when test="@align='right'">end</xsl:when>
+				<xsl:when test="@align='center'">center</xsl:when>
 				<xsl:otherwise>none</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>	
 	
 		<fo:float>
 			<xsl:attribute name="float" value="$align"></xsl:attribute>				
-				<xsl:choose>
+			<xsl:choose>
 				<xsl:when test="$align='start'">
 					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
 				</xsl:when>			
 				<xsl:when test="$align='end'">
 					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
 				</xsl:when>
-				<xsl:otherwise>
-					
-				</xsl:otherwise>
+				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
 			
 			<xsl:if test="@imagepath">
-				<fo:block font-size="0pt" line-height="0pt" padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt" padding-left="0pt" padding-right="0pt">
-					<fo:external-graphic scaling="uniform" content-height="scale-to-fit"  dominant-baseline="reset-size">
-						<!-- <xsl:choose>
+				<fo:block font-size="0pt" line-height="0pt" padding="0pt">
+					<fo:external-graphic scaling="uniform" content-height="scale-to-fit" dominant-baseline="reset-size">
+						 <xsl:choose>
 							<xsl:when test="$align='start'">
 								<xsl:attribute name="padding-right">7mm</xsl:attribute>				
 							</xsl:when>
 							<xsl:when test="$align='end'">
-								<xsl:attribute name="padding-right">7mm</xsl:attribute>				
+								<xsl:attribute name="padding-left">7mm</xsl:attribute>				
 							</xsl:when>					
 							<xsl:otherwise>
 								<xsl:attribute name="padding-left">0mm</xsl:attribute>
 							</xsl:otherwise>
-						</xsl:choose> -->							
-						<xsl:attribute name="src" ><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
-						<xsl:attribute name="max-width">145mm</xsl:attribute>
+						</xsl:choose>
+						<xsl:attribute name="src"><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
+						<xsl:attribute name="content-width"><xsl:value-of select="@imagewidth"></xsl:value-of></xsl:attribute>
+						<xsl:attribute name="max-width">145mm</xsl:attribute>	
 					</fo:external-graphic>
 				</fo:block>
 			</xsl:if>
