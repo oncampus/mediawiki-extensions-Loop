@@ -2901,7 +2901,7 @@
 		</fo:list-block>
 	</xsl:template>
 
-	<xsl:template match="listitem">
+<xsl:template match="listitem">
 		<xsl:variable name="listlevel">
 			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
 		</xsl:variable>
@@ -2909,33 +2909,31 @@
 			<fo:list-item-label end-indent="label-end()">
 				<xsl:choose>
 					<xsl:when test="../@type='numbered'">
-						
 						<xsl:choose>
-								<xsl:when test="$listlevel=1">
-									<fo:block><xsl:number level="single" count="listitem" format="1." /></fo:block>
-								</xsl:when>
-								<xsl:when test="$listlevel=2">
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
-								</xsl:when>
-								<xsl:when test="$listlevel=3">
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
-								</xsl:when>
-								<xsl:otherwise>
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
-								</xsl:otherwise>
+							<xsl:when test="$listlevel=1">
+								<fo:block><xsl:number level="single" count="listitem" format="1."/></fo:block>
+							</xsl:when>
+							<xsl:when test="$listlevel=2">
+								<fo:block><xsl:number level="multiple" count="listitem" format="1."/></fo:block>
+							</xsl:when>
+							<xsl:when test="$listlevel=3">
+								<fo:block><xsl:number level="multiple" count="listitem" format="1."/></fo:block>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block><xsl:number level="multiple" count="listitem" format="1."/></fo:block>
+							</xsl:otherwise>
 						</xsl:choose>
-						
 					</xsl:when>
 					<xsl:when test="../@type='ident'">
 						<fo:block padding-before="2pt"></fo:block>
-					</xsl:when>						
+					</xsl:when>
 					<xsl:otherwise>
-						<fo:block padding-before="2pt">
+						<fo:block>
 							<xsl:choose>
-								<xsl:when test="$listlevel=1">&#x2022;</xsl:when>
-								<xsl:when test="$listlevel=2">&#x20D8;</xsl:when>
-								<xsl:when test="$listlevel=3">&#x220E;</xsl:when>
-								<xsl:otherwise>&#x220E;</xsl:otherwise>
+								<xsl:when test="$listlevel=1">&#x2022;</xsl:when> <!-- unicode 'bullet' -->
+								<xsl:when test="$listlevel=2">&#x20D8;</xsl:when> <!-- unicode 'combining ring overlay' -->
+								<xsl:when test="$listlevel=3">&#x220E;</xsl:when> <!-- unicode 'end of proof' -->
+								<xsl:otherwise>&#x220E;</xsl:otherwise>			  <!-- unicode 'end of proof' -->
 							</xsl:choose>
 						</fo:block>
 					</xsl:otherwise>
