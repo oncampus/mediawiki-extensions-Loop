@@ -1076,7 +1076,7 @@ class LoopObject {
 		foreach ( self::$mObjectTypes as $objectType ) {
 			
 			$matches = array();
-			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
+			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/U", $text, $matches );
 			
 			if ( $lsi && $wgLoopObjectNumbering == 1 && $showNumbers ) {
 				
