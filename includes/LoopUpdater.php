@@ -53,6 +53,9 @@ class LoopUpdater {
 			self::migrateLoopTerminology();
 
 		}
+		if ( $updater->tableExists( 'loop_object_index' ) ) { #update for existing LOOPs
+			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_object_index', $schemaPath . 'loop_object_index_modify.sql', true ) );
+		}
 		
 		return true;
 	}
