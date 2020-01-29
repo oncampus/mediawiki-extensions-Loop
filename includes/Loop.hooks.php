@@ -125,7 +125,7 @@ class LoopHooks {
 			//dd($file);
 			$mediaType = $file->getMediaType();
 			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
-				#$params['frame']['class'] = 'responsive-image';
+				$params['frame']['class'] = 'responsive-image';
 				if ($loopEditMode) {
 					//$params['frame']['framed'] = true;
 					//$params['frame']['no-link'] = false;
