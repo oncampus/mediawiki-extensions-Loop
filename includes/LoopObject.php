@@ -23,6 +23,7 @@ class LoopObject {
 	public $mId;
 	public $mArticleId;	
 	public $mTitle;
+	public $mTitleInput;
 	
 	public $mTitleFullyParsed;
 	public $mDescriptionFullyParsed;
@@ -183,7 +184,7 @@ class LoopObject {
 			$articleId = $this->getParser()->getTitle()->getArticleID();
 			
 			#if there are hints for this element has a dublicate id, don't render the number and add an error
-			if ( $this->getTitle() != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+			if ( $this->mTitleInput != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";
@@ -810,6 +811,7 @@ class LoopObject {
 						$this->setTitleFullyParsed($this->extraParse( $objectData["title"], false ));
 					#} else {
 						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["title"] ) ));
+						$this->mTitleInput = $objectData["title"];
 					#}
 					break;
 				case 'loop_description' :
