@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS /*_*/loop_object_index (
   `loi_nthoftype` int(10) NOT NULL,
   `loi_index` varbinary(255) NOT NULL,
   `loi_itemtype` varbinary(255),
-  `loi_itemtitle` varbinary(255),
-  `loi_itemdesc` varbinary(255),
+  `loi_itemtitle` varbinary(8000),
+  `loi_itemdesc` varbinary(8000),
   `loi_itemthumb` varbinary(255),
   PRIMARY KEY (loi_id)
 ) /*$wgDBTableOptions*/;

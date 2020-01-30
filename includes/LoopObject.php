@@ -23,6 +23,7 @@ class LoopObject {
 	public $mId;
 	public $mArticleId;	
 	public $mTitle;
+	public $mTitleInput;
 	
 	public $mTitleFullyParsed;
 	public $mDescriptionFullyParsed;
@@ -183,7 +184,7 @@ class LoopObject {
 			$articleId = $this->getParser()->getTitle()->getArticleID();
 			
 			#if there are hints for this element has a dublicate id, don't render the number and add an error
-			if ( $this->getTitle() != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+			if ( $this->mTitleInput != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";
@@ -424,6 +425,7 @@ class LoopObject {
 	 */
 	public function setTitle($title) {
 		$this->mTitle = $title;
+		$this->mTitleInput = $title;
 	}
 	
 	/**
@@ -801,20 +803,23 @@ class LoopObject {
 		);
 		$text = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
 		
+		$objectData = LoopObjectIndex::getObjectData($this->mId);
+
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
 					#if ($fullparse == true) {
-						$this->setTitleFullyParsed($this->extraParse( $subtag [1], false ));
+						$this->setTitleFullyParsed($this->extraParse( $objectData["title"], false ));
 					#} else {
-						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
+						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["title"] ) ));
+						$this->mTitleInput = $objectData["title"];
 					#}
 					break;
 				case 'loop_description' :
 					#if ($fullparse == true) {
-						$this->setDescriptionFullyParsed($this->extraParse( $subtag [1], false ));
+						$this->setDescriptionFullyParsed($this->extraParse( $objectData["description"], false ));
 					#} else {
-						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
+						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["description"] ) ));
 					#}
 					break;
 				case 'loop_copyright' :
@@ -877,11 +882,17 @@ class LoopObject {
 	 * @param String $contentText
 	 */
 	public static function handleObjectItems( &$wikiPage, $title, $contentText = null ) {
-		
-		$content = $wikiPage->getContent();
-		if ($contentText == null) {
-			$contentText = $content->getText();
+		if ( $wikiPage != null) {
+			$content = $wikiPage->getContent();
+			if ( $contentText == null) {
+				if ( $wikiPage->getContent() != null ) {
+					$contentText = $content->getText();
+				} else {
+					return '';
+				}
+			}
 		}
+		
 		
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 				
@@ -927,7 +938,8 @@ class LoopObject {
 							$tmpLoopObjectIndex->pageId = $title->getArticleID();
 							
 							if ( $object[0] == "loop_figure" ) {
-								$tmpLoopObjectIndex->itemThumb = $object[1];
+								preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
+								$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
 							}
 							if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
 								$tmpLoopObjectIndex->itemType = $object[2]["type"];
@@ -1069,7 +1081,7 @@ class LoopObject {
 		foreach ( self::$mObjectTypes as $objectType ) {
 			
 			$matches = array();
-			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/", $text, $matches );
+			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/U", $text, $matches );
 			
 			if ( $lsi && $wgLoopObjectNumbering == 1 && $showNumbers ) {
 				

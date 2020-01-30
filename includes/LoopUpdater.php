@@ -28,6 +28,7 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_items', $schemaPath . 'loop_literature_items.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_feedback', $schemaPath . 'loop_feedback.sql', true ) );
 
 		if ( $updater->tableExists( 'loop_structure_items' ) ) {
 			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
@@ -51,6 +52,9 @@ class LoopUpdater {
 			self::migrateGlossary();
 			self::migrateLoopTerminology();
 
+		}
+		if ( $updater->tableExists( 'loop_object_index' ) ) { #update for existing LOOPs
+			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_object_index', $schemaPath . 'loop_object_index_modify.sql', true ) );
 		}
 		
 		return true;
@@ -158,11 +162,14 @@ class LoopUpdater {
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
 		
-		$wikiPageContent = $wikiPage->getRevision()->getContent();
-		$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
-		$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 Upgrade' );
-		$wikiPageUpdater->setContent( "main", $wikiPageContent );
-		$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		$wikiPageRev = $wikiPage->getRevision();
+		if ( isset( $wikiPageRev ) ) {
+			$wikiPageContent = $wikiPageRev->getContent();
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 Upgrade' );
+			$wikiPageUpdater->setContent( "main", $wikiPageContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		}
 		
 		if ( isset( $fwp ) ) {
 			$stableRevId = $fwp->getStable();
@@ -173,7 +180,6 @@ class LoopUpdater {
 				$revision = $wikiPage->getRevision();
 				$contentText = $revision->getContent()->getText();
 			}
-			
 
 			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
@@ -200,7 +206,11 @@ class LoopUpdater {
 		}
 		if ( $contentText == null ) {
 			$revision = $wikiPage->getRevision();
-			$contentText = $revision->getContent()->getText();
+			if ( $revision != null ) {
+				$contentText = $revision->getContent()->getText();
+			} else {
+				return true;
+			}
 		}
 		$parser = new Parser();
 		$biblio_tags = array ();
@@ -291,8 +301,13 @@ class LoopUpdater {
 	public static function migrateLoopZip( $wikiPage, $title, $contentText = null, $systemUser ) {
 
 		$revision = $wikiPage->getRevision();
+		
 		if ( $contentText == null ) {
-			$contentText = $revision->getContent()->getText();
+			if ( $revision != null ) {
+				$contentText = $revision->getContent()->getText();
+			} else {
+				return true;
+			}
 		}
 		$parser = new Parser();
 		$zip_tags = array ();

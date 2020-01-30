@@ -327,6 +327,7 @@ class LoopObjectIndex {
                 'loi_index',
                 'loi_itemtype',
                 'loi_itemtitle',
+                'loi_itemdesc',
                 'loi_nthoftype'
 			),
 			array(
@@ -334,7 +335,6 @@ class LoopObjectIndex {
 			),
 			__METHOD__
 		);
-		
 		foreach( $res as $row ) {
 
             #$lsi = LoopStructureItem::newFromIds ( $row->loi_pageid );
@@ -343,6 +343,7 @@ class LoopObjectIndex {
                 'articleId' => $row->loi_pageid,
                 'index' => $row->loi_index,
                 'title' => $row->loi_itemtitle,
+                'description' => $row->loi_itemdesc,
                 'type' => $row->loi_itemtype,
                 'nthoftype' => $row->loi_nthoftype,
             );

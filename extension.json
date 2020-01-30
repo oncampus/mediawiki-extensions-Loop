@@ -103,7 +103,13 @@
 		"LoopScreenshot": "includes/LoopScreenshot.php",
 		"SpecialLoopExportPdfTest": "includes/LoopPdf.php",
 		"LoopBugReport": "includes/LoopBugReport.php",
-		"SpecialLoopBugReport": "includes/LoopBugReport.php"
+		"SpecialLoopBugReport": "includes/LoopBugReport.php",
+		"LoopFeedback": "includes/LoopFeedback.php",
+		"SpecialLoopFeedback": "includes/LoopFeedback.php",
+		"ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
+		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
+		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
+		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -165,7 +171,8 @@
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
-		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete"
+		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
+		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -188,7 +195,8 @@
 		"LoopTerminology": "SpecialLoopTerminology",
 		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
 		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
-		"LoopBugReport": "SpecialLoopBugReport"
+		"LoopBugReport": "SpecialLoopBugReport",
+		"LoopFeedback": "SpecialLoopFeedback"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -308,6 +316,19 @@
 				"loopwikieditor-loop-content-quizlet",
 				"loopscreenshot"
 			]
+		},
+		"loop.feedback.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.feedback.js"
+			],
+			"messages": [
+				"loopfeedback-thanks-after-submit",
+				"loopfeedback-specialpage-feedback-info-sum-all",
+				"loopfeedback-specialpage-feedback-info-average-stars",
+				"loopfeedback-specialpage-feedback-info-count-comments",
+				"loopfeedback-specialpage-feedback-info-no-comments"
+			]
 		}
 	
 	},
@@ -334,10 +355,15 @@
 			"writeapi": false,
 			"loop-view-special-pages": false,
 			"loop-edit-literature": false,
-			"loop-pdf-test": false
+			"loop-pdf-test": false,
+			"loopfeedback-view": false,
+			"loopfeedback-view-results": false,
+			"loopfeedback-view-comments": false,
+			"loopfeedback-reset": false
 		},
 		"user" : {
-			"read": true
+			"read": true,
+			"loopfeedback-view": true
 		},
 		"bot": {
 			"loop-toc-edit": true,
@@ -377,7 +403,11 @@
 			"editsitejs": true,
 			"editinterface": true,
 			"writeapi": true,
-			"loop-pdf-test": true
+			"loop-pdf-test": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": true,
+			"loopfeedback-view-comments": true,
+			"loopfeedback-reset": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -416,7 +446,11 @@
 			"editinterface": true,
 			"writeapi": true,
 			"loop-pdf-test": true,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": true,
+			"loopfeedback-view-comments": true,
+			"loopfeedback-reset": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -455,7 +489,11 @@
 			"editinterface": true,
 			"writeapi": true,
 			"loop-pdf-test": true,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": true,
+			"loopfeedback-view-comments": true,
+			"loopfeedback-reset": false
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -488,7 +526,11 @@
 			"loop-edit-literature": true,
 			"writeapi": true,
 			"loop-pdf-test": true,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": true,
+			"loopfeedback-view-comments": true,
+			"loopfeedback-reset": false
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -502,7 +544,12 @@
 			"purge": true,
 			"loop-view-special-pages": true,
 			"loop-edit-literature": false,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"writeapi": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": true,
+			"loopfeedback-view-comments": true,
+			"loopfeedback-reset": false
 		},
 		"student_edit": {
 			"edit": true,
@@ -525,7 +572,11 @@
 			"loop-edit-literature": true,
 			"writeapi": true,
 			"loop-pdf-test": true,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": false,
+			"loopfeedback-view-comments": false,
+			"loopfeedback-reset": false
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -538,7 +589,12 @@
 			"loop-settings-edit": false,
 			"loop-edit-literature": false,
 			"loop-view-special-pages": false,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"writeapi": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": false,
+			"loopfeedback-view-comments": false,
+			"loopfeedback-reset": false
 		},
 		"shared": {
 			"editmyoptions": false,
@@ -554,7 +610,12 @@
 			"loop-settings-edit": false,
 			"loop-edit-literature": false,
 			"loop-view-special-pages": false,
-			"skipcaptcha": true
+			"skipcaptcha": true,
+			"writeapi": true,
+			"loopfeedback-view": true,
+			"loopfeedback-view-results": false,
+			"loopfeedback-view-comments": false,
+			"loopfeedback-reset": false
 		}
 	},
 	"DefaultUserOptions": {
@@ -635,7 +696,11 @@
 		"loop-settings-edit",
 		"loop-view-export-log",
 		"loop-view-special-pages",
-		"loop-edit-literature"
+		"loop-edit-literature",
+		"loopfeedback-view",
+		"loopfeedback-view-results",
+		"loopfeedback-view-comments",
+		"loopfeedback-reset"
 	],
 	"MessagesDirs": {
 		"Loop": [
@@ -864,7 +929,7 @@
 			"value": "",
 			"description" : "URL for rendering screenshots service"
 		},
-		"LoopExternalServiceUrl": {
+		"LoopExternalServiceBugReportUrl": {
 			"value": "",
 			"description" : "URL for external ticket handling service. Overrides LoopBugReportEmail."
 		},
@@ -883,6 +948,14 @@
 		"LoopBugReportEnabled": {
 			"value": true,
 			"description" : "Enable bug reports for users."
+		},
+		"LoopFeedbackLevel": {
+			"value": "none",
+			"description" : "[none|module|chapter]"
+		},
+		"LoopFeedbackMode": {
+			"value": "second_half",
+			"description" : "[always|last_sublevel|second_half]"
 		}
 	},
 	"LogTypes": [ "loopexport" ],
@@ -903,5 +976,11 @@
 			"protection": "edit"
 		}
 	],
+	"APIModules": {
+		"loopfeedback-save": "ApiLoopFeedbackSave",
+		"loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
+		"loopfeedback-structure": "ApiLoopFeedbackStructure",
+		"loopfeedback-overview": "ApiLoopFeedbackOverview"
+	},
 	"manifest_version": 2
 }

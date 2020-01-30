@@ -21,6 +21,14 @@ $( document ).ready( function () {
 		}
 	})
 	
+	$( "#feedback-level" ).on("change", function() {
+		if ( $("#feedback-level").val() == "none" ) {
+			$( "#feedback-mode" ).prop("disabled", true)
+		} else {
+			$( "#feedback-mode" ).prop("disabled", false)
+		}
+	})
+	
 	/**
 	 * Show invalid fields 
 	 * of file description textfield. Changed marked with oc
