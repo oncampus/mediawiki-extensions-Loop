@@ -193,7 +193,7 @@ class LoopObject {
 				if ( is_object( $otherTitle ) ) {
 					$textform = $otherTitle->mTextform;
 				}
-				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform ) );
+				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error .= $e . "\n";
 				$showNumbering = false;
