@@ -938,7 +938,8 @@ class LoopObject {
 							$tmpLoopObjectIndex->pageId = $title->getArticleID();
 							
 							if ( $object[0] == "loop_figure" ) {
-								$tmpLoopObjectIndex->itemThumb = $object[1];
+								preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
+								$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
 							}
 							if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
 								$tmpLoopObjectIndex->itemType = $object[2]["type"];
