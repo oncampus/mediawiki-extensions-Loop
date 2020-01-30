@@ -425,6 +425,7 @@ class LoopObject {
 	 */
 	public function setTitle($title) {
 		$this->mTitle = $title;
+		$this->mTitleInput = $title;
 	}
 	
 	/**
