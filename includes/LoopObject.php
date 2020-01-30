@@ -842,47 +842,51 @@ class LoopObject {
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
 				$newContentText = $contentText;
 
-				foreach ( $object_tags as $object ) {
-					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
-						if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
-							$valid = true;
-							$tmpLoopObjectIndex = new LoopObjectIndex();
-							$objects[$object[0]]++;
-							$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
-							$tmpLoopObjectIndex->index = $object[0];
-							$tmpLoopObjectIndex->pageId = $title->getArticleID();
-							
-							if ( $object[0] == "loop_figure" ) {
-								preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
-								$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
-							}
-							if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
-								$tmpLoopObjectIndex->itemType = $object[2]["type"];
-							}
-							if ( isset( $object[2]["title"] ) ) {
-								$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
-							} else {
-								$title_tags = array ();
-								$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
-								foreach( $title_tags as $tag ) {
-									$tmpLoopObjectIndex->itemTitle = $tag[1];
-									break;
+				foreach ( $object_tags as $outter_object ) {
+					if ( ! in_array( strtolower($outter_object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
+						$parser->extractTagsAndParams( $extractTags, $outter_object[1], $items );
+						$items[] = $outter_object;
+						foreach ( $items as $object) {
+							if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
+								$valid = true;
+								$tmpLoopObjectIndex = new LoopObjectIndex();
+								$objects[$object[0]]++;
+								$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
+								$tmpLoopObjectIndex->index = $object[0];
+								$tmpLoopObjectIndex->pageId = $title->getArticleID();
+								
+								if ( $object[0] == "loop_figure" ) {
+									preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
+									$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
 								}
-							}
-							if ( isset( $object[2]["description"] ) ) {
-								$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
-							}
-							if ( isset( $object[2]["id"] ) ) {
-								if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
-									$tmpLoopObjectIndex->refId = $object[2]["id"];
+								if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
+									$tmpLoopObjectIndex->itemType = $object[2]["type"];
+								}
+								if ( isset( $object[2]["title"] ) ) {
+									$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
 								} else {
-									# dublicate id!
-									$valid = false;
-									$objects[$object[0]]--;
+									$title_tags = array ();
+									$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
+									foreach( $title_tags as $tag ) {
+										$tmpLoopObjectIndex->itemTitle = $tag[1];
+										break;
+									}
 								}
-							} 
-							if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-								$tmpLoopObjectIndex->addToDatabase();
+								if ( isset( $object[2]["description"] ) ) {
+									$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+								}
+								if ( isset( $object[2]["id"] ) ) {
+									if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
+										$tmpLoopObjectIndex->refId = $object[2]["id"];
+									} else {
+										# dublicate id!
+										$valid = false;
+										$objects[$object[0]]--;
+									}
+								} 
+								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
+									$tmpLoopObjectIndex->addToDatabase();
+								}
 							}
 						}
 					}
