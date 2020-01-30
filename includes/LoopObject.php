@@ -25,10 +25,6 @@ class LoopObject {
 	public $mTitle;
 	public $mTitleInput;
 	
-	public $mTitleFullyParsed;
-	public $mDescriptionFullyParsed;
-	public $mCopyrightFullyParsed;
-	
 	public $mDescription;
 	public $mCopyright;
 	public $mNumber;
@@ -228,16 +224,12 @@ class LoopObject {
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
 				$html .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
 			}
-			if ($this->getRenderOption() != 'none' && $this->getTitleFullyParsed()) {
-				$html .= '<span class="loop_object_title_content">'.$this->getTitleFullyParsed().'</span>';
-			} elseif ($this->getRenderOption() != 'none' && $this->getTitle()) {
+			if ($this->getRenderOption() != 'none' && $this->getTitle()) {
 				$html .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
 			}
 			$html .= '</div>';
 				
-			if ($this->getDescriptionFullyParsed()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<div class="loop_object_description">' . $this->getDescriptionFullyParsed() . '</div>';
-			} elseif ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
+			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
 				$html .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
@@ -296,24 +288,15 @@ class LoopObject {
 				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
-		$outputTitle = '';
-		if ($this->mTitleFullyParsed) {
-			$outputTitle = $this->getTitleFullyParsed();
-		} elseif ($this->mTitle) {
-			$outputTitle = $this->getTitle();
-		}
 		$html = '<tr scope="row" class="ml-1 pb-3">';
 		$html .= '<td scope="col" class="pl-1 pr-1">';
 		if ( $type = 'loop_media' ) {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
-		#$html .=$this->mMediaType;
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/><span>';
+		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', self::localParse( $this->getTitle() ) ) . '</span><br/><span>';
 		
-		if ($this->mDescriptionFullyParsed) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
-		} elseif ($this->mDescription) {
+		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
 		}
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
@@ -457,31 +440,6 @@ class LoopObject {
 	public function setIndexing($indexing) {
 		$this->mIndexing = $indexing;
 	}	
-	
-	/**
-	 * Set the fully parsed title
-	 * @param string $title
-	 */
-	public function setTitleFullyParsed($title) {
-		$this->mTitleFullyParsed = $title;
-	}
-	
-	/**
-	 * Set the fully parsed description
-	 * @param string $description
-	 */
-	public function setDescriptionFullyParsed($description) {
-		$this->mDescriptionFullyParsed = $description;
-	}
-	
-	/**
-	 * Set the fully parsed copyright
-	 * @param string $copyright
-	 */
-	public function setCopyrightFullyParsed($copyright) {
-		$this->mCopyrightFullyParsed = $copyright;
-	}	
-	
 	/**
 	 * Set the number
 	 * @param integer $number
@@ -603,31 +561,6 @@ class LoopObject {
 	public function getShowCopyright() {
 		return $this->mShowCopyright;
 	}	
-	
-	/**
-	 * Get the fully parsed title
-	 * @return string
-	 */
-	public function getTitleFullyParsed() {
-		return $this->mTitleFullyParsed;
-	}
-	
-	/**
-	 * Get the fully parsed description
-	 * @return string
-	 */
-	public function getDescriptionFullyParsed() {
-		return $this->mDescriptionFullyParsed;
-	}
-	
-	/**
-	 * Get the fully parsed copyright
-	 * @return string
-	 */
-	public function getCopyrightFullyParsed() {
-		return $this->mCopyrightFullyParsed;
-	}	
-	
 	/**
 	 * Get the number
 	 * @return integer
@@ -664,36 +597,30 @@ class LoopObject {
 	 * @param string $wikiText
 	 * @return string
 	 */
-	public function extraParse($wikiText, $recursive = false) {
-		$localParser = new Parser ();
-		if ( ! $recursive ) {
-			global $wgOut;
-			$user = $wgOut->getUser();
-			$tmpTitle = Title::newFromText('NO_TITLE_TMP');
-			$localParserOptions = ParserOptions::newFromUser ( $user );
-			$result = $localParser->parse ( $wikiText, $tmpTitle, $localParserOptions );
-		} else {
-			$result = $localParser->recursiveTagParse ( $wikiText, $this->GetFrame() );
-		}
+	public static function localParse( $wikiText ) {
+		global $wgOut;
+		$localParser = new Parser();
+		$user = $wgOut->getUser();
+		$tmpTitle = Title::newFromText('NO_TITLE');
+		$localParserOptions = ParserOptions::newFromUser ( $user );
+		$result = $localParser->parse ( html_entity_decode( $wikiText ), $tmpTitle, $localParserOptions );
 		$result->clearWrapperDivClass();
-		return $localParser->stripOuterParagraph($result->getText ());	
+		return $localParser->stripOuterParagraph( $result->getText() );	
 	}
-	
+
 	/**
 	 * Parse the given Parameters and subtags
-	 * @param bool $fullparse
 	 */
-	public function parse($fullparse = false) {
-		$this->preParse($fullparse);
+	public function parse() {
+		$this->preParse();
 		$this->setContent($this->getParser()->recursiveTagParse($this->getInput(),$this->GetFrame()) );
 	}
 	
 	/**
 	 * Parse common args 
 	 * Parse common subtags and strip them from input
-	 * @param bool $fullparse complete parse for special pages
 	 */
-	public function preParse($fullparse = false) {
+	public function preParse() {
 		
 		if ($id = $this->GetArg('id')) {
 			$this->setId(htmlspecialchars($id));
@@ -808,26 +735,14 @@ class LoopObject {
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
-					#if ($fullparse == true) {
-						$this->setTitleFullyParsed($this->extraParse( $objectData["title"], false ));
-					#} else {
 						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["title"] ) ));
 						$this->mTitleInput = $objectData["title"];
-					#}
 					break;
 				case 'loop_description' :
-					#if ($fullparse == true) {
-						$this->setDescriptionFullyParsed($this->extraParse( $objectData["description"], false ));
-					#} else {
 						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["description"] ) ));
-					#}
 					break;
 				case 'loop_copyright' :
-					#if ($fullparse == true) {
-						$this->setCopyrightFullyParsed($this->extraParse( $subtag [1], false ));
-					#} else {
 						$this->setCopyright($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
-					#}
 					break;
 			}
 		}
