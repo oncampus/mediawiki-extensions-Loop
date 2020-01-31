@@ -213,6 +213,18 @@ class Loop {
 	 * @param string $text
 	 */
 	public static function setReferenceIds( $text ) { #todo remove id and type
+
+		# REGEX: All tags to get IDs that don't have id="" or id='' (might be empty!)
+		$regex = '/(<(loop_figure|loop_formula|loop_listing|loop_media|loop_table|loop_task|cite|loop_index|loop_screenshot)(?!.*?id=([\'"]).*?([\'"]))[^>]*)(>)/i';
+		preg_match_all( $regex, $text, $occurences );
+		$count = sizeof($occurences[1]);
+		$tmpText = $text;
+		for ( $i = 0; $i <= $count; $i++ ) {
+			$tmpText = preg_replace( $regex, '$1 id="'.uniqid().'">', $tmpText, 1 );
+		}
+		return $tmpText;
+		#dd($text, $tmpText, $occurences, $count);
+		/*
 		$changedText = false;
 		$tmptext = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
 		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags 
@@ -225,24 +237,26 @@ class Loop {
 		
 		$query = implode(' | ', $objectTags);
 		$nodes = $xpath->query( $query );
-		$changed = false;
+		$change = array();
 		foreach ( $nodes as $node ) {
 			# don't set ids when in these tags 
 			if ( ! in_array( strtolower($node->parentNode->nodeName), $forbiddenTags ) && ! in_array( strtolower($node->parentNode->parentNode->nodeName), $forbiddenTags ) ) {
 				$existingId = $node->getAttribute( 'id' );
 				if( ! $existingId ) {
-					$node->setAttribute('id', uniqid() );
-					$changed = true;
+					$change[$node->nodeName] = uniqid();
 				}
 			}
 		}
-		if ( $changed ) {
-			$changedText = mb_substr($dom->saveHTML(), 55, -21);
-			$decodedText = html_entity_decode($changedText);
+		if ( !empty ( $change ) ) {
+			dd($change);
+			#$changedText = mb_substr($dom->saveHTML(), 55, -21);
+			#$decodedText = html_entity_decode($changedText);
 			return $decodedText;
 		} else {
 			return $text;
 		}
+		*/
+
 	}
 
 }

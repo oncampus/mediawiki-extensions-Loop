@@ -840,7 +840,6 @@ class LoopObject {
 				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
-				$newContentText = $contentText;
 
 				foreach ( $object_tags as $outter_object ) {
 					if ( ! in_array( strtolower($outter_object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
@@ -883,7 +882,9 @@ class LoopObject {
 										$valid = false;
 										$objects[$object[0]]--;
 									}
-								} 
+								} else {
+									$valid = false;
+								}
 								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
 									$tmpLoopObjectIndex->addToDatabase();
 								}
@@ -898,12 +899,9 @@ class LoopObject {
 				} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
 					LoopGlossary::updateGlossaryPageTouched();
 				}
-				if ( $contentText !== $newContentText ) {
-					return $newContentText;
-				}
 			}
 		}
-		return $contentText;
+		return true;
 	}
 
 
@@ -1061,6 +1059,7 @@ class LoopObject {
 		}
 
 		if ( $objectData["refId"] == $objectid ) {
+			$tmpPreviousObjects = 0;
 
 			if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
 					
@@ -1076,11 +1075,10 @@ class LoopObject {
 				}
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
-				}
+				} 
 				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 				
 			} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
-				$tmpPreviousObjects = 0;
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
 				}
