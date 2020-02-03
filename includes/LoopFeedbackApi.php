@@ -20,7 +20,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$result   = $this->getResult();
 		
 		$user = $this->getUser();
-		if ( $user->isBlocked() ) {
+		if ( $user->getBlock() != null ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
@@ -168,7 +168,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 		
 
 		$user = $this->getUser();
-		if ( $user->isBlocked() ) {
+		if ( $user->getBlock() != null ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
@@ -266,7 +266,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 		
 
 		$user = $this->getUser();
-		if ( $user->isBlocked() ) {
+		if ( $user->getBlock() != null ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
@@ -406,7 +406,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		$result   = $this->getResult();
 		
 		$user = $this->getUser();
-		if ( $user->isBlocked() ) {
+		if ( $user->getBlock() != null ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
 				'userblocked'
