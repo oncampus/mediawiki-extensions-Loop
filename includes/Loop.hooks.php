@@ -72,7 +72,7 @@ class LoopHooks {
 		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
 		}
-		
+
 		if ( $hideSpecialPages ) {
 			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects', 'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
 				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
@@ -90,7 +90,7 @@ class LoopHooks {
 				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel', 
 				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'RemoveCredentials',
 				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages',
-				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit'
+				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit', 'NewSection', 'LoopFeedback'
 			);
 			foreach( $hidePages as $page ){ 
 				unset( $specialPages[$page] );
