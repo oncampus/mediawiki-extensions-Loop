@@ -112,7 +112,8 @@ class Loop {
 		}
 			
 		# Define new name for glossary
-		$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
+		$glossary = array( "de" => "Glossar", "de-formal" => "Glossar", "en" => "Glossary", "es" => "Glosario", "sv" => "Ordlista" );
+		$wgExtraNamespaces[ NS_GLOSSARY ] = array_key_exists( $wgLanguageCode, $glossary ) ? $glossary[ $wgLanguageCode ] : "Glossary";
 
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
