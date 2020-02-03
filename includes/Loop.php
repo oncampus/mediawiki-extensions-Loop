@@ -43,10 +43,6 @@ class Loop {
 		
 	public static function onExtensionLoad() {
 
-		if ( ! defined( 'FLAGGED_REVISIONS' ) ) { 
-			exit( "FlaggedRevs must be installed to run LOOP" );
-		}
-
 		# Loop Object constants
 		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
 		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
@@ -112,11 +108,11 @@ class Loop {
 				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
 				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
 			}
-			
-			# Define new name for glossary
-			$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
 
 		}
+			
+		# Define new name for glossary
+		$wgExtraNamespaces[ NS_GLOSSARY ] = wfMessage( "loop-glossary-namespace" )->inLanguage( $wgLanguageCode )->text();
 
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
@@ -136,7 +132,7 @@ class Loop {
 		$wgFlaggedRevsAutopromote = false;
 		$wgShowRevisionBlock = false;
 		$wgSimpleFlaggedRevsUI = false;
-		$wgFlaggedRevsAutoReview = FR_AUTOREVIEW_CREATION_AND_CHANGES;
+		$wgFlaggedRevsAutoReview = 3; # FR_AUTOREVIEW_CREATION_AND_CHANGES
 		$wgFlaggedRevsNamespaces[] = NS_GLOSSARY; #adds Glossary to reviewing process
 
 		# Log viewing rights
