@@ -78,11 +78,10 @@ class LoopFigure extends LoopObject{
 	
 	/**
 	 * Parse the given Parameters and subtags
-	 * @param bool $fullparse
 	 */
-	public function parse($fullparse = false) {
+	public function parse() {
 
-		$this->preParse($fullparse);
+		$this->preParse();
 		
 		$matches = array ();
 		$subtags = array (
@@ -95,18 +94,10 @@ class LoopFigure extends LoopObject{
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_figure_title' :
-					if ($fullparse == true) {
-						$this->setTitleFullyParsed($this->extraParse( $subtag [1] ), false);
-					} else {
-						$this->setTitle($this->mParser->stripOuterParagraph ( $this->getParser()->recursiveTagParse ( $subtag [1] ) ));
-					}
+					$this->setTitle($this->mParser->stripOuterParagraph ( $this->getParser()->recursiveTagParse ( $subtag [1] ) ));
 					break;
 				case 'loop_figure_description' :
-					if ($fullparse == true) {
-						$this->setDescriptionFullyParsed($this->extraParse( $subtag [1] ), false);
-					} else {
-						$this->setDescription($this->mParser->stripOuterParagraph ( $this->getParser()->recursiveTagParse ( $subtag [1] ) ));
-					}
+					$this->setDescription($this->mParser->stripOuterParagraph ( $this->getParser()->recursiveTagParse ( $subtag [1] ) ));
 					break;
 			}
 		}
@@ -181,19 +172,11 @@ class LoopFigure extends LoopObject{
 				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
-		$outputTitle = '';
-
-		if ( $this->getTitleFullyParsed() ) {
-			$outputTitle = $this->getTitleFullyParsed();
-		} elseif ( $this->getTitle() ) {
-			$outputTitle = $this->getTitle();
-		}
+		
 		$html .= '<td scope="col" class="pl-1 pr-1"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/><span>';
-	
-		if ($this->mDescriptionFullyParsed) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
-		} elseif ($this->mDescription) {
+		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( $this->getTitle() ) ) . '</span><br/><span>';
+		if ( strpos( $this->getTitle(), "<math>") !== false){dd($this->getTitle(), LoopObject::localParse( $this->getTitle() ));}
+		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
 		} 
 		$linkTitle = Title::newFromID ( $this->getArticleId () );

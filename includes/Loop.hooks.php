@@ -67,16 +67,12 @@ class LoopHooks {
 
 		global $wgUser, $wgOut; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
 		$hideSpecialPages = false;
-
-		if ( !isset ( $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.
+		if ( ! in_array ( "loop-view-special-pages", $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.
 			$hideSpecialPages = true;
 		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
-
-			#if ( ! $wgOut->getUser()->isAllowed( "loop-change-credentials" ) ) {
-			#	unset( $specialPages[ "ChangeCredentials" ] );
-			#}
 		}
+
 		if ( $hideSpecialPages ) {
 			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects', 'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
 				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
@@ -94,7 +90,7 @@ class LoopHooks {
 				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel', 
 				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'RemoveCredentials',
 				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages',
-				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit'
+				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit', 'NewSection', 'LoopFeedback'
 			);
 			foreach( $hidePages as $page ){ 
 				unset( $specialPages[$page] );

@@ -25,10 +25,6 @@ class LoopObject {
 	public $mTitle;
 	public $mTitleInput;
 	
-	public $mTitleFullyParsed;
-	public $mDescriptionFullyParsed;
-	public $mCopyrightFullyParsed;
-	
 	public $mDescription;
 	public $mCopyright;
 	public $mNumber;
@@ -193,7 +189,7 @@ class LoopObject {
 				if ( is_object( $otherTitle ) ) {
 					$textform = $otherTitle->mTextform;
 				}
-				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform ) );
+				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error .= $e . "\n";
 				$showNumbering = false;
@@ -228,16 +224,12 @@ class LoopObject {
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
 				$html .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
 			}
-			if ($this->getRenderOption() != 'none' && $this->getTitleFullyParsed()) {
-				$html .= '<span class="loop_object_title_content">'.$this->getTitleFullyParsed().'</span>';
-			} elseif ($this->getRenderOption() != 'none' && $this->getTitle()) {
+			if ($this->getRenderOption() != 'none' && $this->getTitle()) {
 				$html .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
 			}
 			$html .= '</div>';
 				
-			if ($this->getDescriptionFullyParsed()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<div class="loop_object_description">' . $this->getDescriptionFullyParsed() . '</div>';
-			} elseif ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
+			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
 				$html .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
@@ -296,24 +288,15 @@ class LoopObject {
 				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
-		$outputTitle = '';
-		if ($this->mTitleFullyParsed) {
-			$outputTitle = $this->getTitleFullyParsed();
-		} elseif ($this->mTitle) {
-			$outputTitle = $this->getTitle();
-		}
 		$html = '<tr scope="row" class="ml-1 pb-3">';
 		$html .= '<td scope="col" class="pl-1 pr-1">';
 		if ( $type = 'loop_media' ) {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
-		#$html .=$this->mMediaType;
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $outputTitle ) . '</span><br/><span>';
+		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', self::localParse( $this->getTitle() ) ) . '</span><br/><span>';
 		
-		if ($this->mDescriptionFullyParsed) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescriptionFullyParsed() ) . '<br/>';
-		} elseif ($this->mDescription) {
+		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
 		}
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
@@ -457,31 +440,6 @@ class LoopObject {
 	public function setIndexing($indexing) {
 		$this->mIndexing = $indexing;
 	}	
-	
-	/**
-	 * Set the fully parsed title
-	 * @param string $title
-	 */
-	public function setTitleFullyParsed($title) {
-		$this->mTitleFullyParsed = $title;
-	}
-	
-	/**
-	 * Set the fully parsed description
-	 * @param string $description
-	 */
-	public function setDescriptionFullyParsed($description) {
-		$this->mDescriptionFullyParsed = $description;
-	}
-	
-	/**
-	 * Set the fully parsed copyright
-	 * @param string $copyright
-	 */
-	public function setCopyrightFullyParsed($copyright) {
-		$this->mCopyrightFullyParsed = $copyright;
-	}	
-	
 	/**
 	 * Set the number
 	 * @param integer $number
@@ -603,31 +561,6 @@ class LoopObject {
 	public function getShowCopyright() {
 		return $this->mShowCopyright;
 	}	
-	
-	/**
-	 * Get the fully parsed title
-	 * @return string
-	 */
-	public function getTitleFullyParsed() {
-		return $this->mTitleFullyParsed;
-	}
-	
-	/**
-	 * Get the fully parsed description
-	 * @return string
-	 */
-	public function getDescriptionFullyParsed() {
-		return $this->mDescriptionFullyParsed;
-	}
-	
-	/**
-	 * Get the fully parsed copyright
-	 * @return string
-	 */
-	public function getCopyrightFullyParsed() {
-		return $this->mCopyrightFullyParsed;
-	}	
-	
 	/**
 	 * Get the number
 	 * @return integer
@@ -664,36 +597,30 @@ class LoopObject {
 	 * @param string $wikiText
 	 * @return string
 	 */
-	public function extraParse($wikiText, $recursive = false) {
-		$localParser = new Parser ();
-		if ( ! $recursive ) {
-			global $wgOut;
-			$user = $wgOut->getUser();
-			$tmpTitle = Title::newFromText('NO_TITLE_TMP');
-			$localParserOptions = ParserOptions::newFromUser ( $user );
-			$result = $localParser->parse ( $wikiText, $tmpTitle, $localParserOptions );
-		} else {
-			$result = $localParser->recursiveTagParse ( $wikiText, $this->GetFrame() );
-		}
+	public static function localParse( $wikiText ) {
+		global $wgOut;
+		$localParser = new Parser();
+		$user = $wgOut->getUser();
+		$tmpTitle = Title::newFromText('NO_TITLE');
+		$localParserOptions = ParserOptions::newFromUser ( $user );
+		$result = $localParser->parse ( html_entity_decode( $wikiText ), $tmpTitle, $localParserOptions );
 		$result->clearWrapperDivClass();
-		return $localParser->stripOuterParagraph($result->getText ());	
+		return $localParser->stripOuterParagraph( $result->getText() );	
 	}
-	
+
 	/**
 	 * Parse the given Parameters and subtags
-	 * @param bool $fullparse
 	 */
-	public function parse($fullparse = false) {
-		$this->preParse($fullparse);
+	public function parse() {
+		$this->preParse();
 		$this->setContent($this->getParser()->recursiveTagParse($this->getInput(),$this->GetFrame()) );
 	}
 	
 	/**
 	 * Parse common args 
 	 * Parse common subtags and strip them from input
-	 * @param bool $fullparse complete parse for special pages
 	 */
-	public function preParse($fullparse = false) {
+	public function preParse() {
 		
 		if ($id = $this->GetArg('id')) {
 			$this->setId(htmlspecialchars($id));
@@ -808,26 +735,14 @@ class LoopObject {
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
-					#if ($fullparse == true) {
-						$this->setTitleFullyParsed($this->extraParse( $objectData["title"], false ));
-					#} else {
 						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["title"] ) ));
 						$this->mTitleInput = $objectData["title"];
-					#}
 					break;
 				case 'loop_description' :
-					#if ($fullparse == true) {
-						$this->setDescriptionFullyParsed($this->extraParse( $objectData["description"], false ));
-					#} else {
 						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["description"] ) ));
-					#}
 					break;
 				case 'loop_copyright' :
-					#if ($fullparse == true) {
-						$this->setCopyrightFullyParsed($this->extraParse( $subtag [1], false ));
-					#} else {
 						$this->setCopyright($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
-					#}
 					break;
 			}
 		}
@@ -925,49 +840,54 @@ class LoopObject {
 				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( self::$mObjectTypes, $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
-				$newContentText = $contentText;
 
-				foreach ( $object_tags as $object ) {
-					if ( ! in_array( strtolower($object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
-						if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
-							$valid = true;
-							$tmpLoopObjectIndex = new LoopObjectIndex();
-							$objects[$object[0]]++;
-							$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
-							$tmpLoopObjectIndex->index = $object[0];
-							$tmpLoopObjectIndex->pageId = $title->getArticleID();
-							
-							if ( $object[0] == "loop_figure" ) {
-								preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
-								$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
-							}
-							if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
-								$tmpLoopObjectIndex->itemType = $object[2]["type"];
-							}
-							if ( isset( $object[2]["title"] ) ) {
-								$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
-							} else {
-								$title_tags = array ();
-								$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
-								foreach( $title_tags as $tag ) {
-									$tmpLoopObjectIndex->itemTitle = $tag[1];
-									break;
+				foreach ( $object_tags as $outter_object ) {
+					if ( ! in_array( strtolower($outter_object[0]), $forbiddenTags ) ) { #exclude loop-tags that are in code or nowiki tags
+						$parser->extractTagsAndParams( $extractTags, $outter_object[1], $items );
+						$items[] = $outter_object;
+						foreach ( $items as $object) {
+							if ( ( ! isset ( $object[2]["index"] ) || $object[2]["index"] != strtolower("false") ) && isset( $objects[$object[0]] ) ) {
+								$valid = true;
+								$tmpLoopObjectIndex = new LoopObjectIndex();
+								$objects[$object[0]]++;
+								$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
+								$tmpLoopObjectIndex->index = $object[0];
+								$tmpLoopObjectIndex->pageId = $title->getArticleID();
+								
+								if ( $object[0] == "loop_figure" ) {
+									preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
+									$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
 								}
-							}
-							if ( isset( $object[2]["description"] ) ) {
-								$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
-							}
-							if ( isset( $object[2]["id"] ) ) {
-								if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
-									$tmpLoopObjectIndex->refId = $object[2]["id"];
+								if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
+									$tmpLoopObjectIndex->itemType = $object[2]["type"];
+								}
+								if ( isset( $object[2]["title"] ) ) {
+									$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
 								} else {
-									# dublicate id!
-									$valid = false;
-									$objects[$object[0]]--;
+									$title_tags = array ();
+									$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
+									foreach( $title_tags as $tag ) {
+										$tmpLoopObjectIndex->itemTitle = $tag[1];
+										break;
+									}
 								}
-							} 
-							if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-								$tmpLoopObjectIndex->addToDatabase();
+								if ( isset( $object[2]["description"] ) ) {
+									$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+								}
+								if ( isset( $object[2]["id"] ) ) {
+									if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
+										$tmpLoopObjectIndex->refId = $object[2]["id"];
+									} else {
+										# dublicate id!
+										$valid = false;
+										$objects[$object[0]]--;
+									}
+								} else {
+									$valid = false;
+								}
+								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
+									$tmpLoopObjectIndex->addToDatabase();
+								}
 							}
 						}
 					}
@@ -979,12 +899,9 @@ class LoopObject {
 				} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
 					LoopGlossary::updateGlossaryPageTouched();
 				}
-				if ( $contentText !== $newContentText ) {
-					return $newContentText;
-				}
 			}
 		}
-		return $contentText;
+		return true;
 	}
 
 
@@ -1142,6 +1059,7 @@ class LoopObject {
 		}
 
 		if ( $objectData["refId"] == $objectid ) {
+			$tmpPreviousObjects = 0;
 
 			if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
 					
@@ -1157,11 +1075,10 @@ class LoopObject {
 				}
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
-				}
+				} 
 				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
 				
 			} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
-				$tmpPreviousObjects = 0;
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
 				}

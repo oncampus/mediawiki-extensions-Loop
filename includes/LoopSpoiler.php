@@ -111,7 +111,7 @@ class LoopSpoiler {
 		
 		// throw exception if spoiler type is not valid
 		if ( !empty( $spoiler->getType() ) && !in_array ( $spoiler->getType(), self::$mSpoilerTypes ) ) {
-			throw new LoopException( wfMessage ( 'loopspoiler-error-unknown-spoilertype', $spoiler->getType(), implode ( ', ', self::$mSpoilerTypes ) ) );
+			throw new LoopException( wfMessage ( 'loopspoiler-error-unknown-spoilertype', $spoiler->getType(), implode ( ', ', self::$mSpoilerTypes ) )->text() );
 		}		
 		
 		// button text

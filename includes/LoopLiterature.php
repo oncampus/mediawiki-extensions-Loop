@@ -540,7 +540,7 @@ class LoopLiterature {
 
 				if ( $refId != $allReferences[$articleId][$refId]["refId"] || $articleId != $allReferences[$articleId][$refId]["articleId"] || $input != $allReferences[$articleId][$refId]["itemKey"] ) {
 					$otherTitle = Title::newFromId( $allReferences[$articleId][$refId]["articleId"] );
-					$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->mTextform, $allReferences[$articleId][$refId]["itemKey"] ) );
+					$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->mTextform, $allReferences[$articleId][$refId]["itemKey"] )->text() );
 					$parser->addTrackingCategory( 'loop-tracking-category-error' );
 					$html .= $e;
 					$objectNumber = '';

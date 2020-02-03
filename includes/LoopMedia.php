@@ -114,7 +114,7 @@ class LoopMedia extends LoopObject{
 		
 		if ( ! in_array ( $this->getMediaType(), self::$mMediaTypes ) ) {
 			$this->setMediaType('media');
-			$e = new LoopException( wfMessage( 'loopmedia-error-unknown-mediatype', $mediatype, implode( ', ',self::$mMediaTypes ) ) );
+			$e = new LoopException( wfMessage( 'loopmedia-error-unknown-mediatype', $mediatype, implode( ', ',self::$mMediaTypes ) )->text() );
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 			$this->error = $e;
 		}		
