@@ -917,7 +917,7 @@ class LoopObject {
 			# $cond = "lsi_article=" . $title->getArticleID(); # TODO remove? Für referenzen müssen alle Seiten immer neu geladen werden.
 		} 
 
-		$dbr = wfGetDB ( DB_SLAVE );
+		$dbr = wfGetDB ( DB_REPLICA );
 		$article_ids = array ();
 		$structuresResult = $dbr->select ( array (
 				'loop_structure_items'
