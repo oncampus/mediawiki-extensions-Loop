@@ -65,9 +65,9 @@ class LoopHooks {
 	 */
 	public static function onSpecialPageinitList ( &$specialPages ) {
 
-		global $wgUser, $wgOut; # $wgUser is not supposed to be used but $wgOut->getUser() does not work, as there is a session issue ("Wrong entry point")
+		global $wgOut; 
 		$hideSpecialPages = false;
-		if ( ! in_array ( "loop-view-special-pages", $wgUser->mRights ) ) { # no check for specific rights - anon users get blocked from viewing these special pages.
+		if ( $wgOut->getUser()->mId == null ) { # no check for specific rights - anon users get blocked from viewing these special pages.
 			$hideSpecialPages = true;
 		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
