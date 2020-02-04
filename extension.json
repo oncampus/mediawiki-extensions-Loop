@@ -23,9 +23,7 @@
 			"Math": "3.0.0",
 			"MsUpload": ">= 13.1",
 			"Quiz": ">= 1.2.0",
-			"ReCaptchaNoCaptcha": "*",
 			"Score": ">= 0.3.0",
-			"SyntaxHighlight": ">= 2.0",
 			"WikiEditor": ">= 0.5.2"
 		}
 	},
