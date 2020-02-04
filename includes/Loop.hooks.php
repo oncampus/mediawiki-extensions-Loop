@@ -66,10 +66,14 @@ class LoopHooks {
 	public static function onSpecialPageinitList ( &$specialPages ) {
 
 		global $wgOut; 
+		$user = $wgOut->getUser();
 		$hideSpecialPages = false;
-		if ( $wgOut->getUser()->mId == null ) { # no check for specific rights - anon users get blocked from viewing these special pages.
+		if ( $user->mId == null ) { # no check for specific rights - anon users get blocked from viewing these special pages.
 			$hideSpecialPages = true;
-		} elseif ( ! $wgOut->getUser()->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
+		} elseif ( in_array( "shared", $user->getGroups() ) ) {
+			$hideSpecialPages = true;
+			$hideExtended = array( 'ChangeCredentials', 'ChangeEmail', "PasswordReset", "Preferences" );
+		} elseif ( ! $user->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
 		}
 
@@ -92,6 +96,9 @@ class LoopHooks {
 				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages',
 				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit', 'NewSection', 'LoopFeedback'
 			);
+			if ( isset( $hideExtended ) ) {
+				$hidePages = array_merge($hidePages, $hideExtended);
+			}
 			foreach( $hidePages as $page ){ 
 				unset( $specialPages[$page] );
 			}
