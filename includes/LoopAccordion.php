@@ -20,8 +20,8 @@ class LoopAccordion {
         $html = '';
         $parser->extractTagsAndParams ( array( "loop_row" ), $input, $row_matches );
 
+        $html .= '<div class="loop-accordion mb-3">';
         foreach ( $row_matches as $row ) {
-            #dd($row);
             $title_matches = array();
             $parser->extractTagsAndParams ( array( "loop_title" ), $row[1], $title_matches );
             $title_content = "";
@@ -30,17 +30,16 @@ class LoopAccordion {
                     $title_content = $parser->recursiveTagParse( $title[1], $frame );
                 }
             }
-            #dd($row, $title_matches, $title, $title_content);
-            #$content
             $id = uniqid();
-            $html .= '<div class="accordion">';
+            $html .= '<div class="accordion-row w-100 mb-1 overflow-hidden">';
             $html .= '<input id="acc-'.$id.'" type="checkbox" name="acc">';
-            $html .= '<label for="acc-'.$id.'">'.$title_content.'</label>';
-            $html .= '<div class="accordion_content">';
-            $html .= $parser->recursiveTagParse( $row[1], $frame );
+            $html .= '<label for="acc-'.$id.'" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">'.$title_content.'</label>';
+            $html .= '<div class="accordion-content overflow-hidden">';
+            $html .= '<p class="m-3">'.$parser->recursiveTagParse( $row[1], $frame ).'</p>';
             $html .= '</div>';
             $html .= '</div>';
         }
+        $html .= '</div>';
         
 
 		return $html;
