@@ -35,7 +35,7 @@ class LoopAccordion {
             $html .= '<input id="acc-'.$id.'" type="checkbox" name="acc">';
             $html .= '<label for="acc-'.$id.'" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">'.$title_content.'</label>';
             $html .= '<div class="accordion-content overflow-hidden">';
-            $html .= '<p class="m-3">'.$parser->recursiveTagParse( $row[1], $frame ).'</p>';
+            $html .= '<div class="m-2 m-md-3">'.$parser->recursiveTagParse( $row[1], $frame ).'</div>';
             $html .= '</div>';
             $html .= '</div>';
         }
