@@ -171,10 +171,7 @@
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
-		"BeforePageDisplay": [
-			"LoopFeedback::onBeforePageDisplay",
-			"LoopSkinHooks::onBeforePageDisplay"
-		]
+		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
