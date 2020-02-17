@@ -108,7 +108,8 @@
 		"ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
-		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php"
+		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
+		"LoopAccordion": "includes/LoopAccordion.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -139,7 +140,8 @@
 			"LoopSidebar::onParserSetup",
 			"LoopZip::onParserSetup",
 			"LoopMediaHandler::onParserSetup",
-			"LoopScreenshot::onParserSetup"
+			"LoopScreenshot::onParserSetup",
+			"LoopAccordion::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy",

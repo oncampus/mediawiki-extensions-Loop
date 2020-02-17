@@ -201,6 +201,13 @@
 				</xsl:element>
 			</xsl:when>	
 			
+			<xsl:when test="@extension_name='loop_accordion'">
+				<xsl:apply-templates/>
+			</xsl:when>	
+			<xsl:when test="@extension_name='loop_row'">
+				<xsl:apply-templates/>
+			</xsl:when>	
+
 		</xsl:choose>	
 		<!--
 				<xsl:element name="break">
@@ -656,6 +663,9 @@
 			</xsl:when>
 			<xsl:when test="extension[@extension_name='loop_sidenote']">
         		<func:result>3</func:result>
+			</xsl:when>
+			<xsl:when test="extension[@extension_name='loop_title']">
+        		<func:result>2</func:result>
 			</xsl:when>
 
 			<xsl:otherwise>
