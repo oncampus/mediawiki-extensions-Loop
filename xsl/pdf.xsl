@@ -639,6 +639,12 @@
 			<xsl:apply-templates select="php:function('LoopXsl::xsl_get_bibliography', .)" mode="bibliography"></xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
+
+	<xsl:template name="loop_accordion">
+		<fo:block>
+			<xsl:apply-templates mode="loop_accordion"/>
+		</fo:block>
+	</xsl:template>
 	
 	
 	<!-- LOOP_OBJECTS -->
@@ -2107,6 +2113,21 @@
 			</xsl:when>
 		</xsl:choose>	
 	</xsl:template>	
+	
+	<xsl:template match="extension" mode="loop_accordion">
+		<xsl:choose>
+			<xsl:when test="@extension_name='loop_title'">
+				<fo:block>
+					<xsl:apply-templates></xsl:apply-templates>
+				</fo:block>
+			</xsl:when>
+			<xsl:when test="@extension_name='loop_row'">
+				<fo:block margin-bottom="3mm">
+					<xsl:apply-templates mode="loop_accordion"></xsl:apply-templates>
+				</fo:block>
+			</xsl:when>
+		</xsl:choose>	
+	</xsl:template>	
 
 	<xsl:template match="extension">
 		<!-- <xsl:if test="not(@extension_name='mathimage')"> -->
@@ -2225,6 +2246,9 @@
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_literature'">
 				<xsl:call-template name="loop_literature"></xsl:call-template>
+			</xsl:when>
+			<xsl:when test="@extension_name='loop_accordion'">
+				<xsl:call-template name="loop_accordion"></xsl:call-template>
 			</xsl:when>
 
 			<xsl:otherwise>
