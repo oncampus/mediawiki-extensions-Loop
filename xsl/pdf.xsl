@@ -2117,7 +2117,7 @@
 	<xsl:template match="extension" mode="loop_accordion">
 		<xsl:choose>
 			<xsl:when test="@extension_name='loop_title'">
-				<fo:block>
+				<fo:block font-weight="bold">
 					<xsl:apply-templates></xsl:apply-templates>
 				</fo:block>
 			</xsl:when>
