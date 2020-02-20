@@ -123,21 +123,34 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		
+
 		if ( is_object( $file ) ) {
 			$mediaType = $file->getMediaType();
 			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
+
+
 				$params['frame']['class'] = 'responsive-image';
 				if ($loopEditMode) {
 					$params['frame']['no-link'] = false;
-					#$params['frame']['framed'] = true;
+					//$params['frame']['framed'] = true;
 				} else {
-					#$params['frame']['framed'] = true;
+					// $params['frame']['framed'] = true;
 					$params['frame']['no-link'] = true;
+					
 				}
 				if ( isset( $params['frame']['align'] ) ) {
 					$params['horizAlign'][ $params['frame']['align'] ] = true;
 				}
+				//Parser.php:5780
+				$imageIsFramed = isset( $params['frame']['frame'] )
+					|| isset( $params['frame']['framed'] )
+					|| isset( $params['frame']['thumbnail'] )
+					|| isset( $params['frame']['manualthumb'] );
+
+				if($imageIsFramed){
+					$params['frame']['class'] .= ' framed';
+				}
+
 			} elseif ( $mediaType == "VIDEO" ) { 
 				$params['frame']['class'] = 'responsive-video';
 				if ( !isset( $params['handler']['width'] ) ) {
@@ -147,7 +160,6 @@ class LoopHooks {
 				$params['frame']['class'] = 'responsive-audio';
 			} 
 		}
-		
 		return true;
 	}	
 
