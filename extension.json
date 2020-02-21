@@ -42,6 +42,7 @@
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
+		"LoopConsent": "includes/LoopConsent.php",
 		"LoopArea": "includes/LoopArea.php",
 		"LoopPrint": "includes/LoopPrint.php",
 		"LoopParagraph": "includes/LoopParagraph.php",
@@ -147,6 +148,7 @@
 			"LoopObject::onParserAfterTidy",
 			"LoopScreenshot::onParserAfterTidy"
 		],
+		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
 		],
