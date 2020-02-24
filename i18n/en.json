@@ -462,6 +462,8 @@
 	"action-loopfeeback-view-results": "View feedback results",
 	"action-loopfeeback-view-comments": "View feedback comments",
 	"action-loopfeeback-reset": "Reset feedbacks",
-	"loopfeedback-already-done": "You already gave us feedback. Thank you!"
+	"loopfeedback-already-done": "You already gave us feedback. Thank you!",
 
+	"loopconsent-text": "When you start the video, content is loaded from YouTube and your IP address is transferred to YouTube.",
+	"loopconsent-button": "Give consent and start video" 	
 }

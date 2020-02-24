@@ -3,7 +3,8 @@
 		"authors": [
 			"Marc Vorreiter",
 			"Kevin Berg",
-			"Dennis Krohn"
+			"Dennis Krohn",
+			"Dustin Neß"
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -462,6 +463,8 @@
 	"action-loopfeeback-view-results": "Feedback Ergebnisse ansehen",
 	"action-loopfeeback-view-comments": "Feedback Kommentare ansehen",
 	"action-loopfeeback-reset": "Feedbacks zurücksetzen",
-	"loopfeedback-already-done": "Sie haben auf dieser Seite bereits Feedback abgegeben. Vielen Dank!"
+	"loopfeedback-already-done": "Sie haben auf dieser Seite bereits Feedback abgegeben. Vielen Dank!",
 
+	"loopconsent-text": "Wenn Sie das Video starten, werden Inhalte von YouTube geladen und dadurch Ihre IP-Adresse an YouTube übertragen.",
+	"loopconsent-button": "Video ansehen und nicht erneut fragen" 	
 }

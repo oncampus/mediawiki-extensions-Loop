@@ -149,7 +149,6 @@
 			"LoopObject::onParserAfterTidy",
 			"LoopScreenshot::onParserAfterTidy"
 		],
-		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
 		"SpecialPage_initList": [
 			"LoopHooks::onSpecialPageinitList"
 		],
@@ -176,7 +175,8 @@
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
-		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay"
+		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
+		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -623,7 +623,8 @@
 	},
 	"DefaultUserOptions": {
 		"LoopEditMode": false,
-		"LoopRenderMode": "default"
+		"LoopRenderMode": "default",
+		"LoopYtConsent": false
 	},
 	"HiddenPrefs": [
 		"LoopRenderMode",
