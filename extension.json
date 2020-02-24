@@ -623,8 +623,7 @@
 	},
 	"DefaultUserOptions": {
 		"LoopEditMode": false,
-		"LoopRenderMode": "default",
-		"LoopYtConsent": false
+		"LoopRenderMode": "default"
 	},
 	"HiddenPrefs": [
 		"LoopRenderMode",
