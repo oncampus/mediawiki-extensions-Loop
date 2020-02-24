@@ -120,7 +120,8 @@
 			"LoopHooks::onMediaWikiPerformAction"
 		],
 		"PageRenderingHash":[
-			"LoopHooks::onPageRenderingHash"
+			"LoopHooks::onPageRenderingHash",
+			"LoopConsent::onPageRenderingHash"
 		],
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
