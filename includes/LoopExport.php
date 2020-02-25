@@ -213,6 +213,8 @@ class LoopExportPdf extends LoopExport {
 		header("Content-Type: application/pdf");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
