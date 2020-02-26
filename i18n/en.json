@@ -464,6 +464,6 @@
 	"action-loopfeeback-reset": "Reset feedbacks",
 	"loopfeedback-already-done": "You already gave us feedback. Thank you!",
 
-	"loopconsent-text": "When you start the video, content is loaded from YouTube and your IP address is transferred to YouTube.",
-	"loopconsent-button": "Give consent and start video" 	
+	"loopconsent-text": "When you start this element, content is loaded by the service providers and your IP address is transfered to them.",
+	"loopconsent-button": "Give consent and start element" 	
 }

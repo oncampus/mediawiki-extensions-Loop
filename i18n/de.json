@@ -465,6 +465,6 @@
 	"action-loopfeeback-reset": "Feedbacks zurücksetzen",
 	"loopfeedback-already-done": "Sie haben auf dieser Seite bereits Feedback abgegeben. Vielen Dank!",
 
-	"loopconsent-text": "Wenn Sie das Video starten, werden Inhalte von YouTube geladen und dadurch Ihre IP-Adresse an YouTube übertragen.",
-	"loopconsent-button": "Video ansehen und nicht erneut fragen" 	
+	"loopconsent-text": "Wenn Sie dieses Element öffnen, werden Inhalte von externen Dienstleistern geladen und dadurch Ihre IP-Adresse an Diese übertragen.",
+	"loopconsent-button": "Inhalt ansehen und nicht erneut fragen" 	
 }

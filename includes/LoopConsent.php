@@ -1,6 +1,6 @@
 <?php
 /**
-  * @description Consent prompt for YouTube
+  * @description Consent prompt for YouTube, Vimeo and H5P
   * @author Dustin Neß <dustin.ness@th-luebeck.de>
   */
 
@@ -12,14 +12,24 @@
 if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); }
 
 class LoopConsent {
+
     public static function onParserBeforeStrip( &$parser ) {
         if( !isset( $_COOKIE['LoopYtConsent'] ) ) {
             $parser->setHook( 'youtube', 'LoopConsent::parseYoutube' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseYoutube' );  // <embedvideo>
+            $parser->setHook('h5p', 'LoopConsent::parseH5P');               // <h5p>
             $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );       // {{#ev}}
-            $parser->setFunctionHook( 'evt', 'LoopConsent::parseEv' );       // {{#evt}}
-            $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' );       // {{#evu}}
+            $parser->setFunctionHook( 'evt', 'LoopConsent::parseEv' );      // {{#evt}}
+            $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' );     // {{#evu}}
         }
+    }
+
+
+    public static function parseH5P( $input, array $args, Parser $parser, PPFrame $frame ) {
+        $lc = new LoopConsent();
+
+        return $lc->renderOutput( 'h5p' );
+
     }
 
 
@@ -33,11 +43,19 @@ class LoopConsent {
     public static function parseEv( $parser, $callback, $flags) {
         $lc = new LoopConsent();
 
-        return [
-            $lc->renderOutput( $lc->getYouTubeId( $flags ) ),
-            'noparse'=> true,
-            'isHTML' => true
-        ];
+        if($callback == 'youtube') {
+            return [
+                $lc->renderOutput( $lc->getYouTubeId( $flags ), $callback ),
+                'noparse'=> true,
+                'isHTML' => true
+            ];
+        } else if ($callback == 'vimeo') {
+            return [
+                $lc->renderOutput( $flags, $callback ),
+                'noparse'=> true,
+                'isHTML' => true
+            ];
+        }
     }
 
 
@@ -52,9 +70,24 @@ class LoopConsent {
     }
 
     
-    private function renderOutput( $id ) {
-        $out = '<div class="loop_consent" style="background-image: url(https://img.youtube.com/vi/'. $id .'/maxresdefault.jpg)">';
-        $out .= '<div class="loop_consent_text"><p>' . wfMessage('loopconsent-text') . '</p>';
+    private function renderOutput( $id, $service = '' ) {
+
+        $url = '';
+        $title = '';
+
+        if( $service == 'youtube' ) {
+            $url = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
+            $title = 'YouTube';
+        } else if ( $service == 'vimeo' ) {
+            $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $id ) );
+            $url = $vimeoApi->thumbnail_url;
+            $title = 'Vimeo';   
+        } else if ( $id == 'h5p' ) {
+            $title = 'H5P';
+        }
+
+        $out = '<div class="loop_consent" style="background-image: url(' . $url . ')">';
+        $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
         $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree">⯈ ' . wfMessage('loopconsent-button') . '</button>';
         $out .= '</div></div>';
  
