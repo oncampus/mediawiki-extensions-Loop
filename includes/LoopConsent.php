@@ -14,15 +14,31 @@ if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); 
 class LoopConsent {
 
     public static function onParserBeforeStrip( &$parser ) {
-        if( !isset( $_COOKIE['LoopYtConsent'] ) ) {
+
+        if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseYoutube' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseYoutube' );  // <embedvideo>
             $parser->setHook('h5p', 'LoopConsent::parseH5P');               // <h5p>
             $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );       // {{#ev}}
             $parser->setFunctionHook( 'evt', 'LoopConsent::parseEv' );      // {{#evt}}
             $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' );     // {{#evu}}
+
+            return true;
+        } else {
+
+            //zum testen Inhalt von onPageRenderingHash() auskommentieren 
+
+            // if(filter_input(INPUT_GET, 'consent', FILTER_SANITIZE_URL)) {
+            //     if($parser->getTitle()->mArticleID != 0) {
+            //         $page = WikiPage::factory( $parser->getTitle() );
+            //         $page->doPurge();
+            //         header("Refresh:0; url=" . $_SERVER['PHP_SELF']); // also strips URL params
+            //     }
+            // }
         }
+            
     }
+    
 
 
     public static function parseH5P( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -92,7 +108,7 @@ class LoopConsent {
         
         $out = '<div class="loop_consent" style="background-image: url(' . $url . ')">';
         $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
-        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree">⯈ ' . wfMessage('loopconsent-button') . '</button>';
+        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button') . '</button>';
         $out .= '</div></div>';
  
         return $out;
@@ -109,13 +125,16 @@ class LoopConsent {
 
 
     public static function onPageRenderingHash( &$confstr, $user, &$optionsUsed ) {
-        $loopYtConsentVal  = $user->getOption( 'LoopYtConsent' );
+
+        // nur eingeloggte User
+        //Cache manuell löschen wenn Consent-Button geklickt, funktioniert dann
+        $loopConsentVal  = $user->getOption( 'LoopConsent' );
       
-        if( isset( $loopYtConsentVal ) && ( in_array( $loopYtConsentVal, array( "0", "1" ) ) ) ) {
-            if( isset( $_COOKIE['LoopYtConsent'] ) ) {
-                $confstr .= "!LoopYtConsent=true";
+        if( isset( $loopConsentVal ) && ( in_array( $loopConsentVal, array( "0", "1" ) ) ) ) {
+            if( isset( $_COOKIE['LoopConsent'] ) ) {
+                $confstr .= "!LoopConsent=true";
             } else {
-                $confstr .= "!LoopYtConsent=false";
+                $confstr .= "!LoopConsent=false";
             }
         }
 
