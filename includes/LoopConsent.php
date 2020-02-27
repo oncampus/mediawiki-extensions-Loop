@@ -29,7 +29,6 @@ class LoopConsent {
         $lc = new LoopConsent();
 
         return $lc->renderOutput( 'h5p' );
-
     }
 
 
@@ -70,22 +69,27 @@ class LoopConsent {
     }
 
     
-    private function renderOutput( $id, $service = '' ) {
+    private function renderOutput( $id, $service = 'youtube' ) {
 
+        global $wgResourceBasePath;
+        
         $url = '';
         $title = '';
 
-        if( $service == 'youtube' ) {
-            $url = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
-            $title = 'YouTube';
-        } else if ( $service == 'vimeo' ) {
-            $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $id ) );
-            $url = $vimeoApi->thumbnail_url;
-            $title = 'Vimeo';   
-        } else if ( $id == 'h5p' ) {
+        if ( $id == 'h5p' ) {
             $title = 'H5P';
+            $url = $wgResourceBasePath.'/skins/Loop/resources/img/bg_h5p.jpg';
+        } else {
+            if( $service == 'youtube' ) {
+                $url = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
+                $title = 'YouTube';
+            } else if ( $service == 'vimeo' ) {
+                $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $id ) );
+                $url = $vimeoApi->thumbnail_url;
+                $title = 'Vimeo';   
+            }
         }
-
+        
         $out = '<div class="loop_consent" style="background-image: url(' . $url . ')">';
         $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
         $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree">⯈ ' . wfMessage('loopconsent-button') . '</button>';
