@@ -2233,10 +2233,14 @@
 			</xsl:when>
 			
 			<xsl:when test="@extension_name='syntaxhighlight'">
-				<fo:inline>
+				<fo:block margin-top="5pt">
 					<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
-					<!-- <xsl:copy-of select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)"></xsl:copy-of> -->
-				</fo:inline>
+				</fo:block>
+			</xsl:when>
+			<xsl:when test="@extension_name='source'">
+				<fo:block margin-top="5pt">
+					<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
+				</fo:block>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_spoiler'">
 				<xsl:call-template name="spoiler"></xsl:call-template>
@@ -2250,12 +2254,21 @@
 			<xsl:when test="@extension_name='loop_accordion'">
 				<xsl:call-template name="loop_accordion"></xsl:call-template>
 			</xsl:when>
+			<xsl:when test="@extension_name='nowiki'">
+				<xsl:call-template name="nowiki"></xsl:call-template>
+			</xsl:when>
 
 			<xsl:otherwise>
 			</xsl:otherwise>
 		</xsl:choose>	
 	</xsl:template>
 	
+	<xsl:template name="nowiki">
+			<fo:inline>
+				<xsl:value-of select="."/>
+			</fo:inline>
+	</xsl:template>
+
 	<xsl:template name="glossary_exists">
 		<xsl:choose>
 			<xsl:when test="//*/glossary/article">
@@ -2523,12 +2536,15 @@
 
 	
 	<xsl:template match="xhtml:code">
-	
-		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
-			<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_code', .)" mode="syntaxhighlight"></xsl:apply-templates>
-			<!-- <xsl:apply-templates></xsl:apply-templates> -->
+		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt" margin-top="5pt">
+			<xsl:value-of select="."></xsl:value-of>
 		</fo:block>
+	</xsl:template>
 
+	<xsl:template match="xhtml:pre">
+		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt" margin-top="5pt">
+			<xsl:value-of select="."></xsl:value-of>
+		</fo:block>
 	</xsl:template>
 	
 	<xsl:template match="xhtml:cite">
@@ -2584,7 +2600,7 @@
 	<xsl:template match="span" mode="syntaxhighlight">
 			<fo:wrapper width="50mm" wrap-option="wrap">
 		<xsl:choose>
-			<xsl:when test="@class='lineno'">
+			<xsl:when test="@class='line'">
 				<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 			</xsl:when>
 			
