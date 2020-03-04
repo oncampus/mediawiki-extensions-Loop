@@ -9,6 +9,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file cannot be run standalone.\n" );
 }
 
+use MediaWiki\Shell\Shell;
 class LoopXsl {
 
 	/**
@@ -147,93 +148,89 @@ class LoopXsl {
 		
 		global $wgPygmentizePath, $IP, $wgScriptPath;
 		
-		$symfonyPath = "$IP/extensions/Loop/vendor/symfony/process/";
-
-		if ( is_file( $symfonyPath . "Process.php" ) ) {
+		$return = '';
+		$input_object=$input[0];
 		
-			$return = '';
-			$input_object=$input[0];
-			
-			$dom = new DOMDocument( "1.0", "utf-8" );
-			$dom->appendChild($dom->importNode($input_object, true));
-			$xml = $dom->saveXML();
+		$dom = new DOMDocument( "1.0", "utf-8" );
+		$dom->appendChild($dom->importNode($input_object, true));
+		$xml = $dom->saveXML();
 
-			$xml = str_replace('<space/>',' ',$xml);
-			$xml = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $xml); 
-			$xml = preg_replace("/^(<extension)(.*)(>)/", "", $xml);
-			$xml = preg_replace("/(<\/extension>)$/", "", $xml);
-			$xml = trim ($xml, " \n\r");
+		$xml = str_replace('<space/>',' ',$xml);
+		$xml = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $xml); 
+		$xml = preg_replace("/^(<extension)(.*)(>)/U", "", $xml);
+		$xml = preg_replace("/(<\/extension>)$/U", "", $xml);
+		$xml = trim ($xml, " \n\r");
 
-			$xml = htmlspecialchars_decode ($xml);
+		$xml = htmlspecialchars_decode ($xml);
 
-			$code = $xml;
+		$code = $xml;
 		
-			require_once $symfonyPath . "Process.php";
-			require_once $symfonyPath . "ProcessUtils.php";
-			require_once $symfonyPath . "Pipes/PipesInterface.php";
-			require_once $symfonyPath . "Pipes/AbstractPipes.php";
-			require_once $symfonyPath . "Pipes/UnixPipes.php";
-			
-			
-			if ($input_object->hasAttribute('lang')) {
-				$lexer = $input_object->getAttribute('lang');
-				$lang = $input_object->getAttribute('lang');
-			} else {
-				$lexer = 'xml';
-			}
-			# doc for command: http://pygments.org/docs/formatters/#HtmlFormatter
-			$command = array( "-l", $lexer, "-O", "linenos=inline" ); # defines lexer (language to highlight in)
-
-			# we ignore the 'inline' attribute as we need to have line breaks on paper
-
-			/* 	# as standard, line numbers should be shown! 
-				# because line-breaking is mandatory, line numbers indicate actual new lines so users can tell the difference
-			if ($input_object->hasAttribute('line')) {
-				$line = $input_object->getAttribute('line');
-				$command[] = "-O";
-				$command[] = "linenos=inline";
-			} */
-			if ($input_object->hasAttribute('start') ) { # defines the start option of line numbering
-				$start = $input_object->getAttribute('start');
-				$command[] = "-O";
-				$command[] = "linenostart=" . $start;
-			}
-			if ($input_object->hasAttribute('highlight')) { # highlights given lines
-				$highlight = $input_object->getAttribute('highlight');
-				$command[] = "-O";
-				$command[] = "hl_lines=$highlight";
-			}
-
-			$command = array_merge ( [ $wgPygmentizePath, "-f", "html", "-O", "encoding=utf-8", "-O", "cssclass", "-O", "startinline=true" ], $command );
-
-			$process = new Symfony\Component\Process\Process( $command, null, null, $code );
-			$process->run();
-			
-			if ( !$process->isSuccessful() ) {
-				$output ='';
-			} else {
-				$output = $process->getOutput();
-			}
-			#var_dump($output); dd($output, $xml,$lexer, $code, $process);
-
-			$output = '<pre>'.$output.'</pre>';
-			$return = new DOMDocument;
-			
-			$old_error_handler = set_error_handler("LoopXsl::xsl_error_handler");
-			libxml_use_internal_errors(true);
-			
-			try {
-				$return->loadXml($output);
-			} catch ( Exception $e ) {
-			
-			}
-			restore_error_handler();	
-
-			return $return;
+		if ($input_object->hasAttribute('lang')) {
+			$lexer = $input_object->getAttribute('lang');
+			$lang = $lexer;
 		} else {
-			# if symfony/process is not present, just return the input node
-			return $input[0];
+			$lexer = 'xml';
 		}
+		# doc for command: http://pygments.org/docs/formatters/#HtmlFormatter
+		#$command = array( "-l", $lexer ); # defines lexer (language to highlight in)
+
+		# we ignore the 'inline' attribute as we need to have line breaks on paper
+
+		$options = "encoding=utf-8,cssclass=mw-highlight";
+
+		# pdf line numbers are mandatory
+		#if ($input_object->hasAttribute('line')) {
+		#	$line = $input_object->getAttribute('line');
+		$options .= ",linenos=inline";
+		#} 
+		if ($input_object->hasAttribute('start') ) { # defines the start option of line numbering
+			$start = $input_object->getAttribute('start');
+			$options .= ",linenostart=" . $start;
+		}
+		if ($input_object->hasAttribute('highlight')) { # highlights given lines
+			$highlight = $input_object->getAttribute('highlight');
+			$options .= ",hl_lines=$highlight";
+		}
+		if ( $lexer === 'php' && strpos( $code, '<?php' ) === false ) { 
+			$options .= ",startinline=true";
+		} 
+
+		$command = [ "-l", $lexer, "-f", "html", "-O", $options ];
+		
+		$result = Shell::command(
+			$wgPygmentizePath,
+			'-l', $lexer,
+			'-f', 'html',
+			'-O',implode( ' ', $command )
+		)
+			->input( $code )
+			->restrict( Shell::RESTRICT_DEFAULT | Shell::NO_NETWORK )
+			->execute();
+
+		if ( $result->getExitCode() != 0 ) {
+			$output ='';
+		}
+
+		if ( $result->getExitCode() != 0 ) {
+			$output ='';
+		} else {
+			$output = $result->getStdout();
+		}
+
+		$output = '<pre>'.$output.'</pre>';
+		$return = new DOMDocument;
+		$old_error_handler = set_error_handler("LoopXsl::xsl_error_handler");
+		libxml_use_internal_errors(true);
+		
+		try {
+			$return->loadXml($output);
+		} catch ( Exception $e ) {
+		
+		}
+		restore_error_handler();	
+
+		return $return;
+		
 		
 	}
 
@@ -253,7 +250,7 @@ class LoopXsl {
 		
 		$xml = $dom->saveXML();
 		$xml = str_replace('<space/>', ' ',$xml);
-		$xml = preg_replace("/(\s\\t)/","\n\t", $xml);
+		$xml = preg_replace("/(\s\\t)/"," \t", $xml);
 		
 		$dom2 = new DOMDocument( "1.0", "utf-8" );
 		$dom2->loadXML($xml);
