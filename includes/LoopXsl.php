@@ -151,6 +151,8 @@ class LoopXsl {
 		$return = '';
 		$input_object=$input[0];
 		
+#dd($sh,$lexer );
+
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$dom->appendChild($dom->importNode($input_object, true));
 		$xml = $dom->saveXML();
@@ -164,13 +166,31 @@ class LoopXsl {
 		$xml = htmlspecialchars_decode ($xml);
 
 		$code = $xml;
-		
+		# check lang for older GeSHi lexers. html5 for example would not work and is now mapped to html 
 		if ($input_object->hasAttribute('lang')) {
-			$lexer = $input_object->getAttribute('lang');
-			$lang = $lexer;
+			global $IP, $wgExtensionDirectory;
+			$lang = $input_object->getAttribute('lang');
+			$lexers = require $wgExtensionDirectory . '/SyntaxHighlight_GeSHi/SyntaxHighlight.lexers.php';
+			$lexer = strtolower( $lang );
+			if ( array_key_exists( $lexers[$lexer] ) ) {
+				return $lexer;
+			} else {
+				$geshi2pygments = SyntaxHighlightGeSHiCompat::getGeSHiToPygmentsMap();
+	
+				// Check if this is a GeSHi lexer name for which there exists
+				// a compatible Pygments lexer with a different name.
+				if ( isset( $geshi2pygments[$lexer] ) ) {
+					$lexer = $geshi2pygments[$lexer];
+					if ( ! in_array( $lexer, $lexers ) ) {
+						$lexer = 'xml';
+					}
+				}
+			}
+
 		} else {
 			$lexer = 'xml';
 		}
+		
 		# doc for command: http://pygments.org/docs/formatters/#HtmlFormatter
 		#$command = array( "-l", $lexer ); # defines lexer (language to highlight in)
 
@@ -206,10 +226,6 @@ class LoopXsl {
 			->input( $code )
 			->restrict( Shell::RESTRICT_DEFAULT | Shell::NO_NETWORK )
 			->execute();
-
-		if ( $result->getExitCode() != 0 ) {
-			$output ='';
-		}
 
 		if ( $result->getExitCode() != 0 ) {
 			$output ='';

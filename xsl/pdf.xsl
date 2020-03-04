@@ -1730,14 +1730,14 @@
 	<!-- Loop Spoiler -->
 	<xsl:template name="spoiler">
 		<fo:block keep-together.within-page="always">
-			<fo:block font-weight="bold">
-				<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1mm" padding-right="1mm" padding-top="1mm" padding-bottom="1mm" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
+			<fo:block font-weight="bold" width="145mm">
+				<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1.3mm" padding-right="1.3mm" padding-top="1.3mm" padding-bottom="1.5mm">
 
 					<xsl:attribute name="background-color"><xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
 					<xsl:attribute name="color">#ffffff</xsl:attribute>					
 					<xsl:choose>
 						<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
-							<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
+							<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']"></xsl:apply-templates>
 						</xsl:when>
 						<xsl:when test="@text">
 							<xsl:value-of select="@text"></xsl:value-of>
@@ -1755,8 +1755,12 @@
 						<xsl:attribute name="padding-top">2mm</xsl:attribute>
 						<xsl:attribute name="padding-left">3mm</xsl:attribute>
 						<xsl:attribute name="padding-right">3mm</xsl:attribute>
-						<xsl:attribute name="padding-end">3mm</xsl:attribute>	
+						<xsl:attribute name="padding-end">3mm</xsl:attribute>
+	
 						<fo:block>
+							<xsl:if test="ancestor::extension[@extension_name='loop_area']">
+								<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
+							</xsl:if>
 							<xsl:apply-templates></xsl:apply-templates>
 						</fo:block>
 					</fo:table-cell>
@@ -2240,12 +2244,12 @@
 			</xsl:when>
 			
 			<xsl:when test="@extension_name='syntaxhighlight'">
-				<fo:block margin-top="5pt">
+				<fo:block margin-top="5pt" margin-bottom="5pt">
 					<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="@extension_name='source'">
-				<fo:block margin-top="5pt">
+				<fo:block margin-top="5pt" margin-bottom="5pt">
 					<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
 				</fo:block>
 			</xsl:when>
