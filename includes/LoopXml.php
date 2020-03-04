@@ -737,7 +737,7 @@ class wiki2xml
 			if ( !$this->nextis ( $b , "|" ) ) return false ;
 			if ( !$this->p_internal_link_text ( $b , $x , false , "]]" ) ) return false ;
 		}
-		$this->p_internal_link_trail ( $b , $x ) ;
+		#$this->p_internal_link_trail ( $b , $x ) ; # LOOP: [[file:bildname.png]]Wort kein Leerzeichen zwischen ]] und Wort hat das Wort aus der PDF einfach entfernt.
 		$xml .= "<link>{$x}</link>" ;
 		$a = $b ;
 		return true ;
