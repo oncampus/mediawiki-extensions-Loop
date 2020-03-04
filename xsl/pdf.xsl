@@ -694,7 +694,7 @@
 											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 										</xsl:otherwise>
 									</xsl:choose> 
-									<xsl:apply-templates mode="loop_object"/> 
+									<xsl:apply-templates/><!-- mode="loop_object"-->
 								</fo:block>
 							</fo:table-cell>	
 						</fo:table-row>
@@ -1148,7 +1148,7 @@
 							<fo:inline>	
 								<xsl:choose>
 									<xsl:when test="descendant::extension[@extension_name='loop_figure_title']">
-										<xsl:apply-templates select="descendant::extension[@extension_name='loop_figure_title']" mode="infigure"></xsl:apply-templates>
+										<xsl:apply-templates select="descendant::extension[@extension_name='loop_figure_title']" mode="loop_object"></xsl:apply-templates>
 									</xsl:when>
 									<xsl:when test="descendant::extension[@extension_name='loop_title']">
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_title']"></xsl:apply-templates>
@@ -2099,7 +2099,13 @@
 			<xsl:when test="@extension_name='loop_title'">
 				<xsl:apply-templates></xsl:apply-templates>
 			</xsl:when>
+			<xsl:when test="@extension_name='loop_figure_title'">
+				<xsl:apply-templates></xsl:apply-templates>
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_description'">
+				<xsl:apply-templates></xsl:apply-templates>
+			</xsl:when>
+			<xsl:when test="@extension_name='loop_figure_description'">
 				<xsl:apply-templates></xsl:apply-templates>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_copyright'">
@@ -2117,13 +2123,14 @@
 	<xsl:template match="extension" mode="loop_accordion">
 		<xsl:choose>
 			<xsl:when test="@extension_name='loop_title'">
-				<fo:block font-weight="bold">
+				<fo:block>
 					<xsl:apply-templates></xsl:apply-templates>
 				</fo:block>
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_row'">
-				<fo:block margin-bottom="3mm">
-					<xsl:apply-templates mode="loop_accordion"></xsl:apply-templates>
+				<fo:block margin-bottom="4mm">
+					<xsl:apply-templates select="./descendant::extension[@extension_name='loop_title']" mode="loop_accordion"></xsl:apply-templates>
+					<xsl:apply-templates></xsl:apply-templates>
 				</fo:block>
 			</xsl:when>
 		</xsl:choose>	
@@ -2257,7 +2264,6 @@
 			<xsl:when test="@extension_name='nowiki'">
 				<xsl:call-template name="nowiki"></xsl:call-template>
 			</xsl:when>
-
 			<xsl:otherwise>
 			</xsl:otherwise>
 		</xsl:choose>	
@@ -2441,30 +2447,6 @@
 		</xsl:choose>
 
 	</xsl:template>
-	
-	<xsl:template match="extension" mode="infigure">
-		<xsl:choose>
-			<xsl:when test="@extension_name='loop_figure_title'">
-				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
-			</xsl:when>
-			<xsl:when test="@extension_name='loop_figure_description'">
-				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
-			</xsl:when>	
-			<xsl:when test="@extension_name='loop_title'">
-				<!-- <xsl:apply-templates  mode="infigure"></xsl:apply-templates> -->
-				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
-			</xsl:when>	
-			<xsl:when test="@extension_name='loop_description'">
-				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
-			</xsl:when>	
-			<xsl:when test="@extension_name='loop_copyright'">
-				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
-			</xsl:when>		
-			<xsl:when test="@extension_name='loop_task'">
-				<xsl:apply-templates select="node()[not(self::br) and not(self::xhtml:br)]"></xsl:apply-templates>
-			</xsl:when>		
-		</xsl:choose>
-	</xsl:template>	
 
 	
 	<xsl:template name="loop_reference">
@@ -2600,7 +2582,7 @@
 	<xsl:template match="span" mode="syntaxhighlight">
 			<fo:wrapper width="50mm" wrap-option="wrap">
 		<xsl:choose>
-			<xsl:when test="@class='line'">
+			<xsl:when test="@class='lineno'">
 				<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 			</xsl:when>
 			
