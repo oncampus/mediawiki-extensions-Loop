@@ -378,6 +378,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Marginalie",
 	"loopwikieditor-loop-snippets-print": "Printavsnitt",
 	"loopwikieditor-loop-snippets-noprint": "No-Printavsnitt",
+	"loopwikieditor-loop-snippets-accordion": "Accordeon",
+	"loopwikieditor-loop-snippets-syntaxhighlight": "Syntaxhighlighted code",
 	"loopwikieditor-loop-contents": "Medier",
 	"loopwikieditor-loop-content-audio": "lokalt audio",
 	"loopwikieditor-loop-content-video": "lokalt video",

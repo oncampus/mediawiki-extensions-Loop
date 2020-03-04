@@ -378,6 +378,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Marginalie",
 	"loopwikieditor-loop-snippets-print": "Druckbereich",
 	"loopwikieditor-loop-snippets-noprint": "Nicht-Druckbereich",
+	"loopwikieditor-loop-snippets-accordion": "Akkordeon",
+	"loopwikieditor-loop-snippets-syntaxhighlight": "Syntaxhighlighted Code",
 	"loopwikieditor-loop-contents": "Medien",
 	"loopwikieditor-loop-content-audio": "lokale Audiodatei",
 	"loopwikieditor-loop-content-video": "lokales Video",
