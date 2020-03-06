@@ -17,6 +17,9 @@ class LoopXml {
 	 */
 	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
 		global $wgCanonicalServer, $wgLanguageCode;
+
+		set_time_limit(3600);
+		ini_set('memory_limit', '1024M');
 		
 		$loopStructureItems = $loopStructure->getStructureItems();		
 		
@@ -95,7 +98,7 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
-		
+
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
@@ -232,6 +235,7 @@ class LoopXml {
 	
 	
 	private static function structureItemToc(LoopStructureItem $structureItem) {
+		
 		$toc_xml = "<chapter>";
 	
 		$childs = $structureItem->getDirectChildItems();
@@ -432,7 +436,7 @@ class LoopXml {
 	}	
 
 	public static function glossary2xml( ) {
-
+		
 		$articles = LoopGlossary::getGlossaryPages( "idArray" );
 		$return = '';
 
@@ -447,7 +451,7 @@ class LoopXml {
 	}
 
 	public static function terminology2xml( ) {
-
+		
 		$terminology = LoopTerminology::getTerminologyPageContentText();
 		$items = LoopTerminology::getSortedTerminology( $terminology );
 
@@ -680,7 +684,12 @@ class wiki2xml
 						( $c5 == '/' && $c7 == '/' ) &&
 						$this->once ( $b , $x , "external_freelink" ) ) continue ;
 			} else {
-				if ( $c == "{" && $this->once ( $b , $x , "template" ) ) continue ;
+				# LOOP CHANGE for endless loop [{{filepath:Prokrastination_Fragebogen_Rist.pdf}} Fragebogen]
+				if ( $closeit != "}}" ) {
+					if ( $c == "{" && $this->once ( $b , $x , "template" ) ) continue ;
+				} else {
+					return false;
+				}
 			}
 			$x .= htmlspecialchars ( $c ) ;
 			$b++ ;
@@ -896,6 +905,7 @@ class wiki2xml
 	}
 
 	function replace_template_variables ( &$text , &$variables ) {
+		
 		global $xmlg ;
 		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
 		for ( $a = 0 ; $a+3 < strlen ( $text ) ; $a++ ) {
@@ -905,6 +915,7 @@ class wiki2xml
 	}
 
 	function p_template_replace_single_variable ( &$text , $a , &$variables ) {
+		
 		if ( mb_substr ( $text , $a , 3 ) != '{{{' ) return false ;
 		$b = $a + 3 ;
 
