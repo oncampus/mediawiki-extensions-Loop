@@ -2062,9 +2062,11 @@
 			</xsl:choose>
 		</xsl:variable>	
 	
+		<fo:block>
 		<fo:float>
-			<xsl:attribute name="float" value="$align"></xsl:attribute>				
-				<xsl:choose>
+			<xsl:attribute name="float" value="end" border="1px solid black"></xsl:attribute>		
+
+			<xsl:choose>
 				<xsl:when test="$align='start'">
 					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
 				</xsl:when>			
@@ -2089,13 +2091,23 @@
 							<xsl:otherwise>
 								<xsl:attribute name="padding-left">0mm</xsl:attribute>
 							</xsl:otherwise>
-						</xsl:choose> -->							
+						</xsl:choose> 						 -->
 						<xsl:attribute name="src" ><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
-						<xsl:attribute name="max-width">145mm</xsl:attribute>
+						<xsl:choose>
+							<xsl:when test="@imagewidth">
+								<xsl:attribute name="content-width"><xsl:value-of select="@imagewidth"></xsl:value-of></xsl:attribute>
+							</xsl:when>		
+							<xsl:otherwise>
+								<xsl:attribute name="max-width">145mm</xsl:attribute>
+							</xsl:otherwise>
+						</xsl:choose>
+						
 					</fo:external-graphic>
+					
 				</fo:block>
 			</xsl:if>
-		</fo:float>		
+		</fo:float>
+				</fo:block>	
 	</xsl:template>	
 	
 	<xsl:template match="extension" mode="loop_object">

@@ -172,8 +172,8 @@ class LoopXsl {
 			$lang = $input_object->getAttribute('lang');
 			$lexers = require $wgExtensionDirectory . '/SyntaxHighlight_GeSHi/SyntaxHighlight.lexers.php';
 			$lexer = strtolower( $lang );
-			if ( array_key_exists( $lexers[$lexer] ) ) {
-				return $lexer;
+			if ( array_key_exists( $lexer, $lexers ) ) {
+				$lexer = $lexer;
 			} else {
 				$geshi2pygments = SyntaxHighlightGeSHiCompat::getGeSHiToPygmentsMap();
 	
