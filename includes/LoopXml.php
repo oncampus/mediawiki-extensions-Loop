@@ -296,18 +296,28 @@ class LoopXml {
 				$child_name='text';
 				$child_value=$child->textContent;
 			}
-	
+			
+			$leftright = array(
+				"right" => "right",
+				"left" => "left",
+				"center" => "center",
+				"rechts" => "right",
+				"links" => "left",
+				"zentriert" => "center",
+			);
+
 			if ($child_name == 'part') {
 				if (substr($child_value, -2) == 'px') {
 					$child_name = 'width';
 					$child_value = substr($child_value,0,-2);
-				} elseif (($child_value == 'right') || ($child_value == 'left') || ($child_value == 'center')) {
+				} elseif ( array_key_exists( $child_value, $leftright ) ) {
 					$child_name = 'align';
-	
+					$child_value = $leftright[ $child_value ];
 				}
 			}
-			$link_parts[$child_name]=$child_value;
+			$link_parts[$child_name] = $child_value;
 		}
+		
 		if (!array_key_exists('type', $link_parts)) {
 			$link_parts['type']='internal';
 		}
@@ -404,6 +414,7 @@ class LoopXml {
 				}
 			}
 		}
+		#dd($return_xml, $link_parts);
 		$return = new DOMDocument;
 	
 		$old_error_handler = set_error_handler("LoopXml::error_handler");
@@ -737,7 +748,7 @@ class wiki2xml
 			if ( !$this->nextis ( $b , "|" ) ) return false ;
 			if ( !$this->p_internal_link_text ( $b , $x , false , "]]" ) ) return false ;
 		}
-		$this->p_internal_link_trail ( $b , $x ) ;
+		#$this->p_internal_link_trail ( $b , $x ) ; # LOOP: [[file:bildname.png]]Wort kein Leerzeichen zwischen ]] und Wort hat das Wort aus der PDF einfach entfernt.
 		$xml .= "<link>{$x}</link>" ;
 		$a = $b ;
 		return true ;

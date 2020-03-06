@@ -315,7 +315,9 @@
 				"loopwikieditor-loop-content-prezi",
 				"loopwikieditor-loop-content-slideshare",
 				"loopwikieditor-loop-content-quizlet",
-				"loopscreenshot"
+				"loopscreenshot",
+				"loopwikieditor-loop-snippets-accordion",
+				"loopwikieditor-loop-snippets-syntaxhighlight"
 			]
 		},
 		"loop.feedback.js": {

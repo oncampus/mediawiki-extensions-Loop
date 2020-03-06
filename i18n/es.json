@@ -368,6 +368,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Nota marginal",
 	"loopwikieditor-loop-snippets-print": "Área de impresión",
 	"loopwikieditor-loop-snippets-noprint": "Área no imprimible",
+	"loopwikieditor-loop-snippets-accordion": "Acordeón",
+	"loopwikieditor-loop-snippets-syntaxhighlight": "Código resaltado de sintaxis",
 	"loopwikieditor-loop-contents": "Multimedia",
 	"loopwikieditor-loop-content-audio": "Audio local",
 	"loopwikieditor-loop-content-video": "Video local",

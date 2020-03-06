@@ -873,6 +873,13 @@ class LoopObject {
 								}
 								if ( isset( $object[2]["description"] ) ) {
 									$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+								} else {
+									$desc_tags = array ();
+									$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
+									foreach( $desc_tags as $tag ) {
+										$tmpLoopObjectIndex->itemDescription = $tag[1];
+										break;
+									}
 								}
 								if ( isset( $object[2]["id"] ) ) {
 									if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
