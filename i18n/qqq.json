@@ -204,8 +204,6 @@
 	"looparea-icon-text-task" : "icon text of the looparea type task",
 	"looparea-icon-text-timerequirement" : "icon text of the looparea type timerequirement",
 	"looparea-icon-text-websource" : "icon text of the looparea type websource",
-	"looparea-error-unknown-type-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
-	"looparea-error-unknown-render-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
 
 	"loopspoiler-default-title": "default label for spoiler button",
 	"loopprint-printversion": "default label for print version button",
@@ -326,16 +324,9 @@
 	"looplegacy-biblio": "Special error message for biblio tag which has been deprecated in LOOP2 and replaced by loop_literature tag.",
 	"looplegacy-references": "Special error message for references tag is been obsolte since LOOP2.",
 
-	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
-	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options",
-	"loopobject-error-unknown-indexingoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - indexing option\n* $2 supported index options",
-	"loopobject-error-unknown-showcopyrightoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - show_copyright option\n* $2 supported show_copyright options",
 	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
-	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options",
-	"loopreference-error-unknown-titleoption" : "Error Message rendered when title option is unknown\n\nParameters:\n* $1 - title option\n* $2 supported title options",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
-	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types",
 
 	"loopexternalcontent-prezi-on": "The 'on' as in 'View on Prezi.com'", 
 	"namespace-special": "Special name space message",

@@ -204,8 +204,6 @@
 	"looparea-icon-text-task" : "Aufgabe",
 	"looparea-icon-text-timerequirement" : "Zeitumfang",
 	"looparea-icon-text-websource" : "Websource",
-	"looparea-error-unknown-type-attribute" : "Dieser Seitenbereich besitzt für den Parameter Typ (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"looparea-error-unknown-render-attribute" : "Dieser Seitenbereich besitzt für den Parameter Render (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 
 	"loopspoiler-default-title": "Lösung",
 	"loopprint-printingarea": "Druckbereich",
@@ -326,13 +324,7 @@
 	"looplegacy-biblio": "Der '''biblio'''-Tag wird seit LOOP2 nicht mehr unterstützt. Bitte benutzen Sie den neuen Tag '''<loop_literature>'''.",
 	"looplegacy-references": "Der '''references'''-Tag wird seit LOOP2 nicht mehr benötigt. Fußnoten werden jetzt automatisch am Seitenende dargestellt, wenn ein <ref>-Tag auf einer Seite benutzt wird.",
 
-	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopobject-error-unknown-showcopyrightoption" : "Die Auszeichnung besitzt für den Parameter Copyright anzeigen (show_copyright) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-dublicate-id" : "Die Objektauszeichnung besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiteres Objekt mit der ID vorhanden. Bitte ändern Sie die ID und speichern Sie die Seiten neu ab, um eine korrekte Zählung sicherzustellen.",
-	"loopmedia-error-unknown-mediatype" : "Das Medienelement besitzt für den Parameter Medientyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Medienelementen: XXX",
-	"loopreference-error-unknown-titleoption" : "Die Referenz besitzt für den Parameter Titelanzeige (title) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 
