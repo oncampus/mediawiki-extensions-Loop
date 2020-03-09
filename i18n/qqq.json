@@ -396,6 +396,7 @@
 	
 	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
 	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} ",
+	"loop-error-unknown-param" : "General Error message for unknown parameters entered in a tag. $1 -> the tag that has an unknown parameter; $2 -> The unknown parameter name; $3 -> The unknown value of that parameter; $4 -> Allowed values; $5 -> the given default for that tag;",
 	"loopterminology": "Special Page title of terminology/abbreviations page",
 	"loopterminologyedit": "Special Page title of terminology/abbreviations edit page",
 	"loopterminology-warning-deleted": "Feedback message for deleting all abbreviations",

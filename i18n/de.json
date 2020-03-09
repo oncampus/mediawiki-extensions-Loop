@@ -335,7 +335,6 @@
 	"loopreference-error-unknown-titleoption" : "Die Referenz besitzt für den Parameter Titelanzeige (title) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
-	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
 	"loopexternalcontent-prezi-on": "auf", 
 	"namespace-special": "Spezial",
@@ -396,6 +395,7 @@
 	
 	"loop-error-missingrequired": "In dem Tag $1 fehlt der notwendige Parameter $2. Das Element kann nicht dargestellt werden.",
 	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}",
+	"loop-error-unknown-param" : "Im Tag $1 enthält der Parameter $2 den unbekannten Wert '''$3'''.<br/>\nErlaubte Werte sind '''$4'''. Das Element wird nun standardmäßig mit dem Wert $5 dargestellt.",
 	"loopterminology": "Abkürzungsverzeichnis",
 	"loopterminologyedit": "Abkürzungsverzeichnis bearbeiten",
 	"loopterminology-warning-deleted": "Alle Einträge wurden aus dem Abkürzungsverzeichnis gelöscht.",

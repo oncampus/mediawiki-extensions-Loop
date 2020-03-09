@@ -335,7 +335,6 @@
 	"loopreference-error-unknown-titleoption" : "Värdet av parametern (title) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Ingen ID (id) har angivits i referensen.",
-	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''.",
 
 	"loopexternalcontent-prezi-on": "på", 
 	"namespace-special": "Special",
@@ -396,6 +395,7 @@
 	
 	"loop-error-missingrequired": "Taggen $1 saknas parametern $2. Elementet visas inte.",
 	"loop-error-missingfile": "Filen $2 som har angivits i taggen $1 kunde inte hittas. Vänligen ladda upp den. {{PLURAL:$3|Elementet visas uten filen.|Elementet visas inte.}}",
+	"loop-error-unknown-param" : "Parametern $2 av taggen $1 är ogiltig: '''$3'''.<br/>\nTillåtna värden är '''$4'''. Elementet visas med värdet $5.",
 	"loopterminology": "Förkortningar",
 	"loopterminologyedit": "Regidera förkortningar",
 	"loopterminology-warning-deleted": "Alla förkortningar har tagits bort.",

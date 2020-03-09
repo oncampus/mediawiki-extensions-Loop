@@ -325,7 +325,6 @@
 	"loopreference-error-unknown-titleoption" : "La referencia bibliográfica contiene un valor desconocido '''$1''' para el parámetro mostrar título (title).<br/>\nValores válidos: '''$2'''.",
 	"loopreference-error-unknown-refid" : "El ID ingresado para la referencia: '''$1''', es desconocido.",
 	"loopreference-error-no-refid" : "La referencia bibliográfica no contiene el parámetro ID (id).",
-	"loopspoiler-error-unknown-spoilertype" : "El Spoiler <nowiki><loop_spoiler></nowiki> contiene el valor desconocido '''$1''' para el parámetro tipo de área (type).<br/>\nValores válidos '''$2'''.\nDocumentación sobre spoiler: XXX",
 
 	"loopexternalcontent-prezi-on": "encendido", 
 	"namespace-special": "Especial",
@@ -397,6 +396,7 @@
 	"loopbugreport": "Reportar error",
     "loopbugreport-specialpage-title": "Reportar error",
     "loopbugreport-message-label": "Descripción de errores",
+	"loop-error-unknown-param" : "The tag $1 contains a parameter $2 with an unknown value '''$3'''.<br/>\nValid values are '''$4'''. The element is rendered by default with value $5.",
     "loopbugreport-page-label": "Página",
     "loopbugreport-send": "Enviar",
     "loopbugreport-email-subject": "Reporte de error $1 $2 del LOOP",

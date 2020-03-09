@@ -335,7 +335,6 @@
 	"loopreference-error-unknown-titleoption" : "The reference's show title option (title) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
-	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
 
 	"loopexternalcontent-prezi-on": "on", 
 	"namespace-special": "Special",
@@ -396,6 +395,7 @@
 	
 	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
 	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}",
+	"loop-error-unknown-param" : "The tag $1 contains a parameter $2 with an unknown value '''$3'''.<br/>\nValid values are '''$4'''. The element is rendered by default with value $5.",
 	"loopterminology": "List of abbreviations",
 	"loopterminologyedit": "Edit list of abbreviations",
 	"loopterminology-warning-deleted": "All entries have been removed from the list of abbreviations.",
