@@ -21,11 +21,12 @@ class LoopPdf {
 	*/
 	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
 		global $IP;
-
+#echo "hello!";exit;
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';
-		
+		#echo "xml ok!<br>";
 		$xmlfo = self::transformToXmlfo( $wiki_xml );
+		#echo "xmlfo ok!";exit;
 		$pdf = self::makePdfRequest( $xmlfo["xmlfo"] );
 		
 		if ( !empty($errors) ) {

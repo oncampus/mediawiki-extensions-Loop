@@ -509,7 +509,7 @@ class SpecialLoopExport extends SpecialPage {
 			if ($export->getExportContent() != null ) {
 				
 				if ( isset($logEntry) ) {
-					$logEntry->setTarget( Title::newFromId(1) );
+					$logEntry->setTarget( Title::newFromId($structure->mainPage) );
 					$logEntry->setPerformer( User::newFromId(0) ); 
 					$logEntry->setParameters( [ '4::paramname' => $logMsg ] );
 					$logid = $logEntry->insert();
