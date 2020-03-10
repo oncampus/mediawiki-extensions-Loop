@@ -687,6 +687,9 @@
 								</xsl:choose> 
 								<fo:block text-align="left" margin-bottom="1mm">
 									<xsl:choose> 
+										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
+											<xsl:attribute name="margin-left">0mm</xsl:attribute>
+										</xsl:when>
 										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
 											<xsl:attribute name="margin-left">13mm</xsl:attribute>
 										</xsl:when>
@@ -705,7 +708,7 @@
 								<fo:table-cell width="150mm" text-align="left" padding-right="2mm">
 								<xsl:choose> 
 									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
-										<xsl:attribute name="padding-left">13mm</xsl:attribute>
+										<!-- <xsl:attribute name="padding-left">13mm</xsl:attribute> -->
 									</xsl:when>
 									<xsl:otherwise>
 										<xsl:attribute name="padding-left">1mm</xsl:attribute>
@@ -716,9 +719,17 @@
 									</xsl:if>
 									<xsl:call-template name="font_object_title"></xsl:call-template>
 									<fo:block text-align="left">
-									<xsl:if test="ancestor::extension[@extension_name='loop_area']">
-										<xsl:attribute name="margin-left">1mm</xsl:attribute>
-									</xsl:if>
+									<xsl:choose> 
+										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
+											<xsl:attribute name="margin-left">1mm</xsl:attribute>
+										</xsl:when>
+										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+											<xsl:attribute name="margin-left">13mm</xsl:attribute>
+										</xsl:when>
+										<xsl:otherwise>
+											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+										</xsl:otherwise>
+									</xsl:choose> 
 									<xsl:if test="count($object[@render]) = 0 or $object[@render!='title']">						
 										<xsl:choose>
 											<xsl:when test="$object[@extension_name='loop_figure']">
@@ -2979,9 +2990,33 @@
 	</xsl:template>	
 	
 <xsl:template match="table">
+		<xsl:variable name="looparea">
+			<xsl:choose>
+				<xsl:when test="ancestor::extension[@extension_name='loop_area']">true</xsl:when>		
+				<xsl:otherwise>false</xsl:otherwise>	
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="loopspoiler">
+			<xsl:choose>
+				<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">true</xsl:when>	
+				<xsl:when test="ancestor::extension[@extension_name='spoiler']">true</xsl:when>		
+				<xsl:otherwise>false</xsl:otherwise>	
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:variable name="loopobject">
+			<xsl:choose>
+				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">true</xsl:when>	
+				<xsl:when test="ancestor::extension[@extension_name='loop_table']">true</xsl:when>		
+				<xsl:otherwise>false</xsl:otherwise>	
+			</xsl:choose>
+		</xsl:variable>
+	<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_table_attributes', ., $looparea, $loopspoiler, $loopobject)" mode="xsl_table"></xsl:apply-templates>
+</xsl:template>
+
+<xsl:template match="table" mode="xsl_table">
    <fo:table table-layout="auto" border-style="solid" border-width="0.5pt" border-color="black" border-collapse="collapse" padding="0.6pt" space-after="12.5pt">
    		<fo:table-body>
-    		<xsl:apply-templates></xsl:apply-templates>
+			<xsl:apply-templates></xsl:apply-templates>
     	</fo:table-body>
    </fo:table>
 </xsl:template>
@@ -2996,8 +3031,6 @@
 
     <xsl:template match="tablecell">
         <fo:table-cell>
-		
-			
         	<xsl:attribute name="padding">3pt</xsl:attribute>
         	<xsl:attribute name="border-style">solid</xsl:attribute>
         	<xsl:attribute name="border-width">0.5pt</xsl:attribute>
@@ -3005,20 +3038,25 @@
         	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
 			
 			<xsl:call-template name="css-style-attributes"></xsl:call-template>
-			
-			
+
         	<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan"></xsl:value-of></xsl:attribute>
         	</xsl:if>
         	<xsl:if test="@rowspan">
 				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
         	</xsl:if>    
-		   	                	
-        	    	                	
         		<fo:block keep-together.within-column="auto">
-					<xsl:if test="ancestor::extension[@extension_name='loop_area']">
-						<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
-					</xsl:if>
+					<xsl:choose> 
+						<xsl:when test="ancestor::table[@looparea!=''] and ancestor::table[@loopspoiler!='']">
+							<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						</xsl:when>
+						<xsl:when test="ancestor::table[@looparea!=''] and ancestor::table[@loopobject!='']">
+							<xsl:attribute name="margin-left">0mm</xsl:attribute>
+						</xsl:when>
+						<xsl:when test="ancestor::table[@looparea!='']">
+							<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
+						</xsl:when>
+					</xsl:choose> 
         			<xsl:apply-templates></xsl:apply-templates>
 			</fo:block>
 			
@@ -3042,22 +3080,23 @@
 				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
         	</xsl:if>        	           	        	
         	
-        	<!-- 
-			<fo:block font-weight="bold" break-before="column">
-        			<xsl:apply-templates></xsl:apply-templates>
-			</fo:block>
- 			-->
 			<fo:block font-weight="bold" >
-				<xsl:if test="ancestor::extension[@extension_name='loop_area']">
-					<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
-				</xsl:if>
+				<xsl:choose> 
+					<xsl:when test="ancestor::table[@looparea!=''] and ancestor::table[@loopspoiler!='']">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="ancestor::table[@looparea!=''] and ancestor::table[@loopobject!='']">
+						<xsl:attribute name="margin-left">0mm</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="ancestor::table[@looparea!='']">
+						<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
+					</xsl:when>
+				</xsl:choose> 
 				<xsl:apply-templates></xsl:apply-templates>
 			</fo:block>		
 		
         </fo:table-cell>
     </xsl:template>	
-	
-	
 	
 	<xsl:template name="css-style-attributes">
 		<xsl:variable name="cssentries">
