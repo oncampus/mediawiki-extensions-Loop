@@ -20,7 +20,7 @@ class LoopZip {
 	
 	public static function handleLoopZip( $input, array $args, Parser $parser, PPFrame $frame ) {
         
-        global $wgParser, $wgUploadDirectory, $wgUploadPath, $wgServer, $wgOut;
+        global $wgUploadDirectory, $wgUploadPath;
         
         $loopzip = new LoopZip( $input, $args );
         $return = '';
@@ -37,7 +37,7 @@ class LoopZip {
                 $scaleClass = 'responsive-iframe';
             
                 if ( $loopzip->scale ) {
-                    $wgOut->addModules("skins.loop-resizer.js");
+                    $parser->getOutput()->addModules("skins.loop-resizer.js");
                     $scaleClass = "scale-frame";
                 }
 
