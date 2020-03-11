@@ -14,7 +14,7 @@ if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); 
 class LoopConsent {
 
     public static function onParserBeforeStrip( &$parser ) {
-
+        
         if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseYoutube' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseYoutube' );  // <embedvideo>
@@ -25,7 +25,8 @@ class LoopConsent {
 
             return true;
         } else {
-
+            global $wgOut;
+            $wgOut->enableClientCache(false);
             //zum testen Inhalt von onPageRenderingHash() auskommentieren 
 
             // if(filter_input(INPUT_GET, 'consent', FILTER_SANITIZE_URL)) {
@@ -126,17 +127,26 @@ class LoopConsent {
 
     public static function onPageRenderingHash( &$confstr, $user, &$optionsUsed ) {
 
-        // nur eingeloggte User
-        //Cache manuell löschen wenn Consent-Button geklickt, funktioniert dann
-        $loopConsentVal  = $user->getOption( 'LoopConsent' );
+        // nur eingeloggte User, nicht für Nichteingeloggte
+        // Cache manuell löschen wenn Consent-Button geklickt, funktioniert dann
+
+        // $loopConsentVal  = $user->getOption( 'LoopConsent' );
       
-        if( isset( $loopConsentVal ) && ( in_array( $loopConsentVal, array( "0", "1" ) ) ) ) {
-            if( isset( $_COOKIE['LoopConsent'] ) ) {
-                $confstr .= "!LoopConsent=true";
-            } else {
-                $confstr .= "!LoopConsent=false";
-            }
-        }
+        // if( isset( $loopConsentVal ) && ( in_array( $loopConsentVal, array( "0", "1" ) ) ) ) {
+        //     if( isset( $_COOKIE['LoopConsent'] ) ) {
+        //         $confstr .= "!LoopConsent=true";
+        //     } else {
+        //         $confstr .= "!LoopConsent=false";
+        //     }
+        // }
+
+        //if( isset( $loopConsentVal ) && ( in_array( $loopConsentVal, array( "0", "1" ) ) ) ) {
+            // if( isset( $_COOKIE['LoopConsent'] ) ) {
+            //     $confstr .= "!LoopConsent=true";
+            // } else {
+            //     $confstr .= "!LoopConsent=false";
+            // }
+       // }
 
       return true;
     }
