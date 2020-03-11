@@ -21,15 +21,17 @@ class LoopPdf {
 	*/
 	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
 		global $IP;
+		
+		set_time_limit(300);
 
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';
-		
+
 		$xmlfo = self::transformToXmlfo( $wiki_xml );
 		$pdf = self::makePdfRequest( $xmlfo["xmlfo"] );
 		
-		if ( !empty($errors) ) {
-			var_dump($errors);
+		if ( !empty($xmlfo["errors"]) ) {
+			var_dump($xmlfo["errors"]);
 		}
 		if ( strpos( $pdf, "%PDF") !== 0 ) {
 			#es werden keine leeren/fehlerhaften PDFs mehr heruntergeladen, solange das hier aktiv ist.

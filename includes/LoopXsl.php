@@ -490,4 +490,46 @@ class LoopXsl {
 
 		return $wgLoopLegacyPageNumbering;
 	}
+	
+	public static function xsl_transform_table_attributes( $input, $area, $spoiler, $object ) {
+		
+		$table = $input[0];
+		if ( $area == "true" ) {
+			$table->setAttribute( "looparea", "true");
+		} 
+		if ( $spoiler == "true" ) {
+			$table->setAttribute( "loopspoiler", "true");
+		} 
+		if ( $object == "true" ) {
+			$table->setAttribute( "loopobject", "true");
+		} 
+
+		foreach ( $table->childNodes as $rowNode ) {
+			foreach ( $rowNode->childNodes as $node ) {
+				$strpos = strpos( $node->nodeValue, "|" );
+				if ( $strpos !== false ) {
+					
+				foreach ( $node->childNodes as $childNode ) {
+							if ( $childNode->nodeName == "#text") {
+								$content = explode( "|", $childNode->nodeValue );
+								$attr = array();
+								preg_match('/style="(.*)"/Ui', $content[0], $attr["style"]);
+								preg_match('/colspan="(.*)"/Ui', $content[0], $attr["colspan"]);
+								preg_match('/rowspan="(.*)"/Ui', $content[0], $attr["rowspan"]);
+								foreach ( $attr as $k => $v  ) {
+									if ( !empty( $v ) ) {
+										$node->setAttribute( $k, $v[1]);
+									}
+								}
+								$childNode->nodeValue = $content[1];
+							break;
+						}
+					}
+				}
+			}
+		}
+		return $table;
+	}
+
+
 }

@@ -204,8 +204,6 @@
 	"looparea-icon-text-task" : "Task",
 	"looparea-icon-text-timerequirement" : "Timerequirement",
 	"looparea-icon-text-websource" : "Websource",
-	"looparea-error-unknown-type-attribute" : "This object's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"looparea-error-unknown-render-attribute" : "This object's rendering option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 
 	"loopspoiler-default-title": "Solution",
 	"loopprint-printversion": "Printing area",
@@ -326,16 +324,9 @@
 	"looplegacy-biblio": "The tag '''biblio''' is not supported since LOOP2. Please use the new tag '''<loop_literature>'''.",
 	"looplegacy-references": "The tag '''references''' is obsolete since LOOP2. Footnotes are automatically displayed at the end of the page as soon as there is a <ref> tag in use.",
 
-	"loopobject-error-unknown-renderoption" : "The object's render option (render) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"loopobject-error-unknown-alignmentoption" : "The object's alignment option (align) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"loopobject-error-unknown-indexingoption" : "The object's indexing option (index) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
-	"loopobject-error-unknown-showcopyrightoption" : "The object's show copyright option (show_copyright) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",	
 	"loopobject-error-dublicate-id" : "The object's ID is not unique ($1). On page '$2' is another object with that same ID. Please change the ID and save the pages again so the numbering will be correct.",
-	"loopmedia-error-unknown-mediatype" : "The media's type option (type) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
-	"loopreference-error-unknown-titleoption" : "The reference's show title option (title) contains an unknown value: '''$1'''.<br/>\nValid values are: '''$2'''.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
-	"loopspoiler-error-unknown-spoilertype" : "unknown spoiler type '''$1'''\nSupported types are $2",
 
 	"loopexternalcontent-prezi-on": "on", 
 	"namespace-special": "Special",
@@ -396,6 +387,7 @@
 	
 	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
 	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}",
+	"loop-error-unknown-param" : "The tag $1 contains a parameter $2 with an unknown value '''$3'''.<br/>\nValid values are '''$4'''. The element is rendered by default with value $5.",
 	"loopterminology": "List of abbreviations",
 	"loopterminologyedit": "Edit list of abbreviations",
 	"loopterminology-warning-deleted": "All entries have been removed from the list of abbreviations.",
