@@ -1855,7 +1855,39 @@
 
 	<!-- Loop NoPrint-->
 	<xsl:template match="extension[@extension_name='loop_noprint']">
-		<fo:block></fo:block>				
+		<fo:block></fo:block>
+		<xsl:choose>
+			<xsl:when test="./descendant::extension[@extension_name='loop_table']"><fo:block>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_table']/@id"></xsl:value-of>
+				</xsl:attribute></fo:block>
+			</xsl:when>
+			<xsl:when test="./descendant::extension[@extension_name='loop_figure']"><fo:block>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_figure']/@id"></xsl:value-of>
+				</xsl:attribute></fo:block>
+			</xsl:when>
+			<xsl:when test="./descendant::extension[@extension_name='loop_listing']"><fo:block>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_listing']/@id"></xsl:value-of>
+				</xsl:attribute></fo:block>
+			</xsl:when>
+			<xsl:when test="./descendant::extension[@extension_name='loop_formula']"><fo:block>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_formula']/@id"></xsl:value-of>
+				</xsl:attribute></fo:block>
+			</xsl:when>
+			<xsl:when test="./descendant::extension[@extension_name='loop_task']"><fo:block>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_task']/@id"></xsl:value-of>
+				</xsl:attribute></fo:block>
+			</xsl:when>
+			<xsl:when test="./descendant::extension[@extension_name='loop_media']"><fo:block>
+				<xsl:attribute name="id">
+					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_media']/@id"></xsl:value-of>
+				</xsl:attribute></fo:block>
+			</xsl:when>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- Loop Score -->
