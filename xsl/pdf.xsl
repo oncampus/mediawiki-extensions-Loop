@@ -1740,7 +1740,7 @@
 	
 	<!-- Loop Spoiler -->
 	<xsl:template name="spoiler">
-		<fo:block keep-together.within-page="always">
+		<fo:block keep-together.within-page="auto">
 			<fo:block font-weight="bold" width="145mm">
 				<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1.3mm" padding-right="1.3mm" padding-top="1.3mm" padding-bottom="1.5mm">
 
