@@ -25,8 +25,10 @@ class LoopConsent {
 
             return true;
         } else {
-            global $wgOut;
-            $wgOut->enableClientCache(false);
+            // global $wgOut;
+            // $parser->getOutput()->updateCacheExpiry( 0 );
+            // $wgOut->enableClientCache( false );
+            
             //zum testen Inhalt von onPageRenderingHash() auskommentieren 
 
             // if(filter_input(INPUT_GET, 'consent', FILTER_SANITIZE_URL)) {
@@ -89,7 +91,9 @@ class LoopConsent {
     private function renderOutput( $id, $service = 'youtube' ) {
 
         global $wgResourceBasePath;
-        
+        global $wgOut;
+        CacheTime::updateCacheExpiry( 0 );
+			$wgOut->enableClientCache( false );
         $url = '';
         $title = '';
 
