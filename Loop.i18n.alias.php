@@ -30,7 +30,9 @@ $specialPageAliases['en'] = array(
 	'LoopTerminologyEdit' => array( 'Edit list of abbreviations' ),
 	'LoopExportPdfTest' => array( 'Test PDF page by page' ),
 	'LoopBugReport' => array( 'Bugreport' ),
-	'LoopFeedback' => array( 'Feedback' )
+	'LoopFeedback' => array( 'Feedback' ),
+	'LoopImprint' => array( 'Imprint' ),
+	'LoopPrivacy' => array( 'Privacy' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -55,7 +57,9 @@ $specialPageAliases['de'] = array(
 	'LoopTerminologyEdit' => array( 'Abkürzungsverzeichnis bearbeiten' ),
 	'LoopExportPdfTest' => array( 'PDF seitenweise testen' ),
 	'LoopBugReport' => array( 'Fehler melden' ),
-	'LoopFeedback' => array( 'Feedback' )
+	'LoopFeedback' => array( 'Feedback' ),
+	'LoopImprint' => array( 'Impressum' ),
+	'LoopPrivacy' => array( 'Datenschutz' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -80,7 +84,9 @@ $specialPageAliases['sv'] = array(
 	'LoopTerminologyEdit' => array( 'Regidera förkortningar' ),
 	'LoopExportPdfTest' => array( 'Testa PDF sida för sida' ),
 	'LoopBugReport' => array( 'Rapportera fel' ),
-	'LoopFeedback' => array( 'Feedback' )
+	'LoopFeedback' => array( 'Feedback' ),
+	'LoopImprint' => array( 'Imprint' ),
+	'LoopPrivacy' => array( 'Privacy' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -104,7 +110,9 @@ $specialPageAliases['es'] = array(
 	'LoopTerminology' => array( 'Lista de abreviaciones' ),
 	'LoopTerminologyEdit' => array( 'Editar lista de abreviaciones' ),
 	'LoopExportPdfTest' => array( 'Prueba del PDF por página' ),
-	'LoopBugReport' => array( 'Reportar error' )
+	'LoopBugReport' => array( 'Reportar error' ),
+	'LoopImprint' => array( 'Imprint' ),
+	'LoopPrivacy' => array( 'Privacy' )
 );
 
 

@@ -671,24 +671,28 @@ class SpecialLoopSettings extends SpecialPage {
 					### LINK BLOCK ###
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-footer-links' ) . '</h3>';
                     
-					$html .= '<div class="form-row mb-4">';
-					#$html .= '<div class="form-row">';
 
-					# imprint link
-					$html .= 
-					'<div class="col-12 col-sm-6">
-						<label for="imprint-link">' . $this->msg( 'loopsettings-imprint-label' ) . '</label>
-						<input type="text" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
-						<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
-					</div>';
-					# privacy link
-					$html .= 
-					'<div class="col-12 col-sm-6">
-						<label for="privacy-link">' . $this->msg( 'loopsettings-privacy-label' ) . '</label>
-						<input type="text" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
-						<div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
-					</div>';
-					$html .= '</div>';
+                    global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
+                    
+                    if ( ! $wgLoopExternalImprintPrivacy || empty ( $wgLoopExternalPrivacyUrl ) ) {
+                        $html .= '<div class="form-row mb-4">';
+
+                        # imprint link
+                        $html .= 
+                        '<div class="col-12 col-sm-6">
+                            <label for="imprint-link">' . $this->msg( 'loopsettings-imprint-label' ) . '</label>
+                            <input type="text" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
+                            <div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
+                        </div>';
+                        # privacy link
+                        $html .= 
+                        '<div class="col-12 col-sm-6">
+                            <label for="privacy-link">' . $this->msg( 'loopsettings-privacy-label' ) . '</label>
+                            <input type="text" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
+                            <div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
+                        </div>';
+                        $html .= '</div>';
+                    }   
 					
 					#footer-social
 					$socialArray = array(

@@ -257,3 +257,93 @@ class Loop {
 	}
 
 }
+
+
+class SpecialLoopImprint extends UnlistedSpecialPage {
+
+	function __construct() {
+		parent::__construct( 'LoopImprint' );
+	}
+
+	function execute( $par ) {
+		
+		global $wgLoopExternalImprintPrivacy, $wgLoopExternalImprintUrl;
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		$out->setPageTitle( "test" );
+		$this->setHeaders();
+
+		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
+
+			global $wgServer;
+			
+			$server = str_replace('//', '', $wgServer);
+			$server = str_replace('http', '', $server);
+			$server = str_replace('https', '', $server);
+			$server = str_replace(':', '', $server);
+			
+			$url = $wgLoopExternalImprintUrl.'?loop=' . $server;
+			
+			$cha = curl_init();
+			curl_setopt($cha, CURLOPT_URL, ($url));
+			curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
+			curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
+			$return = curl_exec($cha);
+			curl_close($cha);
+	
+			$out->addHTML($return);
+
+		} else {
+			global $wgLoopImprintLink;
+			$out->redirect ( $wgLoopImprintLink );
+		}
+	}
+}
+
+
+class SpecialLoopPrivacy extends UnlistedSpecialPage {
+
+	function __construct() {
+		parent::__construct( 'LoopPrivacy' );
+	}
+
+	function execute( $par ) {
+		
+		global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		$out->setPageTitle();
+		$this->setHeaders();
+
+		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalPrivacyUrl ) ) {
+
+			global $wgServer;	
+			
+			$server = str_replace('//', '', $wgServer);
+			$server = str_replace('http', '', $server);
+			$server = str_replace('https', '', $server);
+			$server = str_replace(':', '', $server);
+			
+			$url = $wgLoopExternalPrivacyUrl.'?loop=' . $server;
+			
+			$cha = curl_init();
+			curl_setopt($cha, CURLOPT_URL, ($url));
+			curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
+			curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
+			$return = curl_exec($cha);
+			curl_close($cha);
+	
+			$out->addHTML($return);
+
+		} else {
+			global $wgLoopPrivacyLink;
+			$out->redirect ( $wgLoopPrivacyLink );
+		}
+	}
+}
