@@ -660,14 +660,14 @@
 					<fo:table-column column-number="1" column-width="0.4mm"/>
 					<fo:table-column column-number="2">
 						<xsl:choose> 
-							<xsl:when test="ancestor::table">
-							
-							</xsl:when>
 							<xsl:when test="ancestor::extension[@extension_name='loop_area']">
 								<xsl:attribute name="column-width">145mm</xsl:attribute>
 							</xsl:when>
 							<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
 								<xsl:attribute name="column-width">145mm</xsl:attribute>
+							</xsl:when>
+							<xsl:when test="ancestor::table">
+							
 							</xsl:when>
 							<xsl:otherwise>
 								<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
