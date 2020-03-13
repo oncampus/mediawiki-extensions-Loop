@@ -345,5 +345,6 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 			global $wgLoopPrivacyLink;
 			$out->redirect ( $wgLoopPrivacyLink );
 		}
+
 	}
 }
