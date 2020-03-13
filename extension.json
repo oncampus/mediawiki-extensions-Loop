@@ -965,7 +965,7 @@
 		},
 		"LoopExternalImprintPrivacy": {
 			"value": false,
-			"description" : "[always|last_sublevel|second_half]"
+			"description" : "Activate external download of imprint and privacy texts"
 		},
 		"LoopExternalPrivacyUrl": {
 			"value": "",
