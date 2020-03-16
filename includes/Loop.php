@@ -115,8 +115,11 @@ class Loop {
 		$glossary = array( "de" => "Glossar", "de-formal" => "Glossar", "en" => "Glossary", "es" => "Glosario", "sv" => "Ordlista" );
 		$wgExtraNamespaces[ NS_GLOSSARY ] = array_key_exists( $wgLanguageCode, $glossary ) ? $glossary[ $wgLanguageCode ] : "Glossary";
 
+		$wgWhitelistRead = is_array( $wgWhitelistRead ) ? $wgWhitelistRead : array();
+		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:Impressum", "Spezial:Datenschutz", "Special:Imprint", "Special:Privacy", "Especial:Imprint", "Especial:Privacy", "Speciel:Imprint", "Speciel:Privacy"] );
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
+		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:Common.css";
 		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
@@ -272,7 +275,7 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-		$out->setPageTitle( "test" );
+		$out->setPageTitle( $this->msg( "imprint" ) );
 		$this->setHeaders();
 
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
@@ -294,6 +297,10 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 			$return = curl_exec($cha);
 			curl_close($cha);
 	
+			if ( empty( $return ) ) {
+				global $wgLoopImprintLink;
+				#$out->redirect ( $wgLoopImprintLink );
+			}
 			$out->addHTML($return);
 
 		} else {
@@ -317,7 +324,7 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-		$out->setPageTitle();
+		$out->setPageTitle( $this->msg( "privacy" ) );
 		$this->setHeaders();
 
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalPrivacyUrl ) ) {
@@ -338,7 +345,10 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
 			$return = curl_exec($cha);
 			curl_close($cha);
-	
+			if ( empty( $return ) ) {
+				global $wgLoopImprintLink;
+				$out->redirect ( $wgLoopImprintLink );
+			}
 			$out->addHTML($return);
 
 		} else {

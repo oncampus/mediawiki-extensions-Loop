@@ -26,6 +26,8 @@
 	"loopstructure-save-success": "Saving succes of the LOOP structure",
 	"submit": "Replacement for submit button text",
 	"loopstructure-default-newpage-content": "Standard content for new pages",
+	"loopimprint": "Imprint special page title",
+	"loopprivacy": "Privacy special page title",
 
 	"loopsettings" : "Name of the LOOP settings special page in special:loopsettings",
 	"loopsettings-specialpage-title" : "Page title for LOOP Settings special page",
