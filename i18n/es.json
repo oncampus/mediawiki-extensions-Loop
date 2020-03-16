@@ -26,6 +26,8 @@
 	"loopstructure-save-success": "El índice de contenido ha sido actualizado exitosamente.",
 	"submit": "Guardar",
 	"loopstructure-default-newpage-content": "Esta es una página nueva.",
+	"loopimprint": "Imprint",
+	"loopprivacy": "Privacy",
 
 	"loopsettings" : "Configuración del LOOP",
 	"loopsettings-specialpage-title" : "Configuración del LOOP",

@@ -666,6 +666,9 @@
 							<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
 								<xsl:attribute name="column-width">145mm</xsl:attribute>
 							</xsl:when>
+							<xsl:when test="ancestor::table">
+							
+							</xsl:when>
 							<xsl:otherwise>
 								<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 							</xsl:otherwise>
@@ -676,10 +679,10 @@
 							<fo:table-cell number-columns-spanned="2">
 								<xsl:choose> 
 									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
-										<xsl:attribute name="width">145mm</xsl:attribute>
+										<xsl:attribute name="max-width">145mm</xsl:attribute>
 									</xsl:when>
 									<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
-										<xsl:attribute name="width">145mm</xsl:attribute>
+										<xsl:attribute name="max-width">145mm</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
 										<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
@@ -1925,23 +1928,6 @@
 			</xsl:call-template>
 		</fo:block>		
 	</xsl:template>
-
-	<xsl:template match="extension[@extension_name='loop_areaa']">
-
-		<!-- ICON IMG -->
-				
-		<fo:block border-left="solid 2pt black">
-			<fo:float float="left" font-size="25pt" padding-bottom="2mm" margin-left="-25pt" margin-top="1.6mm" >
-			<fo:block border-left="solid 2pt black">
-					<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
-						<xsl:when test="@type!=''"><xsl:value-of select="$icon_task"></xsl:value-of></xsl:when>
-					</xsl:choose>
-		</fo:block>		
-			</fo:float>	
-			<xsl:apply-templates/>
-		</fo:block>		
-	</xsl:template>
-
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
