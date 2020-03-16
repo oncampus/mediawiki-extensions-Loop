@@ -280,14 +280,9 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
 
-			global $wgServer;
+			global $wgServerName;
 			
-			$server = str_replace('//', '', $wgServer);
-			$server = str_replace('http', '', $server);
-			$server = str_replace('https', '', $server);
-			$server = str_replace(':', '', $server);
-			
-			$url = $wgLoopExternalImprintUrl.'?loop=' . $server;
+			$url = $wgLoopExternalImprintUrl.'?loop=' . $wgServerName;
 			
 			$cha = curl_init();
 			curl_setopt($cha, CURLOPT_URL, ($url));
@@ -329,14 +324,9 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalPrivacyUrl ) ) {
 
-			global $wgServer;	
+			global $wgServerName;
 			
-			$server = str_replace('//', '', $wgServer);
-			$server = str_replace('http', '', $server);
-			$server = str_replace('https', '', $server);
-			$server = str_replace(':', '', $server);
-			
-			$url = $wgLoopExternalPrivacyUrl.'?loop=' . $server;
+			$url = $wgLoopExternalPrivacyUrl.'?loop=' . $wgServerName;
 			
 			$cha = curl_init();
 			curl_setopt($cha, CURLOPT_URL, ($url));
