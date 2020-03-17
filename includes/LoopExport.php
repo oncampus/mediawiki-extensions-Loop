@@ -171,6 +171,8 @@ class LoopExportXml extends LoopExport {
 		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/xml; charset=utf-8");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
@@ -213,6 +215,8 @@ class LoopExportPdf extends LoopExport {
 		header("Content-Type: application/pdf");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
@@ -287,6 +291,7 @@ class LoopExportPageMp3 extends LoopExport {
 
 	public function generateExportContent() {
 		$query = $this->request->getQueryValues();
+		set_time_limit(30);
 		if ( isset( $query['articleId'] ) ) {
 			if ( isset( $query['debug'] ) ) {
 				$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'], $query['debug'] );
@@ -504,7 +509,7 @@ class SpecialLoopExport extends SpecialPage {
 			if ($export->getExportContent() != null ) {
 				
 				if ( isset($logEntry) ) {
-					$logEntry->setTarget( Title::newFromId(1) );
+					$logEntry->setTarget( Title::newFromId($structure->mainPage) );
 					$logEntry->setPerformer( User::newFromId(0) ); 
 					$logEntry->setParameters( [ '4::paramname' => $logMsg ] );
 					$logid = $logEntry->insert();

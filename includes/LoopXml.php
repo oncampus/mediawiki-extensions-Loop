@@ -17,6 +17,9 @@ class LoopXml {
 	 */
 	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
 		global $wgCanonicalServer, $wgLanguageCode;
+
+		set_time_limit(300);
+		ini_set('memory_limit', '1024M');
 		
 		$loopStructureItems = $loopStructure->getStructureItems();		
 		
@@ -42,6 +45,7 @@ class LoopXml {
 		
 		$articles = '<articles xmlns:xhtml="http://www.w3.org/1999/xhtml">';
 		foreach ( $loopStructureItems as $loopStructureItem ) {
+			#echo $loopStructureItem->article . "<br>";
 		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
 		$articles .= "</articles>\n";
@@ -95,7 +99,7 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
-		
+
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
@@ -232,6 +236,7 @@ class LoopXml {
 	
 	
 	private static function structureItemToc(LoopStructureItem $structureItem) {
+		
 		$toc_xml = "<chapter>";
 	
 		$childs = $structureItem->getDirectChildItems();
@@ -296,18 +301,28 @@ class LoopXml {
 				$child_name='text';
 				$child_value=$child->textContent;
 			}
-	
+			
+			$leftright = array(
+				"right" => "right",
+				"left" => "left",
+				"center" => "center",
+				"rechts" => "right",
+				"links" => "left",
+				"zentriert" => "center",
+			);
+
 			if ($child_name == 'part') {
 				if (substr($child_value, -2) == 'px') {
 					$child_name = 'width';
 					$child_value = substr($child_value,0,-2);
-				} elseif (($child_value == 'right') || ($child_value == 'left') || ($child_value == 'center')) {
+				} elseif ( array_key_exists( $child_value, $leftright ) ) {
 					$child_name = 'align';
-	
+					$child_value = $leftright[ $child_value ];
 				}
 			}
-			$link_parts[$child_name]=$child_value;
+			$link_parts[$child_name] = $child_value;
 		}
+		
 		if (!array_key_exists('type', $link_parts)) {
 			$link_parts['type']='internal';
 		}
@@ -404,6 +419,7 @@ class LoopXml {
 				}
 			}
 		}
+		#dd($return_xml, $link_parts);
 		$return = new DOMDocument;
 	
 		$old_error_handler = set_error_handler("LoopXml::error_handler");
@@ -421,7 +437,7 @@ class LoopXml {
 	}	
 
 	public static function glossary2xml( ) {
-
+		
 		$articles = LoopGlossary::getGlossaryPages( "idArray" );
 		$return = '';
 
@@ -436,7 +452,7 @@ class LoopXml {
 	}
 
 	public static function terminology2xml( ) {
-
+		
 		$terminology = LoopTerminology::getTerminologyPageContentText();
 		$items = LoopTerminology::getSortedTerminology( $terminology );
 
@@ -482,7 +498,6 @@ class LoopXml {
  * see https://phabricator.wikimedia.org/diffusion/SVN/browse/trunk/parsers/graveyard/wiki2xml/php/wiki2xml.php
  * 
  */
-
 
 class wiki2xml
 {
@@ -560,7 +575,7 @@ class wiki2xml
 	 */
 	function once ( &$a , &$xml , $f , $atleastonce = true , $many = false )
 	{
-
+		#echo("<br>w2x_2");
 		$f = "p_{$f}" ;
 		$cnt = 0 ;
 		#		print $f . " : " . htmlentities ( mb_substr ( $this->w , $a , 20 ) ) . "<br/>" ; flush () ;
@@ -579,11 +594,21 @@ class wiki2xml
 
 	function onceormore ( &$a , &$xml , $f )
 	{
+		#echo("<br>w2x_3");
 		return $this->once ( $a , $xml , $f , true , true ) ;
 	}
 
 	function nextis ( &$a , $t , $movecounter = true )
 	{
+		#echo("<br>w2x_4");
+		#echo "[$a]" . "";
+		#echo  "[$t]" . "";
+		//#echo mb_substr ( $this->w , $a , strlen ( $t ) ) != $t . "<br>";
+		//##echo ",a:" . $a .",t:".$t .",mc:".mb_substr ( $this->w , $a , strlen ( $t ) ));
+		#exit;
+		if ( $t == "{{" ) {
+			return true;
+		}
 		if ( mb_substr ( $this->w , $a , strlen ( $t ) ) != $t ) return false ;
 		if ( $movecounter ) $a += strlen ( $t ) ;
 		return true ;
@@ -591,6 +616,7 @@ class wiki2xml
 
 	function nextchar ( &$a , &$x )
 	{
+		#echo("<br>w2x_5");
 		if ( $a >= $this->wl ) return false ;
 		$c = mb_substr ( $this->w , $a , 1 , 'UTF-8' );
 		$x .= htmlspecialchars ( $c ) ;
@@ -600,6 +626,7 @@ class wiki2xml
 
 	function ischaracter ( $c )
 	{
+		#echo("<br>w2x_6");
 		if ( $c >= 'A' && $c <= 'Z' ) return true ;
 		if ( $c >= 'a' && $c <= 'z' ) return true ;
 		return false ;
@@ -607,6 +634,7 @@ class wiki2xml
 
 	function skipblanks ( &$a , $blank = " " )
 	{
+		#echo("<br>w2x_7");
 		while ( $a < $this->wl )
 		{
 			$c = mb_substr ( $this->w , $a , 1 , 'UTF-8' );
@@ -620,11 +648,13 @@ class wiki2xml
 
 	function p_internal_link_target ( &$a , &$xml , $closeit = "]]" )
 	{
+		#echo("<br>w2x_8");
 		return $this->p_internal_link_text ( $a , $xml , true , $closeit ) ;
 	}
 
 	function p_internal_link_text2 ( &$a , &$xml , $closeit )
 	{
+		#echo("<br>w2x_9");
 		$bi = $this->bold_italics ;
 		$ret = $this->p_internal_link_text ( $a , $xml , false , $closeit , false ) ;
 		if ( $closeit == ']]' && '' != $this->bold_italics ) $ret = false ; # Dirty hack to ensure good XML; FIXME!!!
@@ -633,6 +663,7 @@ class wiki2xml
 
 	function p_internal_link_text ( &$a , &$xml , $istarget = false , $closeit = "]]" , $mark = true )
 	{
+		#echo("<br>w2x_10");
 		$b = $a ;
 		$x = "" ;
 		if ( $b >= $this->wl ) return false ;
@@ -669,7 +700,12 @@ class wiki2xml
 						( $c5 == '/' && $c7 == '/' ) &&
 						$this->once ( $b , $x , "external_freelink" ) ) continue ;
 			} else {
-				if ( $c == "{" && $this->once ( $b , $x , "template" ) ) continue ;
+				# LOOP CHANGE for endless loop [{{filepath:Prokrastination_Fragebogen_Rist.pdf}} Fragebogen]
+				if ( $closeit != "}}" ) {
+					if ( $c == "{" && $this->once ( $b , $x , "template" ) ) continue ;
+				} else {
+					return false;
+				}
 			}
 			$x .= htmlspecialchars ( $c ) ;
 			$b++ ;
@@ -701,6 +737,7 @@ class wiki2xml
 
 	function p_internal_link_trail ( &$a , &$xml )
 	{
+		#echo("<br>w2x_11");
 		$b = $a ;
 		$x = "" ;
 		while ( 1 )
@@ -727,6 +764,7 @@ class wiki2xml
 
 	function p_internal_link ( &$a , &$xml )
 	{
+		#echo("<br>w2x_12");
 		$x = "" ;
 		$b = $a ;
 		if ( !$this->nextis ( $b , "[[" ) ) return false ;
@@ -737,7 +775,7 @@ class wiki2xml
 			if ( !$this->nextis ( $b , "|" ) ) return false ;
 			if ( !$this->p_internal_link_text ( $b , $x , false , "]]" ) ) return false ;
 		}
-		$this->p_internal_link_trail ( $b , $x ) ;
+		#$this->p_internal_link_trail ( $b , $x ) ; # LOOP: [[file:bildname.png]]Wort kein Leerzeichen zwischen ]] und Wort hat das Wort aus der PDF einfach entfernt.
 		$xml .= "<link>{$x}</link>" ;
 		$a = $b ;
 		return true ;
@@ -745,6 +783,7 @@ class wiki2xml
 
 	function p_magic_variable ( &$a , &$xml )
 	{
+		#echo("<br>w2x_13");
 		$x = "" ;
 		$b = $a ;
 		if ( !$this->nextis ( $b , "__" ) ) return false ;
@@ -760,6 +799,7 @@ class wiki2xml
 	# Template and template variable, utilizing parts of the internal link methods
 	function p_template ( &$a , &$xml )
 	{
+		#echo("<br>w2x_14");
 		global $content_provider , $xmlg ;
 		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
 
@@ -862,6 +902,7 @@ class wiki2xml
 
 	function process_template_logic ( $title , $variables ) {
 
+		#echo("<br>w2x_15");
 		# TODO : Process title and variables for sub-template-replacements
 
 		if ( mb_substr ( $title , 0 , 4 ) == "#if:" ) {
@@ -885,6 +926,8 @@ class wiki2xml
 	}
 
 	function replace_template_variables ( &$text , &$variables ) {
+		
+		#echo("<br>w2x_16");
 		global $xmlg ;
 		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
 		for ( $a = 0 ; $a+3 < strlen ( $text ) ; $a++ ) {
@@ -894,6 +937,8 @@ class wiki2xml
 	}
 
 	function p_template_replace_single_variable ( &$text , $a , &$variables ) {
+		
+		#echo("<br>w2x_17");
 		if ( mb_substr ( $text , $a , 3 ) != '{{{' ) return false ;
 		$b = $a + 3 ;
 
@@ -937,6 +982,7 @@ class wiki2xml
 
 	function p_template_variable ( &$a , &$xml )
 	{
+		#echo("<br>w2x_18");
 		$x = "" ;
 		$b = $a ;
 		if ( !$this->nextis ( $b , "{{{" ) ) return false ;
@@ -950,16 +996,19 @@ class wiki2xml
 	# Bold / italics
 	function p_bold ( &$a , &$xml , $recurse = "restofline" , $end = "" )
 	{
+		#echo("<br>w2x_19");
 		return $this->p_intwined ( $a , $xml , "bold" , "'''" , $recurse , $end ) ;
 	}
 
 	function p_italics ( &$a , &$xml , $recurse = "restofline" , $end = "" )
 	{
+		#echo("<br>w2x_20");
 		return $this->p_intwined ( $a , $xml , "italics" , "''" , $recurse , $end ) ;
 	}
 
 	function p_intwined ( &$a , &$xml , $tag , $markup , $recurse , $end )
 	{
+		#echo("<br>w2x_21");
 		$b = $a ;
 		if ( !$this->nextis ( $b , $markup ) ) return false ;
 		$id = mb_substr ( ucfirst ( $tag ) , 0 , 1 ) ;
@@ -1001,6 +1050,7 @@ class wiki2xml
 
 	function scanplaintext ( &$a , &$xml , $goodstop , $badstop )
 	{
+		#echo("<br>w2x_22");
 		$b = $a ;
 		$x = "" ;
 		while ( $b < $this->wl )
@@ -1023,6 +1073,7 @@ class wiki2xml
 	# External link
 	function p_external_freelink ( &$a , &$xml , $mark = true )
 	{
+		#echo("<br>w2x_23");
 		if ( $this->wl <= $a + 10 ) return false ; # Can't have an URL shorter than that
 
 		$c5 = mb_substr ( $this->w , $a+5 , 1 , 'UTF-8' );
@@ -1065,6 +1116,7 @@ class wiki2xml
 
 	function p_external_link ( &$a , &$xml , $mark = true )
 	{
+		#echo("<br>w2x_24");
 		$b = $a ;
 		if ( !$this->nextis ( $b , "[" ) ) return false ;
 		$url = "" ;
@@ -1084,6 +1136,7 @@ class wiki2xml
 	# Heading
 	function p_heading ( &$a , &$xml )
 	{
+		#echo("<br>w2x_25");
 		if ( $a >= $this->wl || (mb_substr ( $this->w , $a , 1 , 'UTF-8' )) != '=' ) return false ;
 		$b = $a ;
 		$level = 0 ;
@@ -1111,6 +1164,7 @@ class wiki2xml
 	# Often used function for parsing the rest of a text line
 	function p_restofline ( &$a , &$xml , $closeit = array() )
 	{
+		#echo("<br>w2x_26");
 		$b = $a ;
 		$x = "" ;
 		$override = false ;
@@ -1156,6 +1210,7 @@ class wiki2xml
 
 	function p_line ( &$a , &$xml , $force )
 	{
+		#echo("<br>w2x_27");
 		if ( $a >= $this->wl ) return false ; # Already at the end of the text
 		#$c = $this->w[$a] ;
 		$c = mb_substr ( $this->w , $a , 1 , 'UTF-8' );
@@ -1174,12 +1229,14 @@ class wiki2xml
 
 	function p_blankline ( &$a , &$xml )
 	{
+		#echo("<br>w2x_28");
 		if ( $this->nextis ( $a , "\n" ) ) return true ;
 		return false ;
 	}
 
 	function p_block_lines ( &$a , &$xml , $force = false )
 	{
+		#echo("<br>w2x_29");
 		$x = "" ;
 		$b = $a ;
 		if ( !$this->p_line ( $b , $x , $force ) ) return false ;
@@ -1196,6 +1253,7 @@ class wiki2xml
 	# Parses a line starting with ' '
 	function p_preline ( &$a , &$xml )
 	{
+		#echo("<br>w2x_30");
 		if ( $a >= $this->wl ) return false ; # Already at the end of the text
 		if ( (mb_substr ( $this->w , $a , 1 , 'UTF-8' ))!= ' ' ) return false ; # Not a preline
 
@@ -1212,6 +1270,7 @@ class wiki2xml
 	# Parses a block of lines each starting with ' '
 	function p_block_pre ( &$a , &$xml )
 	{
+		#echo("<br>w2x_31");
 		$x = "" ;
 		$b = $a ;
 		if ( !$this->once ( $b , $x , "preline" , true , true ) ) return false ;
@@ -1225,6 +1284,7 @@ class wiki2xml
 	# Returns a list tag depending on the wiki markup
 	function listtag ( $c , $open = true )
 	{
+		#echo("<br>w2x_32");
 		if ( !$open ) return "</list>" ;
 		$r = "" ;
 		if ( $c == '#' ) $r = "numbered" ;
@@ -1239,6 +1299,7 @@ class wiki2xml
 	# Opens/closes list tags
 	function fixlist ( $last , $cur )
 	{
+		#echo("<br>w2x_33");
 		$r = "" ;
 		$olast = $last ;
 		$ocur = $cur ;
@@ -1275,6 +1336,7 @@ class wiki2xml
 	# Parses a single list line
 	function p_list_line ( &$a , &$xml , &$last )
 	{
+		#echo("<br>w2x_34");
 		$cur = "" ;
 		do {
 			$lcur = $cur ;
@@ -1322,6 +1384,7 @@ class wiki2xml
 	# Checks for a list block ( those nasty things starting with '*', '#', or the like...
 	function p_block_list ( &$a , &$xml )
 	{
+		#echo("<br>w2x_35");
 		$last = "" ;
 		$found = false ;
 		while ( $this->p_list_line ( $a , $xml , $last ) ) $found = true ;
@@ -1334,6 +1397,7 @@ class wiki2xml
 	# Returns false otherwise.
 	function p_html ( &$a , &$xml )
 	{
+		#echo("<br>w2x_36");
 		if ( !$this->nextis ( $a , "<" , false ) ) return false ;
 
 		$b = $a ;
@@ -1460,6 +1524,7 @@ class wiki2xml
 
 	function strip_single_paragraph ( $s )
 	{
+		#echo("<br>w2x_37");
 		if ( mb_substr_count ( $s , "paragraph>" ) == 2 &&
 			 mb_substr ( $s , 0 , 11 ) == "<paragraph>" &&
 			 mb_substr ( $s , -12 ) == "</paragraph>" )
@@ -1471,6 +1536,7 @@ class wiki2xml
 	# Only to be called from p_html, as it returns only a partial extension tag!
 	function p_html_tag ( &$a , &$xml , &$tag , &$closing , &$selfclosing )
 	{
+		#echo("<br>w2x_38");
 		if ( (mb_substr ( $this->w , $a , 1 , 'UTF-8' )) != '<' ) return false ;
 		$b = $a + 1 ;
 		$this->skipblanks ( $b ) ;
@@ -1538,6 +1604,7 @@ class wiki2xml
 	# It is used for both HTML tags and wiki tables
 	function preparse_attributes ( $x )
 	{
+		#echo("<br>w2x_39");
 		# Creating a temporary new parser to run the attribute list in
 		$np = new wiki2xml ;
 		$np->inherit ( $this ) ;
@@ -1593,6 +1660,7 @@ class wiki2xml
 	# This function scans a single HTML tag attribute and returns it as <attr name='key'>value</attr>
 	function p_html_attr ( &$a , &$xml )
 	{
+		#echo("<br>w2x_40");
 		$b = $a ;
 		$this->skipblanks ( $b ) ;
 		if ( $b >= $this->wl ) return false ;
@@ -1662,6 +1730,7 @@ class wiki2xml
 	# Horizontal ruler (<hr> / ----)
 	function p_hr ( &$a , &$xml )
 	{
+		#echo("<br>w2x_41");
 		if ( !$this->nextis ( $a , "----" ) ) return false ;
 		$this->skipblanks ( $a , "-" ) ;
 		$this->skipblanks ( $a ) ;
@@ -1673,6 +1742,7 @@ class wiki2xml
 	# Scans the rest of the line as HTML attributes and returns the usual <attrs><attr> string
 	function scanattributes ( &$a )
 	{
+		#echo("<br>w2x_42");
 		$x = "" ;
 		while ( $a < $this->wl )
 		{
@@ -1697,6 +1767,7 @@ class wiki2xml
 	# Finds the first of the given items; does *not* alter $a
 	function scanahead ( $a , $matches )
 	{
+		#echo("<br>w2x_43");
 		while ( $a < $this->wl )
 		{
 			foreach ( $matches AS $x )
@@ -1715,6 +1786,7 @@ class wiki2xml
 	# The main table parsing function
 	function p_table ( &$a , &$xml )
 	{
+		#echo("<br>w2x_44");
 		if ( $a >= $this->wl ) return false ;
 		$c = (mb_substr ( $this->w , $a , 1 , 'UTF-8' )) ;
 		if ( $c == "{" && $this->nextis ( $a , "{|" , false ) )
@@ -1740,12 +1812,14 @@ class wiki2xml
 
 	function lasttable ()
 	{
+		#echo("<br>w2x_45");
 		return $this->tables[count($this->tables)-1] ;
 	}
 
 	# Returns the attributes for table cells
 	function tryfindparams ( &$a )
 	{
+		#echo("<br>w2x_46");
 		$n = strspn ( $this->w , $this->allowed , $a ) ; # PHP 4.3.0 and above
 		#		$n = strspn ( mb_substr ( $this->w , $a ) , $this->allowed ) ; # PHP < 4.3.0
 		if ( $n == 0 ) return "" ; # None found
@@ -1764,6 +1838,7 @@ class wiki2xml
 
 	function p_table_element ( &$a , &$xml , $newline = false )
 	{
+		#echo("<br>w2x_47");
 		#		print "p_table_element for " . htmlentities ( mb_substr ( $this->w , $a ) ) . "<br/><br/>" ; flush () ;
 		$b = $a ;
 		$this->skipblanks ( $b ) ; # Compatability for table cells starting with blanks; *evil MediaWiki parser!*
@@ -1826,6 +1901,7 @@ class wiki2xml
 	# then runs a new parser on it
 	function p_restofcell ( &$a , &$xml )
 	{
+		#echo("<br>w2x_48");
 		# Get mb_substring for cell
 		$b = $a ;
 		$sameline = true ;
@@ -1872,6 +1948,7 @@ class wiki2xml
 
 	function p_table_close ( &$a , &$xml )
 	{
+		#echo("<br>w2x_49");
 		if ( count ( $this->tables ) == 0 ) return false ;
 		$b = $a ;
 		if ( !$this->nextis ( $b , "|}" ) ) return false ;
@@ -1889,6 +1966,7 @@ class wiki2xml
 
 	function p_table_open ( &$a , &$xml )
 	{
+		#echo("<br>w2x_50");
 		$b = $a ;
 		if ( !$this->nextis ( $b , "{|" ) ) return false ;
 
@@ -1928,6 +2006,7 @@ class wiki2xml
 	# Parse the article
 	function p_article ( &$a , &$xml )
 	{
+		#echo("<br>w2x_51");
 		$x = "" ;
 		$b = $a ;
 		while ( $b < $this->wl )
@@ -1958,6 +2037,9 @@ class wiki2xml
 	# The only function to be called directly from outside the class
 	function parse ( &$wiki )
 	{
+		
+		set_time_limit(300);
+		#echo("<br>w2x_52");
 		global $IP;
 
 		$this->w = rtrim ( $wiki ) ;

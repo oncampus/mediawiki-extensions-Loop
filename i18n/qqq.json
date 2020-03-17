@@ -26,6 +26,8 @@
 	"loopstructure-save-success": "Saving succes of the LOOP structure",
 	"submit": "Replacement for submit button text",
 	"loopstructure-default-newpage-content": "Standard content for new pages",
+	"loopimprint": "Imprint special page title",
+	"loopprivacy": "Privacy special page title",
 
 	"loopsettings" : "Name of the LOOP settings special page in special:loopsettings",
 	"loopsettings-specialpage-title" : "Page title for LOOP Settings special page",
@@ -204,8 +206,6 @@
 	"looparea-icon-text-task" : "icon text of the looparea type task",
 	"looparea-icon-text-timerequirement" : "icon text of the looparea type timerequirement",
 	"looparea-icon-text-websource" : "icon text of the looparea type websource",
-	"looparea-error-unknown-type-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
-	"looparea-error-unknown-render-attribute" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
 
 	"loopspoiler-default-title": "default label for spoiler button",
 	"loopprint-printversion": "default label for print version button",
@@ -326,16 +326,9 @@
 	"looplegacy-biblio": "Special error message for biblio tag which has been deprecated in LOOP2 and replaced by loop_literature tag.",
 	"looplegacy-references": "Special error message for references tag is been obsolte since LOOP2.",
 
-	"loopobject-error-unknown-renderoption" : "Error Message rendered when render option is unknown\n\nParameters:\n* $1 - render option\n* $2 supported render options",
-	"loopobject-error-unknown-alignmentoption" : "Error Message rendered when align option is unknown\n\nParameters:\n* $1 - align option\n* $2 supported align options",
-	"loopobject-error-unknown-indexingoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - indexing option\n* $2 supported index options",
-	"loopobject-error-unknown-showcopyrightoption" : "Error Message rendered when index option is unknown\n\nParameters:\n* $1 - show_copyright option\n* $2 supported show_copyright options",
 	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
-	"loopmedia-error-unknown-mediatype" : "Error Message rendered when type option is unknown\n\nParameters:\n* $1 - type option\n* $2 supported type options",
-	"loopreference-error-unknown-titleoption" : "Error Message rendered when title option is unknown\n\nParameters:\n* $1 - title option\n* $2 supported title options",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
-	"loopspoiler-error-unknown-spoilertype" : "Error Message rendered when spoilertype is unknown\n\nParameters:\n* $1 - area type\n* $2 supported spoiler types",
 
 	"loopexternalcontent-prezi-on": "The 'on' as in 'View on Prezi.com'", 
 	"namespace-special": "Special name space message",
@@ -378,6 +371,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Wikieditor LOOP : Template Marginalie",
 	"loopwikieditor-loop-snippets-print": "Wikieditor LOOP : Template Print area",
 	"loopwikieditor-loop-snippets-noprint": "Wikieditor LOOP : Template No-print area",
+	"loopwikieditor-loop-snippets-accordion": "Wikieditor LOOP : Template accordion",
+	"loopwikieditor-loop-snippets-syntaxhighlight": "Wikieditor LOOP : Template Syntaxhighlighted code",
 	"loopwikieditor-loop-contents": "Wikieditor LOOP section: Label for dropdown - Media",
 	"loopwikieditor-loop-content-audio": "Wikieditor LOOP: Media local audio",
 	"loopwikieditor-loop-content-video": "Wikieditor LOOP: Media local video",
@@ -394,6 +389,7 @@
 	
 	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
 	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} ",
+	"loop-error-unknown-param" : "General Error message for unknown parameters entered in a tag. $1 -> the tag that has an unknown parameter; $2 -> The unknown parameter name; $3 -> The unknown value of that parameter; $4 -> Allowed values; $5 -> the given default for that tag;",
 	"loopterminology": "Special Page title of terminology/abbreviations page",
 	"loopterminologyedit": "Special Page title of terminology/abbreviations edit page",
 	"loopterminology-warning-deleted": "Feedback message for deleting all abbreviations",

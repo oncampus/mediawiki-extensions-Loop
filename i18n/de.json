@@ -27,6 +27,8 @@
 	"loopstructure-save-success": "Das Inhaltsverzeichnis wurde erfolgreich aktualisiert",
 	"submit": "Speichern",
 	"loopstructure-default-newpage-content": "Dies ist eine neu erstellte Seite.",
+	"loopimprint": "Impressum",
+	"loopprivacy": "Datenschutz",
 
 	"loopsettings": "LOOP-Einstellungen",
 	"loopsettings-specialpage-title": "LOOP-Einstellungen",
@@ -205,8 +207,6 @@
 	"looparea-icon-text-task" : "Aufgabe",
 	"looparea-icon-text-timerequirement" : "Zeitumfang",
 	"looparea-icon-text-websource" : "Websource",
-	"looparea-error-unknown-type-attribute" : "Dieser Seitenbereich besitzt für den Parameter Typ (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"looparea-error-unknown-render-attribute" : "Dieser Seitenbereich besitzt für den Parameter Render (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 
 	"loopspoiler-default-title": "Lösung",
 	"loopprint-printingarea": "Druckbereich",
@@ -327,16 +327,9 @@
 	"looplegacy-biblio": "Der '''biblio'''-Tag wird seit LOOP2 nicht mehr unterstützt. Bitte benutzen Sie den neuen Tag '''<loop_literature>'''.",
 	"looplegacy-references": "Der '''references'''-Tag wird seit LOOP2 nicht mehr benötigt. Fußnoten werden jetzt automatisch am Seitenende dargestellt, wenn ein <ref>-Tag auf einer Seite benutzt wird.",
 
-	"loopobject-error-unknown-renderoption" : "Die Auszeichnung besitzt für den Parameter Renderoption (render) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopobject-error-unknown-alignmentoption" : "Die Auszeichnung besitzt für den Parameter Ausrichtung (align) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopobject-error-unknown-indexoption" : "Die Auszeichnung besitzt für den Parameter Indexierung (index) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
-	"loopobject-error-unknown-showcopyrightoption" : "Die Auszeichnung besitzt für den Parameter Copyright anzeigen (show_copyright) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Auszeichnungen: XXX",
 	"loopobject-error-dublicate-id" : "Die Objektauszeichnung besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiteres Objekt mit der ID vorhanden. Bitte ändern Sie die ID und speichern Sie die Seiten neu ab, um eine korrekte Zählung sicherzustellen.",
-	"loopmedia-error-unknown-mediatype" : "Das Medienelement besitzt für den Parameter Medientyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Medienelementen: XXX",
-	"loopreference-error-unknown-titleoption" : "Die Referenz besitzt für den Parameter Titelanzeige (title) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
-	"loopspoiler-error-unknown-spoilertype" : "Der Spoiler <nowiki><loop_spoiler></nowiki> besitzt für den Parameter Bereichstyp (type) den unbekannten Wert '''$1'''.<br/>\nErlaubte Werte sind '''$2'''.\nDokumentation zu Spoiler: XXX",
 
 	"loopexternalcontent-prezi-on": "auf", 
 	"namespace-special": "Spezial",
@@ -379,6 +372,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Marginalie",
 	"loopwikieditor-loop-snippets-print": "Druckbereich",
 	"loopwikieditor-loop-snippets-noprint": "Nicht-Druckbereich",
+	"loopwikieditor-loop-snippets-accordion": "Akkordeon",
+	"loopwikieditor-loop-snippets-syntaxhighlight": "Syntaxhighlighted Code",
 	"loopwikieditor-loop-contents": "Medien",
 	"loopwikieditor-loop-content-audio": "lokale Audiodatei",
 	"loopwikieditor-loop-content-video": "lokales Video",
@@ -395,6 +390,7 @@
 	
 	"loop-error-missingrequired": "In dem Tag $1 fehlt der notwendige Parameter $2. Das Element kann nicht dargestellt werden.",
 	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}",
+	"loop-error-unknown-param" : "Im Tag $1 enthält der Parameter $2 den unbekannten Wert '''$3'''.<br/>\nErlaubte Werte sind '''$4'''. Das Element wird nun standardmäßig mit dem Wert $5 dargestellt.",
 	"loopterminology": "Abkürzungsverzeichnis",
 	"loopterminologyedit": "Abkürzungsverzeichnis bearbeiten",
 	"loopterminology-warning-deleted": "Alle Einträge wurden aus dem Abkürzungsverzeichnis gelöscht.",

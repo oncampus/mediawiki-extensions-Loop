@@ -622,6 +622,7 @@ class LoopObject {
 	 */
 	public function preParse() {
 		
+		$this->error = "";
 		if ($id = $this->GetArg('id')) {
 			$this->setId(htmlspecialchars($id));
 		}
@@ -637,9 +638,11 @@ class LoopObject {
 			$this->setRenderOption($this->getDefaultRenderOption());
 		}
 		if ( ! in_array ( $this->getRenderOption(), self::$mRenderOptions ) ) {
-			$e = new LoopException( wfMessage( 'loopobject-error-unknown-renderoption', $renderoption, implode( ', ', self::$mRenderOptions ) )->text() );
+			$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "render", $this->GetArg('render'), implode( ', ', self::$mRenderOptions ), $this->getDefaultRenderOption() )->text() );
+			$this->setRenderOption($this->getDefaultRenderOption());
+				
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-			$this->error = $e;
+			$this->error .= $e;
 		}
 		
 		try {
@@ -652,12 +655,12 @@ class LoopObject {
 			if ( ! in_array ( $this->getAlignment(), self::$mAlignmentOptions ) ) {
 				global $wgParser, $wgFrame;
 				$this->setAlignment('none');
-				throw new LoopException( wfMessage( 'loopobject-error-unknown-alignmentoption',$alignment, implode( ', ', self::$mAlignmentOptions ) )->text() );
-				
+				throw new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "align", $this->GetArg('align'), implode( ', ', self::$mAlignmentOptions ), 'none' )->text() );
+			
 			}	
 		} catch ( LoopException $e ) {
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-			$this->error = $e;
+			$this->error .= $e;
 		}
 		
 		if ($title = $this->GetArg('title')) {
@@ -681,7 +684,7 @@ class LoopObject {
 				$this->setShowCopyright(false);
 				break;
 			default:
-				$e = new LoopException( wfMessage( 'loopobject-error-unknown-showcopyrightoption', $showcopyright, implode( ', ', self::$mShowCopyrightOptions ) )->text() );
+				$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "show_copyright", $this->GetArg('show_copyright'), implode( ', ', self::$mShowCopyrightOptions  ), "false" )->text() );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error = $e;
 		}
@@ -701,7 +704,7 @@ class LoopObject {
 				break;
 			default:
 				$this->setIndexing(true);
-				$e = new LoopException( wfMessage( 'loopobject-error-unknown-indexoption', $indexing, implode( ', ', self::$mIndexingOptions ) )->text() );
+				$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "index", $this->GetArg('index'), implode( ', ', self::$mIndexingOptions ), "true" )->text() );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error = $e;
 				break;
@@ -873,6 +876,13 @@ class LoopObject {
 								}
 								if ( isset( $object[2]["description"] ) ) {
 									$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+								} else {
+									$desc_tags = array ();
+									$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
+									foreach( $desc_tags as $tag ) {
+										$tmpLoopObjectIndex->itemDescription = $tag[1];
+										break;
+									}
 								}
 								if ( isset( $object[2]["id"] ) ) {
 									if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {

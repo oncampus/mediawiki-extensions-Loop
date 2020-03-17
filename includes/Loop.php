@@ -115,8 +115,11 @@ class Loop {
 		$glossary = array( "de" => "Glossar", "de-formal" => "Glossar", "en" => "Glossary", "es" => "Glosario", "sv" => "Ordlista" );
 		$wgExtraNamespaces[ NS_GLOSSARY ] = array_key_exists( $wgLanguageCode, $glossary ) ? $glossary[ $wgLanguageCode ] : "Glossary";
 
+		$wgWhitelistRead = is_array( $wgWhitelistRead ) ? $wgWhitelistRead : array();
+		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:Impressum", "Spezial:Datenschutz", "Special:Imprint", "Special:Privacy", "Especial:Imprint", "Especial:Privacy", "Speciel:Imprint", "Speciel:Privacy"] );
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
+		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:Common.css";
 		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
@@ -256,4 +259,92 @@ class Loop {
 
 	}
 
+}
+
+
+class SpecialLoopImprint extends UnlistedSpecialPage {
+
+	function __construct() {
+		parent::__construct( 'LoopImprint' );
+	}
+
+	function execute( $par ) {
+		
+		global $wgLoopExternalImprintPrivacy, $wgLoopExternalImprintUrl;
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		$out->setPageTitle( $this->msg( "imprint" ) );
+		$this->setHeaders();
+
+		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
+
+			global $wgServerName;
+			
+			$url = $wgLoopExternalImprintUrl.'?loop=' . $wgServerName;
+			
+			$cha = curl_init();
+			curl_setopt($cha, CURLOPT_URL, ($url));
+			curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
+			curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
+			$return = curl_exec($cha);
+			curl_close($cha);
+	
+			if ( empty( $return ) ) {
+				global $wgLoopImprintLink;
+				#$out->redirect ( $wgLoopImprintLink );
+			}
+			$out->addHTML($return);
+
+		} else {
+			global $wgLoopImprintLink;
+			$out->redirect ( $wgLoopImprintLink );
+		}
+	}
+}
+
+
+class SpecialLoopPrivacy extends UnlistedSpecialPage {
+
+	function __construct() {
+		parent::__construct( 'LoopPrivacy' );
+	}
+
+	function execute( $par ) {
+		
+		global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		$out->setPageTitle( $this->msg( "privacy" ) );
+		$this->setHeaders();
+
+		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalPrivacyUrl ) ) {
+
+			global $wgServerName;
+			
+			$url = $wgLoopExternalPrivacyUrl.'?loop=' . $wgServerName;
+			
+			$cha = curl_init();
+			curl_setopt($cha, CURLOPT_URL, ($url));
+			curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
+			curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
+			$return = curl_exec($cha);
+			curl_close($cha);
+			if ( empty( $return ) ) {
+				global $wgLoopImprintLink;
+				$out->redirect ( $wgLoopImprintLink );
+			}
+			$out->addHTML($return);
+
+		} else {
+			global $wgLoopPrivacyLink;
+			$out->redirect ( $wgLoopPrivacyLink );
+		}
+
+	}
 }

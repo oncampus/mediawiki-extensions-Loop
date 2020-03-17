@@ -587,6 +587,28 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
+                                    'loopsnippets-syntaxhighlight': {
+                                        labelMsg: 'loopwikieditor-loop-snippets-syntaxhighlight',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<syntaxhighlight lang="xml" line>',
+                                                peri: '<code>',
+                                                post: '</syntaxhighlight>'
+                                            }
+                                        }
+                                    },
+                                    'loopsnippets-accordion': {
+                                        labelMsg: 'loopwikieditor-loop-snippets-accordion',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<loop_accordion>\n<loop_row>\n<loop_title>Title 1</loop_title>\n',
+                                                peri: 'Text',
+                                                post: '\n</loop_row>\n<loop_row>\n<loop_title>Title 2</loop_title>\nText 2\n</loop_accordion>\n'
+                                            }
+                                        }
+                                    },
                                     'loopsnippets-math': {
                                         labelMsg: 'loopwikieditor-loop-snippets-math',
                                         action: {

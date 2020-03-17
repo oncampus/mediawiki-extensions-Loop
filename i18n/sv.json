@@ -26,6 +26,8 @@
 	"loopstructure-save-success": "Innehållsförteckningen har uppdaterats",
 	"submit": "Spara",
 	"loopstructure-default-newpage-content": "Den här är en ny sida.",
+	"loopimprint": "Imprint",
+	"loopprivacy": "Privacy",
 
 	"loopsettings": "LOOP-Inställningar",
 	"loopsettings-specialpage-title": "LOOP-Inställningar",
@@ -204,8 +206,6 @@
 	"looparea-icon-text-task" : "Uppgift",
 	"looparea-icon-text-timerequirement" : "Tidslinje",
 	"looparea-icon-text-websource" : "Websource",
-	"looparea-error-unknown-type-attribute" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"looparea-error-unknown-render-attribute" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 
 	"loopspoiler-default-title": "Lösning",
 	"loopprint-printversion": "Utskriftsavsnitt",
@@ -326,16 +326,9 @@
 	"looplegacy-biblio": "Taggen '''biblio''' har tagits bort i LOOP2. Använd <loop_literature><literature>''Key''</literature></loop_literature> istället.",
 	"looplegacy-references": "Taggen '''references''' är inte länge nödvändig sedan LOOP2. Fotnoter visas automatiskt.",
 
-	"loopobject-error-unknown-renderoption" : "Värdet av parametern (render) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"loopobject-error-unknown-alignmentoption" : "Värdet av parametern (align) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"loopobject-error-unknown-indexingoption" : "Värdet av parametern (index) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"loopobject-error-unknown-showcopyrightoption" : "Värdet av parametern (show_copyright) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopobject-error-dublicate-id" : "Objektet besitter ingen unik ID ($1). På sidan '$2' finns det ett annat objekt med den här ID. Vänligen byt ID:n och spara sidor igen, så objektet kan numereras korrekt.",
-	"loopmedia-error-unknown-mediatype" : "Värdet av parametern (type) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
-	"loopreference-error-unknown-titleoption" : "Värdet av parametern (title) är ökänd: '''$1'''.<br/>\nTillåtna värden är: '''$2'''.",
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Ingen ID (id) har angivits i referensen.",
-	"loopspoiler-error-unknown-spoilertype" : "Okänd typ av spoiler: '''$1'''\nTillåtna värden är: '''$2'''.",
 
 	"loopexternalcontent-prezi-on": "på", 
 	"namespace-special": "Special",
@@ -378,6 +371,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Marginalie",
 	"loopwikieditor-loop-snippets-print": "Printavsnitt",
 	"loopwikieditor-loop-snippets-noprint": "No-Printavsnitt",
+	"loopwikieditor-loop-snippets-accordion": "Accordeon",
+	"loopwikieditor-loop-snippets-syntaxhighlight": "Syntaxhighlighted code",
 	"loopwikieditor-loop-contents": "Medier",
 	"loopwikieditor-loop-content-audio": "lokalt audio",
 	"loopwikieditor-loop-content-video": "lokalt video",
@@ -394,6 +389,7 @@
 	
 	"loop-error-missingrequired": "Taggen $1 saknas parametern $2. Elementet visas inte.",
 	"loop-error-missingfile": "Filen $2 som har angivits i taggen $1 kunde inte hittas. Vänligen ladda upp den. {{PLURAL:$3|Elementet visas uten filen.|Elementet visas inte.}}",
+	"loop-error-unknown-param" : "Parametern $2 av taggen $1 är ogiltig: '''$3'''.<br/>\nTillåtna värden är '''$4'''. Elementet visas med värdet $5.",
 	"loopterminology": "Förkortningar",
 	"loopterminologyedit": "Regidera förkortningar",
 	"loopterminology-warning-deleted": "Alla förkortningar har tagits bort.",
