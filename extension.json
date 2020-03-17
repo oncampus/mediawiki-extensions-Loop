@@ -178,7 +178,8 @@
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
 		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
-		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip"
+		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
