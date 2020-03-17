@@ -127,39 +127,18 @@ class LoopConsent {
 
     public static function onPageRenderingHash( &$confstr, $user, &$optionsUsed ) {
 
-        // nur eingeloggte User, nicht für Nichteingeloggte
-        // Cache manuell löschen wenn Consent-Button geklickt, funktioniert dann
-
-       # $loopConsentVal  = $user->getOption( 'LoopConsent' );
-      
-        // if( isset( $loopConsentVal ) && ( in_array( $loopConsentVal, array( "0", "1" ) ) ) ) {
-        //     if( isset( $_COOKIE['LoopConsent'] ) ) {
-        //         $confstr .= "!LoopConsent=true";
-        //     } else {
-        //         $confstr .= "!LoopConsent=false";
-        //     }
-        // }
-        #if( isset( $loopConsentVal ) && ( in_array( $loopConsentVal, array( "0", "1" ) ) ) ) {
-        if( isset( $_COOKIE['LoopConsent'] ) ) {
+        if ( isset( $_COOKIE['LoopConsent'] ) ) {
             $confstr .= "!loopconsent=true";
         } else {
             $confstr .= "!loopconsent=false";
         }
-        #}
-
-       # dd($optionsUsed,$confstr);
       return true;
     }
 
     public static function onParserOptionsRegister( &$defaults, &$inCacheKey, &$lazyLoad ) {
-        #();
+
         $defaults["loopconsent"] = false;
-        if( isset( $_COOKIE['LoopConsent'] ) ) {
-            $inCacheKey["loopconsent"] = true;
-        } else {
-            $inCacheKey["loopconsent"] = false;
-        }
-       # dd(isset( $_COOKIE['LoopConsent'] ), $defaults, $inCacheKey, $lazyLoad);
-        #return true;
+        $inCacheKey["loopconsent"] = isset( $_COOKIE['LoopConsent'] ) ? true : false;
+        
     }
 }
