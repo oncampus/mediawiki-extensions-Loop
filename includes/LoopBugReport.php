@@ -4,11 +4,13 @@
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
+
 if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file cannot be run standalone.\n" );
 }
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Auth\PreAuthenticationProvider;
 
 class LoopBugReport {
 
@@ -50,24 +52,34 @@ class SpecialLoopBugReport extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
+        global $wgRequest, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-		
+   
 		$out->setPageTitle ( $this->msg ( 'loopbugreport-specialpage-title' ) );
-	    $html = '<h1>';
+    
+        $html = '<h1>';
 	    $html .= wfMessage( 'loopbugreport-specialpage-title' )->text();
         $html .= '</h1>';
         
         $service = LoopBugReport::isAvailable();
         $page = urldecode ( $request->getText('page') );
         $url = urldecode ( $request->getText('url') );
-        
+
+        $captcha = new HTMLReCaptchaNoCaptchaField( [
+            "key" => $wgReCaptchaSiteKey,
+            "error" => null,
+            "fieldname" => "g-recaptcha-response"
+        ]);
+        $captcha->mParent = $out;
+
         $email = urldecode ( $request->getText('email') );
         $message = urldecode ( $request->getText('message') );
-        
+        $response = urldecode( $request->getText('g-recaptcha-response') );
+
         if ( $user->isLoggedIn() ) {
             if ( $service != false ) {
                 if ( !empty( $page ) && !empty( $url ) ) {
@@ -90,78 +102,97 @@ class SpecialLoopBugReport extends SpecialPage {
                     $html .= '<label for="message" class="font-weight-bold">'. $this->msg("loopbugreport-message-label")->text().'</label>';
                     $html .= '<textarea  class="mb-2 form-control" type="text" name="message" required></textarea>';
                     $html .= '</div>';
+                              
+                    $html .= $captcha->getInputHTML(1);
                     
                     $html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="bugreport-submit" value="' . $this->msg( 'loopbugreport-send' ) . '"></input>';
                     
                     $html .= '</div></form>';
+                } elseif ( !empty( $email ) && !empty( $message ) && !empty( $url ) ) { 
+                    if( !empty( $response ) ) {
+                        $data = [
+                            'secret' => $wgReCaptchaSecretKey,
+                            'response' => $response,
+                            'remoteip' => $wgRequest->getIP()
+                        ];
 
-                    
-                } elseif ( !empty( $email ) && !empty( $message ) && !empty( $url ) ) {
-                    global $wgCanonicalServer;
-
-                    if ( $service == "external" ) {
-                        global $wgLoopExternalServiceBugReportUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
-
-                        $params = array(
-                            'bugreport_page' => $wgCanonicalServer . $url,
-                            'bugreport_loop' => $wgCanonicalServer,
-                            'bugreport_desc' => $message,
-                            'bugreport_sender' => $email
-                        );
-
-                        $postfields = array(
-                            "lang" => "de",
-                            "username" => $wgLoopExternalServiceUser,
-                            "password" => $wgLoopExternalServicePw,
-                            "TRIGGER_login" => "1",
-                            "host" => "webservice",
-                            "svc" => "func",
-                            "func" => "create_loopticket",
-                            "ret" => "phpa",
-                            "report" => "1_",
-                            "elevel" => "4_",
-                            "service_params" => array(0 => $params)
-                        );
-
-                        $postfields = http_build_query( $postfields );
-                        $ch = curl_init();
-                        curl_setopt( $ch, CURLOPT_URL, $wgLoopExternalServiceBugReportUrl);
-                        curl_setopt( $ch, CURLOPT_FAILONERROR, 1 );
-                        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
-                        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-                        curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );
-                        curl_setopt( $ch, CURLOPT_POST, 1 );
-                        curl_setopt( $ch, CURLOPT_POSTFIELDS, $postfields );
-
-                        $result = curl_exec( $ch );
-                        curl_close($ch);
-
-                        $tmp = ( array )unserialize( $result );
-                        $webservice_result = $tmp["webservice/func"];
-                        
-                        if ( $webservice_result == 1 ) {
-                            $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
-                        } else {
-                            $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
+                        $url = 'https://www.google.com/recaptcha/api/siteverify';
+                        $url = wfAppendQuery( $url, $data );
+                        $request = MWHttpRequest::factory( $url, [ 'method' => 'GET' ] );
+                        $status = $request->execute();
+                        $result = FormatJson::decode( $request->getContent(), true );
+                            
+                        if( !$result['success'] ) {
+                            $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nocaptcha" )->text() .'</div>';
                         }
-                        
-                    } elseif ( $service == "internal" ) {
-                        global $wgLoopBugReportEmail;
+                
+                        global $wgCanonicalServer;
 
-                        $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text(); 
-                        $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $email, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
-                        $header[] = 'MIME-Version: 1.0';
-                        $header[] = 'Content-type: text/html; charset=iso-8859-1';
+                        if ( $service == "external" ) {
+                            global $wgLoopExternalServiceBugReportUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
 
-                        $success = mail( $wgLoopBugReportEmail, $subject, $email, implode("\r\n", $header) );
-                        
-                        if ( $success ) {
-                            $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
-                        } else {
-                            $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
+                            $params = array(
+                                'bugreport_page' => $wgCanonicalServer . $url,
+                                'bugreport_loop' => $wgCanonicalServer,
+                                'bugreport_desc' => $message,
+                                'bugreport_sender' => $email
+                            );
+
+                            $postfields = array(
+                                "lang" => "de",
+                                "username" => $wgLoopExternalServiceUser,
+                                "password" => $wgLoopExternalServicePw,
+                                "TRIGGER_login" => "1",
+                                "host" => "webservice",
+                                "svc" => "func",
+                                "func" => "create_loopticket",
+                                "ret" => "phpa",
+                                "report" => "1_",
+                                "elevel" => "4_",
+                                "service_params" => array(0 => $params)
+                            );
+
+                            $postfields = http_build_query( $postfields );
+                            $ch = curl_init();
+                            curl_setopt( $ch, CURLOPT_URL, $wgLoopExternalServiceBugReportUrl);
+                            curl_setopt( $ch, CURLOPT_FAILONERROR, 1 );
+                            curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1 );
+                            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+                            curl_setopt( $ch, CURLOPT_TIMEOUT, 30 );
+                            curl_setopt( $ch, CURLOPT_POST, 1 );
+                            curl_setopt( $ch, CURLOPT_POSTFIELDS, $postfields );
+
+                            $result = curl_exec( $ch );
+                            curl_close($ch);
+
+                            $tmp = ( array )unserialize( $result );
+                            $webservice_result = $tmp["webservice/func"];
+                            
+                            if ( $webservice_result == 1 ) {
+                                $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
+                            } else {
+                                $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
+                            }
+                            
+                        } elseif ( $service == "internal" ) {
+                            global $wgLoopBugReportEmail;
+
+                            $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text(); 
+                            $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $email, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
+                            $header[] = 'MIME-Version: 1.0';
+                            $header[] = 'Content-type: text/html; charset=iso-8859-1';
+
+                            $success = mail( $wgLoopBugReportEmail, $subject, $email, implode("\r\n", $header) );
+                            
+                            if ( $success ) {
+                                $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
+                            } else {
+                                $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
+                            }
                         }
-                    }
-
+                    } else {
+                        $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nocaptcha" )->text() .'</div>';
+                    }    
                 } else {
                     $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nodata" )->text() .'</div>';
                 }
@@ -171,12 +202,11 @@ class SpecialLoopBugReport extends SpecialPage {
         } else {
             $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' )->text() .'</div>';
         }
-        
         $out->addHtml ( $html );
-        
     }
 
 	protected function getGroupName() {
 		return 'loop';
-	}
+    }
+
 }

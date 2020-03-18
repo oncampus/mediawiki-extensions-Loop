@@ -408,6 +408,7 @@
 	"loopbugreport-success": "Thanks for your help!",
 	"loopbugreport-error-configuration": "This function has not been configured yet.",
 	"loopbugreport-error-nodata": "This page must be opened from a link in the content area.",
+	"loopbugreport-error-nocaptcha": "Please solve the captcha to ensure you were filling in this form.",
 	"loopbugreport-fail": "The message could not be sent.",
 	"loopbugreport-desc": "Did you find a bug?<br>\nPlease tell us and add your e-mail address for further questions. <br>\nThank you for your help!",
 
@@ -459,5 +460,4 @@
 	"action-loopfeeback-view-comments": "View feedback comments",
 	"action-loopfeeback-reset": "Reset feedbacks",
 	"loopfeedback-already-done": "You already gave us feedback. Thank you!"
-
 }
