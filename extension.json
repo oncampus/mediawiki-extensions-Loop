@@ -975,10 +975,14 @@
 		},
 		"LoopExternalImprintUrl": {
 			"value": "",
-			"description" : "Url for fetching Imprint data"
+			"description" : "Url for fetching imprint data"
+		},
+		"LoopRSSToken": {
+			"value": "",
+			"description" : "Token for viewing RSS without logging in"
 		},
 		"LoopUnprotectedRSS": {
-			"value": true,
+			"value": false,
 			"description" : "Enable RSS feed page without login"
 		}
 	},

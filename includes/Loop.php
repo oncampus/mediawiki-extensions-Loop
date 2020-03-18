@@ -117,7 +117,7 @@ class Loop {
 
 		$wgWhitelistRead = is_array( $wgWhitelistRead ) ? $wgWhitelistRead : array();
 		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:Impressum", "Spezial:Datenschutz", "Special:Imprint", "Special:Privacy", "Especial:Imprint", "Especial:Privacy", "Speciel:Imprint", "Speciel:Privacy"] );
-		$wgWhitelistRead = $wgLoopUnprotectedRSS ? array_merge ( $wgWhitelistRead, [ "Spezial:LoopRSS", "Special:LoopRSS", "Especial:LoopRSS", "Speciel:LoopRSS"] ) : $wgWhitelistRead;
+		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:LoopRSS", "Special:LoopRSS", "Especial:LoopRSS", "Speciel:LoopRSS"] );
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
 		$wgWhitelistRead[] = "MediaWiki:Common.js";

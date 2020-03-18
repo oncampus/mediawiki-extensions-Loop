@@ -24,42 +24,63 @@ class SpecialLoopRSS extends SpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-		$out->setPageTitle( $this->msg( "privacy" ) );
+		$out->setPageTitle( $this->msg( "looprss" ) );
+        $token = $request->getText( 't' );
 
-        if ( $user->isLoggedIn() || $wgLoopUnprotectedRSS ) {
+        if ( $user->isLoggedIn() ) {
 
-            global $wgCanonicalServer, $wgScriptPath;
-            $url = $wgCanonicalServer . $wgScriptPath . "/api.php";
+            $this->outputRecentChanges();
 
-            $params = "";
-            if ( ! $user->isLoggedIn() && class_exists( "LoopSessionProvider" ) ) { 
-                $params .= LoopSessionProvider::getApiPermission();
+        } elseif ( $wgLoopUnprotectedRSS ) {
+
+            $this->outputRecentChanges();
+
+        } elseif ( !empty( $token ) ) {
+            global $wgLoopRSSToken;
+            if ( $token == $wgLoopRSSToken ) {
+
+                $this->outputRecentChanges();
+
             } else {
                 $this->setHeaders();
-                $out->addHTML($this->msg("specialpage-no-permission"));
-                return;
+                $out->addHTML( '<div class="alert alert-danger" role="alert">' . $this->msg("specialpage-no-permission")->text() . " " . $this->msg("loop-token-error")->text() . '</div>');
             }
-            $params .= "hidebots=1&namespace=2&invert=1&urlversion=1&days=30&limit=20&action=feedrecentchanges&feedformat=atom";
-            
-            $url .= "?" . $params;
-            $httpRequest = MWHttpRequest::factory( $url );
-            $status = $httpRequest->execute();
-            $result = $httpRequest->getContent();
-            
-            $this->getOutput()->disable();
-            wfResetOutputBuffers();
-
-            header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime(time())));
-            header("Content-Type: application/xml; charset=utf-8");
-            echo $result;
 
         } else {
             $this->setHeaders();
-			$out->addHTML($this->msg("specialpage-no-permission"));
+			$out->addHTML( '<div class="alert alert-warning" role="alert">' . $this->msg("specialpage-no-permission") . '</div>');
         }
 
     }
     
+    function outputRecentChanges() {
+        global $wgCanonicalServer, $wgScriptPath;
+        $apiPath = $wgCanonicalServer . $wgScriptPath . "/api.php";
+        
+        $params = "";
+        if ( class_exists( "LoopSessionProvider" ) ) { 
+            $params .= LoopSessionProvider::getApiPermission();
+        } else {
+            dd( $this->getUser()->isLoggedIn() , class_exists( "LoopSessionProvider" ) );
+            $this->setHeaders();
+            $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
+            return;
+        }
+        $params .= "hidebots=1&namespace=2&invert=1&urlversion=1&days=30&limit=20&action=feedrecentchanges&feedformat=atom";
+        
+        $url = $apiPath . "?" . $params;
+        $httpRequest = MWHttpRequest::factory( $url );
+        $status = $httpRequest->execute();
+        $result = $httpRequest->getContent();
+        
+        $this->getOutput()->disable();
+        wfResetOutputBuffers();
+
+        header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime(time())));
+        header("Content-Type: application/xml; charset=utf-8");
+        echo $result;
+    }
+
 	protected function getGroupName() {
 		return 'loop';
 	}
