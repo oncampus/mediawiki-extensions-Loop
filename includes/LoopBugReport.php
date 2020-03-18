@@ -10,7 +10,6 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 }
 
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Auth\PreAuthenticationProvider;
 
 class LoopBugReport {
 
