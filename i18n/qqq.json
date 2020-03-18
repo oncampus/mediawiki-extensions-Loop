@@ -28,6 +28,7 @@
 	"loopstructure-default-newpage-content": "Standard content for new pages",
 	"loopimprint": "Imprint special page title",
 	"loopprivacy": "Privacy special page title",
+	"looprss": "RSS Feed special page title",
 
 	"loopsettings" : "Name of the LOOP settings special page in special:loopsettings",
 	"loopsettings-specialpage-title" : "Page title for LOOP Settings special page",

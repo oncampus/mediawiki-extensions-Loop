@@ -111,7 +111,8 @@
 		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
 		"LoopAccordion": "includes/LoopAccordion.php",
 		"SpecialLoopImprint": "includes/Loop.php",
-		"SpecialLoopPrivacy": "includes/Loop.php"
+		"SpecialLoopPrivacy": "includes/Loop.php",
+		"SpecialLoopRSS": "includes/LoopRSS.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -201,7 +202,8 @@
 		"LoopBugReport": "SpecialLoopBugReport",
 		"LoopFeedback": "SpecialLoopFeedback",
 		"LoopImprint": "SpecialLoopImprint",
-		"LoopPrivacy": "SpecialLoopPrivacy"
+		"LoopPrivacy": "SpecialLoopPrivacy",
+		"LoopRSS": "SpecialLoopRSS"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -974,6 +976,10 @@
 		"LoopExternalImprintUrl": {
 			"value": "",
 			"description" : "Url for fetching Imprint data"
+		},
+		"LoopUnprotectedRSS": {
+			"value": true,
+			"description" : "Enable RSS feed page without login"
 		}
 	},
 	"LogTypes": [ "loopexport" ],
