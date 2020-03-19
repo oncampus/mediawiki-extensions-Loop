@@ -61,9 +61,11 @@ class SpecialLoopRSS extends SpecialPage {
         if ( class_exists( "LoopSessionProvider" ) ) { 
             $params .= LoopSessionProvider::getApiPermission();
         } else {
-            $this->setHeaders();
-            $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
-            return;
+            if ( !$user->isLoggedIn() ) {
+                $this->setHeaders();
+                $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
+                return;
+            }
         }
         $params .= "hidebots=1&namespace=2&invert=1&urlversion=1&days=30&limit=20&action=feedrecentchanges&feedformat=atom";
         

@@ -960,25 +960,19 @@ class SpecialLoopSettings extends SpecialPage {
                     
 					$html .= '<div class="form-row mb-4">';
                    
-                    global $wgCanonicalServer, $wgArticlePath, $wgLoopRssToken;
+                    global $wgCanonicalServer, $wgArticlePath, $wgLoopRSSToken;
                     $html .= '<div class="col-6">';
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-rss' )->text() . '</h3>'; 
                     $html .= '<p>' . $this->msg( 'loopsettings-rss-text' )->text() . '</p>'; 
-                    $rsslink = $wgCanonicalServer . str_replace( "$1", "Special:", $wgArticlePath) . "LoopRSS?t=" . $wgLoopRssToken; 
+                    $rsslink = $wgCanonicalServer . str_replace( "$1", "Special:", $wgArticlePath) . "LoopRSS?t=" . $wgLoopRSSToken; 
                     $html .= '<input id="rss-link" class="w-75 float-left mb-2 form-control" type="text" value="'.$rsslink.'"></input>'; 
                     $html .= '<p  id="rss-link-btn" class="w-25 float-left mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive d-block">copy</p>';
                     $html .= '<div class="float-left">';
                     $html .= '<input type="checkbox" name="rss-unprotected" id="rss-unprotected" class="setting-input mr-1" ' . ( $currentLoopSettings->rssUnprotected == "rssUnprotected" ? 'checked' : '' ) .'>';
                     $html .= '<label for="rss-unprotected">'. $this->msg("loopsettings-rss-unprotected-label")->text().'</label>';
-                   
-                    
-                    
+
                     $html .= '</div>';
                     $html .= '</div>';
-
-
-                   
-
                     $html .= '</div>';
 				$html .= '</div>'; // end of tech-tab
 
