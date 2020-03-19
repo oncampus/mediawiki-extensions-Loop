@@ -26,7 +26,7 @@ class SpecialLoopRSS extends SpecialPage {
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$out->setPageTitle( $this->msg( "looprss" ) );
         $token = $request->getText( 't' );
-
+        
         if ( $user->isLoggedIn() ) {
 
             $this->outputRecentChanges();
@@ -61,7 +61,6 @@ class SpecialLoopRSS extends SpecialPage {
         if ( class_exists( "LoopSessionProvider" ) ) { 
             $params .= LoopSessionProvider::getApiPermission();
         } else {
-            dd( $this->getUser()->isLoggedIn() , class_exists( "LoopSessionProvider" ) );
             $this->setHeaders();
             $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
             return;

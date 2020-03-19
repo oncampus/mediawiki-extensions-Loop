@@ -94,6 +94,7 @@
 	"loopsettings-captcha-addurl-label": "... bei einer Bearbeitung, mit der externe Links hinzugefügt werden",
 	"loopsettings-captcha-createaccount-label": "... beim Anlegen eines Accounts",
 	"loopsettings-captcha-badlogin-label": "... bei einem zweiten Loginversuch nach Fehlanmeldung",
+	"loopsettings-captcha-bugreport-label": "... beim Ausfüllen des Fehler melden Formulars",
 
 	"loopsettings-headline-feedback": "Feedback",
 	"loopsettings-feedback-level-label": "Art der Erhebung",
@@ -104,6 +105,10 @@
 	"loopsettings-feedback-mode-always": "Auf jeder Seite",
 	"loopsettings-feedback-mode-last_sublevel": "Auf dem letzten Unterkapitel",
 	"loopsettings-feedback-mode-second_half": "In der zweiten Hälfte",
+
+	"loopsettings-headline-rss": "RSS-Feed",
+	"loopsettings-rss-text": "Kopieren Sie den kompletten untenstehenden Link in Ihren RSS-Reader.",
+	"loopsettings-rss-unprotected-label": "Zugang zum Feed auch ohne Token oder Login zulassen (nicht empfohlen)",
 
 	"loopexport-specialpage-title": "Loop exportieren",
 	"loopexport": "Loop exportieren",

@@ -94,6 +94,11 @@
 	"loopsettings-captcha-addurl-label": "... activado durante la edición para añadir enlaces externos",
 	"loopsettings-captcha-createaccount-label": "... activado para la creación de una cuenta nueva",
 	"loopsettings-captcha-badlogin-label": "... activado en el siguiente intento de inicio de sesión, después de haber fallado el primer intento.",
+	"loopsettings-captcha-bugreport-label": "... triggered on the bug report page",
+
+	"loopsettings-headline-rss": "RSS-Feed",
+	"loopsettings-rss-text": "Copy the link below into your RSS reaser.",
+	"loopsettings-rss-unprotected-label": "Allow reading the feed without token or login (not recommented)",
 
 	"loopexport-specialpage-title" : "Exportación del LOOP",
 	"loopexport": "Exportación del LOOP",

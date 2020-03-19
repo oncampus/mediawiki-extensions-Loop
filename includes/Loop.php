@@ -104,9 +104,11 @@ class Loop {
 				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ? $wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
 				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ? $wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
 				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
+				$wgCaptchaTriggers["bugreport"] = ( !isset( $data['lset_captchabugreport'] ) ? $wgCaptchaTriggers["bugreport"] : boolval( $data['lset_captchabugreport'] ) );
 				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
 				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
 				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
+				$wgLoopUnprotectedRSS = ( !isset( $data['lset_rssunprotected'] ) ? $wgLoopUnprotectedRSS : $data['lset_rssunprotected'] );
 			}
 
 		}
@@ -163,7 +165,7 @@ class Loop {
 		# Lingo configuration
 		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
 		$wgexLingoDisplayOnce = true;
-
+		
 		# Captcha configuration
 		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
 		if ( empty( $wgReCaptchaSecretKey ) && empty( $wgReCaptchaSiteKey ) ) {
@@ -171,8 +173,11 @@ class Loop {
 			$wgCaptchaTriggers["edit"] = false;
 			$wgCaptchaTriggers["create"] = false;
 			$wgCaptchaTriggers["addurl"] = false;
+			$wgCaptchaTriggers["sendemail"] = false;
 			$wgCaptchaTriggers["createaccount"] = false;
 			$wgCaptchaTriggers["badlogin"] = false;
+			$wgCaptchaTriggers["badloginperuser"] = false;
+			$wgCaptchaTriggers["bugreport"] = false;
 		}
 
 		return true;
