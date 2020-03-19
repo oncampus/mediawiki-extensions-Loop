@@ -51,7 +51,7 @@ class SpecialLoopBugReport extends SpecialPage {
 	}
 
 	public function execute( $sub ) {
-        global $wgRequest, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
+        global $wgReCaptchaSiteKey, $wgReCaptchaSecretKey;
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -77,42 +77,18 @@ class SpecialLoopBugReport extends SpecialPage {
 
         $email = urldecode ( $request->getText('email') );
         $message = urldecode ( $request->getText('message') );
-        $response = urldecode( $request->getText('g-recaptcha-response') );
+        $accept = urldecode( $request->getText('g-recaptcha-response') );
 
         if ( $user->isLoggedIn() ) {
             if ( $service != false ) {
                 if ( !empty( $page ) && !empty( $url ) ) {
-                    $html .= '<p>' . $this->msg( 'loopbugreport-desc' ) . '</p>';
-                    $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2" id="bugreport-form" enctype="multipart/form-data">';
-                    $html .= '<div class="form-group">';
-                    
-                    $html .= '<div class="form-row">';
-                    $html .= '<label for="page" class="font-weight-bold">'. $this->msg("loopbugreport-page-label")->text().'</label>';
-                    $html .= '<input class="mb-2 form-control" type="text" name="page" value="'.$page.'" disabled/>';
-                    $html .= '<input class="d-none" type="text" name="url" value="'.$url.'"/>';
-                    $html .= '</div>';
-
-                    $html .= '<div class="form-row">';
-                    $html .= '<label for="email" class="font-weight-bold">'. $this->msg("email")->text().'</label>';
-                    $html .= '<input class="mb-2 form-control" type="email" name="email" required/>';
-                    $html .= '</div>';
-                    
-                    $html .= '<div class="form-row">';
-                    $html .= '<label for="message" class="font-weight-bold">'. $this->msg("loopbugreport-message-label")->text().'</label>';
-                    $html .= '<textarea  class="mb-2 form-control" type="text" name="message" required></textarea>';
-                    $html .= '</div>';
-                              
-                    $html .= $captcha->getInputHTML(1);
-                    
-                    $html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="bugreport-submit" value="' . $this->msg( 'loopbugreport-send' ) . '"></input>';
-                    
-                    $html .= '</div></form>';
-                } elseif ( !empty( $email ) && !empty( $message ) && !empty( $url ) ) { 
-                    if( !empty( $response ) ) {
+                    $html .= $this->makeForm( $request, $page, $url, $captcha );
+                } elseif ( !empty( $email ) && !empty( $message ) && !empty( $url )) { 
+                    if( !empty( $accept ) ) { 
                         $data = [
                             'secret' => $wgReCaptchaSecretKey,
-                            'response' => $response,
-                            'remoteip' => $wgRequest->getIP()
+                            'response' => $accept,
+                            'remoteip' => $request->getIP()
                         ];
 
                         $url = 'https://www.google.com/recaptcha/api/siteverify';
@@ -187,13 +163,16 @@ class SpecialLoopBugReport extends SpecialPage {
                                 $html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
                             } else {
                                 $html .= '<div class="alert alert-danger" role="alert">' . $this->msg( "loopbugreport-fail" )->text() .'</div>';
+                                $showForm = true;
                             }
                         }
                     } else {
                         $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nocaptcha" )->text() .'</div>';
+                        $showForm = true;
                     }    
                 } else {
                     $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nodata" )->text() .'</div>';
+                    $showForm = true;
                 }
             } else {
                 $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-configuration" )->text() .'</div>';
@@ -201,7 +180,57 @@ class SpecialLoopBugReport extends SpecialPage {
         } else {
             $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' )->text() .'</div>';
         }
+
+        if( isset($showForm) ) {
+            $html .= $this->makeForm( $request, $page, $url, $captcha, true ); // todo: prefill
+        }
+
         $out->addHtml ( $html );
+    }
+
+    public function makeForm( $request, $page, $url, $captcha, $prefill = false ) {
+        // dd($this->getOutput(), $this->getRequest());
+   
+        // if( $prefill ) {
+            
+            $message = urldecode ( $request->getText('message') );
+            $email = urldecode ( $request->getText('email') ) ?? '';
+            $message = urldecode ( $request->getText('message') ) ?? '';
+
+            $url = str_replace('_', ' ', $url);
+            $url = preg_replace('^(.*[\\\/])^', '', $url);
+            $page = urldecode( $url );
+            #dd($out);
+            // dd($request->getText('url'));
+        // }
+
+        $html = '<p>' . $this->msg( 'loopbugreport-desc' ) . '</p>';
+        $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2" id="bugreport-form" enctype="multipart/form-data">';
+        $html .= '<div class="form-group">';
+        
+        $html .= '<div class="form-row">';
+        $html .= '<label for="page" class="font-weight-bold">'. $this->msg("loopbugreport-page-label")->text().'</label>';
+        $html .= '<input class="mb-2 form-control" type="text" name="page" value="'.$page.'" disabled/>';
+        $html .= '<input class="d-none" type="text" name="url" value="'.$url.'"/>';
+        $html .= '</div>';
+
+        $html .= '<div class="form-row">';
+        $html .= '<label for="email" class="font-weight-bold">'. $this->msg("email")->text().'</label>';
+        $html .= '<input class="mb-2 form-control" type="email" name="email" value="' . $email . '" required/>';
+        $html .= '</div>';
+        
+        $html .= '<div class="form-row">';
+        $html .= '<label for="message" class="font-weight-bold">'. $this->msg("loopbugreport-message-label")->text().'</label>';
+        $html .= '<textarea  class="mb-2 form-control" type="text" name="message" required>' . $message . '</textarea>';
+        $html .= '</div>';
+                    
+        $html .= $captcha->getInputHTML(1);
+        
+        $html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="bugreport-submit" value="' . $this->msg( 'loopbugreport-send' ) . '"></input>';
+        
+        $html .= '</div></form>';
+
+        return $html;
     }
 
 	protected function getGroupName() {
