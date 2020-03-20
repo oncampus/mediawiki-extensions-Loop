@@ -53,7 +53,7 @@ class Loop {
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
 		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
-		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
+		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS;
 		
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -104,9 +104,11 @@ class Loop {
 				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ? $wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
 				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ? $wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
 				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
+				$wgCaptchaTriggers["bugreport"] = ( !isset( $data['lset_captchabugreport'] ) ? $wgCaptchaTriggers["bugreport"] : boolval( $data['lset_captchabugreport'] ) );
 				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
 				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
 				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
+				$wgLoopUnprotectedRSS = ( !isset( $data['lset_rssunprotected'] ) ? $wgLoopUnprotectedRSS : $data['lset_rssunprotected'] );
 			}
 
 		}
@@ -117,6 +119,7 @@ class Loop {
 
 		$wgWhitelistRead = is_array( $wgWhitelistRead ) ? $wgWhitelistRead : array();
 		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:Impressum", "Spezial:Datenschutz", "Special:Imprint", "Special:Privacy", "Especial:Imprint", "Especial:Privacy", "Speciel:Imprint", "Speciel:Privacy"] );
+		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:LoopRSS", "Special:LoopRSS", "Especial:LoopRSS", "Speciel:LoopRSS"] );
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
 		$wgWhitelistRead[] = "MediaWiki:Common.js";
@@ -162,7 +165,7 @@ class Loop {
 		# Lingo configuration
 		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
 		$wgexLingoDisplayOnce = true;
-
+		
 		# Captcha configuration
 		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
 		if ( empty( $wgReCaptchaSecretKey ) && empty( $wgReCaptchaSiteKey ) ) {
@@ -170,8 +173,11 @@ class Loop {
 			$wgCaptchaTriggers["edit"] = false;
 			$wgCaptchaTriggers["create"] = false;
 			$wgCaptchaTriggers["addurl"] = false;
+			$wgCaptchaTriggers["sendemail"] = false;
 			$wgCaptchaTriggers["createaccount"] = false;
 			$wgCaptchaTriggers["badlogin"] = false;
+			$wgCaptchaTriggers["badloginperuser"] = false;
+			$wgCaptchaTriggers["bugreport"] = false;
 		}
 
 		return true;

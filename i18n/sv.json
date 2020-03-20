@@ -28,6 +28,7 @@
 	"loopstructure-default-newpage-content": "Den här är en ny sida.",
 	"loopimprint": "Imprint",
 	"loopprivacy": "Privacy",
+	"looprss": "RSS Feed",
 
 	"loopsettings": "LOOP-Inställningar",
 	"loopsettings-specialpage-title": "LOOP-Inställningar",
@@ -93,6 +94,7 @@
 	"loopsettings-captcha-addurl-label": "... när externa länkar lägs till",
 	"loopsettings-captcha-createaccount-label": "... vid registrering",
 	"loopsettings-captcha-badlogin-label": "... när inloggning gick fel",
+	"loopsettings-captcha-bugreport-label": "... triggered on the bug report page",
 
 	"loopsettings-headline-feedback": "Feedback",
 	"loopsettings-feedback-level-label": "Typ av undersökning",
@@ -103,6 +105,10 @@
 	"loopsettings-feedback-mode-always": "På alla sidor",
 	"loopsettings-feedback-mode-last_sublevel": "På det sista underavsnittet",
 	"loopsettings-feedback-mode-second_half": "Under den andra halvan",
+
+	"loopsettings-headline-rss": "RSS-Feed",
+	"loopsettings-rss-text": "Kopera länken nedan till ditt RSS reader.",
+	"loopsettings-rss-unprotected-label": "Tillåt läsning av RSS utan token eller inloggning (rekommenderas inte)",
 
 	"loopexport-specialpage-title": "Export",
 	"loopexport": "Export",
