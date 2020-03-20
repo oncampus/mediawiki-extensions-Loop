@@ -123,22 +123,6 @@ $( document ).ready( function () {
 
 		return this.infoForm;
 	};
-	/*
-	const source = document.querySelector('div.source');
-
-	source.addEventListener('copy', (event) => {
-		const selection = document.getSelection();
-		event.clipboardData.setData('text/plain', selection.toString().toUpperCase());
-		event.preventDefault();
-	});
-		function copy() {
-			var copyText = document.querySelector("#rss-link");
-			copyText.select();
-			document.execCommand("copy");
-			console.log(copyText);
-		}
-		document.querySelector("#rss-link-btn").addEventListener("click", copy);
-	*/
 	
 	var copyText = document.getElementById("rss-link");
 	var rsslink = copyText.value;
