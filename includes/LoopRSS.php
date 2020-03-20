@@ -61,7 +61,7 @@ class SpecialLoopRSS extends SpecialPage {
         if ( class_exists( "LoopSessionProvider" ) ) { 
             $params .= LoopSessionProvider::getApiPermission();
         } else {
-            if ( !$user->isLoggedIn() ) {
+            if ( !$this->getUser()->isLoggedIn() ) {
                 $this->setHeaders();
                 $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
                 return;
