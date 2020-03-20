@@ -123,4 +123,16 @@ $( document ).ready( function () {
 
 		return this.infoForm;
 	};
+	
+	var copyText = document.getElementById("rss-link");
+	var rsslink = copyText.value;
+	$( "#rss-link-btn" ).click( function() {
+		copyText.select();
+		copyText.setSelectionRange(0, 99999);
+		document.execCommand("copy");
+		console.log(copyText);
+	});
+	$( "#rss-link" ).on( "change keyup", function() {
+		$(this).val(rsslink);
+	});
 });

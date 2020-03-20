@@ -28,6 +28,7 @@
 	"loopstructure-default-newpage-content": "This is a new page.",
 	"loopimprint": "Imprint",
 	"loopprivacy": "Privacy",
+	"looprss": "RSS Feed",
 
 	"loopsettings" : "LOOP settings",
 	"loopsettings-specialpage-title" : "LOOP settings",
@@ -93,6 +94,7 @@
 	"loopsettings-captcha-addurl-label": "... triggered on a page save that would add one or more URLs to the page",
 	"loopsettings-captcha-createaccount-label": "... triggered on creation of a new account",
 	"loopsettings-captcha-badlogin-label": "... triggered on the next login attempt after a failed one.",
+	"loopsettings-captcha-bugreport-label": "... triggered on the bug report page",
 
 	"loopsettings-headline-feedback": "Feedback",
 	"loopsettings-feedback-level-label": "Type of collection",
@@ -103,6 +105,10 @@
 	"loopsettings-feedback-mode-always": "On every page",
 	"loopsettings-feedback-mode-last_sublevel": "On the last subsection",
 	"loopsettings-feedback-mode-second_half": "In the second half",
+
+	"loopsettings-headline-rss": "RSS-Feed",
+	"loopsettings-rss-text": "Copy the link below into your RSS reaser.",
+	"loopsettings-rss-unprotected-label": "Allow reading the feed without token or login (not recommented)",
 
 	"loopexport-specialpage-title" : "Loop Export",
 	"loopexport": "Loop Export",
