@@ -58,6 +58,10 @@ class Loop {
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
 
+		# Captcha before settings configuration
+		$wgCaptchaTriggers["bugreport"] = ( !isset( $wgCaptchaTriggers["bugreport"] ) ? true : $wgCaptchaTriggers["bugreport"] );
+		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
+
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
 		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
@@ -166,8 +170,7 @@ class Loop {
 		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
 		$wgexLingoDisplayOnce = true;
 		
-		# Captcha configuration
-		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
+		# Captcha post settings configuration
 		if ( empty( $wgReCaptchaSecretKey ) && empty( $wgReCaptchaSiteKey ) ) {
 			# no captchas if there is no captcha service
 			$wgCaptchaTriggers["edit"] = false;
