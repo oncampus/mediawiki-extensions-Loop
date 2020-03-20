@@ -95,9 +95,9 @@ class SpecialLoopBugReport extends SpecialPage {
 
                             $url = 'https://www.google.com/recaptcha/api/siteverify';
                             $url = wfAppendQuery( $url, $data );
-                            $request = MWHttpRequest::factory( $url, [ 'method' => 'GET' ] );
-                            $status = $request->execute();
-                            $result = FormatJson::decode( $request->getContent(), true );
+                            $captchaRequest = MWHttpRequest::factory( $url, [ 'method' => 'GET' ] );
+                            $status = $captchaRequest->execute();
+                            $result = FormatJson::decode( $captchaRequest->getContent(), true );
                                 
                             if( $result['success'] ) {
                                 $captchaSuccess = true;
