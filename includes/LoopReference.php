@@ -45,7 +45,6 @@ class LoopReference {
 				throw new LoopException( wfMessage( 'loopreference-error-no-refid' )->text());
 			}
 
-
 			if ( ! $objectData ) {
 				throw new LoopException( wfMessage( 'loopreference-error-unknown-refid', $refId )->text());
 			}
@@ -56,7 +55,7 @@ class LoopReference {
 				$showTitle = false;
 			} else {
 				$showTitle = false;
-				throw new LoopException( wfMessage( 'loopreference-error-unknown-titleoption', $args["title"] , "true, false" )->text() );
+				throw new LoopException( wfMessage ( "loop-error-unknown-param", "<loop_reference>", "title", $args["title"], "true, false", 'false' )->text() );
 			}
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );

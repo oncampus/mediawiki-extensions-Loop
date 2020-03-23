@@ -69,7 +69,7 @@ class LoopArea {
 				} else {	
 					$argtype = 'area';
 					$iconimg = $argtype;
-					throw new LoopException( wfMessage( 'looparea-error-unknown-type-attribute', $args['type'], implode( ', ', self::$typeOptions ) )->text() );
+					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "type", $args['type'], implode( ', ', self::$typeOptions ), 'area' )->text() );
 				}
 			} else {
 				// ... set default type
@@ -93,7 +93,7 @@ class LoopArea {
 				} elseif ( $args['render'] === 'marked') {
 					$cssrender = 'rendermarked';
 				} else {
-					throw new LoopException( wfMessage( 'looparea-error-unknown-render-attribute', $args['render'], implode( ', ', self::$renderOptions ) )->text() );
+					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "render", $args['render'], implode( ', ', self::$renderOptions ), "marked" )->text() );
 				}
 			}
 			

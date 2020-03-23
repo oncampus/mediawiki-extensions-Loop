@@ -15,6 +15,7 @@ class LoopSpoiler {
 	public $mBtnText;
 	public $mContent;
 	public $mParser;
+	public $mErrors;
 	
 	private static $mSpoilerTypes = array(
 		'default',
@@ -64,15 +65,14 @@ class LoopSpoiler {
 	public static function renderLoopSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$parser->getOutput()->addModules( 'loop.spoiler.js' );
 		
+		$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
+		$spoiler->setContent( $parser->recursiveTagParseFully( $input ), $frame );
+		$return = "";
 
-		try {		
-			$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
-			$spoiler->setContent( $parser->recursiveTagParseFully( $input ), $frame );
-			$return  = $spoiler->render();
-		} catch ( LoopException $e ) {
-			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
-			$return = "$e";
+		if ( !empty ( $spoiler->mErrors ) ) {
+			$return .= "$spoiler->mErrors";
 		}
+		$return .= $spoiler->render();
 		
 		return $return;
 	}
@@ -108,10 +108,12 @@ class LoopSpoiler {
 		} else {
 			$spoiler->setType( htmlspecialchars ( $args['type'] ) );
 		}		
-		
 		// throw exception if spoiler type is not valid
 		if ( !empty( $spoiler->getType() ) && !in_array ( $spoiler->getType(), self::$mSpoilerTypes ) ) {
-			throw new LoopException( wfMessage ( 'loopspoiler-error-unknown-spoilertype', $spoiler->getType(), implode ( ', ', self::$mSpoilerTypes ) )->text() );
+			$spoiler->setType( htmlspecialchars ( $args['type'] ) );
+			$parser->addTrackingCategory( 'loop-tracking-category-loop-error' );
+			$spoiler->mErrors = new LoopException( wfMessage ( "loop-error-unknown-param", "<spoiler>/<loop_spoiler>", "type", $args['type'], implode ( ', ', self::$mSpoilerTypes ), $wgLoopSpoilerDefaultType )->text() );
+			
 		}		
 		
 		// button text
@@ -120,7 +122,7 @@ class LoopSpoiler {
 		} else {
 			$spoiler->setBtnText( htmlspecialchars( $args['text'] ) ); // parser raus
 		}		
-
+		
 		return $spoiler;
 	}
 	

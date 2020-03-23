@@ -110,7 +110,9 @@
 		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
-		"LoopAccordion": "includes/LoopAccordion.php"
+		"LoopAccordion": "includes/LoopAccordion.php",
+		"SpecialLoopImprint": "includes/Loop.php",
+		"SpecialLoopPrivacy": "includes/Loop.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -176,7 +178,8 @@
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
 		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
-		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip"
+		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -200,7 +203,9 @@
 		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
 		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
 		"LoopBugReport": "SpecialLoopBugReport",
-		"LoopFeedback": "SpecialLoopFeedback"
+		"LoopFeedback": "SpecialLoopFeedback",
+		"LoopImprint": "SpecialLoopImprint",
+		"LoopPrivacy": "SpecialLoopPrivacy"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -318,7 +323,9 @@
 				"loopwikieditor-loop-content-prezi",
 				"loopwikieditor-loop-content-slideshare",
 				"loopwikieditor-loop-content-quizlet",
-				"loopscreenshot"
+				"loopscreenshot",
+				"loopwikieditor-loop-snippets-accordion",
+				"loopwikieditor-loop-snippets-syntaxhighlight"
 			]
 		},
 		"loop.feedback.js": {
@@ -959,6 +966,18 @@
 		"LoopFeedbackMode": {
 			"value": "second_half",
 			"description" : "[always|last_sublevel|second_half]"
+		},
+		"LoopExternalImprintPrivacy": {
+			"value": false,
+			"description" : "Activate external download of imprint and privacy texts"
+		},
+		"LoopExternalPrivacyUrl": {
+			"value": "",
+			"description" : "Url for fetching privacy data"
+		},
+		"LoopExternalImprintUrl": {
+			"value": "",
+			"description" : "Url for fetching Imprint data"
 		}
 	},
 	"LogTypes": [ "loopexport" ],

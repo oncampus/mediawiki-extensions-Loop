@@ -38,7 +38,7 @@ class LoopUpdater {
 			Loop::setupLoopPages();
 		}
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
-		if ( $updater->tableExists( 'loop_object_index' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
+		if ( $updater->tableExists( 'loop_structure_items' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
 			
 			if ( isset( $wgLoopAddToSettingsDB ) ) { # update settings DB from LocalSettings
 				if ( !empty( $wgLoopAddToSettingsDB )) {
@@ -46,6 +46,7 @@ class LoopUpdater {
 				}
 			}
 
+			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_structure_items', $schemaPath . 'loop_structure_items_modify.sql', true ) );
 			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
 
 			self::saveAllWikiPages();
