@@ -13,33 +13,82 @@ if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); 
 
 class LoopConsent {
 
-    public static function onParserBeforeStrip( &$parser ) {
+    public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
+        $tags = ['ev:youtube', 'embedvideo', 'ev', 'evt', 'evu'];
+        // dd($wikiPage, $user, $content,  $summary, $isMinor, $isWatch, $section, $flags, $status);
+        //check if video tag exists on article
+        foreach( $tags as $tag) {
+            if( strpos('<'.$content->getText(), $tag) || strpos('{{'.$content->getText(), $tag)) {
+                // dd($wikiPage);
+                dd(LoopConsent::getTags($content->getText()));
+            }
+        }
+
+    }
+
+    public static function getTags( $content ) {
+        $return = [];
+        $curlyMatches = [];
+        $angleMatches = [];
+
+        // get {{}} tags
+        if ( preg_match_all( '/{{([^}]+)}}/', $content, $matches ) ) {
+            $curlyMatches = $matches[1];
+
+            foreach( $curlyMatches as $m ) {
+                if( strpos( $m, 'vimeo' ) ) {
+                    $id = explode( '|', $m )[1];
+                    $return['vimeo'][] = $id;
+                }
+
+                if( strpos( $m, 'youtube' ) ) {
+                    $id = explode( '|', $m )[1];
+                    $return['youtube'][] = substr( strstr( $id, '=' ), 1 );
+                }
+            }
+            
+        }
+
+        // get <> tags
+        $allowedTags = ['youtube', 'embedvideo'];
+
+        foreach($allowedTags as $tag) {
+            $tag = preg_quote($tag);
+            if ( preg_match_all( "/(<$tag.*?>)(.*?)(<\/$tag>)/", $content, $matches ) ) {
+                $angleMatches = $matches[2];
+    
+                foreach($angleMatches as $m) {
+                    if( strpos( $m, 'youtube' ) ) {
+                        $return['youtube'][] = substr($m, strrpos($m, '=') + 1);
+                    }
+                    if( strpos( $m, 'vimeo' ) ) {
+                        $return['vimeo'][] = substr($m, strrpos($m, '/') + 1);
+                    }
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    public static function onParserBeforeStrip( &$parser ) {   
         
+        global $wgH5PHostUrl;
+
         if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseYoutube' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseYoutube' );  // <embedvideo>
-            $parser->setHook('h5p', 'LoopConsent::parseH5P');               // <h5p>
+        
+            if( $wgH5PHostUrl == 'https://h5p.com/h5p/embed/' ) {
+                $parser->setHook('h5p', 'LoopConsent::parseH5P');               // <h5p>
+            }
+            
             $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );       // {{#ev}}
             $parser->setFunctionHook( 'evt', 'LoopConsent::parseEv' );      // {{#evt}}
             $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' );     // {{#evu}}
 
             return true;
-        } else {
-            // global $wgOut;
-            // $parser->getOutput()->updateCacheExpiry( 0 );
-            // $wgOut->enableClientCache( false );
-            
-            //zum testen Inhalt von onPageRenderingHash() auskommentieren 
-
-            // if(filter_input(INPUT_GET, 'consent', FILTER_SANITIZE_URL)) {
-            //     if($parser->getTitle()->mArticleID != 0) {
-            //         $page = WikiPage::factory( $parser->getTitle() );
-            //         $page->doPurge();
-            //         header("Refresh:0; url=" . $_SERVER['PHP_SELF']); // also strips URL params
-            //     }
-            // }
-        }
-            
+        }            
     }
     
 
@@ -90,10 +139,8 @@ class LoopConsent {
     
     private function renderOutput( $id, $service = 'youtube' ) {
 
-        global $wgResourceBasePath;
-        global $wgOut;
-        CacheTime::updateCacheExpiry( 0 );
-			$wgOut->enableClientCache( false );
+        global $wgResourceBasePath, $wgOut;
+
         $url = '';
         $title = '';
 
@@ -114,7 +161,7 @@ class LoopConsent {
         $out = '<div class="loop_consent" style="background-image: url(' . $url . ')">';
         $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
         $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button') . '</button>';
-        $out .= '</div></div>';
+        $out .= '</div></div>z';
  
         return $out;
     }
@@ -130,19 +177,19 @@ class LoopConsent {
 
 
     public static function onPageRenderingHash( &$confstr, $user, &$optionsUsed ) {
-
         if ( isset( $_COOKIE['LoopConsent'] ) ) {
             $confstr .= "!loopconsent=true";
         } else {
             $confstr .= "!loopconsent=false";
         }
-      return true;
+        
+        return true;
     }
+
 
     public static function onParserOptionsRegister( &$defaults, &$inCacheKey, &$lazyLoad ) {
-
         $defaults["loopconsent"] = false;
         $inCacheKey["loopconsent"] = isset( $_COOKIE['LoopConsent'] ) ? true : false;
-        
     }
+
 }

@@ -177,6 +177,7 @@
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
+		"PageContentSave": "LoopConsent::onPageContentSave",
 		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
 		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
 		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
