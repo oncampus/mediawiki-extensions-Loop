@@ -7,20 +7,21 @@
   /*
   TODOS:
   - i18n für ES und SV
+  thumbPath
   */
 
 if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); }
 
 class LoopConsent {
 
+    private $thumbPath = '/images/videothumbs';
+    
     public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
         $tags = ['ev:youtube', 'embedvideo', 'ev', 'evt', 'evu'];
 
         //check if video tag exists on article
         foreach( $tags as $tag) {
             if( strpos('<'.$content->getText(), $tag) || strpos('{{'.$content->getText(), $tag)) {
-                // dd($wikiPage);
-                // dd(LoopConsent::updateThumbnails($content->getText(), $wikiPage->getTitle()->getArticleID()));
                 LoopConsent::updateThumbnails($content->getText(), $wikiPage->getTitle()->getArticleID());
             }
         }
@@ -71,34 +72,26 @@ class LoopConsent {
                 }
             }
         }
+        
+        $thumbPath = getcwd() . $this->thumbPath;
 
-        // update local thumbnails
-        // $youtubeThumbUrl = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
-        // http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/
-        
-        $thumbPath = getcwd() . '/images/videothumbs';
-        
-        if (!file_exists($thumbPath)) {
-            mkdir($thumbPath, 0755, true);
+        if (!file_exists(getcwd() . thumbPath)) {
+            mkdir(getcwd() . thumbPath, 0755, true);
         }
 
+        // update local thumbnails
         foreach ($return as $key => $value) {
             if($key === 'vimeo') {
                 foreach($value as $v) {
                     $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $v ) );
-                    file_put_contents($thumbPath.'/'.$v.'.jpg', file_get_contents($vimeoApi->thumbnail_url));
+                    file_put_contents(thumbPath.'/'.$v.'.jpg', file_get_contents($vimeoApi->thumbnail_url));
                 }
             } else { // assume youtube
                 foreach($value as $v) {
-
-                    file_put_contents($thumbPath.'/'.$v.'.jpg', file_get_contents('https://img.youtube.com/vi/'.$v.'/maxresdefault.jpg'));
+                    file_put_contents(thumbPath.'/'.$v.'.jpg', file_get_contents('https://img.youtube.com/vi/'.$v.'/maxresdefault.jpg'));
                 }
             }
         }
-
-        // file_put_contents($img, file_get_contents($url));
-
-
 
         return $return;
     }
@@ -123,7 +116,6 @@ class LoopConsent {
         }            
     }
     
-
 
     public static function parseH5P( $input, array $args, Parser $parser, PPFrame $frame ) {
         $lc = new LoopConsent();
@@ -171,7 +163,7 @@ class LoopConsent {
     
     private function renderOutput( $id, $service = 'youtube' ) {
 
-        global $wgResourceBasePath, $wgOut;
+        global $wgResourceBasePath, $wgOut, $wgServer;
 
         $url = '';
         $title = '';
@@ -180,12 +172,16 @@ class LoopConsent {
             $title = 'H5P';
             $url = $wgResourceBasePath.'/skins/Loop/resources/img/bg_h5p.jpg';
         } else {
+            $url = $wgServer . $this->thumbPath . '/' . $id . '.jpg';
+
+            // no thumbnail
+            if (strpos($url, '/.jpg')) {
+                $url = '';
+            }
+
             if( $service == 'youtube' ) {
-                $url = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
                 $title = 'YouTube';
             } else if ( $service == 'vimeo' ) {
-                $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $id ) );
-                $url = $vimeoApi->thumbnail_url;
                 $title = 'Vimeo';   
             }
         }
@@ -193,7 +189,7 @@ class LoopConsent {
         $out = '<div class="loop_consent" style="background-image: url(' . $url . ')">';
         $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
         $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button') . '</button>';
-        $out .= '</div></div>z';
+        $out .= '</div></div>';
  
         return $out;
     }
