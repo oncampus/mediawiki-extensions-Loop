@@ -15,18 +15,22 @@ class LoopConsent {
 
     public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
         $tags = ['ev:youtube', 'embedvideo', 'ev', 'evt', 'evu'];
-        // dd($wikiPage, $user, $content,  $summary, $isMinor, $isWatch, $section, $flags, $status);
+
         //check if video tag exists on article
         foreach( $tags as $tag) {
             if( strpos('<'.$content->getText(), $tag) || strpos('{{'.$content->getText(), $tag)) {
                 // dd($wikiPage);
-                dd(LoopConsent::getTags($content->getText()));
+                // dd(LoopConsent::updateThumbnails($content->getText(), $wikiPage->getTitle()->getArticleID()));
+                LoopConsent::updateThumbnails($content->getText(), $wikiPage->getTitle()->getArticleID());
             }
         }
 
     }
 
-    public static function getTags( $content ) {
+    public static function updateThumbnails( $content, $articleId ) {
+
+        global $wgResourceBasePath;
+
         $return = [];
         $curlyMatches = [];
         $angleMatches = [];
@@ -67,6 +71,34 @@ class LoopConsent {
                 }
             }
         }
+
+        // update local thumbnails
+        // $youtubeThumbUrl = "https://img.youtube.com/vi/{$id}/maxresdefault.jpg";
+        // http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/
+        
+        $thumbPath = getcwd() . '/images/videothumbs';
+        
+        if (!file_exists($thumbPath)) {
+            mkdir($thumbPath, 0755, true);
+        }
+
+        foreach ($return as $key => $value) {
+            if($key === 'vimeo') {
+                foreach($value as $v) {
+                    $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $v ) );
+                    file_put_contents($thumbPath.'/'.$v.'.jpg', file_get_contents($vimeoApi->thumbnail_url));
+                }
+            } else { // assume youtube
+                foreach($value as $v) {
+
+                    file_put_contents($thumbPath.'/'.$v.'.jpg', file_get_contents('https://img.youtube.com/vi/'.$v.'/maxresdefault.jpg'));
+                }
+            }
+        }
+
+        // file_put_contents($img, file_get_contents($url));
+
+
 
         return $return;
     }
