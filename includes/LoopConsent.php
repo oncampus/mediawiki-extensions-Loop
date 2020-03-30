@@ -4,108 +4,31 @@
   * @author Dustin Neß <dustin.ness@th-luebeck.de>
   */
 
-  /*
-  TODOS:
-  - i18n für ES und SV
-  thumbPath
-  */
-
 if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); }
 
 class LoopConsent {
-
-    private $thumbPath = '/images/videothumbs';
     
     public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
         $tags = ['ev:youtube', 'embedvideo', 'ev', 'evt', 'evu'];
 
-        //check if video tag exists on article
         foreach( $tags as $tag) {
             if( strpos('<'.$content->getText(), $tag) || strpos('{{'.$content->getText(), $tag)) {
                 LoopConsent::updateThumbnails($content->getText(), $wikiPage->getTitle()->getArticleID());
             }
         }
-
     }
 
-    public static function updateThumbnails( $content, $articleId ) {
-
-        global $wgResourceBasePath;
-
-        $return = [];
-        $curlyMatches = [];
-        $angleMatches = [];
-
-        // get {{}} tags
-        if ( preg_match_all( '/{{([^}]+)}}/', $content, $matches ) ) {
-            $curlyMatches = $matches[1];
-
-            foreach( $curlyMatches as $m ) {
-                if( strpos( $m, 'vimeo' ) ) {
-                    $id = explode( '|', $m )[1];
-                    $return['vimeo'][] = $id;
-                }
-
-                if( strpos( $m, 'youtube' ) ) {
-                    $id = explode( '|', $m )[1];
-                    $return['youtube'][] = substr( strstr( $id, '=' ), 1 );
-                }
-            }
-            
-        }
-
-        // get <> tags
-        $allowedTags = ['youtube', 'embedvideo'];
-
-        foreach($allowedTags as $tag) {
-            $tag = preg_quote($tag);
-            if ( preg_match_all( "/(<$tag.*?>)(.*?)(<\/$tag>)/", $content, $matches ) ) {
-                $angleMatches = $matches[2];
-    
-                foreach($angleMatches as $m) {
-                    if( strpos( $m, 'youtube' ) ) {
-                        $return['youtube'][] = substr($m, strrpos($m, '=') + 1);
-                    }
-                    if( strpos( $m, 'vimeo' ) ) {
-                        $return['vimeo'][] = substr($m, strrpos($m, '/') + 1);
-                    }
-                }
-            }
-        }
-        
-        $thumbPath = getcwd() . $this->thumbPath;
-
-        if (!file_exists(getcwd() . thumbPath)) {
-            mkdir(getcwd() . thumbPath, 0755, true);
-        }
-
-        // update local thumbnails
-        foreach ($return as $key => $value) {
-            if($key === 'vimeo') {
-                foreach($value as $v) {
-                    $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $v ) );
-                    file_put_contents(thumbPath.'/'.$v.'.jpg', file_get_contents($vimeoApi->thumbnail_url));
-                }
-            } else { // assume youtube
-                foreach($value as $v) {
-                    file_put_contents(thumbPath.'/'.$v.'.jpg', file_get_contents('https://img.youtube.com/vi/'.$v.'/maxresdefault.jpg'));
-                }
-            }
-        }
-
-        return $return;
-    }
 
     public static function onParserBeforeStrip( &$parser ) {   
         
         global $wgH5PHostUrl;
 
         if( !isset( $_COOKIE['LoopConsent'] )) {
-            $parser->setHook( 'youtube', 'LoopConsent::parseYoutube' );     // <youtube>
-            $parser->setHook( 'embedvideo', 'LoopConsent::parseYoutube' );  // <embedvideo>
+            $parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
+            $parser->setHook( 'embedvideo', 'LoopConsent::parseTag' );  // <embedvideo>
         
             if( $wgH5PHostUrl == 'https://h5p.com/h5p/embed/' ) {
-                $parser->setHook('h5p', 'LoopConsent::parseH5P');               // <h5p>
+                $parser->setHook('h5p', 'LoopConsent::parseH5P');           // <h5p>
             }
             
             $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );       // {{#ev}}
@@ -124,23 +47,26 @@ class LoopConsent {
     }
 
 
-    public static function parseYoutube( $input, array $args, Parser $parser, PPFrame $frame ) {
+    public static function parseTag( $input, array $args, Parser $parser, PPFrame $frame ) {
         $lc = new LoopConsent();
-
-        return $lc->renderOutput( $lc->getYouTubeId( $input ) );
+        if($args['service'] == 'vimeo') {
+            return $lc->renderOutput( $lc->getVimeoId( $input ), 'vimeo' );
+        } else {
+            return $lc->renderOutput( $lc->getYouTubeId( $input ) );
+        }
     }
 
 
-    public static function parseEv( $parser, $callback, $flags) {
+    public static function parseEv( $parser, $callback, $flags ) {
         $lc = new LoopConsent();
 
-        if($callback == 'youtube') {
+        if( $callback == 'youtube' ) {
             return [
                 $lc->renderOutput( $lc->getYouTubeId( $flags ), $callback ),
                 'noparse'=> true,
                 'isHTML' => true
             ];
-        } else if ($callback == 'vimeo') {
+        } else if ( $callback == 'vimeo' ) {
             return [
                 $lc->renderOutput( $flags, $callback ),
                 'noparse'=> true,
@@ -172,7 +98,7 @@ class LoopConsent {
             $title = 'H5P';
             $url = $wgResourceBasePath.'/skins/Loop/resources/img/bg_h5p.jpg';
         } else {
-            $url = $wgServer . $this->thumbPath . '/' . $id . '.jpg';
+            $url = $wgServer . '/images/videothumbs/' . $id . '.jpg';
 
             // no thumbnail
             if (strpos($url, '/.jpg')) {
@@ -198,6 +124,18 @@ class LoopConsent {
     private function getYouTubeId( $url ) {
         if ( preg_match( '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $url, $match ) ) {
             return $match[1];
+        } else {
+            return $url; //already extracted youtube video ID
+        }
+
+        return false;
+    }
+
+    private function getVimeoId( $url ) {
+        if ( preg_match( '/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:[a-zA-Z0-9_\-]+)?/i', $url, $match ) ) {
+            return $match[1];
+        } else {
+            return $url; //already extracted youtube video ID
         }
 
         return false;
@@ -218,6 +156,82 @@ class LoopConsent {
     public static function onParserOptionsRegister( &$defaults, &$inCacheKey, &$lazyLoad ) {
         $defaults["loopconsent"] = false;
         $inCacheKey["loopconsent"] = isset( $_COOKIE['LoopConsent'] ) ? true : false;
+    }
+
+    public static function updateThumbnails( $content, $articleId ) {
+
+        global $wgResourceBasePath;
+
+        $return = [];
+        $curlyMatches = [];
+        $angleMatches = [];
+
+        // get {{}} tags
+        if ( preg_match_all( '/{{([^}]+)}}/', $content, $matches ) ) {
+            $curlyMatches = $matches[1];
+
+            foreach( $curlyMatches as $match ) {
+                if( strpos( $match, 'vimeo' ) ) {
+                    $id = explode( '|', $match )[1];
+                    $return['vimeo'][] = $id;
+                }
+
+                if( strpos( $match, 'youtube' ) ) {
+                    $id = explode( '|', $match )[1];
+                    $return['youtube'][] = $id;
+                }
+            }
+            
+        }
+
+        // get <> tags
+        $allowedTags = ['youtube', 'embedvideo'];
+
+        foreach($allowedTags as $tag) {
+            $tag = preg_quote($tag);
+            if ( preg_match_all( "/(<$tag.*?>)(.*?)(<\/$tag>)/", $content, $matches ) ) {
+                $angleMatches = $matches[2];
+    
+                foreach($angleMatches as $match) {
+                    if( strpos( $match, 'youtube' ) ) {
+                        $return['youtube'][] = substr($match, strrpos($match, '=') + 1);
+                    }
+                    if( strpos( $match, 'vimeo' ) ) {
+                        $return['vimeo'][] = substr($match, strrpos($match, '/') + 1);
+                    }
+                }
+            }
+        }
+
+        $thumbStorePath = getcwd() . '/images/videothumbs';
+
+        if ( !file_exists( $thumbStorePath ) ) {
+            mkdir( $thumbStorePath, 0755, true );
+        }
+
+        // update local thumbnails
+        foreach ( $return as $key => $value ) {
+            if( $key === 'vimeo' ) {
+                foreach( $value as $v ) {
+                    $vimeoApi = json_decode( file_get_contents( 'http://vimeo.com/api/oembed.json?url=http://www.vimeo.com/' . $v ) );
+                    file_put_contents(
+                        $thumbStorePath . '/' . $v . '.jpg',
+                        file_get_contents( $vimeoApi->thumbnail_url ),
+                        FILE_APPEND
+                    );
+                }
+            } else { // assume youtube
+                foreach( $value as $v ) {
+                    file_put_contents(
+                        $thumbStorePath . '/' . $v . '.jpg',
+                        file_get_contents( 'https://img.youtube.com/vi/' . $v . '/maxresdefault.jpg' ),
+                        FILE_APPEND
+                    );
+                }
+            }
+        }
+
+        return $return;
     }
 
 }
