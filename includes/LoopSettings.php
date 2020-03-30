@@ -277,7 +277,7 @@ class LoopSettings {
 
     public function getLoopSettingsFromRequest ( $request, $user ) {
         
-        global $wgLoopSocialIcons, $wgLoopSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
+        global $wgLoopSocialIcons, $wgLoopAvailableSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
         $this->errors = array();
         $this->rightsText = $request->getText( 'rights-text' ); # no validation required
         
@@ -337,7 +337,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
         }
         
-        if ( in_array( $request->getText( 'skin-style' ), $wgLoopSkinStyles ) ) {
+        if ( in_array( $request->getText( 'skin-style' ), $wgLoopAvailableSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
             $user->setOption( 'LoopSkinStyle', $this->skinStyle );
 			$user->saveSettings();

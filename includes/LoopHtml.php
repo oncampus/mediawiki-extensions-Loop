@@ -27,6 +27,8 @@ class LoopHtml{
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
 
+        set_time_limit(600);
+        
         $loopStructureItems = $loopStructure->getStructureItems();
 
         if(is_array($loopStructureItems)) {
