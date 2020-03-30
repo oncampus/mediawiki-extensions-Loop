@@ -697,10 +697,9 @@ class SpecialLoopSettings extends SpecialPage {
 					### LINK BLOCK ###
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-footer-links' ) . '</h3>';
                     
-
-                    global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
+                    global $wgLoopExternalImprintPrivacy;
                     
-                    if ( ! $wgLoopExternalImprintPrivacy || empty ( $wgLoopExternalPrivacyUrl ) ) {
+                    if ( ! $wgLoopExternalImprintPrivacy ) {
                         $html .= '<div class="form-row mb-4">';
 
                         # imprint link

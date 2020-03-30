@@ -262,6 +262,8 @@ class LoopExportMp3 extends LoopExport {
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 	
@@ -307,6 +309,8 @@ class LoopExportPageMp3 extends LoopExport {
 		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: text/html");
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 	
@@ -343,6 +347,8 @@ class LoopExportEpub extends LoopExport {
 		header("Content-Type: application/epub+zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 }
@@ -382,6 +388,8 @@ class LoopExportHtml extends LoopExport {
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
@@ -418,6 +426,8 @@ class LoopExportScorm extends LoopExport {
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
