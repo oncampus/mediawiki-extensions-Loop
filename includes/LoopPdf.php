@@ -33,9 +33,9 @@ class LoopPdf {
 		if ( !empty($xmlfo["errors"]) ) {
 			var_dump($xmlfo["errors"]);
 		}
-		if ( strpos( $pdf, "%PDF") !== 0 ) {
-			#es werden keine leeren/fehlerhaften PDFs mehr heruntergeladen, solange das hier aktiv ist.
-			var_dump( "Error! Anstatt eine leere PDF auszugeben, gibt es jetzt den content hier. #debug", $pdf, $xmlfo, $wiki_xml );exit; #dd ist zu JS-ressourcenintensiv
+		
+		if ( strpos( $pdf, "%PDF") !== 0 ) { # error!
+			return [$pdf, $xmlfo, $wiki_xml];
 		}
 		#var_dump( "Debug! PDF funktioniert eigentlich. ", $xmlfo, $wiki_xml );exit;
 		return $pdf;

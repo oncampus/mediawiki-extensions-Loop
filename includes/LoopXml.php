@@ -166,14 +166,18 @@ class LoopXml {
 					if ( ! in_array( $node->getAttribute("id"), $idCache ) )  {
 						$idCache[] = $node->getAttribute("id");
 					} else {
+						$idCache[] = $node->getAttribute("id");
 						$node->removeAttribute("id");
 					}
 				} 
 			}
 		}
-		$newContentText = substr( $dom->saveXML(), 22, -1);
-		
-		if ( $contentText != $newContentText ) {
+		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
+
+		if ( empty( $newContentText ) ) {
+			echo "<script>console.log('Articles XML Invalid');</script>"; # when the given XML is invalid, no domdocument doesn't load it. this is a hidden error message
+			return false;
+		} elseif ( $contentText != $newContentText ) {
 			$contentText = $newContentText;
 		}
 		

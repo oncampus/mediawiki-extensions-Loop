@@ -242,7 +242,7 @@ class LoopHtml{
      * 
      * @Return string html
      */   
-    private static function writeSpecialPageToFile( $specialPage, $prependHref, $exportSkin, $content = null ) {
+    private static function writeSpecialPageToFile( $specialPage, $prependHref, $exportSkin ) {
 
        # $loopStructure = new LoopStructure;
         #$loopStructure->loadStructureItems();
@@ -289,6 +289,7 @@ class LoopHtml{
                 $content = SpecialLoopTerminology::renderLoopTerminologySpecialPage();
                 break;
             default:
+                $content = '';
                 break;
         }
         

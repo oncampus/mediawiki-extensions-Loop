@@ -503,7 +503,9 @@ class SpecialLoopExport extends SpecialPage {
 		
 		if ( $export != false ) {
 			$logMsg = "";
-
+			if ( ! in_array( "sysop", $this->getUser()->getGroups() ) ) {
+				error_reporting(E_ERROR | E_PARSE); # no error reports for non-admins
+			}
 			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
 					$export->getExistingExportFile();
 					$logMsg = wfMessage("log-export-reused")->text();
@@ -511,12 +513,29 @@ class SpecialLoopExport extends SpecialPage {
 			} else {
 				$export->generateExportContent();
 				
-				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" ) { # don't cache html exports
+				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" && !is_array( $export->getExportContent() ) ) { # don't cache html exports
 					$export->saveExportFile();
 					$logMsg = wfMessage("log-export-generated")->text();
 				} 
 			}
-			if ($export->getExportContent() != null ) {
+			if ( is_array( $export->getExportContent() ) ) {
+				$msg = $this->msg( "loopexport-pdf-error" );
+				
+				if ( $this->getUser()->isAllowed('loop-pdf-test') ) {
+					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExportPdfTest' ), $this->msg( "loopexportpdftest" )->parse() );
+				} elseif ( LoopBugReport::isAvailable() != false ) {
+					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopBugReport' ), $this->msg( "loopbugreport" )->parse(), array(), array( "url" => "PDF Export", "page" => "Special:LoopExport/pdf" ) );
+				}
+				$html = Html::rawElement( 'div', array( 'class' => 'errorbox' ), $msg );
+				if ( in_array( "sysop", $this->getUser()->getGroups() ) ) {
+					$errors = $export->getExportContent();
+					$html .= '<pre class="d-none1"><b>Error:</b> <br>'.implode("\n", array_slice(explode("\n", $errors[0]), 1)) .'</pre>';
+					$html .= '<pre class="d-none1"><b>XML</b>: <br>'.htmlspecialchars($errors[2]).'</pre>';
+					$html .= '<pre class="d-none1"><b>XMLFO:</b> <br>'.htmlspecialchars($errors[1]["xmlfo"]) .'</pre><br>';
+				}
+				$this->getOutput()->addHTML( $html );
+
+			} elseif ($export->getExportContent() != null ) {
 				
 				if ( isset($logEntry) ) {
 					$logEntry->setTarget( Title::newFromId($structure->mainPage) );

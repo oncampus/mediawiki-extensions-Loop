@@ -123,6 +123,7 @@
 	"loopexport-pdf-test-success": "Inga fel hittades! Om PDF funker inte, [[Special:PurgeCache|rensa cachen]] eller kontaktera administratorn.",
 	"loopexport-pdf-test-failure": "På sidan [[$1]] uppstod ett fel. Du kan läsa loggen nedan.",
 	"loopexport-pdf-test-notice": "I trackingkategoriet för $1 finns sidor med fel. Titta på dem i regideringsmodus.",
+	"loopexport-pdf-error": "Ett fel uppstod vid exporten. ",
 
 	"right-loop-toc-edit": "Regidera innehåll",
 	"right-loop-export-pdf": "Export LOOP som PDF",
