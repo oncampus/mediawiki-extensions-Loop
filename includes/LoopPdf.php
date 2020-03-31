@@ -167,8 +167,9 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 						);
 
 					$html .= "<br><br>";
-					$html .= "<nowiki>". $tmpPdf . "</nowiki><br>";
-					$html .= $xmlfo["errors"] . "<br>";
+
+					$html .= "<pre>". implode("\n", array_slice(explode("\n", $tmpPdf), 1)) . "</pre><br>";
+					$html .= $xmlfo["errors"];
 					$error = $item->tocText;
 					break;
 				}
