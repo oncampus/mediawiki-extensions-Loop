@@ -22,6 +22,13 @@ abstract class LoopExport {
 
 
 	public function getExistingExportFile() {
+
+		global $wgRequest, $wgLoopExportDebug;
+		$debug = $wgRequest->getText("debug");
+		if ( $debug == "true" || $wgLoopExportDebug ) {
+			return false;
+		}
+
 		global $wgUploadDirectory;
 
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
@@ -176,10 +183,6 @@ class LoopExportXml extends LoopExport {
 
 	}
 
-	// for Development
-	public function getExistingExportFile() {
-		return false;
-	}
 }
 
 
@@ -220,10 +223,6 @@ class LoopExportPdf extends LoopExport {
 
 	}
 
-	// for Development
-	public function getExistingExportFile() {
-		return false;
-	}
 }
 
 
@@ -293,7 +292,7 @@ class LoopExportPageMp3 extends LoopExport {
 
 	public function generateExportContent() {
 		$query = $this->request->getQueryValues();
-		set_time_limit(30);
+		set_time_limit(300);
 		if ( isset( $query['articleId'] ) ) {
 			if ( isset( $query['debug'] ) ) {
 				$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'], $query['debug'] );
