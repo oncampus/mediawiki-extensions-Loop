@@ -28,6 +28,7 @@
 	"loopstructure-default-newpage-content": "Standard content for new pages",
 	"loopimprint": "Imprint special page title",
 	"loopprivacy": "Privacy special page title",
+	"looprss": "RSS Feed special page title",
 
 	"loopsettings" : "Name of the LOOP settings special page in special:loopsettings",
 	"loopsettings-specialpage-title" : "Page title for LOOP Settings special page",
@@ -93,6 +94,7 @@
 	"loopsettings-captcha-addurl-label": "... triggered on a page save that would add one or more URLs to the page",
 	"loopsettings-captcha-createaccount-label": "... triggered on creation of a new account",
 	"loopsettings-captcha-badlogin-label": "... triggered on the next login attempt after a failed one.",
+	"loopsettings-captcha-bugreport-label": "... triggered on the bug report page",
 
 	"loopsettings-headline-feedback": "Feedback",
 	"loopsettings-feedback-level-label": "Type of collection",
@@ -103,6 +105,10 @@
 	"loopsettings-feedback-mode-always": "On every page",
 	"loopsettings-feedback-mode-last_sublevel": "On the last subsection",
 	"loopsettings-feedback-mode-second_half": "In the second half",
+
+	"loopsettings-headline-rss": "RSS-Feed headline",
+	"loopsettings-rss-text": "Tell the people where to put the link below, their rss reader.",
+	"loopsettings-rss-unprotected-label": "Setting for unprotected rss access",
 
 	"loopexport-specialpage-title" : "Page title for Loop Export special page",
 	"loopexport": "Name of Specialpage Export in List of Specialpages",

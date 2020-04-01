@@ -32,7 +32,8 @@ $specialPageAliases['en'] = array(
 	'LoopBugReport' => array( 'Bugreport' ),
 	'LoopFeedback' => array( 'Feedback' ),
 	'LoopImprint' => array( 'Imprint' ),
-	'LoopPrivacy' => array( 'Privacy' )
+	'LoopPrivacy' => array( 'Privacy' ),
+	'LoopRSS' => array( 'LoopRSS' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -59,7 +60,8 @@ $specialPageAliases['de'] = array(
 	'LoopBugReport' => array( 'Fehler melden' ),
 	'LoopFeedback' => array( 'Feedback' ),
 	'LoopImprint' => array( 'Impressum' ),
-	'LoopPrivacy' => array( 'Datenschutz' )
+	'LoopPrivacy' => array( 'Datenschutz' ),
+	'LoopRSS' => array( 'LoopRSS' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -86,7 +88,8 @@ $specialPageAliases['sv'] = array(
 	'LoopBugReport' => array( 'Rapportera fel' ),
 	'LoopFeedback' => array( 'Feedback' ),
 	'LoopImprint' => array( 'Imprint' ),
-	'LoopPrivacy' => array( 'Privacy' )
+	'LoopPrivacy' => array( 'Privacy' ),
+	'LoopRSS' => array( 'LoopRSS' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -112,7 +115,8 @@ $specialPageAliases['es'] = array(
 	'LoopExportPdfTest' => array( 'Prueba del PDF por página' ),
 	'LoopBugReport' => array( 'Reportar error' ),
 	'LoopImprint' => array( 'Imprint' ),
-	'LoopPrivacy' => array( 'Privacy' )
+	'LoopPrivacy' => array( 'Privacy' ),
+	'LoopRSS' => array( 'LoopRSS' )
 );
 
 

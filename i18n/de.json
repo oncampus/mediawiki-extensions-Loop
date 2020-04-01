@@ -29,6 +29,7 @@
 	"loopstructure-default-newpage-content": "Dies ist eine neu erstellte Seite.",
 	"loopimprint": "Impressum",
 	"loopprivacy": "Datenschutz",
+	"looprss": "RSS Feed",
 
 	"loopsettings": "LOOP-Einstellungen",
 	"loopsettings-specialpage-title": "LOOP-Einstellungen",
@@ -94,6 +95,7 @@
 	"loopsettings-captcha-addurl-label": "... bei einer Bearbeitung, mit der externe Links hinzugefügt werden",
 	"loopsettings-captcha-createaccount-label": "... beim Anlegen eines Accounts",
 	"loopsettings-captcha-badlogin-label": "... bei einem zweiten Loginversuch nach Fehlanmeldung",
+	"loopsettings-captcha-bugreport-label": "... beim Ausfüllen des Fehler melden Formulars",
 
 	"loopsettings-headline-feedback": "Feedback",
 	"loopsettings-feedback-level-label": "Art der Erhebung",
@@ -104,6 +106,10 @@
 	"loopsettings-feedback-mode-always": "Auf jeder Seite",
 	"loopsettings-feedback-mode-last_sublevel": "Auf dem letzten Unterkapitel",
 	"loopsettings-feedback-mode-second_half": "In der zweiten Hälfte",
+
+	"loopsettings-headline-rss": "RSS-Feed",
+	"loopsettings-rss-text": "Kopieren Sie den kompletten untenstehenden Link in Ihren RSS-Reader.",
+	"loopsettings-rss-unprotected-label": "Zugang zum Feed auch ohne Token oder Login zulassen (nicht empfohlen)",
 
 	"loopexport-specialpage-title": "Loop exportieren",
 	"loopexport": "Loop exportieren",
@@ -409,6 +415,7 @@
 	"loopbugreport-success": "Vielen Dank für Ihre Mithilfe!",
 	"loopbugreport-error-configuration": "Diese Funktion wurde noch nicht konfiguriert.",
 	"loopbugreport-error-nodata": "Diese Seite muss über den Link unter dem Inhalt aufgerufen werden.",
+	"loopbugreport-error-nocaptcha": "Bitte lösen Sie das Captcha um sicher zu stellen, dass Sie das Formular selbst ausgefüllt haben.",
 	"loopbugreport-fail": "Die Nachricht konnte nicht abgeschickt werden.",
 	"loopbugreport-desc": "Haben Sie einen Fehler entdeckt?<br>\nObwohl wir bemüht sind, unsere Lerninhalte stets aktuell und fehlerfrei zu halten, ist es wahrscheinlich, dass wir den einen oder anderen Fehler übersehen haben. Fehler können aber nur behoben werden, wenn sie auch gemeldet werden.<br><br>Wenn Sie einen Fehler gefunden haben, dann schreiben Sie uns bitte, wo er sich eingeschlichen hat. Wir werden den Fehler dann beim nächsten Update (in der Regel zum Beginn des nächsten Kurses) beseitigen.<br><br>Für eventuelle Rückfragen bitten wir Sie, Ihre E-Mail Adresse einzutragen.<br>Danke für Ihre Mithilfe!",
 
