@@ -161,7 +161,7 @@ class LoopConsent {
         if ( preg_match( '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $url, $match ) ) {
             return $match[1];
         } else {
-            return $url; //already extracted youtube video ID
+            return $url; //assume already extracted youtube video ID
         }
 
         return false;
@@ -171,8 +171,6 @@ class LoopConsent {
     private function getVimeoId( $url ) {
         if ( preg_match( '/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]*)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:[a-zA-Z0-9_\-]+)?/i', $url, $match ) ) {
             return $match[1];
-        } else {
-            return $url; //already extracted youtube video ID
         }
 
         return false;
