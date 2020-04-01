@@ -9,7 +9,7 @@ if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); 
 class LoopConsent {
     
     public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
-        $tags = ['ev:youtube', 'embedvideo', 'ev', 'evt', 'evu'];
+        $tags = ['ev:youtube', 'ev:vimeo', 'embedvideo', 'ev', 'evt', 'evu']; //temporär tests
 
         foreach( $tags as $tag) {
             if( strpos('<'.$content->getText(), $tag) || strpos('{{'.$content->getText(), $tag)) {
@@ -49,17 +49,19 @@ class LoopConsent {
 
     public static function parseTag( $input, array $args, Parser $parser, PPFrame $frame ) {
         $lc = new LoopConsent();
-        if($args['service'] == 'vimeo') {
-            return $lc->renderOutput( $lc->getVimeoId( $input ), 'vimeo' );
-        } else {
-            return $lc->renderOutput( $lc->getYouTubeId( $input ) );
+        if(isset($args['service'])) {
+            if($args['service'] == 'vimeo') {
+                return $lc->renderOutput( $lc->getVimeoId( $input ), 'vimeo' );
+            } else {
+                return $lc->renderOutput( $lc->getYouTubeId( $input ) );
+            }
         }
     }
 
 
     public static function parseEv( $parser, $callback, $flags ) {
         $lc = new LoopConsent();
-
+        // dd($parser, $callback, $flags);
         if( $callback == 'youtube' ) {
             return [
                 $lc->renderOutput( $lc->getYouTubeId( $flags ), $callback ),
@@ -79,11 +81,28 @@ class LoopConsent {
     public static function parseEvu( $parser, $callback, $flags ) {
         $lc = new LoopConsent();
 
-        return [
-            $lc->renderOutput( $lc->getYouTubeId( $callback ) ),
-            'noparse'=> true,
-            'isHTML' => true
-        ];
+        if( $callback == 'youtube' ) {
+            return [
+                $lc->renderOutput( $lc->getYouTubeId( $callback )),
+                'noparse'=> true,
+                'isHTML' => true
+            ];
+        } else if ( $callback == 'vimeo' ) {
+            return [
+                $lc->renderOutput( $callback ),
+                'noparse'=> true,
+                'isHTML' => true
+            ];
+        }
+        
+        
+        // $lc = new LoopConsent();
+
+        // return [
+        //     $lc->renderOutput( $lc->getYouTubeId( $callback ) ),
+        //     'noparse'=> true,
+        //     'isHTML' => true
+        // ];
     }
 
     
@@ -172,13 +191,25 @@ class LoopConsent {
 
             foreach( $curlyMatches as $match ) {
                 if( strpos( $match, 'vimeo' ) ) {
-                    $id = explode( '|', $match )[1];
-                    $return['vimeo'][] = $id;
+                    if( strpos($match, '#evt:') !== false) {
+                        $id = explode('|', $match)[1];
+                        $id = preg_replace( "/[\n\r]/","", $id );
+                        $return['vimeo'][] = substr($id, strrpos($id, '/') + 1);
+                    } else {
+                        $id = explode( '|', $match )[1];
+                        $return['youtube'][] = $id;
+                    }
                 }
 
                 if( strpos( $match, 'youtube' ) ) {
-                    $id = explode( '|', $match )[1];
-                    $return['youtube'][] = $id;
+                    if( strpos($match, '#evt:') !== false) {
+                        $id = explode('|', $match)[1];
+                        $id = preg_replace( "/[\n\r]/","", $id );
+                        $return['youtube'][] = substr($id, strrpos($id, '=') + 1);
+                    } else {
+                        $id = explode( '|', $match )[1];
+                        $return['youtube'][] = $id;
+                    }
                 }
             }
             
