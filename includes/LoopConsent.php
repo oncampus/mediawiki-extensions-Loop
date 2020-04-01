@@ -20,23 +20,22 @@ class LoopConsent {
 
 
     public static function onParserBeforeStrip( &$parser ) {   
-        
         global $wgH5PHostUrl;
 
         if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseTag' );  // <embedvideo>
-        
+            
             if( $wgH5PHostUrl == 'https://h5p.com/h5p/embed/' ) {
-                $parser->setHook('h5p', 'LoopConsent::parseH5P');           // <h5p>
+                $parser->setHook('h5p', 'LoopConsent::parseH5P');       // <h5p>
             }
             
-            $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );       // {{#ev}}
-            $parser->setFunctionHook( 'evt', 'LoopConsent::parseEvt' );      // {{#evt}}
-            $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' );     // {{#evu}}
+            $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );   // {{#ev}}
+            $parser->setFunctionHook( 'evt', 'LoopConsent::parseEvt' ); // {{#evt}}
+            $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' ); // {{#evu}}
 
             return true;
-        }            
+        }
     }
 
 
@@ -100,7 +99,7 @@ class LoopConsent {
     }
 
 
-    public static function parseEvu( $parser, $callback, $flags ) {
+    public static function parseEvu( $parser, $callback ) {
         $lc = new LoopConsent();
 
         if( strpos( $callback, 'youtube' ) !== false ) {
@@ -116,12 +115,10 @@ class LoopConsent {
                 'isHTML' => true
             ];
         }
-
     }
 
     
     private function renderOutput( $id, $service = 'youtube' ) {
-
         global $wgResourceBasePath, $wgOut, $wgServer;
 
         $url = '';
