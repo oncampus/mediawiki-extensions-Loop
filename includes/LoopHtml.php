@@ -29,7 +29,7 @@ class LoopHtml{
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
 
-        set_time_limit(600);
+        set_time_limit(1800);
         
         $loopStructureItems = $loopStructure->getStructureItems();
 

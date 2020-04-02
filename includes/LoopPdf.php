@@ -22,7 +22,7 @@ class LoopPdf {
 	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
 		global $IP;
 		
-		set_time_limit(300);
+		set_time_limit(1200);
 
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';
