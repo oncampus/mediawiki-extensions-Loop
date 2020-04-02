@@ -984,6 +984,10 @@
 		"LoopUnprotectedRSS": {
 			"value": false,
 			"description" : "Enable RSS feed page without login"
+		},
+		"LoopExportDebug": {
+			"value": false,
+			"description" : "Enable debug mode for export - files are always newly created."
 		}
 	},
 	"LogTypes": [ "loopexport" ],

@@ -115,7 +115,10 @@ class LoopXml {
 		#dd();
 
 		# modify content for resolving space issues with syntaxhighlight in pdf
-		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/U', "$1$2$3\n$4", $content);
+		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
+
+		# remove html comments - these cause the whole page to vanish from XML and PDF
+		$content = preg_replace('/(<!--.*-->)/iU', "", $content);
 		
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
@@ -171,9 +174,14 @@ class LoopXml {
 				} 
 			}
 		}
-		$newContentText = substr( $dom->saveXML(), 22, -1);
-		
-		if ( $contentText != $newContentText ) {
+		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
+		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\\?\>\n)/", "", $newContentText);
+
+		if ( empty( $newContentText ) ) {
+			echo "<script>console.log('Articles XML Invalid');</script>"; # when the given XML is invalid, no domdocument doesn't load it. this is a hidden error message
+			return false;
+			$contentText = $newContentText;
+		} elseif ( $contentText != $newContentText ) {
 			$contentText = $newContentText;
 		}
 		

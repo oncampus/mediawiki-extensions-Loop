@@ -22,6 +22,13 @@ abstract class LoopExport {
 
 
 	public function getExistingExportFile() {
+
+		global $wgRequest, $wgLoopExportDebug;
+		$debug = $wgRequest->getText("debug");
+		if ( $debug == "true" || $wgLoopExportDebug ) {
+			return false;
+		}
+
 		global $wgUploadDirectory;
 
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
@@ -176,10 +183,6 @@ class LoopExportXml extends LoopExport {
 
 	}
 
-	// for Development
-	public function getExistingExportFile() {
-		return false;
-	}
 }
 
 
@@ -220,10 +223,6 @@ class LoopExportPdf extends LoopExport {
 
 	}
 
-	// for Development
-	public function getExistingExportFile() {
-		return false;
-	}
 }
 
 
@@ -262,6 +261,8 @@ class LoopExportMp3 extends LoopExport {
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 	
@@ -291,7 +292,7 @@ class LoopExportPageMp3 extends LoopExport {
 
 	public function generateExportContent() {
 		$query = $this->request->getQueryValues();
-		set_time_limit(30);
+		set_time_limit(300);
 		if ( isset( $query['articleId'] ) ) {
 			if ( isset( $query['debug'] ) ) {
 				$this->exportContent = LoopMp3::getMp3FromRequest($this->structure, $query['articleId'], $query['debug'] );
@@ -307,6 +308,8 @@ class LoopExportPageMp3 extends LoopExport {
 		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: text/html");
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 	
@@ -343,6 +346,8 @@ class LoopExportEpub extends LoopExport {
 		header("Content-Type: application/epub+zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 }
@@ -382,6 +387,8 @@ class LoopExportHtml extends LoopExport {
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
@@ -418,6 +425,8 @@ class LoopExportScorm extends LoopExport {
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
 		header("Content-Length: ". strlen($this->exportContent));
+		header("Cache-Control: max-age=0, no-cache, no-store, must-revalidate");
+		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
 
@@ -493,7 +502,9 @@ class SpecialLoopExport extends SpecialPage {
 		
 		if ( $export != false ) {
 			$logMsg = "";
-
+			if ( ! in_array( "sysop", $this->getUser()->getGroups() ) ) {
+				error_reporting(E_ERROR | E_PARSE); # no error reports for non-admins
+			}
 			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
 					$export->getExistingExportFile();
 					$logMsg = wfMessage("log-export-reused")->text();
@@ -501,12 +512,29 @@ class SpecialLoopExport extends SpecialPage {
 			} else {
 				$export->generateExportContent();
 				
-				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" ) { # don't cache html exports
+				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" && !is_array( $export->getExportContent() ) ) { # don't cache html exports
 					$export->saveExportFile();
 					$logMsg = wfMessage("log-export-generated")->text();
 				} 
 			}
-			if ($export->getExportContent() != null ) {
+			if ( is_array( $export->getExportContent() ) ) {
+				$msg = $this->msg( "loopexport-pdf-error" );
+				
+				if ( $this->getUser()->isAllowed('loop-pdf-test') ) {
+					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExportPdfTest' ), $this->msg( "loopexportpdftest" )->parse() );
+				} elseif ( LoopBugReport::isAvailable() != false ) {
+					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopBugReport' ), $this->msg( "loopbugreport" )->parse(), array(), array( "url" => "PDF Export", "page" => "Special:LoopExport/pdf" ) );
+				}
+				$html = Html::rawElement( 'div', array( 'class' => 'errorbox' ), $msg );
+				if ( in_array( "sysop", $this->getUser()->getGroups() ) ) {
+					$errors = $export->getExportContent();
+					$html .= '<pre class="d-none1"><b>Error:</b> <br>'.implode("\n", array_slice(explode("\n", $errors[0]), 1)) .'</pre>';
+					$html .= '<pre class="d-none1"><b>XML</b>: <br>'.htmlspecialchars($errors[2]).'</pre>';
+					$html .= '<pre class="d-none1"><b>XMLFO:</b> <br>'.htmlspecialchars($errors[1]["xmlfo"]) .'</pre><br>';
+				}
+				$this->getOutput()->addHTML( $html );
+
+			} elseif ($export->getExportContent() != null ) {
 				
 				if ( isset($logEntry) ) {
 					$logEntry->setTarget( Title::newFromId($structure->mainPage) );

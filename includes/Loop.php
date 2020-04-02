@@ -289,21 +289,11 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
 
-			global $wgServerName;
-			
-			$url = $wgLoopExternalImprintUrl.'?loop=' . $wgServerName;
-			
-			$cha = curl_init();
-			curl_setopt($cha, CURLOPT_URL, ($url));
-			curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
-			curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
-			$return = curl_exec($cha);
-			curl_close($cha);
+			$return = self::renderLoopImprintSpecialPage();
 	
 			if ( empty( $return ) ) {
 				global $wgLoopImprintLink;
-				#$out->redirect ( $wgLoopImprintLink );
+				$out->redirect ( $wgLoopImprintLink );
 			}
 			$out->addHTML($return);
 
@@ -311,6 +301,23 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 			global $wgLoopImprintLink;
 			$out->redirect ( $wgLoopImprintLink );
 		}
+	}
+
+	public static function renderLoopImprintSpecialPage () {
+
+		global $wgServerName, $wgLoopExternalImprintPrivacy, $wgLoopExternalImprintUrl;
+			
+		$url = $wgLoopExternalImprintUrl.'?loop=' . $wgServerName;
+		
+		$cha = curl_init();
+		curl_setopt($cha, CURLOPT_URL, ($url));
+		curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
+		curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
+		$return = curl_exec( $cha );
+		curl_close( $cha );
+
+		return $return;
 	}
 }
 
@@ -332,21 +339,10 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 		$this->setHeaders();
 
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalPrivacyUrl ) ) {
-
-			global $wgServerName;
-			
-			$url = $wgLoopExternalPrivacyUrl.'?loop=' . $wgServerName;
-			
-			$cha = curl_init();
-			curl_setopt($cha, CURLOPT_URL, ($url));
-			curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
-			curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
-			$return = curl_exec($cha);
-			curl_close($cha);
+			$return = self::renderLoopPrivacySpecialPage();
 			if ( empty( $return ) ) {
-				global $wgLoopImprintLink;
-				$out->redirect ( $wgLoopImprintLink );
+				global $wgLoopPrivacyLink;
+				$out->redirect ( $wgLoopPrivacyLink );
 			}
 			$out->addHTML($return);
 
@@ -355,5 +351,22 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 			$out->redirect ( $wgLoopPrivacyLink );
 		}
 
+	}
+	
+	public static function renderLoopPrivacySpecialPage () {
+
+		global $wgServerName, $wgLoopExternalPrivacyUrl;
+			
+		$url = $wgLoopExternalPrivacyUrl.'?loop=' . $wgServerName;
+		
+		$cha = curl_init();
+		curl_setopt($cha, CURLOPT_URL, ($url));
+		curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
+		curl_setopt($cha, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($cha, CURLOPT_FOLLOWLOCATION, true);
+		$return = curl_exec( $cha );
+		curl_close( $cha );
+
+		return $return;
 	}
 }
