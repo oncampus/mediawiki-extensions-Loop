@@ -24,9 +24,13 @@ class LoopHtml{
 
     private $requestedUrls = array();
     private $exportDirectory;
+    private $imprintHref; # needed on every page - requesting external imprint service for every page would be bad.
+    private $privacyHref;
 
     public static function structure2html(LoopStructure $loopStructure, RequestContext $context, $exportDirectory) {
 
+        set_time_limit(1800);
+        
         $loopStructureItems = $loopStructure->getStructureItems();
 
         if(is_array($loopStructureItems)) {
@@ -38,9 +42,12 @@ class LoopHtml{
             $loopSettings->loadSettings();
 
             $exportHtmlDirectory = $wgUploadDirectory.$exportDirectory;
-            LoopHtml::getInstance()->startDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/';
-            LoopHtml::getInstance()->exportDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/files/';
-
+            $loopHtml = LoopHtml::getInstance();
+            $loopHtml->startDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/';
+            $loopHtml->exportDirectory = $exportHtmlDirectory.'/'.$loopStructure->getId().'/files/';
+            $loopHtml->imprintHref = LoopHtml::getImprintPrivacyLinks("imprint");
+            $loopHtml->privacyHref = LoopHtml::getImprintPrivacyLinks("privacy");
+            #dd(LoopHtml::getInstance());
             //$articlePath = preg_replace('/(\/)/', '\/', $wgArticlePath);
             //LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
 
@@ -87,7 +94,17 @@ class LoopHtml{
             foreach( $glossaryPages as $title ) {
                 LoopHtml::writeArticleToFile( $title, "", $exportSkin );
             }
-            if ( filter_var( htmlspecialchars_decode( $wgLoopImprintLink ), FILTER_VALIDATE_URL ) == false ) {
+            
+            global $wgLoopExternalImprintPrivacy, $wgLoopExternalImprintUrl, $wgLoopExternalPrivacyUrl;
+            $specialPageImprintContent = "";
+            if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
+                $specialPageImprintContent = SpecialLoopImprint::renderLoopImprintSpecialPage();
+                if ( !empty ( $specialPageImprintContent ) ) { 
+                    $imprintTitle = Title::newFromText( "LoopImprint", NS_SPECIAL );
+                    LoopHtml::writeSpecialPageToFile( $imprintTitle, "", $exportSkin, $specialPageImprintContent );
+                }
+            }
+            if ( $specialPageImprintContent == "" && filter_var( htmlspecialchars_decode( $wgLoopImprintLink ), FILTER_VALIDATE_URL ) == false ) {
                 $imprintTitle = Title::newFromText( $wgLoopImprintLink );
                 if ( ! empty ( $imprintTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $imprintTitle );
@@ -97,7 +114,17 @@ class LoopHtml{
                     }
                 }
             }
-            if ( filter_var( htmlspecialchars_decode( $wgLoopPrivacyLink ), FILTER_VALIDATE_URL ) == false ) {
+
+            $specialPagePrivacyContent = "";
+            if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalPrivacyUrl ) ) {
+                $specialPagePrivacyContent = SpecialLoopPrivacy::renderLoopPrivacySpecialPage();
+                if ( !empty ( $specialPagePrivacyContent ) ) { 
+                    $privacyTitle = Title::newFromText( "LoopPrivacy", NS_SPECIAL );
+                    LoopHtml::writeSpecialPageToFile( $privacyTitle, "", $exportSkin, $specialPagePrivacyContent );
+                }
+            }
+            
+            if ( $specialPagePrivacyContent == "" && filter_var( htmlspecialchars_decode( $wgLoopPrivacyLink ), FILTER_VALIDATE_URL ) == false ) {
                 $privacyTitle = Title::newFromText( $wgLoopPrivacyLink );
                 if ( ! empty ( $privacyTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $privacyTitle );
@@ -170,6 +197,43 @@ class LoopHtml{
         }
 
     }
+
+    private static function getImprintPrivacyLinks( $mode ) {
+
+		global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl, $wgLoopExternalImprintUrl, $wgLoopImprintLink, $wgLoopPrivacyLink;
+        
+        if ( $mode == "imprint" ) {
+            $externalUrl = $wgLoopExternalImprintUrl;
+            $loopSettingsLink = $wgLoopImprintLink;
+        } else {
+            $externalUrl = $wgLoopExternalPrivacyUrl;
+            $loopSettingsLink = $wgLoopPrivacyLink;
+        }
+
+        if ( $wgLoopExternalImprintPrivacy && !empty ( $externalUrl ) ) {
+            if ( $mode == "imprint" ) {
+                if ( !empty( SpecialLoopImprint::renderLoopImprintSpecialPage() ) ) {
+                    $title = Title::newFromText( "LoopImprint", NS_SPECIAL );
+                    return wfMessage( strtolower( $title->mTextform ) )->text() . ".html";
+                }
+            } else {
+                if ( !empty( SpecialLoopPrivacy::renderLoopPrivacySpecialPage() ) ) {
+                    $title = Title::newFromText( "LoopPrivacy", NS_SPECIAL );
+                    return wfMessage( strtolower( $title->mTextform ) )->text() . ".html";
+                }
+            }
+        }
+        if ( filter_var( htmlspecialchars_decode( $loopSettingsLink ), FILTER_VALIDATE_URL ) ) {
+            # Given link is a URL to a webpage
+            return $loopSettingsLink;
+        } else {
+            # Link is a local page
+            $title = Title::newFromText( $loopSettingsLink );
+            return LoopHtml::getInstance()->resolveUrl( $title->mUrlform, '.html');
+        }
+            
+    }
+
      /**
      * Write Special Page to file, with all given resources
      * @param Title $specialPage
@@ -226,6 +290,7 @@ class LoopHtml{
                 break;
             default:
                 $content = '';
+                break;
         }
         
         $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
@@ -434,7 +499,12 @@ class LoopHtml{
                 "srcpath" => $skinPath."Loop/resources/js/h5presizer.js",
                 "targetpath" => "resources/js/",
                 "link" => "script-btm"
-            )
+            ),
+            "skins.featherlight.js" => array(
+                "srcpath" => $skinPath."Loop/node_modules/featherlight/release/featherlight.min.js",
+                "targetpath" => "resources/js/",
+                "link" => "script-btm"
+            ),
         );
 
         $skinStyle = str_replace( "style-", "loop-", $wgDefaultUserOptions["LoopSkinStyle"]);
@@ -549,10 +619,12 @@ class LoopHtml{
             
             if ( $internalLinks ) {
                 foreach ( $internalLinks as $element ) {
+                    
                     $tmpHref = $element->getAttribute( 'href' );
                     if ( isset ( $tmpHref ) && $tmpHref != '#' ) {
                         $element->setAttribute( 'href', $prependHref.$tmpHref );
                     }
+                    
                 }
             }
         }
@@ -650,11 +722,35 @@ class LoopHtml{
         $pdfLink = $doc->getElementByID( "loop-pdf-download" );
         if ( !empty( $pdfLink ) ) {
             $loopStructure = new LoopStructure();
+            $loopStructure->loadStructureItems();
             $exportPdf = new LoopExportPdf( $loopStructure );
             $fileLink = $prependHref . "resources/pdf/" . $exportPdf->getExportFilename();
             $pdfLink->setAttribute( "href", $fileLink );
         }
+
+        $mp3Link = $doc->getElementByID( "loop-mp3-download" );
+        if ( !empty( $mp3Link ) ) {
+            $loopStructure = new LoopStructure();
+            $loopStructure->loadStructureItems();
+            $exportMp3 = new LoopExportMp3( $loopStructure );
+            $fileLink = $prependHref . "resources/mp3/" . $exportMp3->getExportFilename();
+            $mp3Link->setAttribute( "href", $fileLink );
+        }
         
+        $imprintLink = $doc->getElementByID( "imprintlink" );
+        if ( filter_var( htmlspecialchars_decode( $this->imprintHref ), FILTER_VALIDATE_URL ) ) {
+            $imprintLink->setAttribute( "href", $this->imprintHref );
+        } else {
+            $imprintLink->setAttribute( "href", $prependHref.$this->imprintHref );
+        }
+        
+        $privacyLink = $doc->getElementByID( "privacylink" );
+        if ( filter_var( htmlspecialchars_decode( $this->privacyHref ), FILTER_VALIDATE_URL ) ) {
+            $privacyLink->setAttribute( "href", $this->privacyHref );
+        } else {
+            $privacyLink->setAttribute( "href", $prependHref.$this->privacyHref );
+        }
+
         $html = $doc->saveHtml();
         return $html;
     }

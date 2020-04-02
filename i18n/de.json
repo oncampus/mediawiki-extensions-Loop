@@ -124,6 +124,7 @@
 	"loopexport-pdf-test-success": "Alle seiten funktionieren korrekt! Funktioniert die PDF dennoch nicht, [[Special:PurgeCache|löschen Sie den Cache]] und/oder kontaktieren Sie die/den AdministratorIn",
 	"loopexport-pdf-test-failure": "Auf der Seite [[$1]] ist ein Fehler aufgetreten. Sie können sich den Fehlerbericht unten ansehen.",
 	"loopexport-pdf-test-notice": "In der Trackingkategorie für $1 sind Seiten gelistet, die Fehler beinhalten. Sie können sich diese im Bearbeitungsmodus auf den jeweiligen Seiten ansehen.",
+	"loopexport-pdf-error": "Beim Erzeugen der PDF ist leider ein Fehler aufgetreten. ",
 
 	"right-loop-toc-edit": "Inhaltsverzeichnis bearbeiten",
 	"right-loop-export-pdf": "Export LOOP als PDF",
@@ -467,7 +468,7 @@
 	"action-loopfeeback-view-comments": "Feedback Kommentare ansehen",
 	"action-loopfeeback-reset": "Feedbacks zurücksetzen",
 	"loopfeedback-already-done": "Sie haben auf dieser Seite bereits Feedback abgegeben. Vielen Dank!",
-
-	"loopconsent-text": "Wenn Sie dieses Element öffnen, werden Inhalte von externen Dienstleistern geladen und dadurch Ihre IP-Adresse an Diese übertragen.",
+	"loopconsent-text": "Wenn Sie dieses Element öffnen, werden Inhalte von externen Dienstleistern geladen und dadurch Ihre IP-Adresse an diese übertragen.",
 	"loopconsent-button": "Inhalt ansehen und nicht erneut fragen" 	
+
 }

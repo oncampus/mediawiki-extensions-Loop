@@ -113,6 +113,7 @@
 	"loopexport-pdf-test-success": "Todas las páginas han sido cargadas exitosamente! Si el PDF sigue sin funcionar, [[Special:PurgeCache|borre el caché]] o contacte a su administrador.",
 	"loopexport-pdf-test-failure": "Ha ocurrido un error en la página [[$1]]. Puede ver el registro de errores al final de esta página.",
 	"loopexport-pdf-test-notice": "La categoría de seguimiento por $1 enumera las páginas que contienen errores. Puede verlos en el modo de edición en las páginas respectivas.",
+	"loopexport-pdf-error": "An error occurred during the export of PDF. ",
 
 	"right-loop-toc-edit": "Editar índice de contenidos",
 	"right-loop-export-pdf": "Exportar LOOP como PDF",
