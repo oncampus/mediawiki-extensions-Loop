@@ -72,7 +72,7 @@ class LoopConsent {
             ];
         } else if( $callback == 'vimeo' ) {
             return [
-                $lc->renderOutput( $flags, $callback ),
+                $lc->renderOutput( $lc->getVimeoId( $flags ), $callback ),
                 'noparse'=> true,
                 'isHTML' => true
             ];
@@ -91,7 +91,7 @@ class LoopConsent {
             ];
         } else if ( strpos( $callback, 'vimeo' ) !== false ) {
             return [
-                $lc->renderOutput( $flags, 'vimeo' ),
+                $lc->renderOutput( $lc->getVimeoId( $flags ), 'vimeo' ),
                 'noparse'=> true,
                 'isHTML' => true
             ];
@@ -119,7 +119,7 @@ class LoopConsent {
 
     
     private function renderOutput( $id, $service = 'youtube' ) {
-        global $wgResourceBasePath, $wgOut, $wgServer;
+        global $wgOut, $wgCanonicalServer, $wgUploadPath;
 
         $url = '';
         $title = '';
@@ -127,13 +127,13 @@ class LoopConsent {
 
         if ( $id == 'h5p' ) {
             $title = 'H5P';
-            $url = $wgResourceBasePath.'/skins/Loop/resources/img/bg_h5p.jpg';
-        } else {
-            $url = $wgServer . '/images/videothumbs/' . $id . '.jpg';
-
+            $url = $wgCanonicalServer . '/skins/Loop/resources/img/bg_h5p.jpg';
+        } else {            
             // no thumbnail
             if ( strpos( $url, '/.jpg' ) || $service == 'vimeo' ) {
                 $url = '';
+            } else {
+                $url = $wgCanonicalServer . $wgUploadPath . '/videothumbs/' . $id . '.jpg';
             }
 
             if( $service == 'youtube' ) {
@@ -192,7 +192,7 @@ class LoopConsent {
 
 
     public static function updateThumbnails( $content, $articleId ) {
-        global $wgResourceBasePath;
+        global $wgUploadDirectory;
 
         $return = [];
         $curlyMatches = [];
@@ -235,7 +235,7 @@ class LoopConsent {
             }
         }
 
-        $thumbStorePath = getcwd() . '/images/videothumbs';
+        $thumbStorePath = $wgUploadDirectory . '/videothumbs';
 
         if ( !file_exists( $thumbStorePath ) ) {
             mkdir( $thumbStorePath, 0755, true );
