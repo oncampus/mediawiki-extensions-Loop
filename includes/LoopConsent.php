@@ -134,7 +134,7 @@ class LoopConsent {
             // no thumbnail
             if ( strpos( $url, '/.jpg' ) || $service == 'vimeo' || $id == 'h5p' ) {
                 $url = '';
-            } else {
+            } elseif ( $id !== false )  {
                 $url = $wgCanonicalServer . $wgUploadPath . '/videothumbs/' . $id . '.jpg';
             }
 
@@ -159,11 +159,10 @@ class LoopConsent {
     private function getYouTubeId( $url ) {
         if ( preg_match( '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $url, $match ) ) {
             return $match[1];
-        } else {
-            return $url; //assume already extracted youtube video ID
-        }
-
-        return false;
+        } elseif ( filter_var( $url, FILTER_VALIDATE_URL ) ) {
+            return false; //preg_match did not work. this is an url.
+        } 
+        return $url; //assume already extracted youtube video ID
     }
 
 
