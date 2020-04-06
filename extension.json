@@ -113,7 +113,9 @@
 		"LoopAccordion": "includes/LoopAccordion.php",
 		"SpecialLoopImprint": "includes/Loop.php",
 		"SpecialLoopPrivacy": "includes/Loop.php",
-		"SpecialLoopRSS": "includes/LoopRSS.php"
+		"SpecialLoopRSS": "includes/LoopRSS.php",
+		"LoopNgSpice": "includes/LoopNgSpice.php",
+		"SpecialLoopNgSpice": "includes/LoopNgSpice.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -146,7 +148,8 @@
 			"LoopZip::onParserSetup",
 			"LoopMediaHandler::onParserSetup",
 			"LoopScreenshot::onParserSetup",
-			"LoopAccordion::onParserSetup"
+			"LoopAccordion::onParserSetup",
+			"LoopNgSpice::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy",
@@ -208,7 +211,8 @@
 		"LoopFeedback": "SpecialLoopFeedback",
 		"LoopImprint": "SpecialLoopImprint",
 		"LoopPrivacy": "SpecialLoopPrivacy",
-		"LoopRSS": "SpecialLoopRSS"
+		"LoopRSS": "SpecialLoopRSS",
+		"LoopNgSpice": "SpecialLoopNgSpice"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -342,6 +346,15 @@
 				"loopfeedback-specialpage-feedback-info-average-stars",
 				"loopfeedback-specialpage-feedback-info-count-comments",
 				"loopfeedback-specialpage-feedback-info-no-comments"
+			]
+		},
+		"loop.ngspice.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.ngspice.js"
+			],
+			"messages": [
+				"loopngspice-error-min-value"
 			]
 		}
 	
@@ -993,6 +1006,10 @@
 		"LoopExportDebug": {
 			"value": false,
 			"description" : "Enable debug mode for export - files are always newly created."
+		},
+		"LoopNgSpiceServiceUrl": {
+			"value": "",
+			"description" : "Service Url for NgSpice."
 		}
 	},
 	"LogTypes": [ "loopexport" ],

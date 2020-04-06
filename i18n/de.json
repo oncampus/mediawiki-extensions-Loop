@@ -469,6 +469,12 @@
 	"action-loopfeeback-reset": "Feedbacks zurücksetzen",
 	"loopfeedback-already-done": "Sie haben auf dieser Seite bereits Feedback abgegeben. Vielen Dank!",
 	"loopconsent-text": "Wenn Sie dieses Element öffnen, werden Inhalte von externen Dienstleistern geladen und dadurch Ihre IP-Adresse an diese übertragen.",
-	"loopconsent-button": "Inhalt ansehen und nicht erneut fragen" 	
+	"loopconsent-button": "Inhalt ansehen und nicht erneut fragen",
+
+	"loopngspice-label-send": "Simulation starten",
+	"loopngspice-error-xml": "Ngspice Konfiguration ist fehlerhaft.<br>XML Elemente konnten nicht geladen werden. ",
+	"loopngspice-error-no-service": "NgSpice ist nicht verfügbar.",
+	"loopngspice-error-min-value": "Der Mindestwert für $1 wurde nicht eingehalten (min = $2)",
+	"loopngspice-error-max-value": "Der Maximalwert für $1 wurde nicht eingehalten (max = $2)"
 
 }
