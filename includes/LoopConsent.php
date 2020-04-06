@@ -127,7 +127,7 @@ class LoopConsent {
         $h5pClass = '';
 
         if ( $id == 'h5p' ) {
-            $title = '<span class="ic-h5p"></span>';
+            $title = '<span class="ic ic-h5p"></span>';
             $bgColor = '2575be';
             $h5pClass = 'is_h5p';
         } else {            
