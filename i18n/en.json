@@ -466,5 +466,8 @@
 	"action-loopfeeback-view-results": "View feedback results",
 	"action-loopfeeback-view-comments": "View feedback comments",
 	"action-loopfeeback-reset": "Reset feedbacks",
-	"loopfeedback-already-done": "You already gave us feedback. Thank you!"
+	"loopfeedback-already-done": "You already gave us feedback. Thank you!",
+
+	"loopconsent-text": "When you start this element, content is loaded by the service providers and your IP address is transfered to them.",
+	"loopconsent-button": "Give consent and start element" 	
 }

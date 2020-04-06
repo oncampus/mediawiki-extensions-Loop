@@ -42,6 +42,7 @@
 		"LoopPdf": "includes/LoopPdf.php",
 		"LoopMp3": "includes/LoopMp3.php",
 		"LoopHtml": "includes/LoopHtml.php",
+		"LoopConsent": "includes/LoopConsent.php",
 		"LoopArea": "includes/LoopArea.php",
 		"LoopPrint": "includes/LoopPrint.php",
 		"LoopParagraph": "includes/LoopParagraph.php",
@@ -122,7 +123,8 @@
 			"LoopHooks::onMediaWikiPerformAction"
 		],
 		"PageRenderingHash":[
-			"LoopHooks::onPageRenderingHash"
+			"LoopHooks::onPageRenderingHash",
+			"LoopConsent::onPageRenderingHash"
 		],
 		"ParserFirstCallInit": [
 			"LoopObject::onParserSetup",
@@ -176,7 +178,10 @@
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
-		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay"
+		"PageContentSave": "LoopConsent::onPageContentSave",
+		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
+		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
