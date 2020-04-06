@@ -148,8 +148,8 @@ class LoopConsent {
         }
         
         $out = '<div class="loop_consent ' . $h5pClass . '" style="background-image: url(' . $url . '); background-color: #' . $bgColor . ';">';
-        $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
-        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button') . '</button>';
+        $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text')->text() . '</p>';
+        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button')->text() . '</button>';
         $out .= '</div></div>';
  
         return $out;
