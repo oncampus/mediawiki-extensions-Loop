@@ -20,24 +20,20 @@ class LoopPrint {
 		global $wgOut;
 		$user = $wgOut->getUser();
 		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
-		$parser->getOutput()->addModules( 'loop.print.js' );
-		$btnIcon = '<span class="ic-print-area"></span>';
 		
-		$btnId = uniqid();
-		$btnTrue = '';
-		if ( isset( $args['button'] ) ) {
-			if($args['button'] == true) {
-				$btnTrue = 'loopprint-button';
+		$html = '';
+		if ( isset( $args['button'] ) || $loopeditmode ) {
+			if( $loopeditmode || $args['button'] !== "false" ) {
+				$parser->getOutput()->addModules( 'loop.print.js' );
+				$btnId = uniqid();
+				$btnIcon = '<span class="ic ic-print-area float-none"></span>';
+				$html = '<div class="loopprint-container loopprint-button">';
+				$html .= '<span class="loopprint-tag '. $btnId.'" data-title="'.wfMessage('loopprint-printingarea')->text().'">' . $btnIcon . '</span>';
+				$html .= '<div class="loopprint-content" id="'. $btnId .'">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
+				$html .= '</div>';	
 			}
 		}
-
-		if(!$loopeditmode) $btnTrue = 'loopprint-button';
-
-		$html = '<div class="loopprint-container '. $btnTrue .'">';
-		$html .= '<span class="loopprint-tag '. $btnId.'" data-title="'.wfMessage('loopprint-printingarea')->text().'">' . $btnIcon . '</span>';
-		$html .= '<div class="loopprint-content" id="'. $btnId .'">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
-		$html .= '</div>';		
-
+			
 		return $html;
 	}
 
