@@ -119,7 +119,7 @@ class LoopConsent {
 
     
     private function renderOutput( $id, $service = 'youtube' ) {
-        global $wgOut, $wgCanonicalServer, $wgUploadPath;
+        global $wgCanonicalServer, $wgUploadPath;
 
         $url = '';
         $title = '';
