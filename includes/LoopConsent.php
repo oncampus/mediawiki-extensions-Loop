@@ -124,13 +124,15 @@ class LoopConsent {
         $url = '';
         $title = '';
         $bgColor = '';
+        $h5pClass = '';
 
         if ( $id == 'h5p' ) {
-            $title = 'H5P';
-            $url = $wgCanonicalServer . '/skins/Loop/resources/img/bg_h5p.jpg';
+            $title = '<span class="ic-h5p"></span>';
+            $bgColor = '2575be';
+            $h5pClass = 'is_h5p';
         } else {            
             // no thumbnail
-            if ( strpos( $url, '/.jpg' ) || $service == 'vimeo' ) {
+            if ( strpos( $url, '/.jpg' ) || $service == 'vimeo' || $id == 'h5p' ) {
                 $url = '';
             } else {
                 $url = $wgCanonicalServer . $wgUploadPath . '/videothumbs/' . $id . '.jpg';
@@ -145,7 +147,7 @@ class LoopConsent {
             }
         }
         
-        $out = '<div class="loop_consent" style="background-image: url(' . $url . '); background-color: #' . $bgColor . ';">';
+        $out = '<div class="loop_consent ' . $h5pClass . '" style="background-image: url(' . $url . '); background-color: #' . $bgColor . ';">';
         $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
         $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button') . '</button>';
         $out .= '</div></div>';

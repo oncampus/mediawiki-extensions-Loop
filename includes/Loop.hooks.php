@@ -123,18 +123,23 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
-		
+
 		if ( is_object( $file ) ) {
 			$mediaType = $file->getMediaType();
 			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
 				$params['frame']['class'] = 'responsive-image';
-				if ($loopEditMode) {
+				if( class_exists( 'ImageMap' ) ) {
 					$params['frame']['no-link'] = false;
-					#$params['frame']['framed'] = true;
 				} else {
-					#$params['frame']['framed'] = true;
-					$params['frame']['no-link'] = true;
+					if ( $loopEditMode ) {
+						$params['frame']['no-link'] = false;
+						#$params['frame']['framed'] = true;
+					} else {
+						#$params['frame']['framed'] = true;
+						$params['frame']['no-link'] = true;
+					}
 				}
+				
 				if ( isset( $params['frame']['align'] ) ) {
 					$params['horizAlign'][ $params['frame']['align'] ] = true;
 				}
