@@ -57,6 +57,25 @@ class LoopUpdater {
 		if ( $updater->tableExists( 'loop_object_index' ) ) { #update for existing LOOPs
 			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_object_index', $schemaPath . 'loop_object_index_modify.sql', true ) );
 		}
+
+		$loopStructure = new LoopStructure();
+		$loopStructure->loadStructureitems();
+		if ( empty( $loopStructure ) ) {
+			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+			
+			$newStructureContent = "= Hauptseite =\n== Hauptseite 2 ==";
+			$newStructureContent = '__FORCETOC__' . PHP_EOL . $newStructureContent;
+			$localParser = new Parser();
+			$tmpTitle = Title::newFromText( 'NO TITLE' );
+			$parserOutput = $localParser->parse( $newStructureContent, $tmpTitle, new ParserOptions() );
+			$parsedStructure = $parserOutput->mText;
+
+			$loopStructure->setStructureItemsFromWikiText( $parsedStructure, $systemUser );
+			//dd($loopStructure);
+			$loopStructure->saveItems();
+		} else {
+
+		}
 		
 		return true;
 	}

@@ -65,7 +65,7 @@ class LoopNgSpice {
 		$parser->getOutput()->updateCacheExpiry( null );
 
 		$renderMode = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
-		#dd($renderMode);
+
         if ( empty( $wgLoopNgSpiceUrl ) || $renderMode == "offline" ) {
             return new LoopException( wfMessage ( "loopngspice-error-no-service" )->text() );
 		}
@@ -83,7 +83,6 @@ class LoopNgSpice {
 		$this->id = uniqid ();
 		$this->input = $input;
 
-		
 		if (array_key_exists ( 'text', $args )) {
 			
 			if ($args ["text"] != '') {
@@ -109,8 +108,6 @@ class LoopNgSpice {
 
 		// get all var configs (range)
 		$this->varConfs = $this->getVarconfigs ( $tagArray );
-		
-		// $this->printarray ( $tagArray ); // print plugin input
 		                              
 		if(count($tagArray) != 0){
 			
@@ -481,20 +478,6 @@ class LoopNgSpice {
 	
 	
 	/**
-	 * print array
-	 * @param $tagArray        	
-	 * @param $tagName        	
-	 */
-	private function printarray($tagArray) {
-		foreach ( $tagArray as $index => $tag ) {
-			
-			//print_r ( $tag );
-		//	print "<br>";
-		}
-	}
-	
-	
-	/**
 	 * Reads xml tags and returns the values and attributes as array.
 	 * @param $tagString the xml tags as string
 	 * @return $tagArray
@@ -675,9 +658,6 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 
 				if ($_GET['netlist'] != ""){
 
-					
-#ob_start();
-
 					$tmpDir = "$IP/loop/tmp";
 					if ( !is_dir( $tmpDir ) ) {
 						mkdir( $tmpDir, 0774 );
@@ -704,7 +684,7 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 					$result=curl_exec ($ch);
 					curl_close ($ch);
 					#dd($result, $post);
-					#ob_end_flush();
+					
 				} else {
 					echo 'Netzliste ist leer.'; #todo
 					exit;
