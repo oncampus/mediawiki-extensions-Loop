@@ -475,6 +475,10 @@
 	"loopngspice-error-xml": "Ngspice Konfiguration ist fehlerhaft.<br>XML Elemente konnten nicht geladen werden. ",
 	"loopngspice-error-no-service": "NgSpice ist nicht verfügbar.",
 	"loopngspice-error-min-value": "Der Mindestwert für $1 wurde nicht eingehalten (min = $2)",
-	"loopngspice-error-max-value": "Der Maximalwert für $1 wurde nicht eingehalten (max = $2)"
+	"loopngspice-error-max-value": "Der Maximalwert für $1 wurde nicht eingehalten (max = $2)",
 
+	"loopstructure-initial-chapter-1": "Erstes Kapitel",
+	"loopstructure-initial-chapter-1-1": "Erstes Unterkapitel",
+	"loopstructure-initial-chapter-1-2": "Zweites Unterkapitel",
+	"loopstructure-initial-chapter-2": "Zweites Kapitel"
 }

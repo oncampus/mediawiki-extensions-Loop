@@ -603,7 +603,7 @@ class LoopNgSpice {
 		
 		// visible plugin content
 		$return .= "<h2 id=\"$ntid\" class='ngspiceTitle'>$this->title</h2>";
-		$return .= "<div id=\"$nnid\" style=\"$style\" class=\"scale-frame\" data-width=\"$width\" data-height=\"$height\" >"; // TODO $style war vorher nicht maskiert!! pr�fen
+		$return .= "<div id=\"$nnid\" style=\"$style\" class=\"scale-frame\" data-width=\"$width\" data-height=\"$height\" >";
 		$return .= $this->getForm ( $this->netlistVars, $this->plotVars, $this->varConfs );
 		$return .= "</div>";
 		$return .= $this->closeForm ();
@@ -686,18 +686,18 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 					#dd($result, $post);
 					
 				} else {
-					echo 'Netzliste ist leer.'; #todo
-					exit;
+					echo 'Error: Netlist is empty.';
+					return;
 				}
 
 			} else {
-				echo 'Fehler: keine Plotliste erhalten.';#todo
-				exit;
+				echo 'Error: no plotlist.';
+				return;
 			}
 				
 		} else {
-			echo 'Fehler keine Netzliste erhalten.';#todo
-			exit;
+			echo 'Error: No netlist.';
+			return;
 		}
     }
 }

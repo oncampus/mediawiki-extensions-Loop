@@ -51,11 +51,9 @@ class LoopSettings {
     public $captchaAddurl; #wgCaptchaTriggers["addurl"]
     public $captchaCreateAccount; #wgCaptchaTriggers["createaccount"]
     public $captchaBadlogin; #wgCaptchaTriggers["badlogin"]
-    public $captchaBugReport; #wgCaptchaTriggers["bugreport"]
     public $bugReportEmail; #wgLoopBugReportEmail
     public $feedbackLevel; #wgLoopFeedbackLevel
     public $feedbackMode; #wgLoopFeedbackMode
-    public $rssUnprotected; #wgLoopUnprotectedRSS
 
     /**
      * Add settings to the database
@@ -100,11 +98,9 @@ class LoopSettings {
             'lset_captchaddurl' => $this->captchaAddurl,
             'lset_captchacreateaccount' => $this->captchaCreateAccount,
             'lset_captchabadlogin' => $this->captchaBadlogin,
-            'lset_captchabugreport' => $this->captchaBugReport,
             'lset_ticketemail' => $this->bugReportEmail,
             'lset_feedbacklevel' => $this->feedbackLevel,
-            'lset_feedbackmode' => $this->feedbackMode,
-            'lset_rssunprotected' => $this->rssUnprotected
+            'lset_feedbackmode' => $this->feedbackMode
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -157,7 +153,7 @@ class LoopSettings {
         global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
-        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS;
+        $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
         
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
@@ -197,11 +193,9 @@ class LoopSettings {
         $this->captchaAddurl = $wgCaptchaTriggers["addurl"];
         $this->captchaCreateAccount = $wgCaptchaTriggers["createaccount"];
         $this->captchaBadlogin = $wgCaptchaTriggers["badlogin"];
-        $this->captchaBugReport = $wgCaptchaTriggers["bugreport"];
         $this->bugReportEmail = $wgLoopBugReportEmail;
         $this->feedbackLevel = $wgLoopFeedbackLevel;
         $this->feedbackMode = $wgLoopFeedbackMode;
-        $this->rssUnprotected = $wgLoopUnprotectedRSS;
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = isset( $data['lset_imprintlink'] ) ? $data['lset_imprintlink'] : $this->imprintLink;
@@ -241,11 +235,9 @@ class LoopSettings {
             $this->captchaAddurl =  isset( $data['lset_captchaddurl'] ) ? boolval($data['lset_captchaddurl']) : $this->captchaAddurl;
             $this->captchaCreateAccount =  isset( $data['lset_captchacreateaccount'] ) ? boolval($data['lset_captchacreateaccount']) : $this->captchaCreateAccount;
             $this->captchaBadlogin =  isset( $data['lset_captchabadlogin'] ) ? boolval($data['lset_captchabadlogin']) : $this->captchaBadlogin;
-            $this->captchaBugReport =  isset( $data['lset_captchabugreport'] ) ? boolval($data['lset_captchabugreport']) : $this->captchaBugReport;
             $this->bugReportEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->bugReportEmail;
             $this->feedbackLevel =  isset( $data['lset_feedbacklevel'] ) ? $data['lset_feedbacklevel'] : $this->feedbackLevel;
             $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode;
-            $this->rssUnprotected =  isset( $data['lset_rssunprotected'] ) ? boolval($data['lset_rssunprotected']) : $this->rssUnprotected;
         }
         
         return true;
@@ -277,7 +269,7 @@ class LoopSettings {
 
     public function getLoopSettingsFromRequest ( $request, $user ) {
         
-        global $wgLoopSocialIcons, $wgLoopAvailableSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
+        global $wgLoopSocialIcons, $wgLoopSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
         $this->errors = array();
         $this->rightsText = $request->getText( 'rights-text' ); # no validation required
         
@@ -337,7 +329,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
         }
         
-        if ( in_array( $request->getText( 'skin-style' ), $wgLoopAvailableSkinStyles ) ) {
+        if ( in_array( $request->getText( 'skin-style' ), $wgLoopSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
             $user->setOption( 'LoopSkinStyle', $this->skinStyle );
 			$user->saveSettings();
@@ -518,15 +510,6 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-badlogin-label' ) );
         }
 
-        # Captcha Bugreport
-        if ( $request->getText( 'captcha-bugreport' ) == 'on' ) { 
-            $this->captchaBugReport = true;
-        } elseif ( empty ( $request->getText( 'captcha-bugreport' ) ) ) {
-            $this->captchaBugReport = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-bugreport-label' ) );
-        }
-
         # Bugreport Mail
         if  ( empty ( $request->getText( 'ticket-email' ) ) ) { 
             $this->bugReportEmail = null;
@@ -556,15 +539,6 @@ class LoopSettings {
             global $wgLoopFeedbackLevel;
             $this->feedbackLevel = $wgLoopFeedbackLevel;
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-feedback-level-label' ) );
-        }
-
-        # RSS unprotected
-        if ( $request->getText( 'rss-unprotected' ) == 'on' ) { 
-            $this->rssUnprotected = true;
-        } elseif ( empty ( $request->getText( 'rss-unprotected' ) ) ) {
-            $this->rssUnprotected = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-rss-unprotected-label' ) );
         }
 
         $this->addToDatabase();
@@ -697,9 +671,10 @@ class SpecialLoopSettings extends SpecialPage {
 					### LINK BLOCK ###
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-footer-links' ) . '</h3>';
                     
-                    global $wgLoopExternalImprintPrivacy;
+
+                    global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
                     
-                    if ( ! $wgLoopExternalImprintPrivacy ) {
+                    if ( ! $wgLoopExternalImprintPrivacy || empty ( $wgLoopExternalPrivacyUrl ) ) {
                         $html .= '<div class="form-row mb-4">';
 
                         # imprint link
@@ -950,29 +925,10 @@ class SpecialLoopSettings extends SpecialPage {
                     $html .= '<label for="captcha-createaccount">' . $this->msg( 'loopsettings-captcha-createaccount-label' )->text() . '</label></div>';
 					$html .= '<div><input type="checkbox" name="captcha-badlogin" id="captcha-badlogin" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaBadlogin == "captchaBadlogin" ? 'checked' : '' ) .'>';
                     $html .= '<label for="captcha-badlogin">' . $this->msg( 'loopsettings-captcha-badlogin-label' ) . '</label></div>';
-                    $html .= '<div><input type="checkbox" name="captcha-bugreport" id="captcha-bugreport" class="setting-input mr-1" ' . $captchaDisabled . " " . ( $currentLoopSettings->captchaBugReport == "captchaBugReport" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="captcha-bugreport">' . $this->msg( 'loopsettings-captcha-bugreport-label' ) . '</label></div>';
 					$html .= '<p><i>* '.$this->msg( "loopsettings-captcha-usergroup")->text().'</i></p>';
                     $html .= '</div>';
                     $html .= '</div>';
 
-                    
-					$html .= '<div class="form-row mb-4">';
-                   
-                    global $wgCanonicalServer, $wgArticlePath, $wgLoopRSSToken;
-                    $html .= '<div class="col-6">';
-                    $html .= '<h3>' . $this->msg( 'loopsettings-headline-rss' )->text() . '</h3>'; 
-                    $html .= '<p>' . $this->msg( 'loopsettings-rss-text' )->text() . '</p>'; 
-                    $rsslink = $wgCanonicalServer . str_replace( "$1", "Special:", $wgArticlePath) . "LoopRSS?t=" . $wgLoopRSSToken; 
-                    $html .= '<input id="rss-link" class="w-75 float-left mb-2 form-control" type="text" value="'.$rsslink.'"></input>'; 
-                    $html .= '<p  id="rss-link-btn" class="w-25 float-left mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive d-block">copy</p>';
-                    $html .= '<div class="float-left">';
-                    $html .= '<input type="checkbox" name="rss-unprotected" id="rss-unprotected" class="setting-input mr-1" ' . ( $currentLoopSettings->rssUnprotected == "rssUnprotected" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="rss-unprotected">'. $this->msg("loopsettings-rss-unprotected-label")->text().'</label>';
-
-                    $html .= '</div>';
-                    $html .= '</div>';
-                    $html .= '</div>';
 				$html .= '</div>'; // end of tech-tab
 
 				
