@@ -18,7 +18,7 @@ var Content_ngspice = {
     	str = "?"; // add url params
     	
     	// for all textfields
-		$("#" + id + "_ngspiceForm .textfield").each(function() {
+		$("#" + id + "_ngspiceForm .ngspice_textfield").each(function() {
 			
 			var currID = $(this).attr("id");
 			var currVal = $(this).val();
@@ -35,7 +35,7 @@ var Content_ngspice = {
 			    		
 			    		confVal =  parseFloat(confVal);
 			    		currVal =  parseFloat(currVal);
-			    		
+			    		console.log(currVal, confVal)
 
 			    	
 			    		// --------------------min ---------------------
@@ -128,7 +128,7 @@ function sendToPHPExec(id, params, netlist, plotlist, rawView, tableView, result
 	} else {
 		params = "?netlist=" + netlist +"&plotlist="+plotlist+"&rawView="+rawView+"&tableView="+tableView+"&id="+id+"&resultConfig="+resultConfig;
 	}
-
+	console.table(params);
 	id = $.trim(id);
 	
 	var xmlhttp;
@@ -153,6 +153,7 @@ function sendToPHPExec(id, params, netlist, plotlist, rawView, tableView, result
 			
 			ngspice_result = xmlhttp.response;
 			
+			console.table(ngspice_result);
 			$('#ngspiceResult').html(ngspice_result);
 			//$('#'+id+'_ngspiceForm').html('<p style="background-color: red; color: black; position: absolute; top: 200px; left:300px;">Test</p>');
 		

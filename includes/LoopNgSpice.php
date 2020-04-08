@@ -67,7 +67,7 @@ class LoopNgSpice {
 		$renderMode = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
 		#dd($renderMode);
         if ( empty( $wgLoopNgSpiceUrl ) || $renderMode == "offline" ) {
-            return new LoopException( wfMessage ( "loopngspice-error-no-service")->text() );
+            return new LoopException( wfMessage ( "loopngspice-error-no-service" )->text() );
 		}
 		$loopNgSpice = new LoopNgSpice( $input,$args );
 		$parser->getOutput()->addModules( 'loop.ngspice.js' );
@@ -391,7 +391,7 @@ class LoopNgSpice {
 			
 			$idAppend = uniqid();
 			$html .= "<label style=\"$labelStyle\" for=\"$var$idAppend\" id=\"$label_ID\">$varName</label>";
-			$html .= "<input class=\"ngspice_input_number position-absolute\" type=\"number\" onkeydown=\"if (event.keyCode == 13) { Content_ngspice.sendContent(&quot;$this->id&quot;,&quot;$this->netlist&quot;,&quot;$this->plotlist&quot;,&quot;" . $vc . "&quot;,&quot;$this->rawView&quot;,&quot;$this->tableView&quot;,&quot;$this->resultConfig&quot;); return false; }\" class=\"textfield\" style=\"$style\" name=\"$var\" id=\"$var$idAppend\" value=\"$value\" step=\"0.01\"/>";
+			$html .= "<input class=\"ngspice_input_number ngspice_textfield position-absolute\" type=\"number\" onkeydown=\"if (event.keyCode == 13) { Content_ngspice.sendContent(&quot;$this->id&quot;,&quot;$this->netlist&quot;,&quot;$this->plotlist&quot;,&quot;" . $vc . "&quot;,&quot;$this->rawView&quot;,&quot;$this->tableView&quot;,&quot;$this->resultConfig&quot;); return false; }\" style=\"$style\" name=\"$var\" id=\"$var$idAppend\" value=\"$value\" step=\"0.01\"/>";
 		}
 		
 		return $html;
@@ -653,7 +653,7 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 		$out->disable();
 
 		if ( empty( $wgLoopNgSpiceUrl ) ) {
-			#ec new LoopException( "NgSpice ist nicht verfügbar." ); #todo
+			$out->addHtml( new LoopException( "loopngspice-error-no-service" ) );
 			return;
         }
 		
@@ -675,11 +675,14 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 
 				if ($_GET['netlist'] != ""){
 
+					
+#ob_start();
+
 					$tmpDir = "$IP/loop/tmp";
 					if ( !is_dir( $tmpDir ) ) {
 						mkdir( $tmpDir, 0774 );
 					}
-
+					
 					$fp = fopen("$tmpDir/$id" . "_netlist", "w+");
 					fwrite($fp, $_GET['netlist']);
 					fclose($fp);
@@ -700,7 +703,8 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 					$result=curl_exec ($ch);
 					curl_close ($ch);
-
+					#dd($result, $post);
+					#ob_end_flush();
 				} else {
 					echo 'Netzliste ist leer.'; #todo
 					exit;

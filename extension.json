@@ -1007,7 +1007,7 @@
 			"value": false,
 			"description" : "Enable debug mode for export - files are always newly created."
 		},
-		"LoopNgSpiceServiceUrl": {
+		"LoopNgSpiceUrl": {
 			"value": "",
 			"description" : "Service Url for NgSpice."
 		}
