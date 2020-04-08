@@ -38,6 +38,13 @@ class Loop {
 				$user->setOption( 'LoopRenderMode', 'default' );
 			}
 		}	
+		
+		# If there is no Structure, create one.
+		$loopStructure = new LoopStructure();
+		$loopStructureItems = $loopStructure->getStructureitems();
+		if ( empty( $loopStructureItems ) ) {
+			$loopStructure->setInitialStructure();
+		}
 			
 	}
 		
@@ -55,6 +62,7 @@ class Loop {
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
 		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS;
 		
+
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
 
