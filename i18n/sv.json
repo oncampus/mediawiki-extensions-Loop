@@ -465,6 +465,19 @@
 	"action-loopfeeback-view-results": "Visa feedback resultat",
 	"action-loopfeeback-view-comments": "Visa feedback kommentarer",
 	"action-loopfeeback-reset": "Återställa feedback",
-	"loopfeedback-already-done": "Du redan skickade feedback. Tack!"
+	"loopfeedback-already-done": "Du redan skickade feedback. Tack!",
+	"loopconsent-text": "Om du laddar detta media laddas innehåll från externa tjänsteleverantörer och din IP-adress överförs till dem.",
+	"loopconsent-button": "Ladda och fråg inte igen",
+
+	"loopngspice-label-send": "Starta simulation",
+	"loopngspice-error-xml": "Ngspice konfiguration är felaktig.<br>XML kunde inte laddas. ",
+	"loopngspice-error-no-service": "NgSpice är inte tillgänglig.",
+	"loopngspice-error-min-value": "Minimivärdet för $1 uppnåddes inte (min = $2)",
+	"loopngspice-error-max-value": "Det maximala värdet för $1 uppnåddes inte (max = $2)",
+
+	"loopstructure-initial-chapter-1": "Först kapitel",
+	"loopstructure-initial-chapter-1-1": "Först underkapitel",
+	"loopstructure-initial-chapter-1-2": "Andra underkapitel",
+	"loopstructure-initial-chapter-2": "Andra kapitel"
 
 }

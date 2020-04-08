@@ -397,7 +397,7 @@ class LoopStructure {
 	}
 
 	public function setInitialStructure() {
-		
+
 			global $wgSitename;
 			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
 			
@@ -405,10 +405,10 @@ class LoopStructure {
 
 			$newStructureContent = '__FORCETOC__' . PHP_EOL;
 			$newStructureContent .= '<a href="" title="">'.$sitename[0].'</a>'."\n";
-			$newStructureContent .= '<li class="toclevel-1 tocsection-1"><a href="#"><span class="tocnumber">1</span> <span class="toctext">Oberseite</span></a></li>'.PHP_EOL;
-			$newStructureContent .= '<li class="toclevel-2 tocsection-2"><a href="#"><span class="tocnumber">1.1</span> <span class="toctext">Unterseite</span></a></li>'.PHP_EOL;
-			$newStructureContent .= '<li class="toclevel-3 tocsection-3"><a href="#"><span class="tocnumber">1.1.1</span> <span class="toctext">Unterstseite</span></a></li>'.PHP_EOL;
-			$newStructureContent .= '<li class="toclevel-1 tocsection-1"><a href="#"><span class="tocnumber">2</span> <span class="toctext">2. Oberseite</span></a></li>'.PHP_EOL;
+			$newStructureContent .= '<li class="toclevel-1 tocsection-1"><a href="#"><span class="tocnumber">1</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-1")->text().'</span></a></li>'.PHP_EOL;
+			$newStructureContent .= '<li class="toclevel-2 tocsection-2"><a href="#"><span class="tocnumber">1.1</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-1-1")->text().'</span></a></li>'.PHP_EOL;
+			$newStructureContent .= '<li class="toclevel-2 tocsection-2"><a href="#"><span class="tocnumber">1.2</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-1-2")->text().'</span></a></li>'.PHP_EOL;
+			$newStructureContent .= '<li class="toclevel-1 tocsection-1"><a href="#"><span class="tocnumber">2</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-2")->text().'</span></a></li>'.PHP_EOL;
 			
 			$this->setStructureItemsFromWikiText( $newStructureContent, $systemUser );
 			$this->saveItems();

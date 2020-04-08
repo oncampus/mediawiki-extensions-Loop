@@ -465,6 +465,18 @@
 	"action-loopfeeback-view-results": "View feedback results",
 	"action-loopfeeback-view-comments": "View feedback comments",
 	"action-loopfeeback-reset": "Reset feedbacks",
-	"loopfeedback-already-done": "You already gave us feedback. Thank you!"
+	"loopfeedback-already-done": "You already gave us feedback. Thank you!",
+    "loopconsent-text": "Message on consent prompt for e.g. youtube videos.",
+	"loopconsent-button": "Give consent and load media",
+	
+	"loopngspice-label-send": "Button text for starting ng spice simulations",
+	"loopngspice-error-xml": "Error in XML of NgSpice",
+	"loopngspice-error-no-service": "Message when NgSpice is not configured",
+	"loopngspice-error-min-value": "Message for user when not meeting the minimum value",
+	"loopngspice-error-max-value": "Message for user when not meeting the maximum value",
 
+	"loopstructure-initial-chapter-1": "Initial LoopStructure page name 1",
+	"loopstructure-initial-chapter-1-1": "Initial LoopStructure page name 1.1",
+	"loopstructure-initial-chapter-1-2": "Initial LoopStructure page name 1.2",
+	"loopstructure-initial-chapter-2": "Initial LoopStructure page name 2"
 }

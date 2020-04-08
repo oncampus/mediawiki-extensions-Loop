@@ -70,14 +70,12 @@ class LoopNgSpice {
             return new LoopException( wfMessage ( "loopngspice-error-no-service" )->text() );
 		}
 		$loopNgSpice = new LoopNgSpice( $input,$args );
-		$parser->getOutput()->addModules( 'loop.ngspice.js' );
-		$parser->getOutput()->addModules( 'skins.loop-resizer.js' );
+		$parser->getOutput()->addModules( ['loop.ngspice.js', 'skins.loop-resizer.js'] );
         return $loopNgSpice->render($parser);
 
     }
 
 	function __construct( $input, $args ) {
-		global $wge_LoopNgspice_default;
 		
 		$this->args = $args;
 		$this->id = uniqid ();
