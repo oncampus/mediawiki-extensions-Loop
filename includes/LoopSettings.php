@@ -791,7 +791,7 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .=    '<div class="col-6 pl-1">';
 					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
                     $skinStyleOptions = '';
-                    $styles = ! isset( $wgLoopAvailableSkinStyles ) ? $wgLoopSkinStyles : $wgLoopAvailableSkinStyles;
+                    $styles = array_unique ( ! isset( $wgLoopAvailableSkinStyles ) ? $wgLoopSkinStyles : $wgLoopAvailableSkinStyles );
                     
 					foreach( $styles as $style ) { 
 					    if ( $style == $currentLoopSettings->skinStyle ) { 
