@@ -19,9 +19,7 @@ class LoopSpoiler {
 	
 	private static $mSpoilerTypes = array(
 		'default',
-		'transparent',
-		'in_text',
-		'in_text_transparent'
+		'transparent'
 	);
 	
 	public function setId( $id ) {
@@ -83,8 +81,8 @@ class LoopSpoiler {
 		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
 			$content = substr( $content, 0, -1 );
 		}
-		$return = '<div class="loopspoiler-container">';
-		$return .= '<span class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '">'.$this->getBtnText() . '</span>';
+		$return = '<div class="loopspoiler-container container_' . $this->getType() . '">';
+		$return .= '<button class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '" type="button">'.$this->getBtnText() . '</button>';
 		$return .= '<div id="'.$this->getId() . '" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType() . '">';
 		$return .= '<div class="loopspoiler_content">' . $content . '</div>';
 		$return .= "\n</div></div>";
