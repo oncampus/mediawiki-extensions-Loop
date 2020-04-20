@@ -185,10 +185,33 @@ class LoopUpdater {
 			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
 			self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
+			self::replaceCommonWikitext( $wikiPage, $title, $contentText, $systemUser );
 		}
 		return true;
 	}
 
+	/**
+	 * Migrates common LOOP 1 content that is not compatible to LOOP 2 but easy to fix
+	 * - EmbedVideo service "youtubehd" -> "youtube"
+	 * - Can be extended
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
+	public static function replaceCommonWikitext ( $wikiPage, $title, $contentText, $systemUser ) {
+		$revision = $wikiPage->getRevision();
+		if ( $contentText == null ) {
+			$contentText = $revision->getContent()->getText();
+		}
+		$newContentText = str_replace("#ev:youtubehd", "#ev:youtube", $contentText);
+		
+		if ( $newContentText != $contentText ) {
+			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'Replaced "youtubehd" with "youtube"' );
+			$wikiPageUpdater->setContent( "main", $editContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		} 
+	}
+	
 	/**
 	 * Migrates LOOP 1 tag biblio into DB
 	 * - bibliography page "Literatur" and adds given entries to database
