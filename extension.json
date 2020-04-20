@@ -642,6 +642,26 @@
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
 			"loopfeedback-reset": false
+		},
+		"shared_basic": {
+			"editmyoptions": false,
+			"viewmyprivateinfo": false,
+			"editmyprivateinfo": false,
+			"loop-export-pdf": false,
+			"loop-export-xml": false,
+			"loop-export-mp3": false,
+			"loop-export-epub": false,
+			"loop-export-html": false,
+			"loop-export-scorm": false,
+			"loop-pageaudio": false,
+			"loop-settings-edit": false,
+			"loop-edit-literature": false,
+			"loop-view-special-pages": false,
+			"skipcaptcha": true,
+			"loopfeedback-view": false,
+			"loopfeedback-view-results": false,
+			"loopfeedback-view-comments": false,
+			"loopfeedback-reset": false
 		}
 	},
 	"DefaultUserOptions": {

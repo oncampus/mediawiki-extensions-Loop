@@ -1,6 +1,6 @@
 <?php
 /**
- * @description 
+ * @description NgSpice Tag Extension. Mostly recovered from LOOP1
  * @ingroup Extensions
  * @author Kevin Berg <kevin.berg@th-luebeck.de>, Dennis Krohn <dennis.krohn@th-luebeck.de>
  */
@@ -150,8 +150,14 @@ class LoopNgSpice {
 			if( strpos($this->img, 'http') === false && strpos($this->img, 'https') === false) {
 				$this->img = 'https:'.$this->img;
 			}
+
+			$file_headers = @get_headers($this->img);
+			if ( $file_headers[0] == 'HTTP/1.1 404 Not Found' ) {
+				$this->img_size = array(700,400, 3, 'width="700" height="400"');
+			} else {
+				$this->img_size = getimagesize ( $this->img );
+			}
 			
-			$this->img_size = getimagesize ( $this->img );
 
 			// TITLE
 			if( $this->getTagIndex ( $tagArray, $this->titleTagName ) ){
@@ -168,7 +174,7 @@ class LoopNgSpice {
 			$this->netlist = "";
 			$this->plotlist = "";
 			$this->img = "";
-			$this->img_size = array(700,0);
+			$this->img_size = array(700,500);
 			$this->title = $this->xml_error;
 		}
 		
@@ -383,10 +389,10 @@ class LoopNgSpice {
 			
 			$vc = json_encode ( $this->varConfs );
 			$vc = str_replace ( "\"", "'", $vc );
-			
-			$idAppend = uniqid();
+			#dd($var, $this->id, $label_ID);
+			$idAppend = "";#uniqid();
 			$html .= "<label style=\"$labelStyle\" for=\"$var$idAppend\" id=\"$label_ID\">$varName</label>";
-			$html .= "<input class=\"ngspice_input_number ngspice_textfield position-absolute\" type=\"number\" onkeydown=\"if (event.keyCode == 13) { Content_ngspice.sendContent(&quot;$this->id&quot;,&quot;$this->netlist&quot;,&quot;$this->plotlist&quot;,&quot;" . $vc . "&quot;,&quot;$this->rawView&quot;,&quot;$this->tableView&quot;,&quot;$this->resultConfig&quot;); return false; }\" style=\"$style\" name=\"$var\" id=\"$var$idAppend\" value=\"$value\" step=\"0.01\"/>";
+			$html .= "<input id=\"$var$idAppend\" class=\"ngspice_input_number ngspice_textfield position-absolute\" type=\"number\" onkeydown=\"if (event.keyCode == 13) { Content_ngspice.sendContent(&quot;$this->id&quot;,&quot;$this->netlist&quot;,&quot;$this->plotlist&quot;,&quot;" . $vc . "&quot;,&quot;$this->rawView&quot;,&quot;$this->tableView&quot;,&quot;$this->resultConfig&quot;); return false; }\" style=\"$style\" name=\"$var\" value=\"$value\" step=\"0.01\"/>";
 		}
 		
 		return $html;
@@ -448,8 +454,8 @@ class LoopNgSpice {
 		
 		$html = "";
 
-		if($this->enableSendButton){
-			$html .= "<input type='button' value=\"$this->buttonText\" id=\"$bid\" class='ngspice_send btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive float-left mb-1 mr-1' form='ngspiceForm' onclick=\"Content_ngspice.sendContent(&quot;$this->id&quot;,&quot;$this->netlist&quot;,&quot;$this->plotlist&quot;,&quot;" . $vc . "&quot;,&quot;$this->rawView&quot;,&quot;$this->tableView&quot;,&quot;$this->resultConfig&quot;)\">";
+		if( $this->enableSendButton ){
+			$html .= "<input disabled type='button' value=\"$this->buttonText\" id=\"$bid\" class='ngspice_send btn btn-sm mw-ui-button mw-ui-primary mw-ui-progressive float-left mb-1 mr-1' form='ngspiceForm' data-id=\"$this->id\" data-netlist=\"$this->netlist\" data-plotlist=\"$this->plotlist\" data-varconfs=\"" . $vc . "\" data-raw=\"$this->rawView\" data-table=\"$this->tableView\" data-resultconf=\"$this->resultConfig\">";
 		}
 		
 		$html .= "</form>";
@@ -650,29 +656,13 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 
 		$id = $_GET['id'] ;
 
-		if(isset($_GET['netlist'])){
+		if( array_key_exists( 'netlist', $_GET ) ){
+			
+			if( array_key_exists( 'plotlist', $_GET ) ){
 
-			if(isset($_GET['plotlist'])){
+				if ( !empty ( $_GET['netlist'] ) ){
 
-				if ($_GET['netlist'] != ""){
-
-					$tmpDir = "$IP/loop/tmp";
-					if ( !is_dir( $tmpDir ) ) {
-						mkdir( $tmpDir, 0774 );
-					}
-					
-					$fp = fopen("$tmpDir/$id" . "_netlist", "w+");
-					fwrite($fp, $_GET['netlist']);
-					fclose($fp);
-					
-					$fp = fopen("$tmpDir/$id" . "_plotlist", "w+");
-					fwrite($fp, $_GET['plotlist']);
-					fclose($fp);
-
-					$netlist = realpath("$tmpDir/$id" . "_netlist");
-					$plotlist = realpath("$tmpDir/$id" . "_plotlist");
-
-					$post = array('netlist'=>'@'.$netlist, 'plotlist'=>'@'.$plotlist, 'id'=>$id, 'table'=>$_GET['table'], 'raw'=>$_GET['raw'], 'resultConfig'=>$_GET['resultConfig']);
+					$post = array('netlist'=>$_GET['netlist'], 'plotlist'=>$_GET['plotlist'], 'id'=>$id, 'table'=>$_GET['table'], 'raw'=>$_GET['raw'], 'resultConfig'=>$_GET['resultConfig']);
 
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_URL, $wgLoopNgSpiceUrl);
@@ -681,7 +671,6 @@ class SpecialLoopNgSpice extends UnlistedSpecialPage {
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 					$result=curl_exec ($ch);
 					curl_close ($ch);
-					#dd($result, $post);
 					
 				} else {
 					echo 'Error: Netlist is empty.';
