@@ -244,8 +244,8 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
             }
 			if ( $userIsPermitted ) {
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
-
-                    $systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+                    
+                    $systemUser = User::newFromName( 'LOOP_SYSTEM' );
                     $systemUser->addGroup("sysop");
 
                     $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );

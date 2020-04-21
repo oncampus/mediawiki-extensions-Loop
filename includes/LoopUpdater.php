@@ -29,10 +29,17 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_feedback', $schemaPath . 'loop_feedback.sql', true ) );
+		
+		if ( $updater->tableExists( 'actor' ) ) {
+			$user = User::newFromName( 'LOOP_SYSTEM' );
+			if ( $user->getId() == 0 ) {
+				$user = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+			}
+		}
 
 		if ( $updater->tableExists( 'loop_structure_items' ) ) {
-			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
-			if ( $systemUser ) { #why is system user null sometimes? #TODO investigate
+			$systemUser = $user;
+			if ( $systemUser->getId() != 0 ) { #why is system user null sometimes? #TODO investigate
 				$systemUser->addGroup("sysop");
 			}
 			Loop::setupLoopPages();
@@ -105,10 +112,10 @@ class LoopUpdater {
 		$glossaryItems = $glossary->getMembers();
 
 		if ( !empty( $glossaryItems ) ) {
+			$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+			$user->addGroup("sysop");
 			foreach ( $glossaryItems as $title ) {
 
-				$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-				$user->addGroup("sysop");
 
 				$oldWikiPage = WikiPage::factory ( $title );
 				$oldFlaggableWikiPage = new FlaggableWikiPage ( $title );
@@ -117,7 +124,13 @@ class LoopUpdater {
 					$stableRev = intval( $title->mArticleID );
 					$content = $oldWikiPage->getContent ()->getText();
 				} else {
-					$content = Revision::newFromId( $stableRev )->getContent ()->getText();
+					$revision = Revision::newFromId( $stableRev );
+					if ( $revision !== null ) {
+						$content = $revision->getContent ()->getText();
+					} else {
+						echo "!!!! ERROR !!!! Page ".$title->mArticleID."  has no revision!\n";
+						continue;
+					}
 				}
 				
 				# Fill a new page in NS_GLOSSARY with the same title as before with the old content
