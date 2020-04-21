@@ -1101,6 +1101,9 @@ class LoopLiteratureReference {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
+		if ( $this->refId === null ) {
+			return false;
+		}
 		$dbw = wfGetDB( DB_MASTER );
 		
         $dbw->insert(

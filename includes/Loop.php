@@ -199,8 +199,10 @@ class Loop {
 	 */
 	public static function setupLoopPages() {
 
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
-		$systemUser->addGroup("sysop");
+		$systemUser = User::newFromName( 'LOOP_SYSTEM' );
+		if ( $systemUser->getId() != 0 ) {
+			$systemUser->addGroup("sysop");
+		}
 		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" ); 
 			
 		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
