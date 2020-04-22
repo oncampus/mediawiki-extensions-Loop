@@ -16,12 +16,14 @@ class LoopSpoiler {
 	public $mContent;
 	public $mParser;
 	public $mErrors;
+
+	protected static $_instances = array();
 	
 	private static $mSpoilerTypes = array(
 		'default',
 		'transparent'
 	);
-	
+
 	public function setId( $id ) {
 		$this->mId = $id;
 	}
@@ -54,6 +56,27 @@ class LoopSpoiler {
 		return $this->mContent;
 	}
 
+	public static function getInstances()
+    {
+        $return = array();
+        foreach(self::$_instances as $instance) {
+            if($instance instanceof LoopSpoiler) {
+                $return[] = $instance;
+            }
+        }
+        return $return;
+	}
+	
+	public function __construct()
+    {
+        self::$_instances[] = $this;
+    }
+
+    public function __destruct()
+    {
+        unset(self::$_instances[array_search($this, self::$_instances, true)]);
+    }
+
 	public static function onParserSetup( Parser &$parser ) {
 		$parser->setHook( 'spoiler', 'LoopSpoiler::renderLoopSpoiler' );
 		$parser->setHook( 'loop_spoiler', 'LoopSpoiler::renderLoopSpoiler' ); // behalten?
@@ -81,13 +104,37 @@ class LoopSpoiler {
 		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
 			$content = substr( $content, 0, -1 );
 		}
-		$return = '<div class="loopspoiler-container container_' . $this->getType() . '">';
-		$return .= '<button class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '" type="button">'.$this->getBtnText() . '</button>';
-		$return .= '<div id="'.$this->getId() . '" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType() . '">';
-		$return .= '<div class="loopspoiler_content">' . $content . '</div>';
-		$return .= "\n</div></div>";
 		
+		if($this->getType() === 'default') {
+
+			$return = Html::rawElement(
+				'button',
+				[
+					'type' => 'button',
+					'class' => 'btn loopspoiler loopspoiler_type_default ' . $this->getId(),
+				],
+				$this->getBtnText()
+			);
+
+		} else {
+			$return = '<div class="loopspoiler-container container_' . $this->getType() . '">';
+			$return .= '<button class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '" type="button">'.$this->getBtnText() . '</button>';
+			$return .= '<div id="'.$this->getId() . '" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType() . '">';
+			$return .= '<div class="loopspoiler_content">' . $content . '</div>';
+			$return .= "</div></div>";
+		}
+		
+
 		return $return;
+	}
+
+	//mw.config.get('wgLoopSpoilerContent')
+	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) {
+		if(!empty(LoopSpoiler::getInstances())) {
+			foreach(LoopSpoiler::getInstances() as $instance) {
+				$vars['wgLoopSpoilerContent'][$instance->mId] = [$instance->mContent];
+			}
+		}
 	}
 
 	public static function newFromTag( $input, array $args, Parser $parser, PPFrame $frame ) {
