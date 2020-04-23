@@ -17,13 +17,11 @@ class LoopSpoiler {
 	public $mParser;
 	public $mErrors;
 	
-	private static $mSpoilerTypes = array(
+	private static $mSpoilerTypes = [
 		'default',
-		'transparent',
-		'in_text',
-		'in_text_transparent'
-	);
-	
+		'transparent'
+	];
+
 	public function setId( $id ) {
 		$this->mId = $id;
 	}
@@ -59,6 +57,7 @@ class LoopSpoiler {
 	public static function onParserSetup( Parser &$parser ) {
 		$parser->setHook( 'spoiler', 'LoopSpoiler::renderLoopSpoiler' );
 		$parser->setHook( 'loop_spoiler', 'LoopSpoiler::renderLoopSpoiler' ); // behalten?
+
 		return true;
 	}
 
@@ -79,17 +78,15 @@ class LoopSpoiler {
 	
 	public function render() {
 		$content = $this->getContent();
-	
 		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
 			$content = substr( $content, 0, -1 );
 		}
-		$return = '<div class="loopspoiler-container">';
-		$return .= '<span class="btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId() . '">'.$this->getBtnText() . '</span>';
-		$return .= '<div id="'.$this->getId() . '" class="loopspoiler_content_wrapper loopspoiler_type_'.$this->getType() . '">';
-		$return .= '<div class="loopspoiler_content">' . $content . '</div>';
-		$return .= "\n</div></div>";
 		
-		return $return;
+		return Html::rawElement(
+			'button',
+			[ 'data-spoilercontent' => $content,'type' => 'button', 'class' => 'btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId(),],
+			$this->getBtnText()
+		);
 	}
 
 	public static function newFromTag( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -97,7 +94,7 @@ class LoopSpoiler {
 		
 		$spoiler = new LoopSpoiler();
 		
-		$spoiler->setId(uniqid());
+		$spoiler->setId( uniqid() );
 		
 		// set spoiler type to standard if not submitted.
 		if ( ! isset( $args['type'] ) ) {

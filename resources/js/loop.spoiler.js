@@ -4,10 +4,23 @@
   */
 
 $('.loopspoiler').click(function() {
-  let getId = $(this).attr('class').split(' ')[3];
+  
+  if($('.loopspoiler_default_content').length) {
+    $('.loopspoiler_default_content').remove();
+    return 0;
+  } else if($('.loopspoiler_transparent_content').length) {
+    $('.loopspoiler_transparent_content').remove();
+    return 0;
+  }
 
-  $(this).toggleClass('spoileractive');
-  $('#' + getId).toggle();
+  let content = $(this).attr('data-spoilercontent');
 
-  return false;
+  if($(this).hasClass('loopspoiler_type_transparent')) {
+    type = 'transparent';
+  } else {
+    type = 'default';
+  }
+
+  $(this).after('<div class="loopspoiler_' + type + '_content">' + content + '</div>')
+
 });
