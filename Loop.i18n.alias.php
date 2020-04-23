@@ -34,7 +34,8 @@ $specialPageAliases['en'] = array(
 	'LoopImprint' => array( 'Imprint' ),
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
-	'LoopNgSpice' => array( 'NgSpice' )
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -63,7 +64,8 @@ $specialPageAliases['de'] = array(
 	'LoopImprint' => array( 'Impressum' ),
 	'LoopPrivacy' => array( 'Datenschutz' ),
 	'LoopRSS' => array( 'LoopRSS' ),
-	'LoopNgSpice' => array( 'NgSpice' )
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -92,7 +94,8 @@ $specialPageAliases['sv'] = array(
 	'LoopImprint' => array( 'Imprint' ),
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
-	'LoopNgSpice' => array( 'NgSpice' )
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -120,7 +123,8 @@ $specialPageAliases['es'] = array(
 	'LoopImprint' => array( 'Imprint' ),
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
-	'LoopNgSpice' => array( 'NgSpice' )
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 );
 
 

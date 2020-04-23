@@ -212,7 +212,12 @@ class LoopUpdater {
 	public static function replaceCommonWikitext ( $wikiPage, $title, $contentText, $systemUser ) {
 		$revision = $wikiPage->getRevision();
 		if ( $contentText == null ) {
-			$contentText = $revision->getContent()->getText();
+			if ( $revision !== null ) {
+				$contentText = $revision->getContent()->getText();
+			} else {
+				echo "!!!! ERROR !!!! Page ".$title->mArticleID."  has no revision!\n";
+				return;
+			}
 		}
 		$newContentText = str_replace("#ev:youtubehd", "#ev:youtube", $contentText);
 		
@@ -414,6 +419,66 @@ class LoopUpdater {
 		
 		$loopSettings->addToDatabase();
 	}
+}
 
+# Some LOOPs can't be updated automatically and need manual migration. 
+# This page saves all pages and offers options for migration of literature, glossary etc
+class SpecialLoopManualUpdater extends UnlistedSpecialPage {
+
+	function __construct() {
+		parent::__construct( 'LoopManualUpdater' );
+	}
+
+	function execute( $par ) {
+		
+		$user = $this->getUser();
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$out->setPageTitle( "Manual LOOP Update" );
+		$this->setHeaders();
+		$html = '';
+
+		if ( in_array( "sysop", $user->getGroups() ) ) {
+			
+			if ( empty ( $request->getText( 'execute' ) ) ) { 
+				$html .= '<h3>Manual LOOP Updates</h3>';
+				$html .= '<div class="form-row mb-4">';
+				$html .= '<div class="col-12">';
+				$html .= '<form class="mw-editform mt-3 mb-3" id="loopupdate-form" method="post" novalidate enctype="multipart/form-data">';
+
+				$html .= '<div><input type="checkbox" name="saveallpages" id="saveallpages" class="mr-1">';
+				$html .= '<label for="saveallpages">Save all pages</label></div>';
+
+				$html .= '<div><input type="checkbox" name="migrateglossary" id="migrateglossary" class="mr-1">';
+				$html .= '<label for="migrateglossary">Migrate Glossary</label></div>';
+
+				$html .= '<div><input type="checkbox" name="migrateterminology" id="migrateterminology" class="mr-1">';
+				$html .= '<label for="migrateterminology">Migrate Terminology</label></div>';
+
+				$html .= '<input type="hidden" name="execute" id="execute" value="1"></input>';
+				$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'submit' ) . '"></input>';
+				
+				$html .= '</div>';
+				$html .= '</div>';
+				$html .= '</form>';
+			} else {
+				set_time_limit(1200);
+				if ( !empty ( $request->getText( 'saveallpages' ) ) ) { 
+					LoopUpdater::saveAllWikiPages();
+				}
+				if ( !empty ( $request->getText( 'migrateglossary' ) ) ) { 
+					LoopUpdater::migrateGlossary();
+				}
+				if ( !empty ( $request->getText( 'migrateterminology' ) ) ) { 
+					LoopUpdater::migrateLoopTerminology();
+				}
+				
+			}
+		} else {
+			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
+			
+		}
+		$out->addHTML( $html );
+	}
 }
 ?>

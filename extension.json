@@ -33,6 +33,7 @@
 		"LoopHooks": "includes/Loop.hooks.php",
 		"LoopSpoiler": "includes/LoopSpoiler.php",
 		"LoopUpdater": "includes/LoopUpdater.php",
+		"SpecialLoopManualUpdater": "includes/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
 		"SpecialLoopStructure": "includes/LoopStructure.php",
@@ -212,7 +213,8 @@
 		"LoopImprint": "SpecialLoopImprint",
 		"LoopPrivacy": "SpecialLoopPrivacy",
 		"LoopRSS": "SpecialLoopRSS",
-		"LoopNgSpice": "SpecialLoopNgSpice"
+		"LoopNgSpice": "SpecialLoopNgSpice",
+		"LoopManualUpdater": "SpecialLoopManualUpdater"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

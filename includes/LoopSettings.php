@@ -105,11 +105,15 @@ class LoopSettings {
         
         $dbw = wfGetDB( DB_MASTER );
 
-		$dbw->delete(
-			'loop_settings',
-			'lset_structure = 0', # TODO Structure support
-			__METHOD__
-        );
+        try {
+            $dbw->delete(
+                'loop_settings',
+                'lset_structure = 0', # TODO Structure support
+                __METHOD__
+            );
+        } catch ( Exception $e ) {
+
+        }
         
         foreach ( $this->dbkeys as $dbk => $val ) {
             $dbw->insert(
@@ -269,7 +273,7 @@ class LoopSettings {
 
     public function getLoopSettingsFromRequest ( $request, $user ) {
         
-        global $wgLoopSocialIcons, $wgLoopSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
+        global $wgLoopSocialIcons, $wgLoopAvailableSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
         $this->errors = array();
         $this->rightsText = $request->getText( 'rights-text' ); # no validation required
         
@@ -329,7 +333,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
         }
         
-        if ( in_array( $request->getText( 'skin-style' ), $wgLoopSkinStyles ) ) {
+        if ( in_array( $request->getText( 'skin-style' ), $wgLoopAvailableSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
             $user->setOption( 'LoopSkinStyle', $this->skinStyle );
 			$user->saveSettings();
@@ -798,7 +802,10 @@ class SpecialLoopSettings extends SpecialPage {
 							$selected = 'selected';
 						} else {
 							$selected = '';
-						}
+                        }
+                        if ( $style == "" ) {
+                            continue; # fallback for wrong configuration
+                        }
 						$skinStyleOptions .= '<option value="' . $style.'" ' . $selected.'>'. $this->msg( 'loop-skin-'. $style ) .'</option>';
                     }
                     
