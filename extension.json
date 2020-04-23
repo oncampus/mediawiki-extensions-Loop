@@ -181,8 +181,7 @@
 		"PageContentSave": "LoopConsent::onPageContentSave",
 		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
 		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
-		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister",
-		"MakeGlobalVariablesScript": "LoopSpoiler::onMakeGlobalVariablesScript"
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",

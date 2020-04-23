@@ -16,8 +16,6 @@ class LoopSpoiler {
 	public $mContent;
 	public $mParser;
 	public $mErrors;
-
-	protected static $_instances = [];
 	
 	private static $mSpoilerTypes = [
 		'default',
@@ -56,29 +54,6 @@ class LoopSpoiler {
 		return $this->mContent;
 	}
 
-	public static function getInstances()
-    {
-        $return = [];
-        foreach(self::$_instances as $instance) {
-            $return[] = $instance;
-		}
-
-        return $return;
-	}
-	
-	public function __construct()
-    {
-		self::$_instances[] = $this;
-		
-		// $out = $this->getOutput();
-		// Hooks::run( 'MakeGlobalVariablesScript', [ $out->getJSVars(), $this ] );
-    }
-
-	public function __destruct()
-    {
-        // unset(self::$_instances[array_search($this, self::$_instances, true)]);
-    }
-
 	public static function onParserSetup( Parser &$parser ) {
 		$parser->setHook( 'spoiler', 'LoopSpoiler::renderLoopSpoiler' );
 		$parser->setHook( 'loop_spoiler', 'LoopSpoiler::renderLoopSpoiler' ); // behalten?
@@ -109,27 +84,17 @@ class LoopSpoiler {
 		
 		return Html::rawElement(
 			'button',
-			[ 'type' => 'button', 'class' => 'btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId(),],
+			[ 'data-spoilercontent' => $content,'type' => 'button', 'class' => 'btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId(),],
 			$this->getBtnText()
 		);
 	}
-
-	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) {
-		if(!empty(LoopSpoiler::getInstances())) {
-			foreach(LoopSpoiler::getInstances() as $instance) {
-				$vars['wgLoopSpoilerContents'][$instance->mId] = [$instance->mContent];
-			}
-		}
-		return true;
-	}
-
 
 	public static function newFromTag( $input, array $args, Parser $parser, PPFrame $frame ) {
 		global $wgLoopSpoilerDefaultType;
 		
 		$spoiler = new LoopSpoiler();
 		
-		$spoiler->setId(uniqid());
+		$spoiler->setId( uniqid() );
 		
 		// set spoiler type to standard if not submitted.
 		if ( ! isset( $args['type'] ) ) {
