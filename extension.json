@@ -33,6 +33,7 @@
 		"LoopHooks": "includes/Loop.hooks.php",
 		"LoopSpoiler": "includes/LoopSpoiler.php",
 		"LoopUpdater": "includes/LoopUpdater.php",
+		"SpecialLoopManualUpdater": "includes/LoopUpdater.php",
 		"LoopStructure": "includes/LoopStructure.php",
 		"LoopStructureItem": "includes/LoopStructure.php",
 		"SpecialLoopStructure": "includes/LoopStructure.php",
@@ -113,7 +114,9 @@
 		"LoopAccordion": "includes/LoopAccordion.php",
 		"SpecialLoopImprint": "includes/Loop.php",
 		"SpecialLoopPrivacy": "includes/Loop.php",
-		"SpecialLoopRSS": "includes/LoopRSS.php"
+		"SpecialLoopRSS": "includes/LoopRSS.php",
+		"LoopNgSpice": "includes/LoopNgSpice.php",
+		"SpecialLoopNgSpice": "includes/LoopNgSpice.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -146,7 +149,8 @@
 			"LoopZip::onParserSetup",
 			"LoopMediaHandler::onParserSetup",
 			"LoopScreenshot::onParserSetup",
-			"LoopAccordion::onParserSetup"
+			"LoopAccordion::onParserSetup",
+			"LoopNgSpice::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy",
@@ -208,7 +212,9 @@
 		"LoopFeedback": "SpecialLoopFeedback",
 		"LoopImprint": "SpecialLoopImprint",
 		"LoopPrivacy": "SpecialLoopPrivacy",
-		"LoopRSS": "SpecialLoopRSS"
+		"LoopRSS": "SpecialLoopRSS",
+		"LoopNgSpice": "SpecialLoopNgSpice",
+		"LoopManualUpdater": "SpecialLoopManualUpdater"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -342,6 +348,15 @@
 				"loopfeedback-specialpage-feedback-info-average-stars",
 				"loopfeedback-specialpage-feedback-info-count-comments",
 				"loopfeedback-specialpage-feedback-info-no-comments"
+			]
+		},
+		"loop.ngspice.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.ngspice.js"
+			],
+			"messages": [
+				"loopngspice-error-min-value"
 			]
 		}
 	
@@ -621,6 +636,26 @@
 			"loop-export-html": false,
 			"loop-export-scorm": false,
 			"loop-pageaudio": true,
+			"loop-settings-edit": false,
+			"loop-edit-literature": false,
+			"loop-view-special-pages": false,
+			"skipcaptcha": true,
+			"loopfeedback-view": false,
+			"loopfeedback-view-results": false,
+			"loopfeedback-view-comments": false,
+			"loopfeedback-reset": false
+		},
+		"shared_basic": {
+			"editmyoptions": false,
+			"viewmyprivateinfo": false,
+			"editmyprivateinfo": false,
+			"loop-export-pdf": false,
+			"loop-export-xml": false,
+			"loop-export-mp3": false,
+			"loop-export-epub": false,
+			"loop-export-html": false,
+			"loop-export-scorm": false,
+			"loop-pageaudio": false,
 			"loop-settings-edit": false,
 			"loop-edit-literature": false,
 			"loop-view-special-pages": false,
@@ -993,6 +1028,10 @@
 		"LoopExportDebug": {
 			"value": false,
 			"description" : "Enable debug mode for export - files are always newly created."
+		},
+		"LoopNgSpiceUrl": {
+			"value": "",
+			"description" : "Service Url for NgSpice."
 		}
 	},
 	"LogTypes": [ "loopexport" ],

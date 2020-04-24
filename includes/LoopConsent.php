@@ -119,7 +119,7 @@ class LoopConsent {
 
     
     private function renderOutput( $id, $service = 'youtube' ) {
-        global $wgOut, $wgCanonicalServer, $wgUploadPath;
+        global $wgCanonicalServer, $wgUploadPath;
 
         $url = '';
         $title = '';
@@ -127,14 +127,14 @@ class LoopConsent {
         $h5pClass = '';
 
         if ( $id == 'h5p' ) {
-            $title = '<span class="ic-h5p"></span>';
+            $title = '<span class="ic ic-h5p"></span>';
             $bgColor = '2575be';
             $h5pClass = 'is_h5p';
         } else {            
             // no thumbnail
             if ( strpos( $url, '/.jpg' ) || $service == 'vimeo' || $id == 'h5p' ) {
                 $url = '';
-            } else {
+            } elseif ( $id !== false )  {
                 $url = $wgCanonicalServer . $wgUploadPath . '/videothumbs/' . $id . '.jpg';
             }
 
@@ -148,8 +148,8 @@ class LoopConsent {
         }
         
         $out = '<div class="loop_consent ' . $h5pClass . '" style="background-image: url(' . $url . '); background-color: #' . $bgColor . ';">';
-        $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text') . '</p>';
-        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button') . '</button>';
+        $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text')->text() . '</p>';
+        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button')->text() . '</button>';
         $out .= '</div></div>';
  
         return $out;
@@ -159,11 +159,10 @@ class LoopConsent {
     private function getYouTubeId( $url ) {
         if ( preg_match( '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $url, $match ) ) {
             return $match[1];
-        } else {
-            return $url; //assume already extracted youtube video ID
-        }
-
-        return false;
+        } elseif ( filter_var( $url, FILTER_VALIDATE_URL ) ) {
+            return false; //preg_match did not work. this is an url.
+        } 
+        return $url; //assume already extracted youtube video ID
     }
 
 

@@ -29,10 +29,17 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_feedback', $schemaPath . 'loop_feedback.sql', true ) );
+		
+		if ( $updater->tableExists( 'actor' ) ) {
+			$user = User::newFromName( 'LOOP_SYSTEM' );
+			if ( $user->getId() == 0 ) {
+				$user = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+			}
+		}
 
 		if ( $updater->tableExists( 'loop_structure_items' ) ) {
-			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
-			if ( $systemUser ) { #why is system user null sometimes? #TODO investigate
+			$systemUser = $user;
+			if ( $systemUser->getId() != 0 ) { #why is system user null sometimes? #TODO investigate
 				$systemUser->addGroup("sysop");
 			}
 			Loop::setupLoopPages();
@@ -105,10 +112,10 @@ class LoopUpdater {
 		$glossaryItems = $glossary->getMembers();
 
 		if ( !empty( $glossaryItems ) ) {
+			$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+			$user->addGroup("sysop");
 			foreach ( $glossaryItems as $title ) {
 
-				$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-				$user->addGroup("sysop");
 
 				$oldWikiPage = WikiPage::factory ( $title );
 				$oldFlaggableWikiPage = new FlaggableWikiPage ( $title );
@@ -117,7 +124,13 @@ class LoopUpdater {
 					$stableRev = intval( $title->mArticleID );
 					$content = $oldWikiPage->getContent ()->getText();
 				} else {
-					$content = Revision::newFromId( $stableRev )->getContent ()->getText();
+					$revision = Revision::newFromId( $stableRev );
+					if ( $revision !== null ) {
+						$content = $revision->getContent ()->getText();
+					} else {
+						echo "!!!! ERROR !!!! Page ".$title->mArticleID."  has no revision!\n";
+						continue;
+					}
 				}
 				
 				# Fill a new page in NS_GLOSSARY with the same title as before with the old content
@@ -185,10 +198,38 @@ class LoopUpdater {
 			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
 			self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
+			self::replaceCommonWikitext( $wikiPage, $title, $contentText, $systemUser );
 		}
 		return true;
 	}
 
+	/**
+	 * Migrates common LOOP 1 content that is not compatible to LOOP 2 but easy to fix
+	 * - EmbedVideo service "youtubehd" -> "youtube"
+	 * - Can be extended
+	 * Used in LOOP 1 update process only #LOOP1UPGRADE
+	 */
+	public static function replaceCommonWikitext ( $wikiPage, $title, $contentText, $systemUser ) {
+		$revision = $wikiPage->getRevision();
+		if ( $contentText == null ) {
+			if ( $revision !== null ) {
+				$contentText = $revision->getContent()->getText();
+			} else {
+				echo "!!!! ERROR !!!! Page ".$title->mArticleID."  has no revision!\n";
+				return;
+			}
+		}
+		$newContentText = str_replace("#ev:youtubehd", "#ev:youtube", $contentText);
+		
+		if ( $newContentText != $contentText ) {
+			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
+			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
+			$summary = CommentStoreComment::newUnsavedComment( 'Replaced "youtubehd" with "youtube"' );
+			$wikiPageUpdater->setContent( "main", $editContent );
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		} 
+	}
+	
 	/**
 	 * Migrates LOOP 1 tag biblio into DB
 	 * - bibliography page "Literatur" and adds given entries to database
@@ -378,6 +419,66 @@ class LoopUpdater {
 		
 		$loopSettings->addToDatabase();
 	}
+}
 
+# Some LOOPs can't be updated automatically and need manual migration. 
+# This page saves all pages and offers options for migration of literature, glossary etc
+class SpecialLoopManualUpdater extends UnlistedSpecialPage {
+
+	function __construct() {
+		parent::__construct( 'LoopManualUpdater' );
+	}
+
+	function execute( $par ) {
+		
+		$user = $this->getUser();
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$out->setPageTitle( "Manual LOOP Update" );
+		$this->setHeaders();
+		$html = '';
+
+		if ( in_array( "sysop", $user->getGroups() ) ) {
+			
+			if ( empty ( $request->getText( 'execute' ) ) ) { 
+				$html .= '<h3>Manual LOOP Updates</h3>';
+				$html .= '<div class="form-row mb-4">';
+				$html .= '<div class="col-12">';
+				$html .= '<form class="mw-editform mt-3 mb-3" id="loopupdate-form" method="post" novalidate enctype="multipart/form-data">';
+
+				$html .= '<div><input type="checkbox" name="saveallpages" id="saveallpages" class="mr-1">';
+				$html .= '<label for="saveallpages">Save all pages</label></div>';
+
+				$html .= '<div><input type="checkbox" name="migrateglossary" id="migrateglossary" class="mr-1">';
+				$html .= '<label for="migrateglossary">Migrate Glossary</label></div>';
+
+				$html .= '<div><input type="checkbox" name="migrateterminology" id="migrateterminology" class="mr-1">';
+				$html .= '<label for="migrateterminology">Migrate Terminology</label></div>';
+
+				$html .= '<input type="hidden" name="execute" id="execute" value="1"></input>';
+				$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'submit' ) . '"></input>';
+				
+				$html .= '</div>';
+				$html .= '</div>';
+				$html .= '</form>';
+			} else {
+				set_time_limit(1200);
+				if ( !empty ( $request->getText( 'saveallpages' ) ) ) { 
+					LoopUpdater::saveAllWikiPages();
+				}
+				if ( !empty ( $request->getText( 'migrateglossary' ) ) ) { 
+					LoopUpdater::migrateGlossary();
+				}
+				if ( !empty ( $request->getText( 'migrateterminology' ) ) ) { 
+					LoopUpdater::migrateLoopTerminology();
+				}
+				
+			}
+		} else {
+			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
+			
+		}
+		$out->addHTML( $html );
+	}
 }
 ?>

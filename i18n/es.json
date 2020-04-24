@@ -406,5 +406,18 @@
     "loopbugreport-error-configuration": "Esta función no ha sido configurada todavía.",
     "loopbugreport-error-nodata": "Esta página se debe abrir desde el enlace en el área de contenido.",
     "loopbugreport-fail": "No se ha podido enviar el mensaje.",
-    "loopbugreport-desc": "¿Ha encontrado un error?<br>\nPor favor, háznoslo saber y deja tu dirección de correo electrónico para futuras preguntas. <br>\n¡Muchas gracias por tu ayuda!"
+	"loopbugreport-desc": "¿Ha encontrado un error?<br>\nPor favor, háznoslo saber y deja tu dirección de correo electrónico para futuras preguntas. <br>\n¡Muchas gracias por tu ayuda!",
+	"loopconsent-text": "When you start this element, content is loaded by the service providers and your IP address is transfered to them.",
+	"loopconsent-button": "Give consent and start element",
+	
+	"loopngspice-label-send": "Start simulation",
+	"loopngspice-error-xml": "Ngspice is not configured correctly.<br>XML Elements can't be loaded. ",
+	"loopngspice-error-no-service": "NgSpice is not available.",
+	"loopngspice-error-min-value": "The minimum value for $1 was not met (min = $2)",
+	"loopngspice-error-max-value": "The maximum value for $1 was not met  (max = $2)",
+
+	"loopstructure-initial-chapter-1": "First chapter",
+	"loopstructure-initial-chapter-1-1": "First subchapter",
+	"loopstructure-initial-chapter-1-2": "Second subchapter",
+	"loopstructure-initial-chapter-2": "Second chapter"
 }

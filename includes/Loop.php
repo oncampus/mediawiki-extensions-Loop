@@ -38,6 +38,13 @@ class Loop {
 				$user->setOption( 'LoopRenderMode', 'default' );
 			}
 		}	
+		
+		# If there is no Structure, create one.
+		$loopStructure = new LoopStructure();
+		$loopStructureItems = $loopStructure->getStructureitems();
+		if ( empty( $loopStructureItems ) ) {
+			$loopStructure->setInitialStructure();
+		}
 			
 	}
 		
@@ -55,6 +62,7 @@ class Loop {
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
 		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS;
 		
+
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
 
@@ -191,8 +199,10 @@ class Loop {
 	 */
 	public static function setupLoopPages() {
 
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
-		$systemUser->addGroup("sysop");
+		$systemUser = User::newFromName( 'LOOP_SYSTEM' );
+		if ( $systemUser->getId() != 0 ) {
+			$systemUser->addGroup("sysop");
+		}
 		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" ); 
 			
 		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));

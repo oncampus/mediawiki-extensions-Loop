@@ -27,6 +27,8 @@ class LoopIndex {
         if ( isset ( $args["id"] ) ) {
 			$id = $args["id"];
             $htmlid = "id='" . $id . "' ";
+		} else {
+			return '';
 		}
 		
 		$item = self::getIndexItem( $id );

@@ -33,7 +33,9 @@ $specialPageAliases['en'] = array(
 	'LoopFeedback' => array( 'Feedback' ),
 	'LoopImprint' => array( 'Imprint' ),
 	'LoopPrivacy' => array( 'Privacy' ),
-	'LoopRSS' => array( 'LoopRSS' )
+	'LoopRSS' => array( 'LoopRSS' ),
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -61,7 +63,9 @@ $specialPageAliases['de'] = array(
 	'LoopFeedback' => array( 'Feedback' ),
 	'LoopImprint' => array( 'Impressum' ),
 	'LoopPrivacy' => array( 'Datenschutz' ),
-	'LoopRSS' => array( 'LoopRSS' )
+	'LoopRSS' => array( 'LoopRSS' ),
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -89,7 +93,9 @@ $specialPageAliases['sv'] = array(
 	'LoopFeedback' => array( 'Feedback' ),
 	'LoopImprint' => array( 'Imprint' ),
 	'LoopPrivacy' => array( 'Privacy' ),
-	'LoopRSS' => array( 'LoopRSS' )
+	'LoopRSS' => array( 'LoopRSS' ),
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -116,7 +122,9 @@ $specialPageAliases['es'] = array(
 	'LoopBugReport' => array( 'Reportar error' ),
 	'LoopImprint' => array( 'Imprint' ),
 	'LoopPrivacy' => array( 'Privacy' ),
-	'LoopRSS' => array( 'LoopRSS' )
+	'LoopRSS' => array( 'LoopRSS' ),
+	'LoopNgSpice' => array( 'NgSpice' ),
+	'LoopManualUpdater' => array( 'LoopManualUpdater' )
 );
 
 

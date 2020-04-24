@@ -458,6 +458,7 @@ class SpecialLoopExport extends SpecialPage {
 
 		$out->addHtml ($sub);
 		$structure = new LoopStructure();
+		$structure->loadStructureItems();
 		$sub = mb_strtolower($sub);
 
 		$export = false;
