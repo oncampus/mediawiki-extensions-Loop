@@ -92,7 +92,7 @@ class LoopSpoiler {
 			$content = substr( $content, 0, -1 );
 		}
 		# replace math uniq markers
-		$content = preg_replace('/(\'"`UNIQ--postMath-\d{8}-QINU`"\')/', '<span class="loopspoiler_math_replace"></span>', $content);
+		$content = preg_replace('/(\'"`UNIQ--postMath-\w{8}-QINU`"\')/', '<span class="loopspoiler_math_replace"></span>', $content);
 		
 		return Html::rawElement(
 			'button',

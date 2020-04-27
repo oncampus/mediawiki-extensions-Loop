@@ -4,12 +4,13 @@
   */
 
 $('.loopspoiler').click(function() {
-  
+  let id = $(this).attr("id");
+
   if ($(this).attr("data-loaded") == "true") {
-    if($('.loopspoiler_default_content').length) {
-      $('.loopspoiler_default_content').toggle();
-    } else if($('.loopspoiler_transparent_content').length) {
-      $('.loopspoiler_transparent_content').toggle();
+    if($('.loopspoiler_default_content.'+id).length) {
+      $('.loopspoiler_default_content.'+id).toggle();
+    } else if($('.loopspoiler_transparent_content.'+id).length) {
+      $('.loopspoiler_transparent_content.'+id).toggle();
     }
   } else {
     let content = $(this).attr('data-spoilercontent');
@@ -25,7 +26,7 @@ $('.loopspoiler').click(function() {
       $(this).remove();
     })
     $('#' + $(this).attr("id")).attr("data-loaded", true);
-    $(this).after('<div class="loopspoiler_' + type + '_content">' + content + '</div>')
+    $(this).after('<div class="loopspoiler_' + type + '_content ' + id + '">' + content + '</div>')
   
   }
   
