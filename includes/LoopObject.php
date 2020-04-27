@@ -865,22 +865,22 @@ class LoopObject {
 									$tmpLoopObjectIndex->itemType = $object[2]["type"];
 								}
 								if ( isset( $object[2]["title"] ) ) {
-									$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
+									$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $object[2]["title"] );
 								} else {
 									$title_tags = array ();
 									$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
 									foreach( $title_tags as $tag ) {
-										$tmpLoopObjectIndex->itemTitle = $tag[1];
+										$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $tag[1] );
 										break;
 									}
 								}
 								if ( isset( $object[2]["description"] ) ) {
-									$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+									$tmpLoopObjectIndex->itemDescription = htmlspecialchars(  $object[2]["description"] );
 								} else {
 									$desc_tags = array ();
 									$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
 									foreach( $desc_tags as $tag ) {
-										$tmpLoopObjectIndex->itemDescription = $tag[1];
+										$tmpLoopObjectIndex->itemDescription =  htmlspecialchars( $tag[1] );
 										break;
 									}
 								}
@@ -895,6 +895,7 @@ class LoopObject {
 								} else {
 									$valid = false;
 								}
+								
 								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
 									$tmpLoopObjectIndex->addToDatabase();
 								}
