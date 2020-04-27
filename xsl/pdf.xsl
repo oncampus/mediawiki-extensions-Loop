@@ -677,42 +677,48 @@
 							</xsl:otherwise>
 						</xsl:choose> 
 					</fo:table-column>
-					<fo:table-body>		
-						<fo:table-row keep-together.within-column="auto">
-							<fo:table-cell number-columns-spanned="2">
-								<xsl:choose> 
-									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
-										<xsl:attribute name="max-width">145mm</xsl:attribute>
-									</xsl:when>
-									<xsl:when test="ancestor::extension[@extension_name='spoiler']">
-										<xsl:attribute name="max-width">140mm</xsl:attribute>
-									</xsl:when>
-									<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
-										<xsl:attribute name="max-width">140mm</xsl:attribute>
-									</xsl:when>
-									<xsl:otherwise>
-										<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
-									</xsl:otherwise>
-								</xsl:choose> 
-								<fo:block text-align="left" margin-bottom="1mm">
+					<fo:table-body>	
+						<xsl:if test="not($object[@extension_name='loop_task'])">
+							<fo:table-row keep-together.within-column="auto">
+								<fo:table-cell number-columns-spanned="2">
 									<xsl:choose> 
-										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
-											<xsl:attribute name="margin-left">0mm</xsl:attribute>
-										</xsl:when>
-										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='spoiler']">
-											<xsl:attribute name="margin-left">0mm</xsl:attribute>
-										</xsl:when>
 										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
-											<xsl:attribute name="margin-left">13mm</xsl:attribute>
+											<xsl:attribute name="max-width">145mm</xsl:attribute>
+										</xsl:when>
+										<xsl:when test="ancestor::extension[@extension_name='spoiler']">
+											<xsl:attribute name="max-width">140mm</xsl:attribute>
+										</xsl:when>
+										<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
+											<xsl:attribute name="max-width">140mm</xsl:attribute>
 										</xsl:when>
 										<xsl:otherwise>
 											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 										</xsl:otherwise>
 									</xsl:choose> 
-									<xsl:apply-templates/><!-- mode="loop_object"-->
-								</fo:block>
-							</fo:table-cell>	
-						</fo:table-row>
+									<fo:block text-align="left" margin-bottom="1mm">
+										<xsl:choose> 
+												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
+													<xsl:attribute name="margin-left">0mm</xsl:attribute>
+												</xsl:when>
+												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='spoiler']">
+													<xsl:attribute name="margin-left">0mm</xsl:attribute>
+												</xsl:when>
+												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_task']">
+													<xsl:attribute name="margin-left">0mm</xsl:attribute>
+												</xsl:when>
+												<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+													<xsl:attribute name="margin-left">13.5mm</xsl:attribute>
+												</xsl:when>
+												<xsl:otherwise>
+													<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+												</xsl:otherwise>
+										</xsl:choose> 
+										<xsl:apply-templates/><!-- mode="loop_object"-->
+									</fo:block>
+								</fo:table-cell>	
+							</fo:table-row>
+						</xsl:if>
+						
 						<xsl:if test="count($object[@render]) = 0 or $object[@render!='none']">
 							<fo:table-row keep-together.within-column="auto" >
 								<fo:table-cell width="0.4mm" background-color="{$accent_color}">
@@ -729,10 +735,13 @@
 									<xsl:call-template name="font_object_title"></xsl:call-template>
 									<fo:block text-align="left">
 									<xsl:choose> 
-										<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
+										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
 											<xsl:attribute name="margin-left">0mm</xsl:attribute>
 										</xsl:when>
-										<xsl:when test="ancestor::extension[@extension_name='spoiler']">
+										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='spoiler']">
+											<xsl:attribute name="margin-left">0mm</xsl:attribute>
+										</xsl:when>
+										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_task']">
 											<xsl:attribute name="margin-left">0mm</xsl:attribute>
 										</xsl:when>
 										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
@@ -889,6 +898,47 @@
 								</fo:table-cell>
 							</fo:table-row>
 						</xsl:if>
+						
+							<xsl:if test="@extension_name='loop_task'">		
+								<fo:table-row keep-together.within-column="auto">
+									<fo:table-cell number-columns-spanned="2">
+										<xsl:choose> 
+											<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+												<xsl:attribute name="max-width">145mm</xsl:attribute>
+											</xsl:when>
+											<xsl:when test="ancestor::extension[@extension_name='spoiler']">
+												<xsl:attribute name="max-width">140mm</xsl:attribute>
+											</xsl:when>
+											<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">
+												<xsl:attribute name="max-width">140mm</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+											</xsl:otherwise>
+										</xsl:choose> 
+										<fo:block text-align="left" margin-bottom="1mm">
+											<xsl:choose> 
+												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
+													<xsl:attribute name="margin-left">0mm</xsl:attribute>
+												</xsl:when>
+												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='spoiler']">
+													<xsl:attribute name="margin-left">0mm</xsl:attribute>
+												</xsl:when>
+												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_task']">
+													<xsl:attribute name="margin-left">0mm</xsl:attribute>
+												</xsl:when>
+												<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+													<xsl:attribute name="margin-left">13.5mm</xsl:attribute>
+												</xsl:when>
+												<xsl:otherwise>
+													<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+												</xsl:otherwise>
+											</xsl:choose> 
+											<xsl:apply-templates/><!-- mode="loop_object"-->
+										</fo:block>
+									</fo:table-cell>	
+								</fo:table-row>
+							</xsl:if>
 					</fo:table-body>
 				</fo:table>
 			</fo:block>
@@ -1752,7 +1802,7 @@
 	<xsl:template name="spoiler">
 	<xsl:choose>
 		<xsl:when test="not(@noprint='true')">
-			<fo:block keep-together.within-page="auto">
+			<fo:block keep-together.within-page="always">
 				<fo:block font-weight="bold" width="145mm">
 					<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1.3mm" padding-right="1.3mm" padding-top="1.3mm" padding-bottom="1.5mm">
 

@@ -202,43 +202,49 @@ class LoopObject {
 			$html .= $this->error;
 		} 
 	
-		$html .= '<div class="loop_object_content">';
+		$content = '<div class="loop_object_content">';
 
-		$html .= $this->getContent();
+		$content .= $this->getContent();
 		
-		$html .= '</div>';
-			
+		$content .= '</div>';
+
+		$footer = '';
 		if ( $this->getRenderOption() != 'none' ) {
-			$html .= '<div class="loop_object_footer">';
-			$html .= '<div class="loop_object_title">';
+			$footer .= '<div class="loop_object_footer">';
+			$footer .= '<div class="loop_object_title">';
 			if ($this->getRenderOption() == 'icon') {
-				$html .= '<span class="loop_object_icon"><span class="ic ic-'.$this->getIcon().'"></span>&nbsp;</span>';
+				$footer .= '<span class="loop_object_icon"><span class="ic ic-'.$this->getIcon().'"></span>&nbsp;</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
-				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
+				$footer .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
 			if ( $showNumbering && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->mIndexing ) {
-				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
-				$html .= '</span>';
+				$footer .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+				$footer .= '</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
-				$html .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
+				$footer .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
 			}
 			if ($this->getRenderOption() != 'none' && $this->getTitle()) {
-				$html .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
+				$footer .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
 			}
-			$html .= '</div>';
+			$footer .= '</div>';
 				
 			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
+				$footer .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
+				$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
 			}
 	
-			$html .= '</div>';
+			$footer .= '</div>';
 		}
-			
+		
+		if ( $this->getTag() == "loop_task" ) {
+			$html .= $footer . $content;
+		} else {
+			$html .= $content . $footer;
+		}
 		$html .= '</div>';
 	
 		return $html;
