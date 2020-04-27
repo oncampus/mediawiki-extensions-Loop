@@ -1832,7 +1832,7 @@
 		
 							<fo:block>
 								<xsl:if test="ancestor::extension[@extension_name='loop_area']">
-									<!--<xsl:attribute name="margin-left">12.5mm</xsl:attribute> -->
+									<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
 								</xsl:if>
 								<xsl:apply-templates></xsl:apply-templates>
 							</fo:block>
