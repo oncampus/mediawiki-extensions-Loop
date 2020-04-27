@@ -312,7 +312,9 @@ class LoopObject {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 		if ( $lsi ) {
-			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
+			global $wgLoopLegacyPageNumbering;
+
+			$linktext = $wgLoopLegacyPageNumbering ? $lsi->tocNumber . ' ' . $lsi->tocText : $lsi->tocText;
 			
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
