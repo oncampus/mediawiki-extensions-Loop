@@ -1631,6 +1631,21 @@
 	<xsl:template match="xhtml:sup">
 		<fo:inline vertical-align="super" font-size="0.8em"><xsl:apply-templates></xsl:apply-templates></fo:inline>
 	</xsl:template>	
+
+	<xsl:template match="xhtml:span|span" >
+		<fo:inline>
+			<xsl:call-template name="css-style-attributes"></xsl:call-template>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="xhtml:div|div" >
+		<fo:block>
+			<xsl:call-template name="css-style-attributes"></xsl:call-template>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>	
+	
 	
 	<xsl:template match="big">
 		<fo:inline>
@@ -3318,8 +3333,8 @@
 	  </xsl:choose>
 	</xsl:template>	
 
+	<!-- loop_screenshot -->
 	<xsl:template match="extension[@extension_name='loop_screenshot']">
-		
 		<xsl:variable name="page" select="ancestor::article/@id"/>
 		<xsl:variable name="id" select="@id"/>
 		<xsl:variable name="img" select="php:function('LoopXsl::xsl_fetch_screenshot', $id, $page)"/>
@@ -3330,5 +3345,10 @@
 			</fo:external-graphic>
 		</xsl:if>
     </xsl:template>	
+	
+	<!-- loop_zoom -->
+	<xsl:template match="extension[@extension_name='loop_zoom']">
+		<xsl:apply-templates/>	
+	</xsl:template>
 
 </xsl:stylesheet>
