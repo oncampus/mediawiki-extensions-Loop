@@ -26,11 +26,10 @@ class LoopWikiEditor {
         $objects = LoopObjectIndex::getAllObjects ( $loopStructure );
         $output = array();
         foreach ( $objects as $refid => $data) {
-            $output[$data["index"]][$data["objectnumber"] ."::". $data["id"] ] = wfMessage($data["index"]."-name-short")->text() . " " . $data["objectnumber"];
-            $output[$data["index"]][$data["objectnumber"] ."::". $data["id"] ] .= ( isset( $data["title"] ) ) ? ": " . $data["title"] : "";
-            ksort( $output[$data["index"]], SORT_NUMERIC );
+            $output[$data["index"]][( empty( $data["objectnumber"] ) ? "999999" : $data["objectnumber"] ) ."::". $data["id"] ] = wfMessage($data["index"]."-name-short")->text() . ( !empty( $data["objectnumber"] ) ? " " . $data["objectnumber"] : "" );
+            $output[$data["index"]][( empty( $data["objectnumber"] ) ? "999999" : $data["objectnumber"] ) ."::". $data["id"] ] .= ( isset( $data["title"] ) ) ? ": " . html_entity_decode ( $data["title"] ) : "";
+            ksort( $output[$data["index"]], SORT_NUMERIC ); # put items without object number to the end of the list
         }
-
         $script = "var loop_elements = {\n";
         
         foreach ( $output as $index => $data ) {
