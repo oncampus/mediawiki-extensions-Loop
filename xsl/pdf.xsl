@@ -1841,14 +1841,28 @@
 					<fo:table-row>
 						<fo:table-cell width="140mm">
 							<xsl:attribute name="padding-top">2mm</xsl:attribute>
-							<xsl:attribute name="padding-left">3mm</xsl:attribute>
+							<xsl:attribute name="padding-left">1mm</xsl:attribute>
 							<xsl:attribute name="padding-right">3mm</xsl:attribute>
 							<xsl:attribute name="padding-end">3mm</xsl:attribute>
 		
 							<fo:block>
-								<xsl:if test="ancestor::extension[@extension_name='loop_area']">
-									<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
-								</xsl:if>
+								<xsl:choose> 
+									<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
+										<xsl:attribute name="margin-left">0mm</xsl:attribute>
+									</xsl:when>
+									<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='spoiler']">
+										<xsl:attribute name="margin-left">0mm</xsl:attribute>
+									</xsl:when>
+									<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_task']">
+										<xsl:attribute name="margin-left">0mm</xsl:attribute>
+									</xsl:when>
+									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+										<xsl:attribute name="margin-left">13.5mm</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
+									</xsl:otherwise>
+								</xsl:choose> 
 								<xsl:apply-templates></xsl:apply-templates>
 							</fo:block>
 						</fo:table-cell>
