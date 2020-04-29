@@ -70,7 +70,7 @@ class LoopHooks {
 		$hideSpecialPages = false;
 		if ( $user->mId == null ) { # no check for specific rights - anon users get blocked from viewing these special pages.
 			$hideSpecialPages = true;
-		} elseif ( in_array( "shared", $user->getGroups() ) ) {
+		} elseif ( in_array( "shared", $user->getGroups() ) || in_array( "shared_basic", $user->getGroups() ) ) {
 			$hideSpecialPages = true;
 			$hideExtended = array( 'ChangeCredentials', 'ChangeEmail', "PasswordReset", "Preferences" );
 		} elseif ( ! $user->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
