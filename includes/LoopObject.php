@@ -202,43 +202,49 @@ class LoopObject {
 			$html .= $this->error;
 		} 
 	
-		$html .= '<div class="loop_object_content">';
+		$content = '<div class="loop_object_content">';
 
-		$html .= $this->getContent();
+		$content .= $this->getContent();
 		
-		$html .= '</div>';
-			
+		$content .= '</div>';
+
+		$footer = '';
 		if ( $this->getRenderOption() != 'none' ) {
-			$html .= '<div class="loop_object_footer">';
-			$html .= '<div class="loop_object_title">';
+			$footer .= '<div class="loop_object_footer">';
+			$footer .= '<div class="loop_object_title">';
 			if ($this->getRenderOption() == 'icon') {
-				$html .= '<span class="loop_object_icon"><span class="ic ic-'.$this->getIcon().'"></span>&nbsp;</span>';
+				$footer .= '<span class="loop_object_icon"><span class="ic ic-'.$this->getIcon().'"></span>&nbsp;</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
-				$html .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
+				$footer .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
 			}
 			if ( $showNumbering && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->mIndexing ) {
-				$html .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
-				$html .= '</span>';
+				$footer .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+				$footer .= '</span>';
 			}
 			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
-				$html .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
+				$footer .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
 			}
 			if ($this->getRenderOption() != 'none' && $this->getTitle()) {
-				$html .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
+				$footer .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
 			}
-			$html .= '</div>';
+			$footer .= '</div>';
 				
 			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
+				$footer .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$html .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
+				$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
 			}
 	
-			$html .= '</div>';
+			$footer .= '</div>';
 		}
-			
+		
+		if ( $this->getTag() == "loop_task" ) {
+			$html .= $footer . $content;
+		} else {
+			$html .= $content . $footer;
+		}
 		$html .= '</div>';
 	
 		return $html;
@@ -306,7 +312,9 @@ class LoopObject {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 		if ( $lsi ) {
-			$linktext = $lsi->tocNumber . ' ' . $lsi->tocText;
+			global $wgLoopLegacyPageNumbering;
+
+			$linktext = $wgLoopLegacyPageNumbering ? $lsi->tocNumber . ' ' . $lsi->tocText : $lsi->tocText;
 			
 			$html .= $linkRenderer->makeLink( 
 				$linkTitle, 
@@ -865,22 +873,22 @@ class LoopObject {
 									$tmpLoopObjectIndex->itemType = $object[2]["type"];
 								}
 								if ( isset( $object[2]["title"] ) ) {
-									$tmpLoopObjectIndex->itemTitle = $object[2]["title"];
+									$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $object[2]["title"] );
 								} else {
 									$title_tags = array ();
 									$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
 									foreach( $title_tags as $tag ) {
-										$tmpLoopObjectIndex->itemTitle = $tag[1];
+										$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $tag[1] );
 										break;
 									}
 								}
 								if ( isset( $object[2]["description"] ) ) {
-									$tmpLoopObjectIndex->itemDescription = $object[2]["description"];
+									$tmpLoopObjectIndex->itemDescription = htmlspecialchars(  $object[2]["description"] );
 								} else {
 									$desc_tags = array ();
 									$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
 									foreach( $desc_tags as $tag ) {
-										$tmpLoopObjectIndex->itemDescription = $tag[1];
+										$tmpLoopObjectIndex->itemDescription =  htmlspecialchars( $tag[1] );
 										break;
 									}
 								}
@@ -895,6 +903,7 @@ class LoopObject {
 								} else {
 									$valid = false;
 								}
+								
 								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
 									$tmpLoopObjectIndex->addToDatabase();
 								}

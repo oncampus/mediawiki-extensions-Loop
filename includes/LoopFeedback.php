@@ -23,7 +23,7 @@ class LoopFeedback {
 		
 		$title = $wgOut->getTitle();
 		$user = $wgOut->getUser();
-		if ( !$user->isAllowed( 'loopfeedback-view' ) || in_array( "shared", $user->getGroups() ) ) {
+		if ( !$user->isAllowed( 'loopfeedback-view' ) || in_array( "shared", $user->getGroups() ) || in_array( "shared_basic", $user->getGroups() ) ) {
 			return false;
 		}
 		

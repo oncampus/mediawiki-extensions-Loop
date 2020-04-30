@@ -898,7 +898,7 @@ class LoopLiterature {
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
 		if ( $li->author ) {
 			if ( $type == 'xml' ) {
-				$return .= '<bold>' . $li->author."<bold> ";
+				$return .= '<bold>' . $li->author."</bold> ";
 			} else {
 				$return .= $li->author." ";
 			}

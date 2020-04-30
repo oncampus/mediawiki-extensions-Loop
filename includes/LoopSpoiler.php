@@ -65,14 +65,24 @@ class LoopSpoiler {
 		$parser->getOutput()->addModules( 'loop.spoiler.js' );
 		
 		$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
-		$spoiler->setContent( $parser->recursiveTagParseFully( $input ), $frame );
-		$return = "";
+		
+		$span = "";
+		$parser->extractTagsAndParams( ["math"], $input, $math_tags );
+		foreach ( $math_tags as $i => $math ) {
+			$span .=  $parser->recursiveTagParseFully( "<math>".$math[1]."</math>", $frame );
+		}
+		$span = str_replace("<p>", "", $span);
+		$span = str_replace("</p>", "", $span);
+		$spoiler->btnAppend = $span;
 
+		$spoiler->setContent( $parser->recursiveTagParseFully( $input, $frame ) );
+		
+		$return = "";
 		if ( !empty ( $spoiler->mErrors ) ) {
 			$return .= "$spoiler->mErrors";
 		}
 		$return .= $spoiler->render();
-		
+
 		return $return;
 	}
 	
@@ -81,12 +91,14 @@ class LoopSpoiler {
 		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
 			$content = substr( $content, 0, -1 );
 		}
+		# replace math uniq markers
+		$content = preg_replace('/(\'"`UNIQ--postMath-\w{8}-QINU`"\')/', '<span class="loopspoiler_math_replace"></span>', $content);
 		
 		return Html::rawElement(
 			'button',
-			[ 'data-spoilercontent' => $content,'type' => 'button', 'class' => 'btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId(),],
-			$this->getBtnText()
-		);
+			[ 'data-spoilercontent' => $content,'type' => 'button', 'id' => $this->getId(), 'class' => 'btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId(),],
+			$this->getBtnText() . $this->btnAppend 
+		) ;
 	}
 
 	public static function newFromTag( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -118,7 +130,8 @@ class LoopSpoiler {
 			$spoiler->setBtnText( wfMessage( 'loopspoiler-default-title' )->inContentLanguage()->text() );
 		} else {
 			$spoiler->setBtnText( htmlspecialchars( $args['text'] ) ); // parser raus
-		}		
+		}
+
 		
 		return $spoiler;
 	}
