@@ -21,7 +21,7 @@
 			"FlaggedRevs": "*",
 			"Lingo": ">= 3.0.0",
 			"Math": "3.0.0",
-			"MsUpload": ">= 13.1",
+			"MsUpload": "*",
 			"Quiz": ">= 1.2.0",
 			"Score": ">= 0.3.0",
 			"WikiEditor": ">= 0.5.2"
