@@ -165,7 +165,8 @@ class LoopLiterature {
 			'lit_itemkey = "' . $key .'"',
 			__METHOD__
 		);
-
+		
+		SpecialPurgeCache::purge();
         return true;
 	}
 
