@@ -1915,30 +1915,29 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 			$entries = $bibtexListener->export();
 			foreach ( $entries as $entry ) {
 				$tmpLiterature = new LoopLiterature();
-
 				preg_match('/(@\s*)([a-zA-Z]+)/', $entry["_original"], $type);
-					
-				if ( isset ( $type[2] ) ) {
+				if ( isset ( $entry["type"] ) ) {
 				
-    				if ( array_key_exists( $type[2], $tmpLiterature->literatureTypes ) ) {
+    				if ( array_key_exists( strtolower( $entry["type"] ), $tmpLiterature->literatureTypes ) ) {
     
-    					$tmpLiterature->itemType = $type[2];
+    					$tmpLiterature->itemType = strtolower( $entry["type"] );
     				
     					foreach ( $entry as $key => $val ) {
-							switch ( $key ) {
+							$tmpKey = strtolower( $key );
+							switch ( $tmpKey ) {
 								case "citation-key":
 									$tmpLiterature->itemKey = $val;
 									break;
 								case "type":
 									if ( ! array_key_exists( $val, $tmpLiterature->literatureTypes ) ) {
-										$tmpLiterature->type = $val;
+										$tmpLiterature->type = strtolower( $val );
 									}
 									break;
 								case "title":
 									$tmpLiterature->itemTitle = $val;
 									break;
 								default: 
-									$tmpLiterature->$key = $val;
+									$tmpLiterature->$tmpKey = $val;
 									break;
     						}
     					}
