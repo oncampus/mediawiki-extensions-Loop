@@ -140,7 +140,7 @@ class LoopFigure extends LoopObject{
 		global $wgLoopObjectNumbering;
 
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		$html .= '<td scope="col" class="pl-0 pr-0">';
+		$html .= '<td scope="col" class="pl-0 pr-0 loop-listofobjects-image">';
 		
 		if ( $this->mFile && wfLocalFile( $this->mFile ) ) {
 
@@ -173,11 +173,11 @@ class LoopFigure extends LoopObject{
 			}
 		}
 		
-		$html .= '<td scope="col" class="pl-1 pr-1"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( $this->getTitle() ) ) . '</span><br/><span>';
-		if ( strpos( $this->getTitle(), "<math>") !== false){dd($this->getTitle(), LoopObject::localParse( $this->getTitle() ));}
+		$html .= '<td scope="col" class="pl-1 pr-1 text-right loop-listofobjects-type"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( htmlspecialchars_decode( $this->getTitle() ) ) ) . '</span><br/>';
+		
 		if ($this->mDescription) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
+			$html .= "<span>" . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( htmlspecialchars_decode( htmlspecialchars_decode( $this->mDescription ) ) ) )  . '</span><br/>';
 		} 
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
