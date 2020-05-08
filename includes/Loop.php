@@ -238,17 +238,19 @@ class Loop {
 		preg_match_all( $regex, $text, $occurences );
 		$tmpText = $text;
 		$one = 1;
-		foreach ( $occurences[1] as $i => $val ) {
-			$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
+		foreach ( $occurences[1] as $i => $val ) { # replace occurrences with markers
+			if ( strpos( $val, "id=\"" ) === false ) {
+				$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
+			}
 		}
 		
-		foreach ( $occurences[1] as $i => $val ) {
+		foreach ( $occurences[1] as $i => $val ) { # replace markers with ids - this is safe for identical entries like <cite> without any attributes
 			if ( strpos( $val, "id=\"" ) === false ) {
 				$tmpReplace = $val.' id="'.uniqid().'">';
 				$tmpText = str_replace( "%LOOPIDMARKER$i%", $tmpReplace, $tmpText, $one );
 			}
 		}
-		
+
 		return $tmpText;
 		#dd($text, $tmpText, $occurences, $count);
 		/*
