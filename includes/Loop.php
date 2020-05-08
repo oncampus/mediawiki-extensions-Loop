@@ -239,9 +239,13 @@ class Loop {
 		$tmpText = $text;
 		$one = 1;
 		foreach ( $occurences[1] as $i => $val ) {
+			$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
+		}
+		
+		foreach ( $occurences[1] as $i => $val ) {
 			if ( strpos( $val, "id=\"" ) === false ) {
-				$tmpReplace = $val.' id="'.uniqid().'"';
-				$tmpText = str_replace( $val, $tmpReplace, $tmpText, $one );
+				$tmpReplace = $val.' id="'.uniqid().'">';
+				$tmpText = str_replace( "%LOOPIDMARKER$i%", $tmpReplace, $tmpText, $one );
 			}
 		}
 		
