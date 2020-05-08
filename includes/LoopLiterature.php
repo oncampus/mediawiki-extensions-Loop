@@ -897,13 +897,13 @@ class LoopLiterature {
 		    }
 		}
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
-		if ( $li->author ) {
+		if ( !empty( $li->author ) ) {
 			if ( $type == 'xml' ) {
 				$return .= '<bold>' . $li->author."</bold> ";
 			} else {
 				$return .= $li->author." ";
 			}
-		} elseif ( $li->itemTitle ) {
+		} elseif ( !empty( $li->itemTitle ) ) {
 			if ( $li->itemType == "LOOP1" ) {
 				if ( $type == 'xml' ) {
 					$return .= '<bold>' . $li->itemTitle."</bold> ";
@@ -915,13 +915,13 @@ class LoopLiterature {
 			}
 		}
 
-		if ( $li->editor ) { # short, only (Hrsg.). if different from author, it will be mentioned later
+		if ( !empty( $li->editor ) ) { # short, only (Hrsg.). if different from author, it will be mentioned later
 			if ( $li->author == $li->editor ) {
 				$return .= "(".wfMessage("loopliterature-text-publisher")->text()."). ";
 			}
 		} 
 
-		if ( $li->year ) {
+		if ( !empty( $li->year ) ) {
 			$monthText = "";
 			if ( $li->month ) {
 				$monthText = $li->month . " ";
@@ -937,86 +937,86 @@ class LoopLiterature {
 			$return .= "(".wfMessage("loopliterature-text-noyear")->text()."). ";
 		}
 		
-		if ( $li->chapter ) {
+		if ( !empty( $li->chapter ) ) {
 			$return .= $li->chapter.". ";
 		} 
-		if ( $li->editor ) {
+		if ( !empty( $li->editor ) ) {
 			if ( $li->author != $li->editor ) {
 				$return .= wfMessage("loopliterature-text-inpublisher", $li->editor)->text() . ", ";
 			}
 		} 
 
-		if ( $li->author && $li->itemTitle ) {
+		if ( !empty( $li->author ) && !empty( $li->itemTitle ) ) {
 			if ( $li->itemType == "article" ) {
 				$return .= $li->itemTitle;
 			} else {
 				$return .= $italic. $li->itemTitle. $italicEnd;
 			}
-			if ( ! $li->volume || ! $li->type || ! $li->edtion || ! $li->pages || ! $li->howpublished || ! $li->series ) {
+			if ( !empty( $li->volume ) || !empty( $li->type ) || !empty( $li->edtion ) || !empty( $li->pages ) || !empty( $li->howpublished ) || !empty( $li->series ) ) {
 				$return .= ". ";
 			} else {
 				$return .= " ";
 			}
 		}
 
-		if ( $li->booktitle ) {
+		if ( !empty( $li->booktitle ) ) {
 			$return .= $li->booktitle . ". ";
 		}
 
-		if ( $li->pages ) {
+		if ( !empty( $li->pages ) ) {
 			if ( ! strpos( $li->pages , ',' ) && ! strpos( $li->pages , '-' )  && ! strpos( $li->pages , ' ' ) ) {
 				$plural = 2;
 			} else {
 				$plural = 1;
 			}
-			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . $li->pages."). ";
+			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . " " . $li->pages."). ";
 		} 
 
-		if ( $li->journal ) {
+		if ( !empty( $li->journal ) ) {
 			$return .= $li->journal. ". ";
 		} 
-		if ( $li->series ) {
+		if ( !empty( $li->series ) ) {
 			$return .= "(". $li->series."). ";
 		} 
-		if ( $li->type ) {
+		if ( !empty( $li->type ) ) {
 			$return .= "(". $li->type."). ";
 		} 
-		if ( $li->volume ) {
+		if ( !empty( $li->volume ) ) {
 			$return .= "(". $li->volume."). ";
 		} 
-		if ( $li->edition ) {
+		if ( !empty( $li->edition ) ) {
 			$return .= "(". $li->edition."). ";
 		} 
-		if ( $li->howpublished ) {
+		if (!empty(  $li->howpublished ) ) {
 			$return .= "(". $li->howpublished."). ";
 		} 
-		if ( $li->number ) {
+		if ( !empty( $li->number ) ) {
 			$return .= "(". $li->number."). ";
 		} 
 		
-
-		if ( $li->publisher ) {
+		
+		if ( !empty( $li->publisher ) ) {
 			$return .= $li->publisher.". ";
-		} elseif ( $li->journal ) {
+		} elseif ( !empty( $li->journal ) ) {
 			$return .= $italic. $li->journal.".". $italicEnd." ";
 		}
 
-		if ( $li->institution ) {
+		if ( !empty( $li->institution ) ) {
 			$return .= $li->institution.". ";
 		} 
-		if ( $li->school ) {
+		if ( !empty( $li->school ) ) {
 			$return .= $li->school.". ";
 		} 
-		if ( $li->isbn ) {
+		if ( !empty( $li->isbn ) ) {
 			$return .= "ISBN: " . $li->isbn.". ";
 		} 
-		if ( $li->doi ) {
+		if ( !empty( $li->doi ) ) {
 			$return .= "DOI: " . $li->doi.". ";
 		} 
-		if ( $li->url ) {
+		if ( !empty( $li->url ) ) {
 			$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
 		} 
-		if ( $li->address ) {
+		if ( !empty( $li->address ) ) {
 			$return .= $li->address.". ";
 		} 
 
