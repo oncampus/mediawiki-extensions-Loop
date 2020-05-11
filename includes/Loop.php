@@ -234,7 +234,7 @@ class Loop {
 	public static function setReferenceIds( $text ) { #todo remove id and type
 
 		# REGEX: All tags to get IDs that don't have id="" or id='' (might be empty!)
-		$regex = '/(<(loop_figure|loop_formula|loop_listing|loop_media|loop_table|loop_task|cite|loop_index|loop_screenshot)(?!.*?id=([\'"]).*?([\'"]))[^>]*)(>)/iU';
+		$regex = '/(<(loop_figure|loop_formula|loop_listing|loop_media|loop_table|loop_task|cite|loop_index|loop_screenshot)(?!.*?id=([\'"]).*?([\'"]))[^>]*)(>)/iUs';
 		preg_match_all( $regex, $text, $occurences );
 		$tmpText = $text;
 		$one = 1;
@@ -243,6 +243,7 @@ class Loop {
 				$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
 			}
 		}
+		dd($tmpText);
 		
 		foreach ( $occurences[1] as $i => $val ) { # replace markers with ids - this is safe for identical entries like <cite> without any attributes
 			if ( strpos( $val, "id=\"" ) === false ) {

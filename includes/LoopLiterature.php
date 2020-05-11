@@ -390,6 +390,10 @@ class LoopLiterature {
      */
     public function loadLiteratureItem( $key ) {
 
+		if ( strpos( $key, "\n" ) !== false ) { # causes fatal errors
+			return false;
+		} 
+		
         $dbr = wfGetDB( DB_REPLICA );
         
         $res = $dbr->select(
