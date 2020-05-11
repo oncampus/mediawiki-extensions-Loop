@@ -2202,56 +2202,87 @@
 				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">inside</xsl:when>			
 				<xsl:when test="@align='left'">start</xsl:when>
 				<xsl:when test="@align='right'">end</xsl:when>
+				<xsl:when test="@align='center'">center</xsl:when>
 				<xsl:otherwise>none</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:variable name="format">
+			<xsl:choose>		
+				<xsl:when test="@format='framed'">framed</xsl:when>
+				<xsl:when test="@format='frameless'">frameless</xsl:when>
+				<xsl:when test="@format='thumb'">thumb</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>	
 	
 		<fo:block>
-		<fo:float>
-			<xsl:attribute name="float" value="end" border="1px solid black"></xsl:attribute>		
+			<fo:float>
 
-			<xsl:choose>
-				<xsl:when test="$align='start'">
-					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
-				</xsl:when>			
-				<xsl:when test="$align='end'">
-					<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
-				</xsl:when>
-				<xsl:otherwise>
-					
-				</xsl:otherwise>
-			</xsl:choose>
-			
-			<xsl:if test="@imagepath">
-				<fo:block font-size="0pt" line-height="0pt" padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt" padding-left="0pt" padding-right="0pt">
-					<fo:external-graphic scaling="uniform" content-height="scale-to-fit"  dominant-baseline="reset-size">
-						<!-- <xsl:choose>
-							<xsl:when test="$align='start'">
-								<xsl:attribute name="padding-right">7mm</xsl:attribute>				
-							</xsl:when>
-							<xsl:when test="$align='end'">
-								<xsl:attribute name="padding-right">7mm</xsl:attribute>				
-							</xsl:when>					
-							<xsl:otherwise>
-								<xsl:attribute name="padding-left">0mm</xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose> 						 -->
-						<xsl:attribute name="src" ><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
-						<xsl:choose>
-							<xsl:when test="@imagewidth">
-								<xsl:attribute name="content-width"><xsl:value-of select="@imagewidth"></xsl:value-of></xsl:attribute>
-							</xsl:when>		
-							<xsl:otherwise>
-								<xsl:attribute name="max-width">145mm</xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>
-						
-					</fo:external-graphic>
-					
-				</fo:block>
-			</xsl:if>
-		</fo:float>
-				</fo:block>	
+				<xsl:choose>
+					<xsl:when test="$align='start'">
+						<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
+						<xsl:attribute name="float">start</xsl:attribute>
+					</xsl:when>			
+					<xsl:when test="$align='end'">
+						<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
+						<xsl:attribute name="float">end</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="$align='center'">
+						<xsl:attribute name="text-align">center</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="ancestor::extension[@extension_name='loop_figure']">
+						<xsl:attribute name="float">none</xsl:attribute>
+						<xsl:attribute name="border">solid 0.4mm <xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise></xsl:otherwise>
+				</xsl:choose>
+				
+				<xsl:if test="@imagepath">
+					<fo:block font-size="0pt" line-height="0pt" padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt" padding-left="0pt" padding-right="0pt">
+
+						<fo:external-graphic scaling="uniform" content-height="scale-to-fit"  dominant-baseline="reset-size">
+
+							<xsl:choose>
+								<xsl:when test="$align='start'">
+									<xsl:attribute name="padding-right">6mm</xsl:attribute>				
+								</xsl:when>
+								<xsl:when test="$align='end'">
+									<xsl:attribute name="padding-left">6mm</xsl:attribute>				
+								</xsl:when>
+								<xsl:when test="$align='center'">
+									<!-- <xsl:attribute name="padding-bottom">7mm</xsl:attribute>				 -->
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:attribute name="padding-left">0mm</xsl:attribute>
+								</xsl:otherwise>
+							</xsl:choose>
+
+							<xsl:choose>
+								<xsl:when test="$format='framed'">
+									<xsl:attribute name="border">solid 0.4mm <xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
+									<xsl:attribute name="padding-left">0mm</xsl:attribute>
+									<xsl:attribute name="padding-right">0mm</xsl:attribute>
+								</xsl:when>			
+								<xsl:otherwise></xsl:otherwise>
+							</xsl:choose>
+							
+							<xsl:attribute name="src" ><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
+							
+							<xsl:choose>
+								<xsl:when test="@imagewidth">
+									<xsl:attribute name="content-width"><xsl:value-of select="@imagewidth"></xsl:value-of></xsl:attribute>
+								</xsl:when>		
+								<xsl:otherwise>
+									<xsl:attribute name="max-width">145mm</xsl:attribute>
+								</xsl:otherwise>
+							</xsl:choose>
+							
+						</fo:external-graphic>
+					</fo:block>
+				</xsl:if>
+			</fo:float>
+		</fo:block>	
 	</xsl:template>	
 	
 	<xsl:template match="extension" mode="loop_object">

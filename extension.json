@@ -756,7 +756,8 @@
 		]
 	},
 	"ExtensionMessagesFiles": {
-		"LoopAlias": "Loop.i18n.alias.php"
+		"LoopAlias": "Loop.i18n.alias.php",
+		"LoopMagic": "Loop.i18n.magic.php"
 	},
 	"config": {
 		"Text2SpeechServiceUrl": {

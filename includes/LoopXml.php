@@ -282,11 +282,12 @@ class LoopXml {
 		return true;
 	}
 	
-	
 	public static function transform_link( $input, $id = null ) {
 	
+		global $wgLang;
+
 		libxml_use_internal_errors(true);
-	#dd($input, $id);
+		#dd($input, $id);
 		$input_object=$input[0];
 	
 		if ($input_object->hasAttribute('type')) {
@@ -305,30 +306,47 @@ class LoopXml {
 				$child_name=$child->tagName;
 				if ($child_name=='') {$child_name='text';}
 				$child_value=$child->textContent;
+				$link_parts[$child_name] = $child_value;
 			} else {
 				$child_name='text';
 				$child_value=$child->textContent;
+				$link_parts[$child_name] = $child_value;
 			}
-			
-			$leftright = array(
-				"right" => "right",
-				"left" => "left",
-				"center" => "center",
-				"rechts" => "right",
-				"links" => "left",
-				"zentriert" => "center",
-			);
+
+			$mf = new MagicWordFactory( $wgLang );
+			$allowedAligns = [ 'right', 'left', 'center' ];
+			$allowedFormats = [ 'thumb', 'framed', 'frameless' ];
 
 			if ($child_name == 'part') {
 				if (substr($child_value, -2) == 'px') {
-					$child_name = 'width';
-					$child_value = substr($child_value,0,-2);
-				} elseif ( array_key_exists( $child_value, $leftright ) ) {
-					$child_name = 'align';
-					$child_value = $leftright[ $child_value ];
+					$child_value_width = substr($child_value,0,-2);
+					$link_parts['width'] = $child_value_width;
+				}
+
+				foreach( $allowedAligns as $al ) {
+					if( $mf->get( $al )->match( $child_value ) ) { // if align
+						if( in_array( $mf->get( $al )->getSynonym( 1 ), $allowedAligns ) ) {
+							$child_value_align = $mf->get( $al )->getSynonym( 1 );
+						} else {
+							$child_value_align = 'none';
+						}
+						
+						$link_parts['align'] = $child_value_align;
+					}
+				}
+ 
+				foreach( $allowedFormats as $fo ) {
+					if( $mf->get( $fo )->match( $child_value ) ) { // if format
+						if( in_array( $mf->get( $fo )->getSynonym( 1 ), $allowedFormats ) ) {
+							$child_value_format = $mf->get( $fo )->getSynonym( 1 );
+						} else {
+							$child_value_format = 'none';
+						}
+						
+						$link_parts['format'] = $child_value_format;
+					}
 				}
 			}
-			$link_parts[$child_name] = $child_value;
 		}
 		
 		if (!array_key_exists('type', $link_parts)) {
@@ -382,6 +400,9 @@ class LoopXml {
 								$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
 								if (isset($link_parts['align'])) {
 									$return_xml .= ' align="'.$link_parts['align'].'" ';
+								}
+								if (isset($link_parts['format'])) {
+									$return_xml .= ' format="'.$link_parts['format'].'" ';
 								}
 								$return_xml .=  '></php_link_image>';
 									
@@ -440,9 +461,7 @@ class LoopXml {
 		restore_error_handler();
 	
 		return $return;
-	
-	
-	}	
+	}
 
 	public static function glossary2xml( ) {
 		
