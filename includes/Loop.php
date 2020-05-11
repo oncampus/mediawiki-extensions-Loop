@@ -243,7 +243,6 @@ class Loop {
 				$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
 			}
 		}
-		dd($tmpText);
 		
 		foreach ( $occurences[1] as $i => $val ) { # replace markers with ids - this is safe for identical entries like <cite> without any attributes
 			if ( strpos( $val, "id=\"" ) === false ) {
