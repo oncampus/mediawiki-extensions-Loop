@@ -177,13 +177,15 @@
 			"LoopLiterature::onAfterClearStable",
 			"LoopIndex::onAfterClearStable"
 		],
+		"BeforePageDisplay": [
+			"LoopFeedback::onBeforePageDisplay",
+			"LoopScreenshot::onBeforePageDisplay"
+		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
-		"PageContentSaveComplete": "LoopScreenshot::onPageContentSaveComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
-		"BeforePageDisplay": "LoopFeedback::onBeforePageDisplay",
 		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
 		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},

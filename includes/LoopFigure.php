@@ -278,11 +278,25 @@ class SpecialLoopFigures extends SpecialPage {
 	                $figure->init($figure_tag["thumb"], $figure_tag["args"]);
 	                $figure->parse();
 	                $figure->setNumber ( $figure_tag["nthoftype"] );
-	                $figure->setArticleId ( $article_id );
-	                
-	                preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
-	                if (isset($thumbFile[1])) {
-	                    $figure->setFile($thumbFile[1]);
+					$figure->setArticleId ( $article_id );
+					
+	                if ( !empty( $thumbFile ) ) {
+						$pattern = '@src="(.*?)"@';
+						$parsedInput = $parser->recursiveTagParse ( $thumbFile );
+						$file_found = preg_match ( $pattern, $parsedInput, $matches );
+						if ($matches) {
+							$tmp_src = $matches [1];
+							$tmp_src_array = explode ( '/', $tmp_src );
+							if (isset ( $tmp_src_array [7] )) {
+								$filename = $tmp_src_array [7];
+							} elseif (isset ( $tmp_src_array [6] )) { 
+								$filename = $tmp_src_array [6];
+							} else {
+								$filename = "";
+							}
+							$filename = urldecode ( $filename );
+							$figure->setFile($filename);
+						} 
 	                }
 	                $html .= $figure->renderForSpecialpage ( $ns );
 	            }
