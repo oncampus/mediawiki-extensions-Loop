@@ -1836,7 +1836,7 @@
 						</xsl:choose>
 					</fo:inline>			
 			</fo:block>
-			<fo:table keep-together.within-column="always" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
+			<fo:table keep-together.within-column="auto" keep-together.within-page="auto" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
 				<fo:table-body>
 					<fo:table-row>
 						<fo:table-cell width="140mm">
@@ -1907,15 +1907,36 @@
 	
 	<!-- Loop Paragraph -->
 	<xsl:template match="extension[@extension_name='loop_paragraph']">
-		<fo:table table-layout="auto" border-collapse="separate" width="150mm" margin="3mm 0 3mm 0">
+		<fo:table table-layout="auto" border-collapse="separate" width="145mm" margin="3mm 0 3mm 0">
+			<fo:table-column column-number="1" column-width="10mm"/>
+			<fo:table-column column-number="2">
+				<xsl:choose> 
+					<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
+						<xsl:attribute name="column-width">125mm</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='spoiler']">
+						<xsl:attribute name="column-width">125mm</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_task']">
+						<xsl:attribute name="column-width">125mm</xsl:attribute>
+					</xsl:when>
+					<xsl:when test="ancestor::extension[@extension_name='loop_area']">
+						<xsl:attribute name="column-width">135mm</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="column-width">135mm</xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose> 
+			</fo:table-column>
+
 			<fo:table-body>
 				<fo:table-row>
-					<fo:table-cell width="10mm">
+					<fo:table-cell>
 						<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="left" padding-top="1mm">
 							<xsl:value-of select="$icon_citation"></xsl:value-of>
 						</fo:block>
 					</fo:table-cell>
-					<fo:table-cell width="140mm">
+					<fo:table-cell>
 						<fo:block>
 							<xsl:apply-templates></xsl:apply-templates>
 						</fo:block>								
@@ -2895,7 +2916,7 @@
 						<fo:basic-link><!-- qr? -->
 							<xsl:variable name="youtubeurl">
 								<xsl:text>https://youtu.be/</xsl:text>
-								<xsl:value-of select="@videoid"></xsl:value-of>
+								<xsl:value-of select="substring-before(@videoid, '&#124;')"></xsl:value-of>
 							</xsl:variable>	
 							<xsl:attribute name="external-destination"><xsl:value-of select="$youtubeurl"></xsl:value-of></xsl:attribute>
 							<fo:block text-decoration="underline"><xsl:value-of select="$youtubeurl"></xsl:value-of></fo:block>

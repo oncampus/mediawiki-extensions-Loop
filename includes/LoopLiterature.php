@@ -901,13 +901,13 @@ class LoopLiterature {
 		    }
 		}
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
-		if ( !empty( $li->author ) ) {
+		if ( !empty( trim( $li->author ) ) ) {
 			if ( $type == 'xml' ) {
 				$return .= '<bold>' . $li->author."</bold> ";
 			} else {
 				$return .= $li->author." ";
 			}
-		} elseif ( !empty( $li->itemTitle ) ) {
+		} elseif ( !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "LOOP1" ) {
 				if ( $type == 'xml' ) {
 					$return .= '<bold>' . $li->itemTitle."</bold> ";
@@ -919,13 +919,13 @@ class LoopLiterature {
 			}
 		}
 
-		if ( !empty( $li->editor ) ) { # short, only (Hrsg.). if different from author, it will be mentioned later
+		if ( !empty( trim( $li->editor ) ) ) { # short, only (Hrsg.). if different from author, it will be mentioned later
 			if ( $li->author == $li->editor ) {
 				$return .= "(".wfMessage("loopliterature-text-publisher")->text()."). ";
 			}
 		} 
 
-		if ( !empty( $li->year ) ) {
+		if ( !empty( trim( $li->year ) ) ) {
 			$monthText = "";
 			if ( $li->month ) {
 				$monthText = $li->month . " ";
@@ -941,33 +941,33 @@ class LoopLiterature {
 			$return .= "(".wfMessage("loopliterature-text-noyear")->text()."). ";
 		}
 		
-		if ( !empty( $li->chapter ) ) {
+		if ( !empty( trim( $li->chapter ) ) ) {
 			$return .= $li->chapter.". ";
 		} 
-		if ( !empty( $li->editor ) ) {
+		if ( !empty( trim( $li->editor ) ) ) {
 			if ( $li->author != $li->editor ) {
 				$return .= wfMessage("loopliterature-text-inpublisher", $li->editor)->text() . ", ";
 			}
 		} 
 
-		if ( !empty( $li->author ) && !empty( $li->itemTitle ) ) {
+		if ( !empty( trim( $li->author ) ) && !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "article" ) {
 				$return .= $li->itemTitle;
 			} else {
 				$return .= $italic. $li->itemTitle. $italicEnd;
 			}
-			if ( !empty( $li->volume ) || !empty( $li->type ) || !empty( $li->edtion ) || !empty( $li->pages ) || !empty( $li->howpublished ) || !empty( $li->series ) ) {
+			if ( !empty( trim( $li->volume ) ) || !empty( trim( $li->publisher ) ) || !empty( trim( $li->type ) ) || !empty( trim( $li->edition ) ) || !empty( trim( $li->pages ) ) || !empty( trim( $li->howpublished ) ) || !empty( trim( $li->series ) ) ) {
 				$return .= ". ";
 			} else {
 				$return .= " ";
 			}
 		}
 
-		if ( !empty( $li->booktitle ) ) {
+		if ( !empty( trim( $li->booktitle ) ) ) {
 			$return .= $li->booktitle . ". ";
 		}
 
-		if ( !empty( $li->pages ) ) {
+		if ( !empty( trim( $li->pages ) ) ) {
 			if ( ! strpos( $li->pages , ',' ) && ! strpos( $li->pages , '-' )  && ! strpos( $li->pages , ' ' ) ) {
 				$plural = 2;
 			} else {
@@ -976,51 +976,51 @@ class LoopLiterature {
 			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . " " . $li->pages."). ";
 		} 
 
-		if ( !empty( $li->journal ) ) {
+		if ( !empty( trim( $li->journal ) ) ) {
 			$return .= $li->journal. ". ";
 		} 
-		if ( !empty( $li->series ) ) {
+		if ( !empty( trim( $li->series ) ) ) {
 			$return .= "(". $li->series."). ";
 		} 
-		if ( !empty( $li->type ) ) {
+		if ( !empty( trim( $li->type ) ) ) {
 			$return .= "(". $li->type."). ";
 		} 
-		if ( !empty( $li->volume ) ) {
+		if ( !empty( trim( $li->volume ) ) ) {
 			$return .= "(". $li->volume."). ";
 		} 
-		if ( !empty( $li->edition ) ) {
+		if ( !empty( trim( $li->edition ) ) ) {
 			$return .= "(". $li->edition."). ";
 		} 
-		if (!empty(  $li->howpublished ) ) {
+		if (!empty( trim(  $li->howpublished ) ) ) {
 			$return .= "(". $li->howpublished."). ";
 		} 
-		if ( !empty( $li->number ) ) {
+		if ( !empty( trim( $li->number ) ) ) {
 			$return .= "(". $li->number."). ";
 		} 
 		
 		
-		if ( !empty( $li->publisher ) ) {
+		if ( !empty( trim( $li->publisher ) ) ) {
 			$return .= $li->publisher.". ";
-		} elseif ( !empty( $li->journal ) ) {
+		} elseif ( !empty( trim( $li->journal ) ) ) {
 			$return .= $italic. $li->journal.".". $italicEnd." ";
 		}
 
-		if ( !empty( $li->institution ) ) {
+		if ( !empty( trim( $li->institution ) ) ) {
 			$return .= $li->institution.". ";
 		} 
-		if ( !empty( $li->school ) ) {
+		if ( !empty( trim( $li->school ) ) ) {
 			$return .= $li->school.". ";
 		} 
-		if ( !empty( $li->isbn ) ) {
+		if ( !empty( trim( $li->isbn ) ) ) {
 			$return .= "ISBN: " . $li->isbn.". ";
 		} 
-		if ( !empty( $li->doi ) ) {
+		if ( !empty( trim( $li->doi ) ) ) {
 			$return .= "DOI: " . $li->doi.". ";
 		} 
-		if ( !empty( $li->url ) ) {
+		if ( !empty( trim( $li->url ) ) ) {
 			$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
 		} 
-		if ( !empty( $li->address ) ) {
+		if ( !empty( trim( $li->address ) ) ) {
 			$return .= $li->address.". ";
 		} 
 

@@ -231,7 +231,7 @@ class LoopObject {
 			$footer .= '</div>';
 				
 			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$footer .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
+				$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( LoopObject::localParse( $this->getDescription() ) ) . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
 				$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
