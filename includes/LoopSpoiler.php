@@ -57,7 +57,6 @@ class LoopSpoiler {
 	public static function onParserSetup( Parser &$parser ) {
 		$parser->setHook( 'spoiler', 'LoopSpoiler::renderLoopSpoiler' );
 		$parser->setHook( 'loop_spoiler', 'LoopSpoiler::renderLoopSpoiler' ); // behalten?
-
 		return true;
 	}
 

@@ -2260,7 +2260,7 @@
 
 							<xsl:choose>
 								<xsl:when test="$format='framed'">
-									<xsl:attribute name="border">solid 0.4mm <xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
+									<xsl:attribute name="border">solid 0.2mm <xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
 									<xsl:attribute name="padding-left">0mm</xsl:attribute>
 									<xsl:attribute name="padding-right">0mm</xsl:attribute>
 								</xsl:when>			
