@@ -231,7 +231,7 @@ class LoopObject {
 			$footer .= '</div>';
 				
 			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( LoopObject::localParse( $this->getDescription() ) ) . '</div>';
+				$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
 				$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
@@ -300,10 +300,10 @@ class LoopObject {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', self::localParse( htmlspecialchars_decode( $this->getTitle() ) ) ) . '</span><br/><span>';
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/><span>';
 		
 		if ($this->mDescription) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( LoopObject::localParse( $this->getDescription() ) ) ) . '<br/>';
+			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getDescription() ) ) . '<br/>';
 		}
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
@@ -676,7 +676,7 @@ class LoopObject {
 		}
 		
 		if ($description = $this->GetArg('description')) {
-			$this->setDescription(htmlspecialchars($description));
+			$this->setDescription($this->getParser()->recursiveTagParse(htmlspecialchars($description),$this->GetFrame()));
 		}
 		if ($this->GetArg('show_copyright')) {
 			$showcopyright = strtolower(htmlspecialchars($this->GetArg('show_copyright')));

@@ -174,10 +174,10 @@ class LoopFigure extends LoopObject{
 		}
 		
 		$html .= '<td scope="col" class="pl-1 pr-1 text-right loop-listofobjects-type"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( htmlspecialchars_decode( $this->getTitle() ) ) ) . '</span><br/>';
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/>';
 		
 		if ($this->mDescription) {
-			$html .= "<span>" . preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( htmlspecialchars_decode( htmlspecialchars_decode( $this->mDescription ) ) ) )  . '</span><br/>';
+			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
 		} 
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
