@@ -36,7 +36,7 @@ class LoopScreenshot {
 	public static function checkForScreenshots( $text, $title ) {
 
 		$matches = array();
-		preg_match_all( '/(<div class="d-none loop_screenshot_begin" id=")(\w*)(" data-width=")(\d*)(" data-height=")(\d*)(">)(.*)(<\/div><div class="d-none loop_screenshot_end"><\/div>)/iUs', $text, $matches );
+		preg_match_all( '/(<div class="loop_screenshot_begin" id=")(\w*)(" data-width=")(\d*)(" data-height=")(\d*)(">)(.*)(<\/div><div class="loop_screenshot_end"><\/div>)/iUs', $text, $matches );
 		$articleId = $title->getArticleID();
 
 		if ( !empty ( $matches[0] ) ) {
@@ -80,9 +80,9 @@ class LoopScreenshot {
 			$articleId = $parser->getTitle()->getArticleID();
 			$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
 
-			$html .= '<div class="d-none loop_screenshot_begin" id="'.$refId.'" data-width="'.$width.'" data-height="'.$height.'">';
+			$html .= '<div class="loop_screenshot_begin" id="'.$refId.'" data-width="'.$width.'" data-height="'.$height.'">';
 			$html .= $parser->recursiveTagParseFully( $input );
-			$html .= '</div><div class="d-none loop_screenshot_end"></div>';		
+			$html .= '</div><div class="loop_screenshot_end"></div>';		
 
 			if ( $loopeditmode ) {
 				global $wgCanonicalServer, $wgUploadPath;
