@@ -14,11 +14,6 @@ var wikiEditor = $( '#wpTextbox1' );
 var customizeWikiEditor = function () {
      // https://www.mediawiki.org/wiki/Extension:WikiEditor/Toolbar_customization
 
-    
-    wikiEditor.wikiEditor( 'removeFromToolbar', {
-        section: 'characters'
-    } );
-    
     wikiEditor.wikiEditor( 'addToToolbar', {
         sections: {
             'loop': {
