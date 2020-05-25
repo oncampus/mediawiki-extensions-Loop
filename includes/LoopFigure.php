@@ -140,7 +140,7 @@ class LoopFigure extends LoopObject{
 		global $wgLoopObjectNumbering;
 
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		$html .= '<td scope="col" class="pl-0 pr-0">';
+		$html .= '<td scope="col" class="pl-0 pr-0 loop-listofobjects-image">';
 		
 		if ( $this->mFile && wfLocalFile( $this->mFile ) ) {
 
@@ -173,9 +173,9 @@ class LoopFigure extends LoopObject{
 			}
 		}
 		
-		$html .= '<td scope="col" class="pl-1 pr-1"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', LoopObject::localParse( $this->getTitle() ) ) . '</span><br/><span>';
-		if ( strpos( $this->getTitle(), "<math>") !== false){dd($this->getTitle(), LoopObject::localParse( $this->getTitle() ));}
+		$html .= '<td scope="col" class="pl-1 pr-1 text-right loop-listofobjects-type"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/>';
+		
 		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
 		} 
@@ -278,11 +278,25 @@ class SpecialLoopFigures extends SpecialPage {
 	                $figure->init($figure_tag["thumb"], $figure_tag["args"]);
 	                $figure->parse();
 	                $figure->setNumber ( $figure_tag["nthoftype"] );
-	                $figure->setArticleId ( $article_id );
-	                
-	                preg_match('/:{1}(.{1,}\.[a-z0-9]{2,4})[]{2}|\|{1}]/i', $figure_tag["thumb"], $thumbFile); # File names after [[file:FILENAME.PNG]] up until ] or | (i case of |alignment or size)
-	                if (isset($thumbFile[1])) {
-	                    $figure->setFile($thumbFile[1]);
+					$figure->setArticleId ( $article_id );
+					
+	                if ( !empty( $thumbFile ) ) {
+						$pattern = '@src="(.*?)"@';
+						$parsedInput = $parser->recursiveTagParse ( $thumbFile );
+						$file_found = preg_match ( $pattern, $parsedInput, $matches );
+						if ($matches) {
+							$tmp_src = $matches [1];
+							$tmp_src_array = explode ( '/', $tmp_src );
+							if (isset ( $tmp_src_array [7] )) {
+								$filename = $tmp_src_array [7];
+							} elseif (isset ( $tmp_src_array [6] )) { 
+								$filename = $tmp_src_array [6];
+							} else {
+								$filename = "";
+							}
+							$filename = urldecode ( $filename );
+							$figure->setFile($filename);
+						} 
 	                }
 	                $html .= $figure->renderForSpecialpage ( $ns );
 	            }

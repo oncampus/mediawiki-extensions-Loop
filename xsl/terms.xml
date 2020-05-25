@@ -59,7 +59,7 @@
 	<msg name="phrase_figure_number" lang="en">Here is the figure </msg>
 	<msg name="word_list_of_figures" lang="en">List of figures</msg>
 	<msg name="word_formula" lang="en">Formula</msg>
-	<msg name="word_formula_short" lang="en">Form.</msg>
+	<msg name="word_formula_short" lang="en">Formel</msg>
 	<msg name="phrase_formula" lang="en">Here is a formula.</msg>
 	<msg name="phrase_formula_number" lang="en">Here is the formula </msg>
 	<msg name="word_list_of_formulas" lang="en">List of formulas</msg>

@@ -5,7 +5,7 @@
 
 $('.loopspoiler').click(function() {
   let id = $(this).attr("id");
-
+  $("html").css("background-color", $("#main-footer").css("background-color"));
   if ($(this).attr("data-loaded") == "true") {
     if($('.loopspoiler_default_content.'+id).length) {
       $('.loopspoiler_default_content.'+id).toggle();

@@ -180,7 +180,7 @@ class LoopObject {
 			$articleId = $this->getParser()->getTitle()->getArticleID();
 			
 			#if there are hints for this element has a dublicate id, don't render the number and add an error
-			if ( $this->mTitleInput != $object["title"] || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+			if ( $this->mTitleInput != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";
@@ -231,7 +231,7 @@ class LoopObject {
 			$footer .= '</div>';
 				
 			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$footer .= '<div class="loop_object_description">' . $this->getDescription() . '</div>';
+				$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
 			} 
 			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
 				$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
@@ -295,15 +295,15 @@ class LoopObject {
 			}
 		}
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		$html .= '<td scope="col" class="pl-1 pr-1">';
+		$html .= '<td scope="col" class="pl-1 pr-1 loop-listofobjects-type">';
 		if ( $type = 'loop_media' ) {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
 		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class=" "><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', self::localParse( $this->getTitle() ) ) . '</span><br/><span>';
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/><span>';
 		
 		if ($this->mDescription) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
+			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getDescription() ) ) . '<br/>';
 		}
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
 		$linkTitle->setFragment ( '#' . $this->getId () );
@@ -676,7 +676,7 @@ class LoopObject {
 		}
 		
 		if ($description = $this->GetArg('description')) {
-			$this->setDescription(htmlspecialchars($description));
+			$this->setDescription($this->getParser()->recursiveTagParse(htmlspecialchars($description),$this->GetFrame()));
 		}
 		if ($this->GetArg('show_copyright')) {
 			$showcopyright = strtolower(htmlspecialchars($this->GetArg('show_copyright')));
@@ -746,17 +746,19 @@ class LoopObject {
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
-						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["title"] ) ));
-						$this->mTitleInput = $objectData["title"];
+						#dd($objectData["title"], $subtag [1]);
+						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
+						$this->mTitleInput = $subtag [1];
 					break;
 				case 'loop_description' :
-						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $objectData["description"] ) ));
+						$this->setDescription($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
 					break;
 				case 'loop_copyright' :
 						$this->setCopyright($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
 					break;
 			}
 		}
+		#dd($this,$objectData, $matches);
 	}
 	
 	/**
@@ -872,25 +874,25 @@ class LoopObject {
 								if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
 									$tmpLoopObjectIndex->itemType = $object[2]["type"];
 								}
-								if ( isset( $object[2]["title"] ) ) {
-									$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $object[2]["title"] );
-								} else {
-									$title_tags = array ();
-									$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
+								$title_tags = array ();
+								$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
+								if ( !empty( $title_tags ) ) {
 									foreach( $title_tags as $tag ) {
 										$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $tag[1] );
 										break;
 									}
+								} elseif ( isset( $object[2]["title"] ) ) {
+									$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $object[2]["title"] );
 								}
-								if ( isset( $object[2]["description"] ) ) {
-									$tmpLoopObjectIndex->itemDescription = htmlspecialchars(  $object[2]["description"] );
-								} else {
-									$desc_tags = array ();
-									$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
+								$desc_tags = array ();
+								$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
+								if ( !empty( $desc_tags ) ) {
 									foreach( $desc_tags as $tag ) {
 										$tmpLoopObjectIndex->itemDescription =  htmlspecialchars( $tag[1] );
 										break;
 									}
+								} elseif ( isset( $object[2]["description"] ) ) {
+									$tmpLoopObjectIndex->itemDescription = htmlspecialchars(  $object[2]["description"] );
 								}
 								if ( isset( $object[2]["id"] ) ) {
 									if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
@@ -903,6 +905,7 @@ class LoopObject {
 								} else {
 									$valid = false;
 								}
+								#dd($tmpLoopObjectIndex, $valid, $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ); #debug, wird öfter mal gebraucht
 								
 								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
 									$tmpLoopObjectIndex->addToDatabase();

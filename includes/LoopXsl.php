@@ -32,7 +32,6 @@ class LoopXsl {
 
 					if (is_object($file)) {
 						$imagepath=$file->getFullUrl();
-						#dd($file->getLocalRefPath());
 						if ( file_exists($file->getLocalRefPath()) ) {
 							return $imagepath;
 						} else {
@@ -85,7 +84,10 @@ class LoopXsl {
 			return false;
 		}
 		$return1 = $return;
-		
+		$forbiddenNotations = array( "updiagonalarrow", "downdiagonalarrow" ); #these cause a mathml rendering error in AHFormatter 7.0
+		foreach ( $forbiddenNotations as $notation ) {
+			$return = str_replace( $notation, "", $return );
+		}
 		$dom = new DOMDocument;
 		$dom->loadXML( $return );
 		$mathnode = $dom->getElementsByTagName('math')->item(0);
@@ -102,10 +104,7 @@ class LoopXsl {
 		
 		}
 		restore_error_handler();
-		if ( strpos( $mathcontent, "\\eta" ) !== false ) {
-			#dd("!!!", $mathcontent, $return1, $return, $doc->saveXML(),$math, $mathnode->C14N() );
-		}
-		#dd($input,$doc->saveXML(),$math);
+
 		return $return;	
 		
 	}
@@ -150,8 +149,6 @@ class LoopXsl {
 		
 		$return = '';
 		$input_object=$input[0];
-		
-#dd($sh,$lexer );
 
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$dom->appendChild($dom->importNode($input_object, true));
@@ -521,7 +518,11 @@ class LoopXsl {
 										$node->setAttribute( $k, $v[1]);
 									}
 								}
-								$childNode->nodeValue = $content[1];
+								if ( array_key_exists( 1, $content) ) {
+									$childNode->nodeValue = $content[1];
+								} else {
+									$childNode->nodeValue = "";
+								}
 							break;
 						}
 					}

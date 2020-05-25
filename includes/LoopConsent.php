@@ -245,6 +245,7 @@ class LoopConsent {
         // update local thumbnails
         foreach ( $return as $key => $value ) {
             foreach( $value as $v ) {
+                $v = trim( $v );
                 file_put_contents(
                     $thumbStorePath . '/' . $v . '.jpg',
                     file_get_contents( 'https://img.youtube.com/vi/' . $v . '/maxresdefault.jpg' ),

@@ -14,11 +14,6 @@ var wikiEditor = $( '#wpTextbox1' );
 var customizeWikiEditor = function () {
      // https://www.mediawiki.org/wiki/Extension:WikiEditor/Toolbar_customization
 
-    
-    wikiEditor.wikiEditor( 'removeFromToolbar', {
-        section: 'characters'
-    } );
-    
     wikiEditor.wikiEditor( 'addToToolbar', {
         sections: {
             'loop': {
@@ -37,7 +32,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_figure>',
+                                                pre: '<loop_figure title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "[[File:Filename.png]]",
                                                 post: '</loop_figure>'
                                             }
                                         }
@@ -47,8 +43,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_formula title="" description="">',
-                                                post: '</loop_formula>'
+                                                pre: '<loop_formula title="" description="" copyright="" show_copyright="false" index="true"><math>',
+                                                peri: "x^2",
+                                                post: '</math></loop_formula>'
                                             }
                                         }
                                     },
@@ -57,7 +54,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_listing title="" description="">',
+                                                pre: '<loop_listing title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_listing>'
                                             }
                                         }
@@ -67,7 +65,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_table title="" description="">',
+                                                pre: '<loop_table title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_table>'
                                             }
                                         }
@@ -77,7 +76,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_task title="" description="">',
+                                                pre: '<loop_task title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_task>'
                                             }
                                         }
@@ -87,7 +87,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media title="" description="">',
+                                                pre: '<loop_media title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -97,7 +98,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="rollover" title="" description="">',
+                                                pre: '<loop_media type="rollover" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -107,7 +109,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="video" title="" description="">',
+                                                pre: '<loop_media type="video" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -117,7 +120,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="interaction" title="" description="">',
+                                                pre: '<loop_media type="interaction" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -127,7 +131,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="click" title="" description="">',
+                                                pre: '<loop_media type="click" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -137,7 +142,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="audio" title="" description="">',
+                                                pre: '<loop_media type="audio" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -147,7 +153,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="animation" title="" description="">',
+                                                pre: '<loop_media type="animation" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -157,7 +164,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="simulation" title="" description="">',
+                                                pre: '<loop_media type="simulation" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -167,7 +175,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_media type="dragdrop" title="" description="">',
+                                                pre: '<loop_media type="dragdrop" title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "Content",
                                                 post: '</loop_media>'
                                             }
                                         }
@@ -188,6 +197,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="area">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -198,6 +208,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area icon="icon.png" icontext="Text">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -208,6 +219,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="annotation">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -218,6 +230,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="task">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -228,6 +241,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="practice">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -238,6 +252,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="example">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -248,6 +263,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="sourcecode">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -258,6 +274,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="definition">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -268,6 +285,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="experiment">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -278,6 +296,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="formula">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -288,6 +307,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="question">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -298,6 +318,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="law">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -319,6 +340,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="notice">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -329,6 +351,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="learningobjectives">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -339,6 +362,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="markedsentence">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -349,6 +373,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="norm">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -359,6 +384,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="reflection">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -369,6 +395,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="exercise">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -379,6 +406,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="indentation">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -389,6 +417,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="websource">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -399,6 +428,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="important">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -409,6 +439,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="timerequirement">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -419,6 +450,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="citation">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -429,6 +461,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_area type="summary">',
+                                                peri: 'Text',
                                                 post: '</loop_area>'
                                             }
                                         }
@@ -480,7 +513,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<h5p id="" width="" height=""/>'
+                                                pre: '<h5p id="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
                                             }
                                         }
                                     },
@@ -489,7 +524,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<learningapp app="" width="" height=""/>'
+                                                pre: '<learningapp app="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
                                             }
                                         }
                                     },
@@ -498,7 +535,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<padlet id="" width="" height=""/>'
+                                                pre: '<padlet id="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
                                             }
                                         }
                                     },
@@ -507,7 +546,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<prezi id="" width="" height=""/>'
+                                                pre: '<prezi id="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
                                             }
                                         }
                                     },
@@ -516,7 +557,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<slideshare id="" width="" height=""/>'
+                                                pre: '<slideshare id="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
                                             }
                                         }
                                     },
@@ -525,7 +568,9 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<quizlet id="" width="" height=""/>'
+                                                pre: '<quizlet id="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
                                             }
                                         }
                                     },
@@ -541,7 +586,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_zip file=".zip" start=".html" width="px" height="px" scale="false"></loop_zip>'
+                                                pre: '<loop_zip file=".zip" start=".html" width="800px" height="500px" scale="false"/>'
                                             }
                                         }
                                     },
@@ -572,7 +617,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_toc></loop_toc>'
+                                                pre: '<loop_toc/>'
                                             }
                                         }
                                     },
@@ -637,7 +682,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_print button="true">',
-                                                peri: 'Druckbereich',
+                                                peri: 'Print-only',
                                                 post: '</loop_print>'
                                             }
                                         }
@@ -648,7 +693,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_noprint button="true">',
-                                                peri: 'Druckbereich',
+                                                peri: 'No-print',
                                                 post: '</loop_noprint>'
                                             }
                                         }
@@ -659,7 +704,7 @@ var customizeWikiEditor = function () {
                                             type: 'encapsulate',
                                             options: {
                                                 pre: '<loop_screenshot width="700" height="500">',
-                                                peri: 'Druckbereich',
+                                                peri: 'Text',
                                                 post: '</loop_screenshot>'
                                             }
                                         }

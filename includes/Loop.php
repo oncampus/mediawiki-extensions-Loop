@@ -234,13 +234,23 @@ class Loop {
 	public static function setReferenceIds( $text ) { #todo remove id and type
 
 		# REGEX: All tags to get IDs that don't have id="" or id='' (might be empty!)
-		$regex = '/(<(loop_figure|loop_formula|loop_listing|loop_media|loop_table|loop_task|cite|loop_index|loop_screenshot)(?!.*?id=([\'"]).*?([\'"]))[^>]*)(>)/i';
+		$regex = '/(<(loop_figure|loop_formula|loop_listing|loop_media|loop_table|loop_task|cite|loop_index|loop_screenshot)([^>]*(\s*id=[\'"]{1}[^>]*[\'"]{1}\s*){0})[^>]*)(>)/iUs';
 		preg_match_all( $regex, $text, $occurences );
-		$count = sizeof($occurences[1]);
 		$tmpText = $text;
-		for ( $i = 0; $i <= $count; $i++ ) {
-			$tmpText = preg_replace( $regex, '$1 id="'.uniqid().'">', $tmpText, 1 );
+		$one = 1;
+		foreach ( $occurences[1] as $i => $val ) { # replace occurrences with markers
+			$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
 		}
+		
+		foreach ( $occurences[1] as $i => $val ) { # replace markers with ids - this is safe for identical entries like <cite> without any attributes
+			if ( strpos( $val, "id=\"" ) === false ) {
+				$tmpReplace = $val.' id="'.uniqid().'">';
+			} else {
+				$tmpReplace = $val.'>';
+			}
+			$tmpText = str_replace( "%LOOPIDMARKER$i%", $tmpReplace, $tmpText, $one );
+		}
+
 		return $tmpText;
 		#dd($text, $tmpText, $occurences, $count);
 		/*

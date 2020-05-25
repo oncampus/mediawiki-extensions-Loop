@@ -45,7 +45,6 @@ class LoopXml {
 		
 		$articles = '<articles xmlns:xhtml="http://www.w3.org/1999/xhtml">';
 		foreach ( $loopStructureItems as $loopStructureItem ) {
-			#echo $loopStructureItem->article . "<br>";
 		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
 		$articles .= "</articles>\n";
@@ -85,10 +84,9 @@ class LoopXml {
 	        if ( ! empty($object["type"]) ) {   $xml .= "<object_media_type>".$object["type"]."</object_media_type>\n"; }
 	       
 	        $xml .= "<object_title>".$object["title"]."</object_title>\n";
-	        $xml .= "<object_description>".$object["title"]."</object_description>\n";
+	        $xml .= "<object_description>".$object["description"]."</object_description>\n";
 	        $xml .= "</loop_object>\n";
 	    }
-	    #dd($xml);
 	    return $xml;
 	}
 	
@@ -112,7 +110,6 @@ class LoopXml {
 		}
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
-		#dd();
 
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
@@ -133,12 +130,10 @@ class LoopXml {
 		$xml .= "id=\"article" . $structureItem->getArticle() . "\" ";
 		$xml .= 'toclevel="'.$structureItem->getTocLevel().'" ';
 		$xml .= 'tocnumber="'.$structureItem->getTocNumber().'" ';
-		#$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText()).'" ';		
 		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
 		$xml .= "\n</article>\n";
-		#dd( $xml ); # dump and exit at first page xml
 		
 		return $xml;
 	}
@@ -153,11 +148,9 @@ class LoopXml {
 		$idCache = array();
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
-		#$dom->createAttributeNS( "http://www.w3.org/1999/xhtml", "xmlns:xhtml");
 		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
 		$xml = $contentText;
 		$dom->loadXml($xml);
-		#dd($xml);
 		$selector = new DOMXPath( $dom );
 		$nodes = $selector->query( '//extension' );
 
@@ -287,7 +280,7 @@ class LoopXml {
 		global $wgLang;
 
 		libxml_use_internal_errors(true);
-		#dd($input, $id);
+		
 		$input_object=$input[0];
 	
 		if ($input_object->hasAttribute('type')) {
@@ -312,12 +305,24 @@ class LoopXml {
 				$child_value=$child->textContent;
 				$link_parts[$child_name] = $child_value;
 			}
-
+			
 			$mf = new MagicWordFactory( $wgLang );
 			$allowedAligns = [ 'right', 'left', 'center' ];
 			$allowedFormats = [ 'thumb', 'framed', 'frameless' ];
 
 			if ($child_name == 'part') {
+				$part_childs = $child->childNodes;
+				$num_part_childs = $part_childs->length;
+			
+				for ($j = 0; $j < $num_part_childs; $j++) {
+					$part_child = $part_childs->item( $j );
+					if ( isset( $part_child->tagName ) && $part_child->tagName == "extension" ) {
+						$part_child->nodeValue = ""; # don't allow math or extension rendering in link names
+						$child_value = $child->textContent;
+						$link_parts[$child_name] = $child_value;
+					}
+				}
+				
 				if (substr($child_value, -2) == 'px') {
 					$child_value_width = substr($child_value,0,-2);
 					$link_parts['width'] = $child_value_width;
@@ -443,12 +448,10 @@ class LoopXml {
 					if ($structureitem = LoopStructureItem::newFromToctext( $link_parts['href'] )) {
 						$link_parts['href'] = 'article'.$structureitem->getArticle();
 					}
-					
 					$return_xml =  '<php_link_internal href="'.$link_parts['href'].'">'.$link_parts['text'].'</php_link_internal>' ;
 				}
 			}
 		}
-		#dd($return_xml, $link_parts);
 		$return = new DOMDocument;
 	
 		$old_error_handler = set_error_handler("LoopXml::error_handler");
@@ -470,7 +473,6 @@ class LoopXml {
 
 		if ( !empty( $articles ) ) {
 			foreach ( $articles as $articleId ) {
-				#dd($articleId);
 				$return .= self::articleFromId2xml( $articleId, array( "nometa" => true ) );
 			}
 		}
@@ -511,8 +513,6 @@ class LoopXml {
 			$xml .= "</article>\n";
 			$xml .= "</terminology>\n";
 		}
-		#$return = $xml;
-		#dd($return, $items, $terminology);
 		return $xml;
 	}
 	
