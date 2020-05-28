@@ -39,7 +39,7 @@ class LoopStructure {
 
 			if( intval( $structureItem->tocLevel ) === 0 ) {
 
-				$text .= '<h2>'.$structureItem->tocText.'</h2>';
+				$text .= '<a href="/" class="loopstructure-home">'.$structureItem->tocText.'</a>';
 
 			} else {
 
@@ -60,7 +60,7 @@ class LoopStructure {
 				if ( $title ) {
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( $pageNumber . $structureItem->tocText )
+						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . '</span></span>' )
 					);
 					
 				} 
