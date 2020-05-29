@@ -21,6 +21,7 @@ $( document ).ready( function () {
 		}
 	})
 	
+	// changes preview and selectable items in the objects area
 	$( "input[name='render-objects']" ).on("change", function() {
 		$(".ls-none, .ls-title, .ls-icon").removeClass("d-none");
 		$(".ls-" + $(this).val() ).addClass("d-none");
@@ -30,19 +31,31 @@ $( document ).ready( function () {
 			$("#numbering-objects").prop("disabled", false)
 			if ( $("#numbering-objects").is(":checked") == true ) {
 				$("input[name='numbering-type']").prop("disabled", false )
-			} 
+			} else {
+				$("#ls-ongoing, #ls-chapter").addClass("d-none");
+			}
 		}
 	})
 	
-	
+	// changes preview and selectable items in the objects area
 	$( "#numbering-objects" ).on("change", function() {
 		if ( $( this ).is(":checked") == false ) {
 			$( "input[name='numbering-type']" ).prop("disabled", true)
+			$("#ls-ongoing, #ls-chapter").addClass("d-none");
 		} else {
 			$( "input[name='numbering-type']" ).prop("disabled", false).focus()
+			$("#ls-ongoing, #ls-chapter").addClass("d-none");
+
+			if ( $("input[value='ongoing']").is(":checked") == true ) {
+				$("#ls-ongoing").removeClass("d-none");
+			} else {
+				$("#ls-chapter").removeClass("d-none");
+			}
+			
 		}
 	})
-
+	
+	// changes preview and selectable items in the objects area
 	$( "input[name='numbering-type']" ).on("change", function() {
 		$("#ls-ongoing, #ls-chapter").addClass("d-none");
 		$("#ls-" + $(this).val() ).removeClass("d-none");
