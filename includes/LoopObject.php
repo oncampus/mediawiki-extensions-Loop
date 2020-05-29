@@ -151,7 +151,8 @@ class LoopObject {
 	 * @return string
 	 */
 	public function getDefaultRenderOption() {
-		return 'marked';
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
 	}	
 	
 	/**
@@ -212,30 +213,36 @@ class LoopObject {
 		if ( $this->getRenderOption() != 'none' ) {
 			$footer .= '<div class="loop_object_footer">';
 			$footer .= '<div class="loop_object_title">';
-			if ($this->getRenderOption() == 'icon') {
-				$footer .= '<span class="loop_object_icon"><span class="ic ic-'.$this->getIcon().'"></span>&nbsp;</span>';
-			}
-			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
-				$footer .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
-			}
-			if ( $showNumbering && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) && $this->mIndexing ) {
-				$footer .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
-				$footer .= '</span>';
-			}
-			if (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked')) {
-				$footer .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
-			}
-			if ($this->getRenderOption() != 'none' && $this->getTitle()) {
-				$footer .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
-			}
+				# icon
+				if ( $this->getRenderOption() == 'icon' || $this->getRenderOption() == 'marked' ) {
+					$footer .= '<span class="loop_object_icon"><span class="ic ic-'.$this->getIcon().'"></span>&nbsp;</span>';
+				}
+				# type and object number
+				if ( $this->getRenderOption() == 'marked' ) {
+					$footer .= '<span class="loop_object_name">'.wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . '</span>';
+					if ( $showNumbering && $this->mIndexing ) {
+						$footer .= '<span class="loop_object_number"> '.LOOPOBJECTNUMBER_MARKER_PREFIX . $this->getTag() . $this->getId() . LOOPOBJECTNUMBER_MARKER_SUFFIX;
+						$footer .= '</span>';
+					}
+				}
+				# Seperator
+				if ( $this->getRenderOption() == 'marked' ) {
+					$footer .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
+				}
+				# user-entered title
+				if ( $this->getTitle() ) {
+					$footer .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
+				}
 			$footer .= '</div>';
-				
-			if ($this->getDescription()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
+			
+			if ( $this->getRenderOption() != 'title' ) {
+				if ( $this->getDescription() ) {
+					$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
+				}
+				if ( $this->getCopyright() ) {
+					$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
+				}
 			} 
-			if ($this->getCopyright()  && (($this->getRenderOption() == 'icon') || ($this->getRenderOption() == 'marked'))) {
-				$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
-			}
 	
 			$footer .= '</div>';
 		}
@@ -256,7 +263,7 @@ class LoopObject {
 	 * @return string
 	 */
 	public function renderForSpecialpage( $ns ) {
-		global $wgLoopObjectNumbering, $wgLoopNumberingType;
+		global $wgLoopObjectNumbering, $wgLoopObjectDefaultRenderOption;
 		$objectClass = get_class( $this );
 		switch ( $objectClass ) {
 			case "LoopFormula":
@@ -295,12 +302,18 @@ class LoopObject {
 			}
 		}
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		$html .= '<td scope="col" class="pl-1 pr-1 loop-listofobjects-type">';
-		if ( $type = 'loop_media' ) {
+		
+		if ( $wgLoopObjectDefaultRenderOption == "marked" ) {
+			$html .= '<td scope="col" class="pl-1 pr-1 loop-listofobjects-type">';
+			$html .= '<span class="font-weight-bold">';
+			$html .= wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ';
+			$html .= '</span></td>';
+		}
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">';
+		if ( $type == 'loop_media' ) {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
-		$html .= '<span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
-		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/><span>';
+		$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/><span>';
 		
 		if ($this->mDescription) {
 			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getDescription() ) ) . '<br/>';
@@ -639,9 +652,8 @@ class LoopObject {
 		if ($renderoption = $this->GetArg('render')) {
 			$this->setRenderOption(strtolower(htmlspecialchars($renderoption)));
 		} else {
-			$this->setRenderOption('default');	
+			$this->setRenderOption($this->getDefaultRenderOption());
 		}
-		
 		if ($this->getRenderOption() == 'default') {
 			$this->setRenderOption($this->getDefaultRenderOption());
 		}
@@ -718,7 +730,7 @@ class LoopObject {
 				break;
 		}
 		
-		if ($copyright = $this->GetArg('copyright')) {
+		if ( $copyright = $this->GetArg('copyright') ) {
 			$this->setCopyright(htmlspecialchars($copyright));
 		}
 		
@@ -746,7 +758,6 @@ class LoopObject {
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
-						#dd($objectData["title"], $subtag [1]);
 						$this->setTitle($this->mParser->stripOuterParagraph ( $this->mParser->recursiveTagParse ( $subtag [1] ) ));
 						$this->mTitleInput = $subtag [1];
 					break;

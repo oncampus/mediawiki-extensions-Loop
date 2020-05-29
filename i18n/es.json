@@ -3,6 +3,7 @@
 		"authors": [
 			"Francisco Tahhan"
 			
+			
 
 		]
 	},
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Barra lateral",    
 	"loopsettings-headline-bugreport": "Informe de errores",
     "loopsettings-bugreport-email-label": "El informe de errores del usuario será enviado a la siguiente dirección de correo electrónico. Deje el campo en blanco para deshabilitar el informe de errores.",
+	"loopsettings-headline-objects": "Object markings",
+	"loopsettings-objects-hint": "Here you can change the settings of figures, formulas, listings, media, tasks and tables.",
+	"loopsettings-renderobjects": "Display of objects",
+	"loopsettings-render-objects-marked-label": "Show everything (recommended)",
+	"loopsettings-render-objects-icon-label": "Show without type and number",
+	"loopsettings-render-objects-title-label": "Show title only",
+	"loopsettings-render-objects-none-label": "Hide all",
 
 	"loopsettings-headline-export": "Opciones de exportación",
 	"loopsettings-export-pdf-label": "Descargar formato PDF",

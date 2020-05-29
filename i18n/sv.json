@@ -4,6 +4,7 @@
 			"Dennis Krohn"
 
 
+
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Sidebar",
 	"loopsettings-headline-bugreport": "Felrapport",
 	"loopsettings-bugreport-email-label": "Användarnas felrapport skickas till den här e-postadress. Lämna tömt för att inaktivera.",
+	"loopsettings-headline-objects": "Objektdeklaration",
+	"loopsettings-objects-hint": "Inställningar för figurer, formler, uppgifter, tabeller, listningar och medior visas här.",
+	"loopsettings-renderobjects": "Visning av objekten",
+	"loopsettings-render-objects-marked-label": "Visa allt (rekommenderas)",
+	"loopsettings-render-objects-icon-label": "Visa utan typ och nummer",
+	"loopsettings-render-objects-title-label": "Visa endast titeln",
+	"loopsettings-render-objects-none-label": "Gömma allt",
 
 	"loopsettings-headline-export": "Export",
 	"loopsettings-export-pdf-label": "Erbjuda PDF för nedladdning",

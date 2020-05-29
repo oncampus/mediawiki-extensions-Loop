@@ -3,7 +3,8 @@
 		"authors": [
 			"Marc Vorreiter",
 			"Kevin Berg",
-			"Dennis Krohn"
+			"Dennis Krohn",
+			"Dustin Neß"
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Sidebar",
 	"loopsettings-headline-bugreport": "Bug report",
 	"loopsettings-bugreport-email-label": "User's bug reports will be sent to this email. Leave empty to disable bug reports.",
+	"loopsettings-headline-objects": "Object markings",
+	"loopsettings-objects-hint": "Here you can change the settings of figures, formulas, listings, media, tasks and tables.",
+	"loopsettings-renderobjects": "Display of objects",
+	"loopsettings-render-objects-marked-label": "Show everything (recommended)",
+	"loopsettings-render-objects-icon-label": "Show without type and number",
+	"loopsettings-render-objects-title-label": "Show title only",
+	"loopsettings-render-objects-none-label": "Hide all",
 
 	"loopsettings-headline-export": "Export options",
 	"loopsettings-export-pdf-label": "offer PDF for download",
