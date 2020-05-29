@@ -660,7 +660,7 @@
 					<xsl:value-of select="php:function('LoopXsl::xsl_get_rendertype')"></xsl:value-of>
 				</xsl:when>
 				
-				<xsl:when test="@render = 'marked' or @render = 'icon' or @render = 'title' @render = 'none' ">
+				<xsl:when test="@render = 'marked' or @render = 'icon' or @render = 'title' or @render = 'none' ">
 					<xsl:value-of select="@render"></xsl:value-of>
 				</xsl:when>
 				<xsl:otherwise>

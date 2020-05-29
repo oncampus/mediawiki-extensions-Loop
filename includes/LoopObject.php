@@ -180,8 +180,12 @@ class LoopObject {
 			$object = LoopObjectIndex::getObjectData( $this->getId() );
 			$articleId = $this->getParser()->getTitle()->getArticleID();
 			
-			#if there are hints for this element has a dublicate id, don't render the number and add an error
-			if ( $this->mTitleInput != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+			# objects with render=none are not numbered as it would lead to confusion
+			if ( !$object && $this->getRenderOption() == "none" ) {
+				$showNumbering = false;
+			} elseif ( $this->mTitleInput != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+				#if there are hints for this element has a dublicate id, don't render the number and add an error
+
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";
@@ -189,10 +193,17 @@ class LoopObject {
 				$textform = "-";
 				if ( is_object( $otherTitle ) ) {
 					$textform = $otherTitle->mTextform;
+					$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
+					$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+					$this->error .= $e . "\n";
+				} else {
+					# the id is not in db
+					$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
+					$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+					$this->error .= $e . "\n";
 				}
-				$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
-				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-				$this->error .= $e . "\n";
+				
+				
 				$showNumbering = false;
 			}
 		} 
@@ -916,10 +927,26 @@ class LoopObject {
 								} else {
 									$valid = false;
 								}
+								
 								#dd($tmpLoopObjectIndex, $valid, $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ); #debug, wird öfter mal gebraucht
 								
-								if ( $valid && $stable && ( ! isset ( $object[2]["index"] ) || strtolower($object[2]["index"]) != "false" ) && ( ! isset ( $object[2]["render"] ) || strtolower($object[2]["render"]) != "none" ) ) {
-									$tmpLoopObjectIndex->addToDatabase();
+								if ( $valid && $stable ) {
+									# page is valid and stable
+									if ( ! isset ( $object[2]["index"] ) ) {
+										# no index set
+										if ( ! isset ( $object[2]["render"] ) ) {
+											# no index, no render -> save
+											$tmpLoopObjectIndex->addToDatabase();
+										} elseif ( strtolower( $object[2]["render"] ) != "none" ) {
+											# no index but render is not none -> save
+											$tmpLoopObjectIndex->addToDatabase();
+										} 
+										# index defaults to true but if render=none, there is no indexing. unless it is explicitly said so in index=true
+
+									} elseif ( strtolower($object[2]["index"]) != "false" ) {
+										# index is set to true, basically. so index it no matter the render option
+										$tmpLoopObjectIndex->addToDatabase();
+									}
 								}
 							}
 						}

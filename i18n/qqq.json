@@ -341,6 +341,7 @@
 	"looplegacy-biblio": "Special error message for biblio tag which has been deprecated in LOOP2 and replaced by loop_literature tag.",
 	"looplegacy-references": "Special error message for references tag is been obsolte since LOOP2.",
 
+	"loopobject-error-unknown-id" : "Error Message rendered when Object has an ID that's not in DB: $1 -> given ID; ",
 	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",

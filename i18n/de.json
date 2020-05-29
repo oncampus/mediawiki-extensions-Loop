@@ -341,6 +341,7 @@
 	"looplegacy-biblio": "Der '''biblio'''-Tag wird seit LOOP2 nicht mehr unterstützt. Bitte benutzen Sie den neuen Tag '''<loop_literature>'''.",
 	"looplegacy-references": "Der '''references'''-Tag wird seit LOOP2 nicht mehr benötigt. Fußnoten werden jetzt automatisch am Seitenende dargestellt, wenn ein <ref>-Tag auf einer Seite benutzt wird.",
 
+	"loopobject-error-unknown-id" : "Die Objektauszeichnung mit der ID $1 konnte nicht in der Datenbank gespeichert werden. Bitte überprüfen Sie die Syntax.",
 	"loopobject-error-dublicate-id" : "Die Objektauszeichnung besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiteres Objekt mit der ID vorhanden. Bitte ändern Sie die ID und speichern Sie die Seiten neu ab, um eine korrekte Zählung sicherzustellen.",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
