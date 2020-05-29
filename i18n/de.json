@@ -79,7 +79,7 @@
 	"loopsettings-bugreport-email-label": "An diese E-Mail Adresse werden Fehlermeldungen von BenutzerInnen gesendet. Lassen Sie das Feld leer, um Fehlermeldungen zu deaktivieren.",
 	"loopsettings-headline-objects": "Objektauszeichnungen",
 	"loopsettings-objects-hint": "Hier können Sie Einstellungen zu Objektauszeichnungen für Abbildungen, Formeln, Aufgaben, Tabellen, Listings und Medien vornehmen.",
-	"loopsettings-renderobjects-hint": "Darstellung von Objektauszeichnungen",
+	"loopsettings-renderobjects": "Darstellung von Objektauszeichnungen",
 	"loopsettings-render-objects-marked-label": "Alles anzeigen (empfohlen)",
 	"loopsettings-render-objects-icon-label": "Ohne Bezeichnung und ggf. Nummer anzeigen",
 	"loopsettings-render-objects-title-label": "Nur den Titel anzeigen",
