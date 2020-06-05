@@ -3,6 +3,7 @@
 		"authors": [
 			"Francisco Tahhan"
 			
+			
 
 		]
 	},
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Barra lateral",    
 	"loopsettings-headline-bugreport": "Informe de errores",
     "loopsettings-bugreport-email-label": "El informe de errores del usuario será enviado a la siguiente dirección de correo electrónico. Deje el campo en blanco para deshabilitar el informe de errores.",
+	"loopsettings-headline-objects": "Object markings",
+	"loopsettings-objects-hint": "Here you can change the settings of figures, formulas, listings, media, tasks and tables.",
+	"loopsettings-renderobjects": "Display of objects",
+	"loopsettings-render-objects-marked-label": "Show everything (recommended)",
+	"loopsettings-render-objects-icon-label": "Show without type and number",
+	"loopsettings-render-objects-title-label": "Show title only",
+	"loopsettings-render-objects-none-label": "Hide all",
 
 	"loopsettings-headline-export": "Opciones de exportación",
 	"loopsettings-export-pdf-label": "Descargar formato PDF",
@@ -323,6 +331,7 @@
 	"looplegacy-biblio": "La etiqueta '''biblio''' no tiene respaldo en LOOP2. Por favor, utilice la nueva etiqueta '''<loop_literature>'''.",
 	"looplegacy-references": "La etiqueta '''references''' es obsoleta en LOOP2. Las notas de pie se muestran automáticamente en la parte inferior de la página si se utiliza la etiqueta <ref>.",
 
+	"loopobject-error-unknown-id" : "The object's ID is not in the database ($1). Please check the object's syntax.",
 	"loopobject-error-dublicate-id" : "El ID del objeto no es único ($1). En la página '$2' existe otro objeto con el mismo ID. Por favor, cambie el ID del objeto y guarde las páginas nuevamente para que la numeración sea correcta.",
 	"loopreference-error-unknown-refid" : "El ID ingresado para la referencia: '''$1''', es desconocido.",
 	"loopreference-error-no-refid" : "La referencia bibliográfica no contiene el parámetro ID (id).",

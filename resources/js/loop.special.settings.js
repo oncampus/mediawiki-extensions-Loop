@@ -15,12 +15,52 @@ $( document ).ready( function () {
 		var clicked = $(this).attr("id");
 	
 		if ( $( "#" + clicked ).is(":checked") == false ) {
-		$("#" + link[clicked]).prop("disabled", true)
+			$("#" + link[clicked]).prop("disabled", true)
 		} else {
-		$("#" + link[clicked]).prop("disabled", false).focus()
+			$("#" + link[clicked]).prop("disabled", false).focus()
 		}
 	})
 	
+	// changes preview and selectable items in the objects area
+	$( "input[name='render-objects']" ).on("change", function() {
+		$(".ls-none, .ls-title, .ls-icon").removeClass("d-none");
+		$(".ls-" + $(this).val() ).addClass("d-none");
+		if ( $(this).val() != "marked" ) {
+			$("#numbering-objects, input[name='numbering-type']").prop("disabled", true)
+		} else {
+			$("#numbering-objects").prop("disabled", false)
+			if ( $("#numbering-objects").is(":checked") == true ) {
+				$("input[name='numbering-type']").prop("disabled", false )
+			} else {
+				$("#ls-ongoing, #ls-chapter").addClass("d-none");
+			}
+		}
+	})
+	
+	// changes preview and selectable items in the objects area
+	$( "#numbering-objects" ).on("change", function() {
+		if ( $( this ).is(":checked") == false ) {
+			$( "input[name='numbering-type']" ).prop("disabled", true)
+			$("#ls-ongoing, #ls-chapter").addClass("d-none");
+		} else {
+			$( "input[name='numbering-type']" ).prop("disabled", false).focus()
+			$("#ls-ongoing, #ls-chapter").addClass("d-none");
+
+			if ( $("input[value='ongoing']").is(":checked") == true ) {
+				$("#ls-ongoing").removeClass("d-none");
+			} else {
+				$("#ls-chapter").removeClass("d-none");
+			}
+			
+		}
+	})
+	
+	// changes preview and selectable items in the objects area
+	$( "input[name='numbering-type']" ).on("change", function() {
+		$("#ls-ongoing, #ls-chapter").addClass("d-none");
+		$("#ls-" + $(this).val() ).removeClass("d-none");
+	})
+
 	$( "#feedback-level" ).on("change", function() {
 		if ( $("#feedback-level").val() == "none" ) {
 			$( "#feedback-mode" ).prop("disabled", true)
@@ -125,7 +165,6 @@ $( document ).ready( function () {
 	};
 	
 	var copyText = document.getElementById("rss-link");
-	var rsslink = copyText.value;
 	$( "#rss-link-btn" ).click( function() {
 		copyText.select();
 		copyText.setSelectionRange(0, 99999);
@@ -133,6 +172,7 @@ $( document ).ready( function () {
 		console.log(copyText);
 	});
 	$( "#rss-link" ).on( "change keyup", function() {
+		var rsslink = copyText.value;
 		$(this).val(rsslink);
 	});
 });

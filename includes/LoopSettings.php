@@ -54,6 +54,7 @@ class LoopSettings {
     public $bugReportEmail; #wgLoopBugReportEmail
     public $feedbackLevel; #wgLoopFeedbackLevel
     public $feedbackMode; #wgLoopFeedbackMode
+    public $objectRenderOption; #wgLoopObjectDefaultRenderOption
 
     /**
      * Add settings to the database
@@ -100,7 +101,8 @@ class LoopSettings {
             'lset_captchabadlogin' => $this->captchaBadlogin,
             'lset_ticketemail' => $this->bugReportEmail,
             'lset_feedbacklevel' => $this->feedbackLevel,
-            'lset_feedbackmode' => $this->feedbackMode
+            'lset_feedbackmode' => $this->feedbackMode,
+            'lset_objectrenderoption' => $this->objectRenderOption
         );
         
         $dbw = wfGetDB( DB_MASTER );
@@ -157,7 +159,7 @@ class LoopSettings {
         global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
-        $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
+        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption;
         
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
@@ -200,6 +202,7 @@ class LoopSettings {
         $this->bugReportEmail = $wgLoopBugReportEmail;
         $this->feedbackLevel = $wgLoopFeedbackLevel;
         $this->feedbackMode = $wgLoopFeedbackMode;
+        $this->objectRenderOption = $wgLoopObjectDefaultRenderOption;
         
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = isset( $data['lset_imprintlink'] ) ? $data['lset_imprintlink'] : $this->imprintLink;
@@ -242,6 +245,7 @@ class LoopSettings {
             $this->bugReportEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->bugReportEmail;
             $this->feedbackLevel =  isset( $data['lset_feedbacklevel'] ) ? $data['lset_feedbacklevel'] : $this->feedbackLevel;
             $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode;
+            $this->objectRenderOption =  isset( $data['lset_objectrenderoption'] ) ? $data['lset_objectrenderoption'] : $this->objectRenderOption;
         }
         
         return true;
@@ -332,7 +336,9 @@ class LoopSettings {
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
         }
-        
+        if ( empty( $wgLoopAvailableSkinStyles ) ) {
+            $wgLoopAvailableSkinStyles[] = "style-blue";
+        }
         if ( in_array( $request->getText( 'skin-style' ), $wgLoopAvailableSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
             $user->setOption( 'LoopSkinStyle', $this->skinStyle );
@@ -383,17 +389,22 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-objects-label' ) );
         }
 
+        # Render objects
+        if ( ! empty ( $request->getText( 'render-objects' ) ) ) { 
+            if ( in_array( $request->getText( 'render-objects' ), LoopObject::$mRenderOptions ) ) { 
+                $this->objectRenderOption = $request->getText( 'render-objects' );
+            } else {
+                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-render-objects-label' ) );
+            }
+        }
+
         # Numbering type
         if ( ! empty ( $request->getText( 'numbering-type' ) ) ) { 
             if ( $request->getText( 'numbering-type' ) == "ongoing" ) { 
                 $this->numberingType = "ongoing";
-            } elseif ( $request->getText( 'numbering-type' ) == "chapter" ) { 
+            } else { 
                 $this->numberingType = "chapter";
-            } else {
-                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
             }
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-type-label' ) );
         }
 
         # citation style
@@ -796,7 +807,9 @@ class SpecialLoopSettings extends SpecialPage {
 					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
                     $skinStyleOptions = '';
                     $styles = array_unique ( ! isset( $wgLoopAvailableSkinStyles ) ? $wgLoopSkinStyles : $wgLoopAvailableSkinStyles );
-                    
+                    if ( empty( $styles ) ) {
+                        $styles[] = "style-blue";
+                    }
 					foreach( $styles as $style ) { 
 					    if ( $style == $currentLoopSettings->skinStyle ) { 
 							$selected = 'selected';
@@ -944,27 +957,75 @@ class SpecialLoopSettings extends SpecialPage {
 				 */	
 				$html .= '<div class="tab-pane fade" id="nav-content" role="tabpanel" aria-labelledby="nav-content-tab">';
 
-                   # $html .= '<div class="form-row">';
-					$html .= '<h3>' . $this->msg( 'loopsettings-numbering' ) . '</h3>';
+                    $html .= '<div class="form-row">';
+                    $html .= '<h3>' . $this->msg( "loopsettings-headline-objects" ) . '</h3>';
+                    $html .= '<p class="pl-2 pr-2">' . $this->msg( "loopsettings-objects-hint" ) . '</p>';
+                        $html .= '<div class="col-8">';
+                        $html .= '<fieldset>';
+                            $html .= '<h5>' . $this->msg( 'loopsettings-renderobjects' ) . '</h5>';
+                            $html .= '<div class="mb-1"><input type="radio" name="render-objects" id="render-marked" value="marked" ' . ( $currentLoopSettings->objectRenderOption == "marked" ? 'checked="checked"' : '' ) .'>
+                            <label for="render-marked">' . $this->msg( 'loopsettings-render-objects-marked-label' ) . '</label></div>';
 
-					$html .= '<div class="mb-1"><input type="checkbox" name="numbering-objects" id="numbering-objects" value="numberingObjects" ' . ( $currentLoopSettings->numberingObjects == true ? 'checked' : '' ) .'>
-					<label for="numbering-objects">' . $this->msg( 'loopsettings-numbering-objects-label' ) . '</label></div>';
+                            $html .= '<div class="mb-1"><input type="radio" name="render-objects" id="render-icon" value="icon" ' . ( $currentLoopSettings->objectRenderOption == "icon" ? 'checked="checked"' : '' ) .'>
+                            <label for="render-icon">' . $this->msg( 'loopsettings-render-objects-icon-label' ) . '</label></div>';
+                            
+                            $html .= '<div class="mb-1"><input type="radio" name="render-objects" id="render-title" value="title" ' . ( $currentLoopSettings->objectRenderOption == "title" ? 'checked="checked"' : '' ) .'>
+                            <label for="render-title">' . $this->msg( 'loopsettings-render-objects-title-label' ) . '</label></div>';
+                            
+                            $html .= '<div class="mb-3"><input type="radio" name="render-objects" id="render-none" value="none" ' . ( $currentLoopSettings->objectRenderOption == "none" ? 'checked="checked"' : '' ) .'>
+                            <label for="render-none">' . $this->msg( 'loopsettings-render-objects-none-label' ) . '</label></div>';
+                            
+                        $html .= '</fieldset>';
+                        $html .= '</div>'; // end of col
 
-					$html .= '<div class="mb-1"><input type="radio" name="numbering-type" id="ongoing" value="ongoing" ' . ( $currentLoopSettings->numberingType == "ongoing" ? 'checked' : '' ) .'>
-					<label for="ongoing">' . $this->msg( 'loopsettings-numbering-type-ongoing-label' ) . '</label></div>';
+                        $html .= '<div class="col-3">';
+                        $render = $currentLoopSettings->objectRenderOption;
+                        $html .= '<div id="loopsettings-object-example" class="loop_object figure">
+                        <div class="loop_object_content">
+                        <img id="loopsettings-object-example-img" src="/mediawiki/skins/Loop/resources/img/logo_loop.svg" class="image w-100"></div>
+                        <div class="ls-none '.($render=="none"?"d-none ":"").'loop_object_footer">
+                        <div class="loop_object_title">
+                            <span class="ls-title '.($render=="title"?"d-none ":"").'loop_object_icon"><span class="ic ic-figure"></span>&nbsp;</span>
+                            <span class="ls-icon ls-title '.($render=="title"||$render=="icon"?"d-none ":"").'loop_object_name">'.$this->msg( 'loop_figure-name-short' ).'</span>
+                            <span class="ls-icon ls-title '.($render=="title"||$render=="icon"?"d-none ":"").'loop_object_number"><span class="' . ( $currentLoopSettings->numberingType == "ongoing" ? 'd-none' : '' ) .'" id="ls-chapter">3.12</span></span>
+                            <span class="ls-icon ls-title '.($render=="title"||$render=="icon"?"d-none ":"").'loop_object_number"><span class="' . ( $currentLoopSettings->numberingType == "ongoing" ? '' : 'd-none' ) .'" id="ls-ongoing">47</span></span>
+                            <span class="ls-icon ls-title '.($render=="title"||$render=="icon"?"d-none ":"").'loop_object_title_seperator">:&nbsp;</span><wbr>
+                            <span class="loop_object_title_content">Title</span>
+                        </div>
+                        <div class="ls-title '.($render=="title"?"d-none ":"").'loop_object_description">Description</div>
+                        <div class="ls-title '.($render=="title"?"d-none ":"").'loop_object_copyright">Copyright</div>
+                        </div>
+                        </div>';
+                        $html .= '</div>'; // end of col
+                    $html .= '</div>'; // end of row
+            
+                    $html .= '<div class="form-row">';
+                        $html .= '<div class="col-8">';
+                            $html .= '<h5>' . $this->msg( 'loopsettings-numbering' ) . '</h5>';
 
-					$html .= '<div class="mb-3"><input type="radio" name="numbering-type" id="chapter" value="chapter" ' . ( $currentLoopSettings->numberingType == "chapter" ? 'checked' : '' ) .'>
-					<label for="chapter">' . $this->msg( 'loopsettings-numbering-type-chapter-label' ) . '</label></div>';
-              
+                            $html .= '<div class="mb-1"><input type="checkbox" name="numbering-objects" id="numbering-objects" value="numberingObjects" ' . ( $currentLoopSettings->numberingObjects == true ? 'checked' : '' ) . ( $currentLoopSettings->objectRenderOption != "marked" ? ' disabled' : '' ) .'>
+                            <label for="numbering-objects">' . $this->msg( 'loopsettings-numbering-objects-label' ) . '</label></div>';
 
-                    #$html .= '<div class="form-row">';
-                    $html .= '<h3>' . $this->msg( "loopsettings-citation-style" ) . '</h3>';
-                    $html .= '<div class="mb-1"><input type="radio" name="citation-style" id="harvard" value="harvard" ' . ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>';
-                    $html .= '<label for="harvard"> ' . $this->msg( 'loopsettings-citation-style-harvard-label' ) . '</label></div>';
+                            $html .= '<div class="mb-1"><input type="radio" name="numbering-type" id="ongoing" value="ongoing" ' . ( $currentLoopSettings->numberingType == "ongoing" ? 'checked' : '' ) . ( $currentLoopSettings->numberingObjects != true || $currentLoopSettings->objectRenderOption != "marked" ? ' disabled' : '' ) .'>
+                            <label for="ongoing">' . $this->msg( 'loopsettings-numbering-type-ongoing-label' ) . '</label></div>';
 
-					$html .= '<div class="mb-1"><input type="radio" name="citation-style" id="vancouver" value="vancouver" ' . ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>';
-					$html .= '<label for="vancouver"> ' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label></div>';
-                   
+                            $html .= '<div class="mb-3"><input type="radio" name="numbering-type" id="chapter" value="chapter" ' . ( $currentLoopSettings->numberingType == "chapter" ? 'checked' : '' ) . ( $currentLoopSettings->numberingObjects != true || $currentLoopSettings->objectRenderOption != "marked" ? ' disabled' : '' ) .'>
+                            <label for="chapter">' . $this->msg( 'loopsettings-numbering-type-chapter-label' ) . '</label></div>';
+                        $html .= '</div>'; // end of col
+                        
+                    $html .= '</div>'; // end of row
+
+                    $html .= '<div class="form-row">';
+                        $html .= '<div class="col-12">';
+                            $html .= '<h3>' . $this->msg( "loopsettings-citation-style" ) . '</h3>';
+                            $html .= '<div class="mb-1"><input type="radio" name="citation-style" id="harvard" value="harvard" ' . ( $currentLoopSettings->citationStyle == "harvard" ? 'checked' : '' ) .'>';
+                            $html .= '<label for="harvard"> ' . $this->msg( 'loopsettings-citation-style-harvard-label' ) . '</label></div>';
+
+                            $html .= '<div class="mb-1"><input type="radio" name="citation-style" id="vancouver" value="vancouver" ' . ( $currentLoopSettings->citationStyle == "vancouver" ? 'checked' : '' ) .'>';
+                            $html .= '<label for="vancouver"> ' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label></div>';
+                        $html .= '</div>'; // end of col
+                    $html .= '</div>'; // end of row
+                    
 				$html .= '</div>'; // end of content-tab
 				
 			$html .= '</div>'; // end of tab-content

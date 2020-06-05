@@ -4,6 +4,7 @@
 			"Dennis Krohn"
 
 
+
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Sidebar",
 	"loopsettings-headline-bugreport": "Felrapport",
 	"loopsettings-bugreport-email-label": "Användarnas felrapport skickas till den här e-postadress. Lämna tömt för att inaktivera.",
+	"loopsettings-headline-objects": "Objektdeklaration",
+	"loopsettings-objects-hint": "Inställningar för figurer, formler, uppgifter, tabeller, listningar och medior visas här.",
+	"loopsettings-renderobjects": "Visning av objekten",
+	"loopsettings-render-objects-marked-label": "Visa allt (rekommenderas)",
+	"loopsettings-render-objects-icon-label": "Visa utan typ och nummer",
+	"loopsettings-render-objects-title-label": "Visa endast titeln",
+	"loopsettings-render-objects-none-label": "Gömma allt",
 
 	"loopsettings-headline-export": "Export",
 	"loopsettings-export-pdf-label": "Erbjuda PDF för nedladdning",
@@ -333,6 +341,7 @@
 	"looplegacy-biblio": "Taggen '''biblio''' har tagits bort i LOOP2. Använd <loop_literature><literature>''Key''</literature></loop_literature> istället.",
 	"looplegacy-references": "Taggen '''references''' är inte länge nödvändig sedan LOOP2. Fotnoter visas automatiskt.",
 
+	"loopobject-error-unknown-id" : "Objektet:s ID ($1) finns inte i databasen. Vänligen checka syntaxen.",
 	"loopobject-error-dublicate-id" : "Objektet besitter ingen unik ID ($1). På sidan '$2' finns det ett annat objekt med den här ID. Vänligen byt ID:n och spara sidor igen, så objektet kan numereras korrekt.",
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Ingen ID (id) har angivits i referensen.",

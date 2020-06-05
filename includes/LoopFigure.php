@@ -137,7 +137,7 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public function renderForSpecialpage( $ns = null ) {
-		global $wgLoopObjectNumbering;
+		global $wgLoopObjectNumbering, $wgLoopObjectDefaultRenderOption;
 
 		$html = '<tr scope="row" class="ml-1 pb-3">';
 		$html .= '<td scope="col" class="pl-0 pr-0 loop-listofobjects-image">';
@@ -173,7 +173,13 @@ class LoopFigure extends LoopObject{
 			}
 		}
 		
-		$html .= '<td scope="col" class="pl-1 pr-1 text-right loop-listofobjects-type"><span class="font-weight-bold">'. wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ' . '</span></td>';
+		if ( $wgLoopObjectDefaultRenderOption == "marked" ) {
+			$html .= '<td scope="col" class="pl-1 pr-1 loop-listofobjects-type text-right">';
+			$html .= '<span class="font-weight-bold">';
+			$html .= wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ';
+			$html .= '</span></td>';
+		}
+
 		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/>';
 		
 		if ($this->mDescription) {

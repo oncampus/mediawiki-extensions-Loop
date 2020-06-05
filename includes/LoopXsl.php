@@ -531,6 +531,9 @@ class LoopXsl {
 		}
 		return $table;
 	}
-
+	public static function xsl_get_rendertype () {
+		global $wgLoopObjectDefaultRenderOption;
+		return $wgLoopObjectDefaultRenderOption;
+	}
 
 }

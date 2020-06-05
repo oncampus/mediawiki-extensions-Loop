@@ -945,7 +945,7 @@
 			"description" : "Array of information about a custom logo for header"
 		},
 		"LoopObjectDefaultRenderOption": {
-			"value": "icon",
+			"value": "marked",
 			"description" : ""
 		},
 		"LoopObjectNumbering": {

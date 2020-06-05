@@ -3,7 +3,8 @@
 		"authors": [
 			"Marc Vorreiter",
 			"Kevin Berg",
-			"Dennis Krohn"
+			"Dennis Krohn",
+			"Dustin Neß"
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Sidebar",
 	"loopsettings-headline-bugreport": "Bug report",
 	"loopsettings-bugreport-email-label": "User's bug reports will be sent to this email. Leave empty to disable bug reports.",
+	"loopsettings-headline-objects": "Object markings",
+	"loopsettings-objects-hint": "Here you can change the settings of figures, formulas, listings, media, tasks and tables.",
+	"loopsettings-renderobjects": "Display of objects",
+	"loopsettings-render-objects-marked-label": "Show everything (recommended)",
+	"loopsettings-render-objects-icon-label": "Show without type and number",
+	"loopsettings-render-objects-title-label": "Show title only",
+	"loopsettings-render-objects-none-label": "Hide all",
 
 	"loopsettings-headline-export": "Export options",
 	"loopsettings-export-pdf-label": "offer PDF for download",
@@ -333,6 +341,7 @@
 	"looplegacy-biblio": "The tag '''biblio''' is not supported since LOOP2. Please use the new tag '''<loop_literature>'''.",
 	"looplegacy-references": "The tag '''references''' is obsolete since LOOP2. Footnotes are automatically displayed at the end of the page as soon as there is a <ref> tag in use.",
 
+	"loopobject-error-unknown-id" : "The object's ID is not in the database ($1). Please check the object's syntax.",
 	"loopobject-error-dublicate-id" : "The object's ID is not unique ($1). On page '$2' is another object with that same ID. Please change the ID and save the pages again so the numbering will be correct.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",

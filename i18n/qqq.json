@@ -4,6 +4,7 @@
 			"Marc Vorreiter",
 			"Kevin Berg",
 			"Dennis Krohn"
+
 		]
 	},
 	"loop-extensionname": "LOOP",
@@ -76,6 +77,13 @@
 	"loopsettings-headline-sidebar": "Headline on settings page, Sidebar",
 	"loopsettings-headline-bugreport": "Headline on settings page, bug report",
 	"loopsettings-bugreport-email-label": "Description for e-mail field for bug reports. No entered email will disable the bug report service.",
+	"loopsettings-headline-objects": "Headline on settings page, Object markings",
+	"loopsettings-objects-hint": "Hint for settings page, object markings.",
+	"loopsettings-renderobjects": "Headline on settings page, display of object markings",
+	"loopsettings-render-objects-marked-label": "Label for setting. All Elements of objects displayed",
+	"loopsettings-render-objects-icon-label": "Label for setting. Marking hidden",
+	"loopsettings-render-objects-title-label": "Label for setting. All Elements hidden except title",
+	"loopsettings-render-objects-none-label": "Label for setting. All Elements hidden",
 
 	"loopsettings-headline-export": "Export options",
 	"loopsettings-export-pdf-label": "offer PDF for download",
@@ -333,6 +341,7 @@
 	"looplegacy-biblio": "Special error message for biblio tag which has been deprecated in LOOP2 and replaced by loop_literature tag.",
 	"looplegacy-references": "Special error message for references tag is been obsolte since LOOP2.",
 
+	"loopobject-error-unknown-id" : "Error Message rendered when Object has an ID that's not in DB: $1 -> given ID; ",
 	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
