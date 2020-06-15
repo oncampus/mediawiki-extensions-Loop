@@ -98,8 +98,12 @@ class LoopXsl {
 		libxml_use_internal_errors( true );
 		
 		try {
-			$doc->loadXML($mathnode->C14N());
-			$return = $doc->documentElement;
+			if ( is_object( $mathnode ) ) {
+				$doc->loadXML($mathnode->C14N());
+				$return = $doc->documentElement;
+			} else{
+				$return = false;
+			}
 		} catch ( Exception $e ) {
 		
 		}

@@ -183,9 +183,9 @@ class LoopObject {
 			# objects with render=none are not numbered as it would lead to confusion
 			if ( !$object && $this->getRenderOption() == "none" ) {
 				$showNumbering = false;
-			} elseif ( $this->mTitleInput != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+			} elseif ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
 				#if there are hints for this element has a dublicate id, don't render the number and add an error
-
+				
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";

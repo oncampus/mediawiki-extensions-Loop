@@ -2055,6 +2055,7 @@
 
 	<!-- Extension: Quiz -->
 	<xsl:template match="extension[@extension_name='quiz']">
+		<xsl:call-template name="noprint_id_handling"></xsl:call-template>
 		<fo:block>
 			<fo:inline>
 				<xsl:call-template name="font_icon"></xsl:call-template>
