@@ -215,7 +215,6 @@ class LoopObject {
 		} 
 	
 		$content = '<div class="loop_object_content">';
-
 		$content .= $this->getContent();
 		
 		$content .= '</div>';
@@ -237,7 +236,7 @@ class LoopObject {
 					}
 				}
 				# Seperator
-				if ( $this->getRenderOption() == 'marked' ) {
+				if ( $this->getRenderOption() == 'marked' && !empty ( $this->getTitle() ) ) {
 					$footer .= '<span class="loop_object_title_seperator">:&nbsp;</span><wbr>';
 				}
 				# user-entered title
@@ -324,12 +323,13 @@ class LoopObject {
 		if ( $type == 'loop_media' ) {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
-		$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/><span>';
-		
-		if ($this->mDescription) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getDescription() ) ) . '<br/>';
-		}
+
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
+		if ($this->getTitle()) {
+			$parserOutput = $this->getParser()->parse(  preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( htmlspecialchars_decode( $this->getTitle() ) ) ), $linkTitle, $this->getParser()->getOptions(), $this->GetFrame() );
+			$parserOutput->clearWrapperDivClass();
+			$html .= $this->getParser()->stripOuterParagraph( $parserOutput->getText() ) . '</span><br/><span>';
+		}
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
@@ -645,7 +645,19 @@ class LoopObject {
 	 */
 	public function parse() {
 		$this->preParse();
-		$this->setContent($this->getParser()->recursiveTagParse($this->getInput(),$this->GetFrame()) );
+
+		# remove subtags ad they might interfere with rendering
+		$text = $this->getParser()->killMarkers ( $this->getInput() );
+		$subtags = array (
+			'loop_title',
+			'loop_description',
+			'loop_copyright'
+		);
+		$text = $this->getParser()->extractTagsAndParams ( $subtags, $text, $matches );
+		$text = $this->getParser()->killMarkers ( $text );
+		#$this->setInput();
+
+		$this->setContent($this->getParser()->recursiveTagParse($text,$this->GetFrame()) );
 	}
 	
 	/**
@@ -762,8 +774,7 @@ class LoopObject {
 				'loop_description',
 				'loop_copyright'
 		);
-		$text = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
-		
+		$text2 = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
 		$objectData = LoopObjectIndex::getObjectData($this->mId);
 
 		foreach ( $matches as $marker => $subtag ) {
@@ -780,6 +791,7 @@ class LoopObject {
 					break;
 			}
 		}
+		#if (){}
 		#dd($this,$objectData, $matches);
 	}
 	

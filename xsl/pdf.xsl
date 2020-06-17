@@ -257,7 +257,7 @@
 				<xsl:value-of select="$word_glossary"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
-		<fo:block id="glossary" keep-with-next="always" margin-bottom="10mm">
+		<fo:block id="glossary" keep-with-next="always" margin-bottom="5mm">
 			<xsl:call-template name="font_head"></xsl:call-template>
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
@@ -1241,14 +1241,18 @@
 							</xsl:if>
 							<fo:inline>	
 								<xsl:choose>
-									<xsl:when test="@title">
-										<xsl:value-of select="@title"></xsl:value-of>
-									</xsl:when>
 									<xsl:when test="descendant::extension[@extension_name='loop_title']">
+									
+										<xsl:attribute name="width" value="auto"/>
+										<xsl:attribute name="font-size" value="8.5pt">
+
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_title']"  mode="loop_object"></xsl:apply-templates>
 									</xsl:when>
 									<xsl:when test="descendant::extension[@extension_name='loop_figure_title']">
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_figure_title']" mode="loop_object"></xsl:apply-templates>
+									</xsl:when>
+									<xsl:when test="@title">
+										<xsl:value-of select="@title"></xsl:value-of>
 									</xsl:when>
 								</xsl:choose>	
 								<fo:leader leader-pattern="dots"></fo:leader>
@@ -1490,9 +1494,9 @@
 		
 		
 		<xsl:choose>
-			<xsl:when test="($glossary_exists='1')">
+			<!-- <xsl:when test="($glossary_exists='1')">
 				<xsl:text>glossary_sequence</xsl:text>
-			</xsl:when>		
+			</xsl:when>	 -->
 			<xsl:when test="($index_exists='1')">
 				<xsl:text>index_sequence</xsl:text>
 			</xsl:when>

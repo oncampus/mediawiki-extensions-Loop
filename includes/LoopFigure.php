@@ -180,12 +180,16 @@ class LoopFigure extends LoopObject{
 			$html .= '</span></td>';
 		}
 
-		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/>';
+		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">';#. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/>';
 		
-		if ($this->mDescription) {
-			$html .= preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', $this->getDescription() ) . '<br/>';
-		} 
+		#$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">'. preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( $this->getTitle() ) ) . '</span><br/>';
+		
 		$linkTitle = Title::newFromID ( $this->getArticleId () );
+		if ($this->getTitle()) {
+			$parserOutput = $this->getParser()->parse(  preg_replace ( '!(<br)( )?(\/)?(>)!', ' ', htmlspecialchars_decode( htmlspecialchars_decode( $this->getTitle() ) ) ), $linkTitle, $this->getParser()->getOptions(), $this->GetFrame() );
+			$parserOutput->clearWrapperDivClass();
+			$html .= $this->getParser()->stripOuterParagraph( $parserOutput->getText() ) . '</span><br/>';
+		}
 		$linkTitle->setFragment ( '#' . $this->getId () );
 		
 		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
