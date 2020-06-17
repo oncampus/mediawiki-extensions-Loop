@@ -114,6 +114,9 @@ class LoopXml {
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
 
+		# math tags are not recognized if there is no space before closing
+		$content = preg_replace('/(<\/math)/iU', " $1", $content);
+		
 		# remove html comments - these cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<!--.*-->)/iU', "", $content);
 		

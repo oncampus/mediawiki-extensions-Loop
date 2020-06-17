@@ -1242,10 +1242,6 @@
 							<fo:inline>	
 								<xsl:choose>
 									<xsl:when test="descendant::extension[@extension_name='loop_title']">
-									
-										<xsl:attribute name="width" value="auto"/>
-										<xsl:attribute name="font-size" value="8.5pt">
-
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_title']"  mode="loop_object"></xsl:apply-templates>
 									</xsl:when>
 									<xsl:when test="descendant::extension[@extension_name='loop_figure_title']">
@@ -2087,6 +2083,29 @@
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+								<xsl:when test="@icon">
+									<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
+									
+										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)!=''">
+											
+											<fo:external-graphic>
+												<xsl:choose>
+													<xsl:when test="contains( $iconfilename, '.svg' )">
+														<xsl:attribute name="width">13mm</xsl:attribute>
+														<xsl:attribute name="height">13mm</xsl:attribute>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:attribute name="scaling">uniform</xsl:attribute>
+														<xsl:attribute name="content-width">scale-to-fit</xsl:attribute>
+														<xsl:attribute name="max-width">13mm</xsl:attribute>
+														<xsl:attribute name="max-height">13mm</xsl:attribute>
+													</xsl:otherwise>
+												</xsl:choose>
+												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
+											</fo:external-graphic>
+										</xsl:if>
+								</xsl:when>
+
 								<xsl:when test="@type='task'"><xsl:value-of select="$icon_task"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$icon_timerequirement"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$icon_learningobjectives"></xsl:value-of></xsl:when>
@@ -2112,23 +2131,13 @@
 								<xsl:when test="@type='citation'"><xsl:value-of select="$icon_citation"></xsl:value-of></xsl:when>
 								
 								<xsl:otherwise>
-									<xsl:if test="@icon">
-										<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
-									
-										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)!=''">
-											<fo:external-graphic scaling="uniform" content-width="scale-to-fit" max-width="13mm" max-height="13mm">
-												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
-											</fo:external-graphic>
-										</xsl:if>
-
-										<!-- content-width="24mm" -->
-									</xsl:if>
-								</xsl:otherwise> <!-- todo: error msg? -->
+								</xsl:otherwise>
 							</xsl:choose>
 						</fo:block>
 
 						<fo:block font-weight="bold" font-size="8.5pt" margin-right="0mm" line-height="10pt" white-space-treatment="preserve" linefeed-treatment="preserve">
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+								<xsl:when test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$word_looparea_learningobjectives"></xsl:value-of></xsl:when>
@@ -2154,8 +2163,7 @@
 								<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
 								<xsl:otherwise>
-									<xsl:if test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:if>
-								</xsl:otherwise> <!-- todo: error msg? -->
+								</xsl:otherwise>
 							</xsl:choose>
 						</fo:block>
 						</fo:block>
