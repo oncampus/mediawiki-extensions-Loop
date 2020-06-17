@@ -1,6 +1,7 @@
 /**
   * @description Script for <spoiler> tag (includes/LoopSpoiler.php)
   * @author Dustin Neß <dustin.ness@th-luebeck.de>
+  * @author Dennis Krohn <dustin.ness@th-luebeck.de>
   */
 
 $('.loopspoiler').click(function() {
@@ -21,10 +22,28 @@ $('.loopspoiler').click(function() {
       type = 'default';
     }
     
-    $('#' + $(this).attr("id") +  " .mwe-math-element").each(function() {
+    let regexp = /data-marker="(\w{8})"/g;
+    let matches = content.matchAll(regexp);
+    let contentids = new Array;
+    let mathids = new Array;
+
+    for ( let match of matches ) {
+      contentids.push(match[1]);
+    }
+    contentids.sort();
+
+    $('.loopspoiler_math_replace').each(function() {
       content = content.replace('<span class="loopspoiler_math_replace"></span>', $(this).html() );
       $(this).remove();
     })
+    $('#' + $(this).attr("id") +  " .replacemath").each(function() {
+      mathids.push($(this).attr("id"));
+    })
+    for ( let i = 0; i < mathids.length; i++ ) {
+      console.log('<span class="loopspoiler_math_replace" data-marker="'+contentids[i]+'"></span>');
+      content = content.replace('<span class="loopspoiler_math_replace" data-marker="'+contentids[i]+'"></span>', $('#' + mathids[i]).html() );
+      $(".replacemath #"+mathids[i]).remove();
+    }
     $('#' + $(this).attr("id")).attr("data-loaded", true);
     $(this).after('<div class="loopspoiler_' + type + '_content ' + id + '">' + content + '</div>')
   
