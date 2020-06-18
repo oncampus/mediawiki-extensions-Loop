@@ -132,7 +132,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 		} else {
 			$loopStructure->loadStructureItems();
 		}
-		$error = false;
+		$error = array();
 
 		if ( $user->isAllowed('loop-pdf-test') ) {
 
@@ -157,28 +157,28 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 
 				if ( strpos( $tmpPdf, "%PDF") === 0 ) {
 					# pdf :)
-					$html .= $item->tocNumber . " " . $item->tocText . " OK!<br>";
+					$html .= $item->tocNumber . " " . $item->tocText . ": <span class='text-success'>OK!</span><br>";
 				} else {
 					# not a pdf!
 					$html .= $linkRenderer->makelink(
 						Title::newFromID( $item->article ), 
-						new HtmlArmor( "<b>".$item->tocNumber . " " . $item->tocText . " NOT OK!</b> (ID $item->article)" ),
+						new HtmlArmor( "<b>".$item->tocNumber . " " . $item->tocText . ": Error!</b> (ID $item->article)" ),
 						array('target' => '_blank' )
 						);
+					$errorid = uniqid();
+					$html .= '<a class="" data-toggle="collapse" href="#err'.$errorid.'" role="button" aria-expanded="false" aria-controls="err'.$errorid.'"> ▼</a>';
 
-					$html .= "<br><br>";
+					#$html .= "<br><br>";
 
-					$html .= "<pre>". implode("\n", array_slice(explode("\n", $tmpPdf), 1)) . "</pre><br>";
-					$html .= $xmlfo["errors"];
-					$error = $item->tocText;
-					break;
+					$html .= "<pre class='alert alert-danger collapse' id='err$errorid'>". implode("\n", array_slice(explode("\n", $tmpPdf), 1)) . "</pre><br>";
+					$error[] = "[[". $item->tocText . "]]";
 				}
 				
 			}
-			if ( !$error ) {
+			if ( empty( $error ) ) {
 				$out->addHtml( '<div class="alert alert-success" role="alert">' . $this->msg( 'loopexport-pdf-test-success' ) . '</div>' );
 			} else {
-				$out->addHtml( '<div class="alert alert-danger" role="alert">' . $this->msg( 'loopexport-pdf-test-failure', $error ) . '</div>' );
+				$out->addHtml( '<div class="alert alert-danger" role="alert">' . $this->msg( 'loopexport-pdf-test-failure', implode ( ", ",$error ) ) . '</div>' );
 			}
 			
 			$trackingCategory = Category::newFromName( $this->msg("loop-tracking-category-error")->text() );

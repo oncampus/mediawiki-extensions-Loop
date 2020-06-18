@@ -197,10 +197,24 @@ class LoopObject {
 					$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 					$this->error .= $e . "\n";
 				} else {
-					# the id is not in db
-					$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
-					$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-					$this->error .= $e . "\n";
+					$lsi = LoopStructureItem::newFromIds($articleId);
+					if ( $lsi ) {
+						$title = $this->getParser()->getTitle();
+						$latestRevId = $title->getLatestRevID();
+						$wikiPage = WikiPage::factory($title);
+						$fwp = new FlaggableWikiPage ( $title );
+					
+						if ( isset($fwp) ) {
+							$stableRevId = $fwp->getStable();
+
+							if ( $latestRevId == $stableRevId && $stableRevId != null ) {
+								# the id is not in db
+								$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
+								$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+								$this->error .= $e . "\n";
+							} 
+						} 
+					}
 				}
 				
 				

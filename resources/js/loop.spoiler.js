@@ -40,7 +40,6 @@ $('.loopspoiler').click(function() {
       mathids.push($(this).attr("id"));
     })
     for ( let i = 0; i < mathids.length; i++ ) {
-      console.log('<span class="loopspoiler_math_replace" data-marker="'+contentids[i]+'"></span>');
       content = content.replace('<span class="loopspoiler_math_replace" data-marker="'+contentids[i]+'"></span>', $('#' + mathids[i]).html() );
       $(".replacemath #"+mathids[i]).remove();
     }

@@ -129,7 +129,7 @@
 	"loopexport-audio-intro-date": "It is at the level of $1",
 	"loopexportpdftest": "Test PDF per page",
 	"loopexport-pdf-test-success": "All pages were loaded successfully! If the PDF still doesn't work, [[Special:PurgeCache|delete the caches]] or contact your administrator.",
-	"loopexport-pdf-test-failure": "An error occurred on page [[$1]]. You can look at the error log at the end of this page.",
+	"loopexport-pdf-test-failure": "An error occurred on page $1. You can look at the error log at the end of this page.",
 	"loopexport-pdf-test-notice": "In the tracking category for $1 are pages listed that contain errors. Look at these pages in edit mode to find the sources.",
 	"loopexport-pdf-error": "An error occurred during the export of PDF. ",
 
