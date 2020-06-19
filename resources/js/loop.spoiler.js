@@ -32,20 +32,16 @@ $('.loopspoiler').click(function() {
     }
     contentids.sort();
 
-    $('.loopspoiler_math_replace').each(function() {
-      content = content.replace('<span class="loopspoiler_math_replace"></span>', $(this).html() );
-      $(this).remove();
-    })
     $('#' + $(this).attr("id") +  " .replacemath").each(function() {
       mathids.push($(this).attr("id"));
     })
     for ( let i = 0; i < mathids.length; i++ ) {
-      content = content.replace('<span class="loopspoiler_math_replace" data-marker="'+contentids[i]+'"></span>', $('#' + mathids[i]).html() );
-      $(".replacemath #"+mathids[i]).remove();
+      content = content.replace('<span class="loopspoiler_math_replace" data-marker="'+contentids[i]+'"></span>', $('#' + $(this).attr("id") +  ' #' + mathids[i] + " .mwe-math-element").html() );
+      $('#' + $(this).attr("id") + " .replacemath #"+mathids[i] + " .mwe-math-element").remove();
     }
     $('#' + $(this).attr("id")).attr("data-loaded", true);
     $(this).after('<div class="loopspoiler_' + type + '_content ' + id + '">' + content + '</div>')
-  
+    
   }
   
 });
