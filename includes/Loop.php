@@ -60,8 +60,11 @@ class Loop {
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
 		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
-		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS, $wgLoopObjectDefaultRenderOption;
+		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS, $wgLoopObjectDefaultRenderOption,
+		$wgExternalLinkTarget;
 		
+		# external links to new tab
+		$wgExternalLinkTarget = '_blank';
 
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
