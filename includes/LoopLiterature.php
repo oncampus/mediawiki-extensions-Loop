@@ -51,8 +51,11 @@ class LoopLiterature {
 				"optional" => array( "volume", "number", "pages", "month", "note", "url", "doi" )
 			),
 			"book" => array(
-				"required" => array( "author", "editor", "itemTitle", "publisher", "year" ),
-				"optional" => array( "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url", "doi" )
+				#"required" => array( "author", "editor", "itemTitle", "publisher", "year" ),
+				#"optional" => array( "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url", "doi" )
+				# TODO fix: author OR editor
+				"required" => array( "author", "itemTitle", "publisher", "year" ),
+				"optional" => array( "editor", "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url", "doi" )
 			),
 			"booklet" => array(
 				"required" => array( "itemTitle" ),
@@ -910,9 +913,11 @@ class LoopLiterature {
 		} elseif ( !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "LOOP1" ) {
 				if ( $type == 'xml' ) {
-					$return .= '<bold>' . $li->itemTitle."</bold> ";
+					# removed upon request
+					# $return .= '<bold>' . $li->itemTitle."</bold> ";
 				} else {
-					$return .= $li->itemTitle." ";
+					# removed upon request
+					# $return .= $li->itemTitle." ";
 				}
 			} else {
 				$return .= $italic. $li->itemTitle. $italicEnd . ". ";
