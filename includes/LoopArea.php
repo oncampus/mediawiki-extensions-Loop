@@ -116,7 +116,9 @@ class LoopArea {
 		if( array_key_exists( 'icon', $args ) ) { // array_key_exists() because code convention forbids isset()
 
 			try {
-				if( file_exists( wfLocalFile( $args['icon'] )->getLocalRefPath() ) ) {
+				$file = wfLocalFile( $args['icon'] );
+
+				if( $file !== null && file_exists( $file->getLocalRefPath() ) ) {
 					
 				    global $wgOut, $wgDefaultUserOptions, $wgUploadDirectory;
 					$user = $wgOut->getUser();
