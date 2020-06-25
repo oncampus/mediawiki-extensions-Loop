@@ -273,6 +273,8 @@ class LoopUpdater {
 							$key = $output_array[2];
 							$text = $output_array[4];
 							$text = str_replace( "isbn=", "ISBN: ", $text);
+							$text = str_replace( "'''", "", $text);
+							$text = str_replace( "''", "", $text);
 
 							$existingLiterature = new LoopLiterature();
 							$existingLiterature->loadLiteratureItem( $key );
