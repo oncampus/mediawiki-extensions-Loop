@@ -246,11 +246,15 @@ class LoopConsent {
         foreach ( $return as $key => $value ) {
             foreach( $value as $v ) {
                 $v = trim( $v );
-                file_put_contents(
-                    $thumbStorePath . '/' . $v . '.jpg',
-                    file_get_contents( 'https://img.youtube.com/vi/' . $v . '/maxresdefault.jpg' ),
-                    FILE_APPEND
-                );
+                $file = 'https://img.youtube.com/vi/' . $v . '/maxresdefault.jpg';
+                if ( file_exists( $file ) ) {
+                    file_put_contents(
+                        $thumbStorePath . '/' . $v . '.jpg',
+                        file_get_contents( $file ),
+                        FILE_APPEND
+                    );
+                }
+               
             }
         }
 

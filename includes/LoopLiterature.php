@@ -904,14 +904,11 @@ class LoopLiterature {
 		    }
 		}
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
-		if ( !empty( trim( $li->author ) ) ) {
-			
-			if ( $li->itemType != "LOOP1" ) {
-				if ( $type == 'xml' ) {
-					$return .= '<bold>' . $li->author."</bold> ";
-				} else {
-					$return .= $li->author." ";
-				}
+		if ( !empty( trim( $li->author ) ) && $li->itemType != "LOOP1" ) {
+			if ( $type == 'xml' ) {
+				$return .= '<bold>' . $li->author."</bold> ";
+			} else {
+				$return .= $li->author." ";
 			}
 		} elseif ( !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "LOOP1" ) {

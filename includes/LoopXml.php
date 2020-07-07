@@ -383,81 +383,85 @@ class LoopXml {
 		} else {
 			if (isset($link_parts['target'])) {
 				$target_title = Title::newFromText($link_parts['target']);
-				$target_ns = $target_title->getNamespace();
-	
-				if ($target_ns == NS_FILE) {
-					$file = wfLocalFile($target_title);
-					if (is_object($file)) {
-						$target_file=$file->getLocalRefPath();
-						$target_url=$file->getFullUrl();
-						if (is_file($target_file)) {
-							$allowed_extensions = array('jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm');
-							if (in_array($file->getExtension(), $allowed_extensions)) {
-									
-								if (array_key_exists('width', $link_parts)) {
-									$width=0.214*intval($link_parts['width']);
-									if ($width>150) {
-										$imagewidth='150mm';
+				if ( is_object( $target_title ) ) {
+
+					$target_ns = $target_title->getNamespace();
+		
+					if ($target_ns == NS_FILE) {
+						$file = wfLocalFile($target_title);
+						if (is_object($file)) {
+							$target_file=$file->getLocalRefPath();
+							$target_url=$file->getFullUrl();
+							if (is_file($target_file)) {
+								$allowed_extensions = array('jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm');
+								if (in_array($file->getExtension(), $allowed_extensions)) {
+										
+									if (array_key_exists('width', $link_parts)) {
+										$width=0.214*intval($link_parts['width']);
+										if ($width>150) {
+											$imagewidth='150mm';
+										} else {
+											$imagewidth=round($width,0).'mm';
+										}
 									} else {
-										$imagewidth=round($width,0).'mm';
+										$size=getimagesize($target_file);
+										$width=0.214*intval($size[0]);
+										if ($width>150) {
+											$imagewidth='150mm';
+										} else {
+											$imagewidth=round($width,0).'mm';
+										}
 									}
-								} else {
-									$size=getimagesize($target_file);
-									$width=0.214*intval($size[0]);
-									if ($width>150) {
-										$imagewidth='150mm';
-									} else {
-										$imagewidth=round($width,0).'mm';
+										
+									$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
+									if (isset($link_parts['align'])) {
+										$return_xml .= ' align="'.$link_parts['align'].'" ';
 									}
+									if (isset($link_parts['format'])) {
+										$return_xml .= ' format="'.$link_parts['format'].'" ';
+									}
+									$return_xml .=  '></php_link_image>';
+										
+										
+								} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+									$return_xml .= '<paragraph>';
+									$return_xml .= '<extension extension_name="loop_video" source="'.$link_parts['target'].'"></extension>';
+									if ( isset ( $id ) ) {
+										$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+									}
+									$return_xml .= '</paragraph>';
+								} elseif ( $file->getMediaType() == "AUDIO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+									$return_xml .= '<paragraph>';
+									$return_xml .= '<extension extension_name="loop_audio" source="'.$link_parts['target'].'"></extension>';
+									if ( isset ( $id ) ) {
+										$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+									}
+									$return_xml .= '</paragraph>';
 								}
-									
-								$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
-								if (isset($link_parts['align'])) {
-									$return_xml .= ' align="'.$link_parts['align'].'" ';
-								}
-								if (isset($link_parts['format'])) {
-									$return_xml .= ' format="'.$link_parts['format'].'" ';
-								}
-								$return_xml .=  '></php_link_image>';
-									
-									
-							} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
-								$return_xml .= '<paragraph>';
-								$return_xml .= '<extension extension_name="loop_video" source="'.$link_parts['target'].'"></extension>';
-								if ( isset ( $id ) ) {
-									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
-								}
-								$return_xml .= '</paragraph>';
-							} elseif ( $file->getMediaType() == "AUDIO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
-								$return_xml .= '<paragraph>';
-								$return_xml .= '<extension extension_name="loop_audio" source="'.$link_parts['target'].'"></extension>';
-								if ( isset ( $id ) ) {
-									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
-								}
-								$return_xml .= '</paragraph>';
 							}
 						}
-					}
-				} elseif ($target_ns == NS_CATEGORY) {
-					// Kategorie-Link nicht ausgeben
-	
-				} else {
-					// internal link
-					if (!array_key_exists('text', $link_parts)) {
-						if(array_key_exists('part',$link_parts)) {
-							$link_parts['text']=$link_parts['part'];
-						} else {
-							$link_parts['text']=$link_parts['target'];
+					} elseif ($target_ns == NS_CATEGORY) {
+						// Kategorie-Link nicht ausgeben
+		
+					} else {
+						// internal link
+						if (!array_key_exists('text', $link_parts)) {
+							if(array_key_exists('part',$link_parts)) {
+								$link_parts['text']=$link_parts['part'];
+							} else {
+								$link_parts['text']=$link_parts['target'];
+							}
 						}
-					}
-					if (!array_key_exists('href', $link_parts)) {
-						$link_parts['href']=$link_parts['target'];
+						if (!array_key_exists('href', $link_parts)) {
+							$link_parts['href']=$link_parts['target'];
+						}
+						
+						if ($structureitem = LoopStructureItem::newFromToctext( $link_parts['href'] )) {
+							$link_parts['href'] = 'article'.$structureitem->getArticle();
+						}
+						$return_xml =  '<php_link_internal href="'.$link_parts['href'].'">'.$link_parts['text'].'</php_link_internal>' ;
 					}
 					
-					if ($structureitem = LoopStructureItem::newFromToctext( $link_parts['href'] )) {
-						$link_parts['href'] = 'article'.$structureitem->getArticle();
-					}
-					$return_xml =  '<php_link_internal href="'.$link_parts['href'].'">'.$link_parts['text'].'</php_link_internal>' ;
 				}
 			}
 		}
