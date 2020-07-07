@@ -985,7 +985,7 @@ class LoopLiterature {
 		if ( !empty( trim( $li->series ) ) ) {
 			$return .= "(". $li->series."). ";
 		} 
-		if ( !empty( trim( $li->type ) ) ) {
+		if ( !empty( trim( $li->type ) ) && trim( $li->type ) != $li->itemType ) {
 			$return .= "(". $li->type."). ";
 		} 
 		if ( !empty( trim( $li->volume ) ) ) {
