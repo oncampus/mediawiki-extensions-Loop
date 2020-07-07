@@ -118,7 +118,10 @@ class LoopXml {
 		$content = preg_replace('/(<\/math)/iU', " $1", $content);
 		
 		# remove html comments - these cause the whole page to vanish from XML and PDF
-		$content = preg_replace('/(<!--.*-->)/iU', "", $content);
+		$content = preg_replace('/(<!--.*-->)/msiU', "", $content);
+
+		# remove loop comments - these may cause the whole page to vanish from XML and PDF
+		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
 		
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
@@ -136,6 +139,9 @@ class LoopXml {
 		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
+		if ($title->getArticleID() == 248) { # debug for specific pages
+			#dd( $content, $xml);
+		}
 		$xml .= "\n</article>\n";
 		
 		return $xml;
@@ -147,7 +153,7 @@ class LoopXml {
 	 * @param String $contentText
 	 */
 	public static function handleDublicateIds( $contentText ) {
-
+		
 		$idCache = array();
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );

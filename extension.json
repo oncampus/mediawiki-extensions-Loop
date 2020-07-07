@@ -116,7 +116,8 @@
 		"SpecialLoopPrivacy": "includes/Loop.php",
 		"SpecialLoopRSS": "includes/LoopRSS.php",
 		"LoopNgSpice": "includes/LoopNgSpice.php",
-		"SpecialLoopNgSpice": "includes/LoopNgSpice.php"
+		"SpecialLoopNgSpice": "includes/LoopNgSpice.php",
+		"LoopComment": "includes/LoopComment.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -150,7 +151,8 @@
 			"LoopMediaHandler::onParserSetup",
 			"LoopScreenshot::onParserSetup",
 			"LoopAccordion::onParserSetup",
-			"LoopNgSpice::onParserSetup"
+			"LoopNgSpice::onParserSetup",
+			"LoopComment::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy",
