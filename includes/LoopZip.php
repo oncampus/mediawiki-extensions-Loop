@@ -29,7 +29,7 @@ class LoopZip {
 			$filetitle = Title::newFromText( $loopzip->file, NS_FILE );
             $localfile = wfLocalFile( $filetitle ); # wfLocalFile() will be deprecated in 1.34
 
-            if ( $localfile->exists() ) {
+            if ( is_object( $localfile ) && $localfile->exists() ) {
                 $zipfilename = $localfile->getName();
                 $hashpath = $localfile->getHashPath();
                 $startfile = $wgUploadDirectory . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;

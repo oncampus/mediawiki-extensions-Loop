@@ -95,7 +95,12 @@ class LoopUpdater {
 			$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
 			$stableRev = $tmpFPage->getStable();
 			if ( $stableRev == 0 ) {
-				$stableRev = $tmpFPage->getRevision()->getId();
+				if ( $tmpFPage->getRevision() !== null ) {
+					$stableRev = $tmpFPage->getRevision()->getId();
+				} else {
+					$stableRev = "null";
+					error_log("NO REVISION AVAILABLE $row->page_id");
+				}
 			} 
 			error_log("Updating page " . $row->page_id . " (rev " . $stableRev .  ")");
 			Hooks::run( 'LoopUpdateSavePage', array( $title ) );

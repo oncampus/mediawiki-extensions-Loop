@@ -150,6 +150,8 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$fakeTmpStructure->structureItems = array( $item );
 				$fakeTmpStructure->mainPage = $item->article;
 				
+				echo "<script>console.log($item->article + ' started');</script>";
+
 				$xml = LoopXml::structure2xml( $fakeTmpStructure );
 				$xmlfo = LoopPdf::transformToXmlfo( $xml );
 				$modifiedXmlfo = self::modifyXmlfoForTest( $xmlfo["xmlfo"], $fakeTmpStructure );
@@ -158,7 +160,9 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				if ( strpos( $tmpPdf, "%PDF") === 0 ) {
 					# pdf :)
 					$html .= $item->tocNumber . " " . $item->tocText . ": <span class='text-success'>OK!</span><br>";
+					echo "<script>console.log('OK');</script>";
 				} else {
+					echo "<script>console.log($item->article + ' FAILED ( $item->tocText )');</script>";
 					# not a pdf!
 					$html .= $linkRenderer->makelink(
 						Title::newFromID( $item->article ), 
