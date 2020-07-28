@@ -25,15 +25,15 @@ class LoopPrint {
 		$html = '';
 		if ( strtolower( $button ) === "true" || $loopeditmode ) {
 			if( $loopeditmode || $button !== "false" ) {
-				$parser->getOutput()->addModules( 'loop.print.js' );
 				$btnId = uniqid();
 				$btnIcon = '<span class="ic ic-print-area float-none"></span>';
 				$editModeClass = $loopeditmode ? " loopeditmode-hint" : "";
 				$html = '<div class="loopprint-container loopprint-button">';
-				$html .= '<span data-title="'.wfMessage('loopprint-printingarea')->text().'" class="loopprint-tag '. $btnId;
+				$html .= '<input id="'. $btnId .'" type="checkbox">';
+				$html .= '<label for="'. $btnId .'" class="mb-0"><span data-title="'.wfMessage('loopprint-printingarea')->text().'" class="loopprint-tag '. $btnId;
 				$html .= ( $loopeditmode && $button === "false" ) ? ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"' : '"';
-				$html .= '>' . $btnIcon . '</span>';
-				$html .= '<div class="loopprint-content" id="'. $btnId .'">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
+				$html .= '>' . $btnIcon . '<span class="loopprint-button-text pl-1">'.wfMessage('loopprint-printingarea')->text().'</span></span></label>';
+				$html .= '<div class="loopprint-content pb-1">' . $parser->recursiveTagParse( $input, $frame ) . '</div>';
 				$html .= '</div>';	
 			}
 		}
