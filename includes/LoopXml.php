@@ -18,7 +18,7 @@ class LoopXml {
 	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
 		global $wgCanonicalServer, $wgLanguageCode;
 
-		set_time_limit(300);
+		set_time_limit(601);
 		ini_set('memory_limit', '1024M');
 
 		$loopStructureItems = $loopStructure->getStructureItems();
@@ -2078,7 +2078,7 @@ class wiki2xml
 	function parse ( &$wiki )
 	{
 
-		set_time_limit(300);
+		set_time_limit(603);
 		#echo("<br>w2x_52");
 		global $IP;
 

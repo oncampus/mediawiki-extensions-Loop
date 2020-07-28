@@ -907,14 +907,14 @@ class LoopLiterature {
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
 		if ( !empty( trim( $li->author ) ) && $li->itemType != "LOOP1" ) {
 			if ( $type == 'xml' ) {
-				$return .= '<bold>' . $li->author."</bold> ";
+				$return .=  $li->author;
 			} else {
 				$return .= $li->author." ";
 			}
 		} elseif ( !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "LOOP1" ) {
 				if ( $type == 'xml' ) {
-					$return .= '<bold>' . $li->itemTitle."</bold> ";
+					$return .=  $li->itemTitle;
 				} else {
 					$return .= $li->itemTitle." ";
 				}
@@ -1499,7 +1499,7 @@ class SpecialLoopLiterature extends SpecialPage {
 						$tmpElement .= '</p>';
 					} else {
 						$tmpElement = '<paragraph>';
-						$tmpElement .= LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, "xml" );#
+						$tmpElement .= htmlspecialchars( LoopLiterature::renderLiteratureElement( $literatureItem, $referenceData, "xml" ) );
 						$tmpElement .= '</paragraph>';
 					}
 					$elements[$orderkey][$referenceData["itemKey"]] = $tmpElement;
@@ -1537,7 +1537,7 @@ class SpecialLoopLiterature extends SpecialPage {
                     $tmpElement .= '</p>';
                 } else {
                     $tmpElement = '<paragraph>';# id="a'. $referenceData["refId"].'">';
-                    $tmpElement .= LoopLiterature::renderLiteratureElement( $item, array(), 'xml' );
+                    $tmpElement .= htmlspecialchars( LoopLiterature::renderLiteratureElement( $item, array(), 'xml' ));
                     $tmpElement .= '</paragraph>';
 				}
 				$elements[$orderkey][$item->itemKey] = $tmpElement;

@@ -61,7 +61,7 @@ abstract class LoopExport {
 		$export_dir = $wgUploadDirectory.$this->exportDirectory.'/'.$this->structure->getId();
 		if (  isset($this->lsi) && $this->lsi != null ) {
 			$export_dir .= '/'. $this->lsi->article;
-		
+
 		}
 		//var_dump( $export_dir );
 		if (!is_dir($export_dir)) {
@@ -104,7 +104,7 @@ abstract class LoopExport {
 	}
 
 	public function getExportFilename() {
-		
+
 		global $wgCanonicalServer;
 
 		$urlparts = mb_split("\.", $wgCanonicalServer);
@@ -113,14 +113,14 @@ abstract class LoopExport {
 		} else {
 			$hashtag = preg_replace("/(http[s]{0,1}:\/\/)/i", "", $wgCanonicalServer);;
 		}
-		
+
 		$zipFileAddendum = "";
 		if ( $this->exportDirectory == "/export/mp3" ) {
 			$zipFileAddendum = "_" . wfMessage("loopexport-audio-filename")->text();
 		} elseif ( $this->exportDirectory == "/export/html" ) {
 			$zipFileAddendum = "_" . wfMessage("loopexport-offline-filename")->text();
-		} 
-		
+		}
+
 		return strtoupper($hashtag) . $zipFileAddendum .'.'. $this->fileExtension;
 	}
 
@@ -151,7 +151,7 @@ class LoopExportXml extends LoopExport {
 
 	/**
 	 * Add indexable item to the database
-	 * @param Array $modifiers: 
+	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public function generateExportContent( Array $modifiers = null ) {
@@ -205,7 +205,7 @@ class LoopExportPdf extends LoopExport {
 		}
 		return false;
 	}
-	
+
 	public function generateExportContent() {
 		$this->exportContent = LoopPdf::structure2pdf($this->structure);
 	}
@@ -234,7 +234,7 @@ class LoopExportMp3 extends LoopExport {
 		$this->exportDirectory = '/export/mp3';
 		$this->fileExtension = 'zip';
 		$this->lsi = null;
-		
+
 	}
 
 	public static function isAvailable( $loopSettings = null ) {
@@ -256,7 +256,7 @@ class LoopExportMp3 extends LoopExport {
 	public function sendExportHeader() {
 
 		$filename = $this->getExportFilename();
-			
+
 		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: application/zip");
 		header('Content-Disposition: attachment; filename="' . $filename . '";' );
@@ -265,7 +265,7 @@ class LoopExportMp3 extends LoopExport {
 		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
-	
+
 }
 class LoopExportPageMp3 extends LoopExport {
 
@@ -275,7 +275,7 @@ class LoopExportPageMp3 extends LoopExport {
 		$this->exportDirectory = '/export/mp3';
 		$this->fileExtension = 'mp3';
 		$this->lsi = null;
-		
+
 	}
 
 	public static function isAvailable( $loopSettings = null ) {
@@ -304,7 +304,7 @@ class LoopExportPageMp3 extends LoopExport {
 		}
 	}
 	public function sendExportHeader() {
-			
+
 		header("Last-Modified: " . date("D, d M Y H:i:s T", strtotime($this->structure->lastChanged())));
 		header("Content-Type: text/html");
 		header("Content-Length: ". strlen($this->exportContent));
@@ -312,7 +312,7 @@ class LoopExportPageMp3 extends LoopExport {
 		header("Expires: " . date("D, d M Y H:i:s T"));
 
 	}
-	
+
 }
 
 class LoopExportEpub extends LoopExport {
@@ -500,7 +500,7 @@ class SpecialLoopExport extends SpecialPage {
 				}
 				break;
 		}
-		
+
 		if ( $export != false ) {
 			$logMsg = "";
 			if ( ! in_array( "sysop", $this->getUser()->getGroups() ) ) {
@@ -509,18 +509,18 @@ class SpecialLoopExport extends SpecialPage {
 			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
 					$export->getExistingExportFile();
 					$logMsg = wfMessage("log-export-reused")->text();
-					
+
 			} else {
 				$export->generateExportContent();
-				
+
 				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" && !is_array( $export->getExportContent() ) ) { # don't cache html exports
 					$export->saveExportFile();
 					$logMsg = wfMessage("log-export-generated")->text();
-				} 
+				}
 			}
 			if ( is_array( $export->getExportContent() ) ) {
 				$msg = $this->msg( "loopexport-pdf-error" );
-				
+
 				if ( $this->getUser()->isAllowed('loop-pdf-test') ) {
 					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExportPdfTest' ), $this->msg( "loopexportpdftest" )->parse() );
 				} elseif ( LoopBugReport::isAvailable() != false ) {
@@ -536,10 +536,10 @@ class SpecialLoopExport extends SpecialPage {
 				$this->getOutput()->addHTML( $html );
 
 			} elseif ($export->getExportContent() != null ) {
-				
+
 				if ( isset($logEntry) ) {
 					$logEntry->setTarget( Title::newFromId($structure->mainPage) );
-					$logEntry->setPerformer( User::newFromId(0) ); 
+					$logEntry->setPerformer( User::newFromId(0) );
 					$logEntry->setParameters( [ '4::paramname' => $logMsg ] );
 					$logid = $logEntry->insert();
 				}
@@ -549,7 +549,7 @@ class SpecialLoopExport extends SpecialPage {
 				$export->sendExportHeader();
 				echo $export->getExportContent();
 			}
-			
+
 		} else {
 
 			$out->addHtml('<ul>');
@@ -564,11 +564,11 @@ class SpecialLoopExport extends SpecialPage {
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) { 
+			if ($user->isAllowed( 'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) {
 				$mp3ExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), new HtmlArmor(wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$mp3ExportLink.'</li>');
-			}			
-			
+			}
+
 			if ($user->isAllowed( 'loop-export-html' ) && LoopExportHtml::isAvailable() ) {
 				$htmlExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/html' ), new HtmlArmor(wfMessage ( 'export-linktext-html' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$htmlExportLink.'</li>');

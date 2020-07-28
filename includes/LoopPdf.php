@@ -1,6 +1,6 @@
-<?php 
+<?php
 /**
- * @description Exports LOOP to PDF and test PDF side 
+ * @description Exports LOOP to PDF and test PDF side
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 use MediaWiki\MediaWikiServices;
 
 class LoopPdf {
-	
+
 	/*
 	* Turns given LoopStructure into PDF.
 	* @params LoopStructure $structure
@@ -20,32 +20,48 @@ class LoopPdf {
 	* 			-> "pagetest" = true: return will be modified for single page test support.
 	*/
 	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
-		global $IP;
-		
-		set_time_limit(1200);
+		global $IP, $wgLoopExportDebug;
+
+		if ( $wgLoopExportDebug ) {
+			global $wgServerName;
+			error_log("$wgServerName PDF Debug: structure2pdf started");
+		}
+		set_time_limit(1201);
 
 		$wiki_xml = LoopXml::structure2xml($structure);
 		$errors = '';
 
 		$xmlfo = self::transformToXmlfo( $wiki_xml );
 		$pdf = self::makePdfRequest( $xmlfo["xmlfo"] );
-		
+
 		if ( !empty($xmlfo["errors"]) ) {
 			var_dump($xmlfo["errors"]);
 		}
-		
+
 		if ( strpos( $pdf, "%PDF") !== 0 ) { # error!
+			if ( $wgLoopExportDebug ) {
+				global $wgServerName;
+				error_log("$wgServerName PDF Debug: failed");
+			}
 			return [$pdf, $xmlfo, $wiki_xml];
+		}
+		if ( $wgLoopExportDebug ) {
+			global $wgServerName;
+			error_log("$wgServerName PDF Debug: structure2pdf success");
 		}
 		#var_dump( "Debug! PDF funktioniert eigentlich. ", $xmlfo, $wiki_xml );exit;
 		return $pdf;
-		
-	
-	}	
-	
+
+
+	}
+
 	public static function transformToXmlfo( $wiki_xml ) {
-		global $IP;
-		
+		global $IP, $wgLoopExportDebug;
+
+		if ( $wgLoopExportDebug ) {
+			global $wgServerName;
+			error_log("$wgServerName PDF Debug: transformation to xmlfo started");
+		}
 		$errors = '';
 		$xmlfo = '';
 		try {
@@ -54,14 +70,14 @@ class LoopPdf {
 		} catch (Exception $e) {
 			$errors .= $e . "\n";
 		}
-	
+
 		try {
 			$xsl = new DOMDocument;
 			$xsl->load( $IP.'/extensions/Loop/xsl/pdf.xsl' );
 		} catch ( Exception $e ) {
 			$errors .= $e . "\n";
 		}
-	
+
 		try {
 			$proc = new XSLTProcessor;
 			$proc->registerPHPFunctions();
@@ -71,7 +87,10 @@ class LoopPdf {
 			$errors .= $e . "\n";
 		}
 		$return = array( "xmlfo" => $xmlfo, "errors" => $errors );
-
+		if ( $wgLoopExportDebug ) {
+			global $wgServerName;
+			error_log("$wgServerName PDF Debug: transformed to xmlfo");
+		}
 		return $return;
 	}
 
@@ -91,7 +110,7 @@ class LoopPdf {
 		return $pdf;
 
 	}
-	
+
 }
 
 class SpecialLoopExportPdfTest extends SpecialPage {
@@ -99,12 +118,12 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 	public function __construct() {
 		parent::__construct( 'LoopExportPdfTest' );
 	}
-	
+
 	public function execute( $sub ) {
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
-		
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
@@ -149,7 +168,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$fakeTmpStructure = new LoopStructure(1000);
 				$fakeTmpStructure->structureItems = array( $item );
 				$fakeTmpStructure->mainPage = $item->article;
-				
+
 				echo "<script>console.log($item->article + ' started');</script>";
 
 				$xml = LoopXml::structure2xml( $fakeTmpStructure );
@@ -165,7 +184,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 					echo "<script>console.log($item->article + ' FAILED ( $item->tocText )');</script>";
 					# not a pdf!
 					$html .= $linkRenderer->makelink(
-						Title::newFromID( $item->article ), 
+						Title::newFromID( $item->article ),
 						new HtmlArmor( "<b>".$item->tocNumber . " " . $item->tocText . ": Error!</b> (ID $item->article)" ),
 						array('target' => '_blank' )
 						);
@@ -177,20 +196,20 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 					$html .= "<pre class='alert alert-danger collapse' id='err$errorid'>". implode("\n", array_slice(explode("\n", $tmpPdf), 1)) . "</pre><br>";
 					$error[] = "[[". $item->tocText . "]]";
 				}
-				
+
 			}
 			if ( empty( $error ) ) {
 				$out->addHtml( '<div class="alert alert-success" role="alert">' . $this->msg( 'loopexport-pdf-test-success' ) . '</div>' );
 			} else {
 				$out->addHtml( '<div class="alert alert-danger" role="alert">' . $this->msg( 'loopexport-pdf-test-failure', implode ( ", ",$error ) ) . '</div>' );
 			}
-			
+
 			$trackingCategory = Category::newFromName( $this->msg("loop-tracking-category-error")->text() );
 			$trackingCategoryItems = $trackingCategory->getMembers();
-	
+
 			if ( !empty( $trackingCategoryItems ) ) {
 				$link = $linkRenderer->makelink(
-					Title::newFromText( $this->msg( "loop-tracking-category-error" )->text(), NS_CATEGORY ), 
+					Title::newFromText( $this->msg( "loop-tracking-category-error" )->text(), NS_CATEGORY ),
 					new HtmlArmor( $this->msg( "loop-tracking-category-error" )->text() ),
 					array('target' => '_blank' )
 					);
@@ -206,12 +225,12 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 
 	static function modifyXmlfoForTest( $xmlfo, $structure ) {
 
-		if ( !empty( $xmlfo ) ) { 
+		if ( !empty( $xmlfo ) ) {
 			#modify content so pdf still works in single-page test mode
 			$dom = new DomDocument();
 			$dom->loadXML( $xmlfo );
-			$linkTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "basic-link"); 
-			$refTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation"); 
+			$linkTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "basic-link");
+			$refTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation");
 			$lastRefTags = $dom->getElementsByTagNameNS ("http://www.w3.org/1999/XSL/Format", "page-number-citation-last");
 			foreach ( $linkTags as $tag ) {
 				$tag->setAttribute( "internal-destination", "article".$structure->mainPage );
@@ -223,7 +242,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$tag->setAttribute( "ref-id", "article".$structure->mainPage );
 			}
 			$modifiedXmlfo = $dom->saveXML();
-			
+
 			return $modifiedXmlfo;
 		}
 		return false;

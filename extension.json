@@ -363,7 +363,7 @@
 				"loopngspice-error-min-value"
 			]
 		}
-	
+
 	},
 	"TrackingCategories": [
 		"loop-tracking-category-error",
@@ -1037,6 +1037,10 @@
 		"LoopNgSpiceUrl": {
 			"value": "",
 			"description" : "Service Url for NgSpice."
+		},
+		"LoopEditorHideReferences": {
+			"value": false,
+			"description" : "Hide References from LOOP WikiEditor for faster loading."
 		}
 	},
 	"LogTypes": [ "loopexport" ],

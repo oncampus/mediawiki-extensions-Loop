@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * @description Transforms XML to XSLT-compatible content
@@ -50,14 +50,14 @@ class LoopXsl {
 			if (is_object($file)) {
 				$imagepath=$file->getFullUrl();
 				if ( file_exists($file->getLocalRefPath()) ) {
-					
+
 					return $imagepath;
 				} else {
-					
+
 					return '';
 				}
 			} else {
-				
+
 				return '';
 			}
 		}
@@ -74,7 +74,7 @@ class LoopXsl {
 		global $IP;
 		$input_object = $input[0];
 		$mathcontent = $input_object->textContent;
-		
+
 		try {
 		    $math = new MathMathML($mathcontent);
 		    $math->render();
@@ -91,12 +91,12 @@ class LoopXsl {
 		$dom = new DOMDocument;
 		$dom->loadXML( $return );
 		$mathnode = $dom->getElementsByTagName('math')->item(0);
-		
+
 		$doc = new DOMDocument;
-		
+
 		$old_error_handler = set_error_handler( "LoopXsl::xsl_error_handler" );
 		libxml_use_internal_errors( true );
-		
+
 		try {
 			if ( is_object( $mathnode ) ) {
 				$doc->loadXML($mathnode->C14N());
@@ -105,12 +105,12 @@ class LoopXsl {
 				$return = false;
 			}
 		} catch ( Exception $e ) {
-		
+
 		}
 		restore_error_handler();
 
-		return $return;	
-		
+		return $return;
+
 	}
 
 	/**
@@ -123,7 +123,7 @@ class LoopXsl {
 		global $wgMathMathMLUrl;
 		$input_object = $input[0];
 		$mathcontent = $input_object->textContent;
-		
+
 		$math = new MathMathML($mathcontent);
 		$math->render();
 		$host = $wgMathMathMLUrl."speech/";
@@ -131,7 +131,7 @@ class LoopXsl {
 		$math->makeRequest($host, $post, $return, $er);
 
 		if (empty($er)) {
-			return $return;	
+			return $return;
 		} else {
 			return '';
 		}
@@ -148,9 +148,9 @@ class LoopXsl {
 	 * @return DomDocument $return
 	 */
 	public static function xsl_transform_syntaxhighlight($input) {
-		
+
 		global $wgPygmentizePath, $IP, $wgScriptPath;
-		
+
 		$return = '';
 		$input_object=$input[0];
 
@@ -159,7 +159,7 @@ class LoopXsl {
 		$xml = $dom->saveXML();
 
 		$xml = str_replace('<space/>',' ',$xml);
-		$xml = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $xml); 
+		$xml = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $xml);
 		$xml = preg_replace("/^(<extension)(.*)(>)/U", "", $xml);
 		$xml = preg_replace("/(<\/extension>)$/U", "", $xml);
 		$xml = trim ($xml, " \n\r");
@@ -167,7 +167,7 @@ class LoopXsl {
 		$xml = htmlspecialchars_decode ($xml);
 
 		$code = $xml;
-		# check lang for older GeSHi lexers. html5 for example would not work and is now mapped to html 
+		# check lang for older GeSHi lexers. html5 for example would not work and is now mapped to html
 		if ($input_object->hasAttribute('lang')) {
 			global $IP, $wgExtensionDirectory;
 			$lang = $input_object->getAttribute('lang');
@@ -177,7 +177,7 @@ class LoopXsl {
 				$lexer = $lexer;
 			} else {
 				$geshi2pygments = SyntaxHighlightGeSHiCompat::getGeSHiToPygmentsMap();
-	
+
 				// Check if this is a GeSHi lexer name for which there exists
 				// a compatible Pygments lexer with a different name.
 				if ( isset( $geshi2pygments[$lexer] ) ) {
@@ -191,7 +191,7 @@ class LoopXsl {
 		} else {
 			$lexer = 'xml';
 		}
-		
+
 		# doc for command: http://pygments.org/docs/formatters/#HtmlFormatter
 		#$command = array( "-l", $lexer ); # defines lexer (language to highlight in)
 
@@ -200,10 +200,10 @@ class LoopXsl {
 		$options = "encoding=utf-8,cssclass=mw-highlight";
 
 		# pdf line numbers are mandatory
-		#if ($input_object->hasAttribute('line')) {
+		if ($input_object->hasAttribute('line')) {
 		#	$line = $input_object->getAttribute('line');
-		$options .= ",linenos=inline";
-		#} 
+			$options .= ",linenos=inline";
+		}
 		if ($input_object->hasAttribute('start') ) { # defines the start option of line numbering
 			$start = $input_object->getAttribute('start');
 			$options .= ",linenostart=" . $start;
@@ -212,12 +212,12 @@ class LoopXsl {
 			$highlight = $input_object->getAttribute('highlight');
 			$options .= ",hl_lines=$highlight";
 		}
-		if ( $lexer === 'php' && strpos( $code, '<?php' ) === false ) { 
+		if ( $lexer === 'php' && strpos( $code, '<?php' ) === false ) {
 			$options .= ",startinline=true";
-		} 
+		}
 
 		$command = [ "-l", $lexer, "-f", "html", "-O", $options ];
-		
+
 		$result = Shell::command(
 			$wgPygmentizePath,
 			'-l', $lexer,
@@ -238,17 +238,17 @@ class LoopXsl {
 		$return = new DOMDocument;
 		$old_error_handler = set_error_handler("LoopXsl::xsl_error_handler");
 		libxml_use_internal_errors(true);
-		
+
 		try {
 			$return->loadXml($output);
 		} catch ( Exception $e ) {
-		
+
 		}
-		restore_error_handler();	
+		restore_error_handler();
 
 		return $return;
-		
-		
+
+
 	}
 
 	/**
@@ -258,17 +258,17 @@ class LoopXsl {
 	 * @return DomNode $codeTag
 	 */
 	public static function xsl_transform_code($input) {
-		
+
 		$input_object=$input[0];
-		
+
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$dom->appendChild($dom->importNode($input_object, true));
-		
-		
+
+
 		$xml = $dom->saveXML();
 		$xml = str_replace('<space/>', ' ',$xml);
 		$xml = preg_replace("/(\s\\t)/"," \t", $xml);
-		
+
 		$dom2 = new DOMDocument( "1.0", "utf-8" );
 		$dom2->loadXML($xml);
 		$codeTags = $dom2->getElementsByTagNameNS ("http://www.w3.org/1999/xhtml", "code"); # finds <xhtml:code> tags
@@ -277,10 +277,10 @@ class LoopXsl {
 		return $codeTag;
 
 	}
-	
+
 	public static function xsl_transform_cite_ssml( $input ) {
 	    global $wgLoopLiteratureCiteType;
-	    
+
 	    $input_object=$input[0];
 	    $return = '';
 	    $citeContent = $input_object->textContent;
@@ -305,13 +305,13 @@ class LoopXsl {
 	    } else {
 	        return false;
 	    }
-	    
+
 	    return $return;
 	}
 
 	public static function xsl_transform_cite( $input ) {
 	    global $wgLoopLiteratureCiteType;
-	    
+
 	    $input_object=$input[0];
 	    $return = '';
 	    $citeContent = $input_object->textContent;
@@ -326,7 +326,7 @@ class LoopXsl {
 	    }
 	    return $return;
 	}
-	
+
 	public static function xsl_get_bibliography( $input ) {
 	    global $wgLoopLiteratureCiteType;
 		$dom = new DOMDocument( "1.0", "utf-8" );
@@ -335,7 +335,7 @@ class LoopXsl {
 			$dom->loadXML($xml);
 		} else {
 			$dom->appendChild($dom->importNode($input[0], true));
-			$tags = $dom->getElementsByTagName ("extension"); 
+			$tags = $dom->getElementsByTagName ("extension");
 			$input = $tags[0]->nodeValue;
 			$xml = '<bibliography>'.LoopLiterature::renderLoopLiterature($input)."</bibliography>";
 			$dom->loadXML($xml);
@@ -354,7 +354,7 @@ class LoopXsl {
 					return $url;
 				}
 			}
-		} 
+		}
 	}
 
 	public static function xsl_getIndex ( $input ) {
@@ -373,56 +373,56 @@ class LoopXsl {
 			$letterAttribute->value = $letter;
 			$loop_index_group->appendChild($letterAttribute);
 			$loop_index_group = $root->appendChild($loop_index_group);
-	
+
 			foreach ($group as $indexname => $pages) {
 				$loop_index_item = $dom->createElement('loop_index_item');
 				$loop_index_item = $loop_index_group->appendChild($loop_index_item);
-	
+
 				$loop_index_title_value = str_replace('_', ' ', $indexname);
 				$loop_index_title = $dom->createElement('loop_index_title', $loop_index_title_value);
 				$loop_index_title = $loop_index_item->appendChild($loop_index_title);
-	
+
 				$loop_index_pages = $dom->createElement('loop_index_pages');
 				$loop_index_pages = $loop_index_item->appendChild($loop_index_pages);
-	
+
 				$furthervalue = '0';
 				foreach ($pages as $page => $refIds) {
 					$loop_index_page = $dom->createElement('loop_index_page');
-	
+
 					$furtherAttribute = $dom->createAttribute('further');
 					$furtherAttribute->value = $furthervalue;
 					$loop_index_page->appendChild($furtherAttribute);
-					
+
 					$pagetitleAttribute = $dom->createAttribute('pagetitle');
 					$pagetitleAttribute->value = "article".$page;
 					$loop_index_page->appendChild($pagetitleAttribute);
-	
+
 					$loop_index_pages->appendChild($loop_index_page);
-	
+
 					$furthervalue = '1';
 				}
 			}
 		}
 		return $dom;
 	}
-	
+
 	/**
 	 * Returns image url of musical notes to embed in pdf
 	 */
 	public static function xsl_score( $input, $lang ) {
 		global $wgCanonicalServer;
-		
+
 		if( count( $lang ) != 0 ) {
 			$language = $lang[0]->value;
 		} else {
 			$language = 'lilypond';
 		}
-		
+
 		$parser = new Parser();
 		$html = Score::renderScore( $input[0]->textContent, ['lang' => $language], $parser );
 		preg_match_all( '~<img.*?src=["\']+(.*?)["\']+~', $html, $url );
 		$return = $wgCanonicalServer . $url[1][0];
-		
+
 		return $return;
 	}
 
@@ -437,7 +437,7 @@ class LoopXsl {
 				$page = str_replace("extension_name='loop_sidebar'", "extension_name='loop_sidebar_dummy'", $page); # don't render sidebars of sidebar pages
 				$dom->loadXML($page);
 			}
-		} 
+		}
 		return $dom;
 	}
 
@@ -445,14 +445,14 @@ class LoopXsl {
 
 		$id = str_replace( "article", "", $article_id[0]->value );
 		$xml = '';
-		
+
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$xml .= '<paragraph>';
 		$xml .= LoopToc::outputLoopToc( $id, "xml" );
 		$xml .= '</paragraph>';
-	
+
 		$dom->loadXML($xml);
-		
+
 		return $dom;
 	}
 
@@ -470,7 +470,7 @@ class LoopXsl {
 
 		$screenshotPath = $wgUploadDirectory . '/screenshots/' . $articleId . "/" . $stableRevId . "_" . $id . ".png";
 		$publicScreenshotPath = $wgCanonicalServer . $wgUploadPath. '/screenshots/' . $articleId . "/" . $stableRevId . "_" . $id . ".png";
-			
+
 		if ( file_exists( $screenshotPath ) ) {
 			return $publicScreenshotPath;
 		} else { # parse the page so images are rendered and can be returned
@@ -481,9 +481,9 @@ class LoopXsl {
 			$parser->parse( $content->getText(), $title, new ParserOptions() );
 			if ( file_exists( $screenshotPath ) ) {
 				return $publicScreenshotPath;
-			} 
+			}
 		}
-		return "";		
+		return "";
 	}
 
 	public static function xsl_showPageNumbering() {
@@ -491,25 +491,25 @@ class LoopXsl {
 
 		return $wgLoopLegacyPageNumbering;
 	}
-	
+
 	public static function xsl_transform_table_attributes( $input, $area, $spoiler, $object ) {
-		
+
 		$table = $input[0];
 		if ( $area == "true" ) {
 			$table->setAttribute( "looparea", "true");
-		} 
+		}
 		if ( $spoiler == "true" ) {
 			$table->setAttribute( "loopspoiler", "true");
-		} 
+		}
 		if ( $object == "true" ) {
 			$table->setAttribute( "loopobject", "true");
-		} 
+		}
 
 		foreach ( $table->childNodes as $rowNode ) {
 			foreach ( $rowNode->childNodes as $node ) {
 				$strpos = strpos( $node->nodeValue, "|" );
 				if ( $strpos !== false ) {
-					
+
 				foreach ( $node->childNodes as $childNode ) {
 							if ( $childNode->nodeName == "#text") {
 								$content = explode( "|", $childNode->nodeValue );
