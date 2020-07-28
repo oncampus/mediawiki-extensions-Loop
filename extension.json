@@ -242,6 +242,15 @@
 				"resources/js/loop.special.literatureedit.js"
 			]
 		},
+		"loop.print.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.printtag.js"
+			],
+			"messages": [
+				"loopprint-printingarea"
+			]
+		},
 		"loop.spoiler.js": {
 			"position": "bottom",
 			"scripts": [
