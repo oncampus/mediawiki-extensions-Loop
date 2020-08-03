@@ -1998,39 +1998,21 @@
 
 	<!-- General Handling of possible referenced objects that are in not-rendered tags -->
 	<xsl:template name="noprint_id_handling">
-		<fo:block></fo:block>
-		<xsl:choose>
-			<xsl:when test="./descendant::extension[@extension_name='loop_table']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_table']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_figure']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_figure']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_listing']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_listing']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_formula']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_formula']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_task']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_task']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_media']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_media']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-		</xsl:choose>
+		<fo:inline margin-top="5pt" margin-bottom="5pt">
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_handle_ids', .)" mode="id_handling"></xsl:apply-templates>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="hidden_ids" mode="id_handling">
+		<xsl:apply-templates mode="id_handling"/>
+	</xsl:template>
+
+	<xsl:template match="hidden_id" mode="id_handling">
+		<fo:inline>
+			<xsl:attribute name="id">
+				<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+			</xsl:attribute>
+		</fo:inline>
 	</xsl:template>
 	
 	<!-- Loop Score -->

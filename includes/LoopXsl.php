@@ -540,4 +540,26 @@ class LoopXsl {
 		return $wgLoopObjectDefaultRenderOption;
 	}
 
+	
+    public static function xsl_handle_ids($input) {
+		
+		$dom = new DOMDocument( "1.0", "utf-8" );
+		$dom->appendChild($dom->importNode($input[0], true));
+		$xml = $dom->saveXML();
+		$return = "";
+		preg_match_all('/id="(.*)"/Ui', $xml, $ids);
+		if ( !empty( $ids ) ) {
+			$return .= "<hidden_ids>";
+			foreach ( $ids[1] as $id ) {
+				$return .= "<hidden_id id='$id'/>";
+			}
+			$return .= "</hidden_ids>";
+		}
+		
+		$dom2 = new DOMDocument( "1.0", "utf-8" );
+		$dom2->loadXml($return);
+		$element = $dom2->getElementsByTagName("hidden_ids");
+		#dd($element[0], $xml, $return, $dom, $dom2);
+		return $element[0];
+	}
 }
