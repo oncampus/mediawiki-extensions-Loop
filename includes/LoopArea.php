@@ -155,6 +155,7 @@ class LoopArea {
 		if ( isset( $error ) ) {
 			$ret .= $error;
 		}
+		$input = trim($input);
 		$ret .= '<div class="looparea position-relative ' . $cssrender . ' looparea-'. $iconimg .'">';
 		$ret .= '<div class="looparea-container mb-2 d-block d-lg-flex">';
 		$ret .= '<div class="looparea-left position-relative pl-1 pr-1 pt-2 pt-lg-0">';
