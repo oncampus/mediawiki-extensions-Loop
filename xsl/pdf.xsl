@@ -2455,9 +2455,10 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@extension_name='math'">
-				<xsl:if test="php:function('LoopXsl::xsl_transform_math', .)">
+				<xsl:variable name="math_tag" ><xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of></xsl:variable>
+				<xsl:if test="$math_tag">
 					<fo:instream-foreign-object>
-						<xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of>  
+						<xsl:copy-of select="$math_tag"></xsl:copy-of>  
 					</fo:instream-foreign-object>
 				</xsl:if>
 			</xsl:when>
