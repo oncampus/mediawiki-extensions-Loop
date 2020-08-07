@@ -2933,7 +2933,14 @@
 						<fo:basic-link><!-- qr? -->
 							<xsl:variable name="youtubeurl">
 								<xsl:text>https://youtu.be/</xsl:text>
-								<xsl:value-of select="substring-before(@videoid, '&#124;')"></xsl:value-of>
+								<xsl:choose>
+									<xsl:when test="substring-before(@videoid, '&#124;')!=''">
+										<xsl:value-of select="substring-before(@videoid, '&#124;')"></xsl:value-of>
+									</xsl:when>	
+									<xsl:otherwise>
+										<xsl:value-of select="@videoid"></xsl:value-of>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:variable>	
 							<xsl:attribute name="external-destination"><xsl:value-of select="$youtubeurl"></xsl:value-of></xsl:attribute>
 							<fo:block text-decoration="underline"><xsl:value-of select="$youtubeurl"></xsl:value-of></fo:block>
