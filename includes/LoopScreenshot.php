@@ -88,17 +88,17 @@ class LoopScreenshot {
 				global $wgCanonicalServer, $wgUploadPath;
 
 				$screenshotUrl = $wgCanonicalServer . $wgUploadPath."/screenshots/$articleId/$refId.png";
-				$parser->getOutput()->addModules( 'loop.print.js' );
+				
 				$btnId = uniqid();
 				$btnIcon = '<span class="ic ic-print-area float-none"></span>';
 				$editModeClass = $loopeditmode ? " loopeditmode-hint" : "";
+				
 				$html .= '<div class="loopprint-container loopprint-button">';
-				$html .= '<span data-title="'.wfMessage('loopscreenshot')->text().'" class="loopprint-tag '. $btnId;
-				$html .= ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"';
-				$html .= '>' . $btnIcon . " " . wfMessage('loopscreenshot')->text() . '</span>';
-				$html .= '<div class="loopprint-content" id="'. $btnId .'">';
-				$html .= '<img class="responsive-image" src="'.$screenshotUrl.'"/>';
-				$html .= '</div>';	
+				$html .= '<input id="'. $btnId .'" type="checkbox">';
+				$html .= '<label for="'. $btnId .'" class="mb-0"><span data-title="'.wfMessage('loopscreenshot')->text().'" class="loopprint-tag '. $btnId;
+				$html .= ( $loopeditmode ) ? ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"' : '"';
+				$html .= '>' . $btnIcon . '<span class="loopprint-button-text pl-1">'.wfMessage('loopscreenshot')->text().'</span></span></label>';
+				$html .= '<div class="loopprint-content pb-1"><img class="responsive-image" src="'.$screenshotUrl.'"/></div>';
 				$html .= '</div>';	
 			}
 		} else {
