@@ -511,13 +511,13 @@ class LoopXml {
                     $i = 0;
                     foreach ( $content["dt"] as $term ) {
                         $xml .= ( $i == 0 ? "" : ", " );
-                        $xml .= $term;
+                        $xml .= htmlspecialchars($term);
                         $i++;
                     }
                     $xml .= "</defkey>\n";
                    # $xml .= "<div class='loopterminology-definition'>";
                     foreach ( $content["dd"] as $def ) {
-                        $xml .= "<paragraph>" . $def . "</paragraph>\n";
+                        $xml .= "<paragraph>" . htmlspecialchars($def) . "</paragraph>\n";
                     }
                     $xml .= "</listitem>\n";
                 }
