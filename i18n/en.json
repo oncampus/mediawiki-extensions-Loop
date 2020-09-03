@@ -62,7 +62,7 @@
 	"loopsettings-url-imprint-privacy-hint": "Please enter a full URL, including http:// OR a page title from this LOOP.",
 	"loopsettings-url-hint": "Please enter a full URL, including http://",
 	"loopsettings-skin-style-label": "Default Skin-Style",
-	"loopsettings-error": "An error occurred trying to save",	
+	"loopsettings-error": "An error occurred trying to save",
 	"loopsettings-tab-content": "Content settings",
 	"loopsettings-numbering": "Automatic numbering",
 	"loopsettings-numbering-objects-label": "Activate numbering of LOOP-objects, e.g. figures",
@@ -237,7 +237,7 @@
 	"loop_formula-name-short": "Form.",
 	"loop_task-name": "Task",
 	"loop_task-name-short": "Task",
-	
+
 	"loopfigures-specialpage-title": "List of figures",
 	"looptables-specialpage-title": "List of tables",
 	"loopmedia-specialpage-title": "List of media",
@@ -248,14 +248,14 @@
 	"looptables": "List of tables",
 	"loopmedia": "List of media",
 	"looplistings": "List of listings",
-	"loopformulas": "List of tasks",
+	"loopformulas": "List of formulas",
 	"looptasks": "List of tasks",
 
 	"loopliterature": "Bibliography",
 	"loopliteratureedit": "Edit literature",
 	"loopliteratureimport": "Import literature",
 	"loopliteratureexport": "Export literature",
-	
+
 	"loopliterature-entry-article": "Article",
 	"loopliterature-entry-book": "Book",
 	"loopliterature-entry-booklet": "Booklet",
@@ -338,7 +338,7 @@
 	"loopliterature-error-invalid-export": "The following literature entries cannot be exported, as the key does not match BibTeX format: ",
 	"loopliterature-error-dublicate-id" : "The literature reference '$3' does not have a unique ID ($1). On page '$2' is another reference with that same ID. Please change the ID so the reference can be taken into account in bibliography.",
 
-	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",	
+	"looplegacy-error-unsupported": "The tag '''$1''' is deprecated since $2.",
 	"looplegacy-biblio": "The tag '''biblio''' is not supported since LOOP2. Please use the new tag '''<loop_literature>'''.",
 	"looplegacy-references": "The tag '''references''' is obsolete since LOOP2. Footnotes are automatically displayed at the end of the page as soon as there is a <ref> tag in use.",
 
@@ -347,13 +347,13 @@
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
 
-	"loopexternalcontent-prezi-on": "on", 
+	"loopexternalcontent-prezi-on": "on",
 	"namespace-special": "Special",
 	"loop-glossary-namespace": "Glossary",
 	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glossary",
 	"loop-glossary-empty": "The glossary is still empty. Add an entry by creating a page like ''[[Glossary:Term]]''.",
-	
+
 	"loopindex": "Index",
 	"loopindex-error-dublicate-id" : "The indexed term '$3' does not have a unique ID ($1). On page '$2' is another term with that same ID. Please change the ID so the term can be properly indexed.",
 
@@ -403,7 +403,7 @@
 	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist.",
 	"loopsidebar-error-nopage": "The sidebar-tag is missing a page parameter.",
 	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
-	
+
 	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
 	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}",
 	"loop-error-unknown-param" : "The tag $1 contains a parameter $2 with an unknown value '''$3'''.<br/>\nValid values are '''$4'''. The element is rendered by default with value $5.",
@@ -445,7 +445,7 @@
 	"loopfeedback-specialpage-feedback-for": "Feedback for",
 	"loopfeedback-specialpage-feedback-for-chapter": "Feedback for the contents of this chapter ",
 	"loopfeedback-specialpage-feedback-for-module": "Feedback for the contents of this LOOP ",
-	"loopfeedback-specialpage-feedback-count": "Number of<br/>Feedbacks",	
+	"loopfeedback-specialpage-feedback-count": "Number of<br/>Feedbacks",
 	"loopfeedback-specialpage-feedback-info-sum-all": "Collected feedbacks: $1",
 	"loopfeedback-specialpage-feedback-info-average": "&empty; $1 ",
 	"loopfeedback-specialpage-feedback-info-average-stars": "&empty; $1 {{PLURAL:$1|Star|Stars}}",
@@ -479,7 +479,7 @@
 	"loopfeedback-already-done": "You already gave us feedback. Thank you!",
     "loopconsent-text": "When you load this media, content is loaded by the service providers and your IP address is transfered to them.",
 	"loopconsent-button": "Give consent and load media",
-	
+
 	"loopngspice-label-send": "Start simulation",
 	"loopngspice-error-xml": "Ngspice is not configured correctly.<br>XML Elements can't be loaded. ",
 	"loopngspice-error-no-service": "NgSpice is not available.",
