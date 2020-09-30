@@ -890,8 +890,8 @@ class LoopLiterature {
 		    $italic = "<i>";
 		    $italicEnd = "</i>";
 		} elseif ($type == "xml") { #xml
-		    $italic = "<italics>";
-		    $italicEnd = "</italics>";
+		    $italic = "";#"<italics>";
+		    $italicEnd = "";#"</italics>";
 		} else {
 		    $italic = "";
 		    $italicEnd = "";
@@ -1529,16 +1529,18 @@ class SpecialLoopLiterature extends SpecialPage {
                     $orderkey = ucfirst($item->author);
                 } elseif ( $item->itemTitle ) {
 					$orderkey = ucfirst($item->itemTitle);
-                }
-
-                if ( $type == "html" ) {
-                    $tmpElement = '<p class="literature-entry">';
-                    $tmpElement .= LoopLiterature::renderLiteratureElement( $item, array() );
-                    $tmpElement .= '</p>';
                 } else {
-                    $tmpElement = '<paragraph>';# id="a'. $referenceData["refId"].'">';
-                    $tmpElement .= htmlspecialchars( LoopLiterature::renderLiteratureElement( $item, array(), 'xml' ));
-                    $tmpElement .= '</paragraph>';
+					$orderkey = "";
+				}
+
+				if ( $type == "html" ) {
+					$tmpElement = '<p class="literature-entry">';
+					$tmpElement .= LoopLiterature::renderLiteratureElement( $item, array() );
+					$tmpElement .= '</p>';
+				} else {
+					$tmpElement = '<paragraph>';# id="a'. $referenceData["refId"].'">';
+					$tmpElement .= htmlspecialchars( LoopLiterature::renderLiteratureElement( $item, array(), 'xml' ));
+					$tmpElement .= '</paragraph>';
 				}
 				$elements[$orderkey][$item->itemKey] = $tmpElement;
 			}

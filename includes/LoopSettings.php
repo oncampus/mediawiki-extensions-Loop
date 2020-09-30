@@ -104,7 +104,7 @@ class LoopSettings {
             'lset_feedbackmode' => $this->feedbackMode,
             'lset_objectrenderoption' => $this->objectRenderOption
         );
-        
+
         $dbw = wfGetDB( DB_MASTER );
 
         try {
@@ -116,7 +116,7 @@ class LoopSettings {
         } catch ( Exception $e ) {
 
         }
-        
+
         foreach ( $this->dbkeys as $dbk => $val ) {
             $dbw->insert(
                 'loop_settings',
@@ -129,16 +129,16 @@ class LoopSettings {
         }
 
         return true;
-        
+
     }
 
     /**
      * Loads settings from DB
      */
     public function loadSettings() {
-        
+
         $dbr = wfGetDB( DB_REPLICA );
-        
+
         $res = $dbr->select(
             'loop_settings',
             array(
@@ -156,11 +156,11 @@ class LoopSettings {
             $data[$row->lset_property] = $row->lset_value;
         }
 
-        global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, 
-        $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering, 
+        global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon,
+        $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering,
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
         $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption;
-        
+
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
         $this->privacyLink = $wgLoopPrivacyLink;
@@ -203,7 +203,7 @@ class LoopSettings {
         $this->feedbackLevel = $wgLoopFeedbackLevel;
         $this->feedbackMode = $wgLoopFeedbackMode;
         $this->objectRenderOption = $wgLoopObjectDefaultRenderOption;
-        
+
         if ( isset($row->lset_structure) ) {
             $this->imprintLink = isset( $data['lset_imprintlink'] ) ? $data['lset_imprintlink'] : $this->imprintLink;
             $this->privacyLink = isset( $data['lset_privacylink'] ) ? $data['lset_privacylink'] : $this->privacyLink;
@@ -247,11 +247,11 @@ class LoopSettings {
             $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode;
             $this->objectRenderOption =  isset( $data['lset_objectrenderoption'] ) ? $data['lset_objectrenderoption'] : $this->objectRenderOption;
         }
-        
+
         return true;
-        
+
     }
-	
+
 	/**
 	 * Parse custom content
 	 *
@@ -259,28 +259,28 @@ class LoopSettings {
 	 * @return String
 	 */
 	function parse( $input ) {
-		
+
 		$localParser = new Parser();
 		$tmpTitle = Title::newFromText( 'NO TITLE' );
 	    $parserOutput = $localParser->parse( $input, $tmpTitle, new ParserOptions() );
 	    return $parserOutput->mText;
-		
+
 	}
 
     /**
      * Puts request content into array
      *
-     * @param Request $request 
-     * @param User $user 
+     * @param Request $request
+     * @param User $user
      * @return Bool
      */
 
     public function getLoopSettingsFromRequest ( $request, $user ) {
-        
+
         global $wgLoopSocialIcons, $wgLoopAvailableSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
         $this->errors = array();
         $this->rightsText = $request->getText( 'rights-text' ); # no validation required
-        
+
         $socialArray = array(
             'Facebook' => array(),
             'Twitter' => array(),
@@ -290,10 +290,10 @@ class LoopSettings {
         );
 
         foreach( $wgLoopSocialIcons as $socialIcons => $socialIcon ) {
-            
+
             if ( empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) ) || $request->getText( 'footer-' . $socialIcons . '-icon' ) == $socialIcons ) {
             $socialArray[$socialIcons]['icon'] = $request->getText( 'footer-' . $socialIcons . '-icon' );
-                
+
                 if ( ! empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) && filter_var( $request->getText( 'footer-' . $socialIcons . '-url' ), FILTER_VALIDATE_URL ) ) ) {
                 $socialArray[$socialIcons]['link'] = $request->getText( 'footer-' . $socialIcons . '-url' );
                 } else {
@@ -301,7 +301,7 @@ class LoopSettings {
                 }
             } else {
                 array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . $socialIcons );
-            }	
+            }
         }
 
         $this->facebookIcon = $socialArray['Facebook']['icon'];
@@ -314,21 +314,21 @@ class LoopSettings {
         $this->githubLink = $socialArray['Github']['link'];
         $this->instagramIcon = $socialArray['Instagram']['icon'];
         $this->instagramLink = $socialArray['Instagram']['link'];
-        
+
         $regExLoopLink = '/(['.$wgLegalTitleChars.']{1,})/';
-        
+
         if ( filter_var( $request->getText( 'privacy-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'privacy-link' ) ) ) {
             $this->privacyLink = $request->getText( 'privacy-link' );
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-privacy-label' ) );
         }
-        
+
         if ( filter_var( $request->getText( 'imprint-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'imprint-link' ) ) ) {
             $this->imprintLink = $request->getText( 'imprint-link' );
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-imprint-label' ) );
         }
-        
+
         if ( empty ( $request->getText( 'rights-type' ) ) || isset ( $wgAvailableLicenses[$request->getText( 'rights-type' )] ) ) {
             $this->rightsType = $request->getText( 'rights-type' );
             $this->rightsIcon = $wgAvailableLicenses[$this->rightsType]['icon'];
@@ -346,7 +346,7 @@ class LoopSettings {
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
         }
-        
+
         if ( $request->getText( 'extra-footer-active' ) == 'on' ) {
                 $this->extraFooter = true;
         } elseif ( empty( $request->getText( 'extra-footer-active' ) ) ) {
@@ -354,7 +354,7 @@ class LoopSettings {
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-footer-label' ) );
         }
-        
+
         if ( empty( $request->getText( 'logo-use-custom' ) ) ) {
             $this->customLogo = false;
             $this->customLogoFileName = "";
@@ -378,9 +378,9 @@ class LoopSettings {
             $this->customLogoFilePath = "";
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
         }
-        
+
         # Numbering objects
-        if ( $request->getText( 'numbering-objects' ) == 'numberingObjects' ) { 
+        if ( $request->getText( 'numbering-objects' ) == 'numberingObjects' ) {
             $this->numberingObjects = true;
         } elseif ( empty ( $request->getText( 'numbering-objects' ) ) ) {
             $this->numberingObjects = false;
@@ -390,8 +390,8 @@ class LoopSettings {
         }
 
         # Render objects
-        if ( ! empty ( $request->getText( 'render-objects' ) ) ) { 
-            if ( in_array( $request->getText( 'render-objects' ), LoopObject::$mRenderOptions ) ) { 
+        if ( ! empty ( $request->getText( 'render-objects' ) ) ) {
+            if ( in_array( $request->getText( 'render-objects' ), LoopObject::$mRenderOptions ) ) {
                 $this->objectRenderOption = $request->getText( 'render-objects' );
             } else {
                 array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-render-objects-label' ) );
@@ -399,25 +399,25 @@ class LoopSettings {
         }
 
         # Numbering type
-        if ( ! empty ( $request->getText( 'numbering-type' ) ) ) { 
-            if ( $request->getText( 'numbering-type' ) == "ongoing" ) { 
+        if ( ! empty ( $request->getText( 'numbering-type' ) ) ) {
+            if ( $request->getText( 'numbering-type' ) == "ongoing" ) {
                 $this->numberingType = "ongoing";
-            } else { 
+            } else {
                 $this->numberingType = "chapter";
             }
         }
 
         # citation style
-        if ( ! empty ( $request->getText( 'citation-style' ) ) ) { 
-            if ( $request->getText( 'citation-style' ) == "vancouver" ) { 
+        if ( ! empty ( $request->getText( 'citation-style' ) ) ) {
+            if ( $request->getText( 'citation-style' ) == "vancouver" ) {
                 $this->citationStyle = "vancouver";
-            } else { 
+            } else {
                 $this->citationStyle = "harvard";
-            } 
+            }
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-citation-style-label' ) );
         }
-        
+
         if ( $request->getText( 'extra-sidebar-active' ) == 'on' ) {
             $this->extraSidebar = true;
         }  elseif ( empty( $request->getText( 'extra-sidebar-active' ) ) ) {
@@ -426,9 +426,9 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-sidebar-label' ) );
         }
 
-        
+
         # Export t2s
-        if ( $request->getText( 'export-t2s' ) == 'on' ) { 
+        if ( $request->getText( 'export-t2s' ) == 'on' ) {
             $this->exportT2s = true;
         } elseif ( empty ( $request->getText( 'export-t2s' ) ) ) {
             $this->exportT2s = false;
@@ -436,7 +436,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-t2s-label' ) );
         }
         # Export audio
-        if ( $request->getText( 'export-audio' ) == 'on' ) { 
+        if ( $request->getText( 'export-audio' ) == 'on' ) {
             $this->exportAudio = true;
         } elseif ( empty ( $request->getText( 'export-audio' ) ) ) {
             $this->exportAudio = false;
@@ -444,7 +444,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-audio-label' ) );
         }
         # Export pdf
-        if ( $request->getText( 'export-pdf' ) == 'on' ) { 
+        if ( $request->getText( 'export-pdf' ) == 'on' ) {
             $this->exportPdf = true;
         } elseif ( empty ( $request->getText( 'export-pdf' ) ) ) {
             $this->exportPdf = false;
@@ -452,7 +452,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-pdf-label' ) );
         }
         # Export epub
-        if ( $request->getText( 'export-epub' ) == 'on' ) { 
+        if ( $request->getText( 'export-epub' ) == 'on' ) {
             $this->exportEpub = true;
         } elseif ( empty ( $request->getText( 'export-epub' ) ) ) {
             $this->exportEpub = false;
@@ -460,7 +460,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-epub-label' ) );
         }
         # Export scorm
-        if ( $request->getText( 'export-scorm' ) == 'on' ) { 
+        if ( $request->getText( 'export-scorm' ) == 'on' ) {
             $this->exportScorm = true;
         } elseif ( empty ( $request->getText( 'export-scorm' ) ) ) {
             $this->exportScorm = false;
@@ -468,7 +468,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-scorm-label' ) );
         }
         # Export xml
-        if ( $request->getText( 'export-xml' ) == 'on' ) { 
+        if ( $request->getText( 'export-xml' ) == 'on' ) {
             $this->exportXml = true;
         } elseif ( empty ( $request->getText( 'export-xml' ) ) ) {
             $this->exportXml = false;
@@ -476,16 +476,16 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-export-xml-label' ) );
         }
         # Export html
-        if ( $request->getText( 'export-html' ) == 'on' ) { 
+        if ( $request->getText( 'export-html' ) == 'on' ) {
             $this->exportHtml = true;
         } elseif ( empty ( $request->getText( 'export-html' ) ) ) {
             $this->exportHtml = false;
         } else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-export-html-label' ) );
         }
-        
+
         # Captcha edit
-        if ( $request->getText( 'captcha-edit' ) == 'on' ) { 
+        if ( $request->getText( 'captcha-edit' ) == 'on' ) {
             $this->captchaEdit = true;
         } elseif ( empty ( $request->getText( 'captcha-ecit' ) ) ) {
             $this->captchaEdit = false;
@@ -493,7 +493,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-edit-label' ) );
         }
         # Captcha create
-        if ( $request->getText( 'captcha-create' ) == 'on' ) { 
+        if ( $request->getText( 'captcha-create' ) == 'on' ) {
             $this->captchaCreate = true;
         } elseif ( empty ( $request->getText( 'captcha-create' ) ) ) {
             $this->captchaCreate = false;
@@ -501,7 +501,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-create-label' ) );
         }
         # Captcha createaccount
-        if ( $request->getText( 'captcha-createaccount' ) == 'on' ) { 
+        if ( $request->getText( 'captcha-createaccount' ) == 'on' ) {
             $this->captchaAddurl = true;
         } elseif ( empty ( $request->getText( 'captcha-createaccount' ) ) ) {
             $this->captchaAddurl = false;
@@ -509,7 +509,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-createaccount-label' ) );
         }
         # Captcha addurl
-        if ( $request->getText( 'captcha-addurl' ) == 'on' ) { 
+        if ( $request->getText( 'captcha-addurl' ) == 'on' ) {
             $this->captchaCreateAccount = true;
         } elseif ( empty ( $request->getText( 'captcha-addurl' ) ) ) {
             $this->captchaCreateAccount = false;
@@ -517,7 +517,7 @@ class LoopSettings {
             array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-addurl-label' ) );
         }
         # Captcha badlogin
-        if ( $request->getText( 'captcha-badlogin' ) == 'on' ) { 
+        if ( $request->getText( 'captcha-badlogin' ) == 'on' ) {
             $this->captchaBadlogin = true;
         } elseif ( empty ( $request->getText( 'captcha-badlogin' ) ) ) {
             $this->captchaBadlogin = false;
@@ -526,7 +526,7 @@ class LoopSettings {
         }
 
         # Bugreport Mail
-        if  ( empty ( $request->getText( 'ticket-email' ) ) ) { 
+        if  ( empty ( $request->getText( 'ticket-email' ) ) ) {
             $this->bugReportEmail = null;
         } elseif ( filter_var( $request->getText( 'ticket-email' ), FILTER_VALIDATE_EMAIL ) ) {
             $this->bugReportEmail = $request->getText( 'ticket-email' );
@@ -535,7 +535,7 @@ class LoopSettings {
         }
 
         # Feedback mode
-        if  ( empty ( $request->getText( 'feedback-mode' ) ) ) { 
+        if  ( empty ( $request->getText( 'feedback-mode' ) ) ) {
             $this->feedbackMode = "second_half";
         } elseif ( in_array( $request->getText( 'feedback-mode' ), array( "always", "last_sublevel", "second_half" ) ) ) {
             $this->feedbackMode = $request->getText( 'feedback-mode' );
@@ -546,7 +546,7 @@ class LoopSettings {
         }
 
         # Feedback level
-        if  ( empty ( $request->getText( 'feedback-level' ) ) ) { 
+        if  ( empty ( $request->getText( 'feedback-level' ) ) ) {
             $this->feedbackLevel = "none";
         } elseif ( in_array( $request->getText( 'feedback-level' ), array( "none", "module", "chapter" ) ) ) {
             $this->feedbackLevel = $request->getText( 'feedback-level' );
@@ -565,12 +565,12 @@ class LoopSettings {
 
 
 class SpecialLoopSettings extends SpecialPage {
-	
+
 	function __construct() {
 		parent::__construct( 'LoopSettings' );
 	}
 	function execute( $sub ) {
-		
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
@@ -579,47 +579,47 @@ class SpecialLoopSettings extends SpecialPage {
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
 		$html = '';
-		
+
 		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
-			
+
 			global $IP, $wgSecretKey, $wgLoopSocialIcons, $wgAvailableLicenses, $wgSpecialPages,
 			$wgLoopSkinStyles, $wgLoopAvailableSkinStyles, $wgLoopEditableSkinStyles, $wgDefaultUserOptions;
-				
+
 			$this->setHeaders();
-			
+
  			$out->addModules( 'loop.special.settings.js' );
 			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
-			
+
 			$requestToken = $request->getText( 't' );
 			$uploadButton = $this->msg( 'loopsettings-upload-hint' ) .
-				$linkRenderer->makelink( 
-					new TitleValue( NS_SPECIAL, 'ListFiles' ), 
+				$linkRenderer->makelink(
+					new TitleValue( NS_SPECIAL, 'ListFiles' ),
                     new HtmlArmor( $this->getSkin()->msg ( 'listfiles' )),
-                    array( "class" => "ml-1") 
+                    array( "class" => "ml-1")
 				) . '<button type="button" class="upload-button mw-htmlform-submit mw-ui-button mt-2 d-block">' . $this->msg( 'upload' ) . '</button>';
-			
+
 			$currentLoopSettings = new LoopSettings();
-			
+
 			if ( ! empty( $requestToken ) ) {
 
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
-				
+
                     $currentLoopSettings->getLoopSettingsFromRequest( $request, $user );
-                    
+
                     if ( empty ( $currentLoopSettings->errors ) ) {
-                        
+
                         $html .= '<div class="alert alert-success" role="alert">' . $this->msg( 'loopsettings-save-success' ) . '</div>';
                     } else {
                         $errorMsgs = '';
-                        foreach( $currentLoopSettings->errors as $error ) { 
-                            
+                        foreach( $currentLoopSettings->errors as $error ) {
+
                             $errorMsgs .= $error . '<br>';
-                            
+
                         }
                         $html .= '<div class="alert alert-danger" role="alert">' . $errorMsgs.'</div>';
-                        
+
                     }
-                    
+
                 } else {
                     $currentLoopSettings->loadSettings();
                 }
@@ -627,9 +627,9 @@ class SpecialLoopSettings extends SpecialPage {
                 $currentLoopSettings->loadSettings();
             }
 		$saltedToken = $user->getEditToken( $wgSecretKey, $request );
-			
+
 			$html .= '<nav>
-				<div class="nav nav-tabs" id="nav-tab" role="tablist"> 
+				<div class="nav nav-tabs" id="nav-tab" role="tablist">
 					<a class="nav-item nav-link active" id="nav-general-tab" data-toggle="tab" href="#nav-general" role="tab" aria-controls="nav-general" aria-selected="true">' . $this->msg( 'loopsettings-tab-general' )->text() . '</a>
 					<a class="nav-item nav-link" id="nav-appearance-tab" data-toggle="tab" href="#nav-appearance" role="tab" aria-controls="nav-appearance" aria-selected="true">' . $this->msg( 'loopsettings-tab-appearance' )->text() . '</a>
                     <a class="nav-item nav-link" id="nav-content-tab" data-toggle="tab" href="#nav-content" role="tab" aria-controls="nav-content" aria-selected="true">' . $this->msg( 'loopsettings-tab-content' )->text() . '</a>
@@ -637,33 +637,33 @@ class SpecialLoopSettings extends SpecialPage {
 				</div>
 			</nav>
 			<form class="needs-validation mw-editform mt-3 mb-3" id="loopsettings-form" method="post" novalidate enctype="multipart/form-data">';
-			 
+
 			$html .= '<div class="tab-content" id="nav-tabContent">
 				<div class="tab-pane fade show active" id="nav-general" role="tabpanel" aria-labelledby="nav-general-tab">';
-				
-				/** 
-				 * GENERAL  TAB 
-				 */	
-					
-					
+
+				/**
+				 * GENERAL  TAB
+				 */
+
+
 					### LICENSE BLOCK ###
 					$html .= '<h3>' . $this->msg( 'loopsettings-headline-license' ) . '</h3>';
 					$html .= '<div class="form-row mb-4">';
-					
+
 					# cc-license
 					$licenseOptions = '';
-					foreach( $wgAvailableLicenses as $license => $option ) { 
+					foreach( $wgAvailableLicenses as $license => $option ) {
 						if ( $license == $currentLoopSettings->rightsType ) {
 							$selected = 'selected';
 						} else {
-							$selected = ''; 
+							$selected = '';
 						}
 						if ( $license == '' ) {
 							$licenseText = $this->msg( 'Htmlform-chosen-placeholder' );
 						} else {
 							$licenseText = $license;
 						}
-						
+
 						$licenseOptions .= '<option value="' . $license.'" ' . $selected.'>' . $licenseText.'</option>';
 					}
 
@@ -673,48 +673,48 @@ class SpecialLoopSettings extends SpecialPage {
 							<select class='form-control' ". ( empty( $currentLoopSettings->rightsType ) ? 'disabled' : '' ) ." name='rights-type' id='rights-type' selected='". $currentLoopSettings->rightsType ." '>
 							" . $licenseOptions . "</select>
 						</div>";
-					
+
 					# license text
-					$html .= 
+					$html .=
 						'<div class="col-12 col-sm-6">
 							<label for="rights-text">' . $this->msg( 'loopsettings-rights-label' ) . '</label>
 							<input type="text"' . ' placeholder="'. $this->msg( 'loopsettings-rights-text-placeholder' ) .'" name="rights-text" id="rights-text" class="setting-input form-control" value=' . '"' . $currentLoopSettings->rightsText.'"' . '>
 							<div class="invalid-feedback">' . $this->msg( 'loopsettings-rights-text-hint' ) . " ©,:._-!?&/()'</div>" .
 						'</div>';
 					$html .= '</div>';
-                    
+
 					### LINK BLOCK ###
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-footer-links' ) . '</h3>';
-                    
+
 
                     global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
-                    
+
                     if ( ! $wgLoopExternalImprintPrivacy || empty ( $wgLoopExternalPrivacyUrl ) ) {
                         $html .= '<div class="form-row mb-4">';
 
                         # imprint link
-                        $html .= 
+                        $html .=
                         '<div class="col-12 col-sm-6">
                             <label for="imprint-link">' . $this->msg( 'loopsettings-imprint-label' ) . '</label>
                             <input type="text" required name="imprint-link" placeholder="URL" id="imprint-link" class="setting-input form-control" value="'. $currentLoopSettings->imprintLink .'">
                             <div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
                         </div>';
                         # privacy link
-                        $html .= 
+                        $html .=
                         '<div class="col-12 col-sm-6">
                             <label for="privacy-link">' . $this->msg( 'loopsettings-privacy-label' ) . '</label>
                             <input type="text" required name="privacy-link" placeholder="URL" id="privacy-link" class="setting-input form-control" value="'. $currentLoopSettings->privacyLink .'">
                             <div class="invalid-feedback">' . $this->msg( 'loopsettings-url-imprint-privacy-hint' ) . '</div>
                         </div>';
                         $html .= '</div>';
-                    }   
-					
+                    }
+
 					#footer-social
 					$socialArray = array(
 						'Facebook' => array( 'icon' => $currentLoopSettings->facebookIcon, 'link' => $currentLoopSettings->facebookLink ),
 						'Twitter' => array( 'icon' => $currentLoopSettings->twitterIcon, 'link' => $currentLoopSettings->twitterLink ),
 						'Youtube' => array( 'icon' => $currentLoopSettings->youtubeIcon, 'link' => $currentLoopSettings->youtubeLink ),
-						'Github' => array( 'icon' => $currentLoopSettings->githubIcon, 'link' => $currentLoopSettings->githubLink ), 
+						'Github' => array( 'icon' => $currentLoopSettings->githubIcon, 'link' => $currentLoopSettings->githubLink ),
 						'Instagram' => array( 'icon' => $currentLoopSettings->instagramIcon, 'link' => $currentLoopSettings->instagramLink )
                     );
                     $i = 1;
@@ -725,10 +725,10 @@ class SpecialLoopSettings extends SpecialPage {
 						$html .= '
                         <div class="col-6">
 							<input type="checkbox" name="footer-'. $socialIcons .'-icon" id="footer-'. $socialIcons .'-icon" value="'. $socialIcons .'" '. ( ! empty ( $socialArray[$socialIcons]['icon']) ? 'checked' : '' ) .'>
-								
+
 							<label for="footer-' . $socialIcons .'-icon"><span class="ic ic-social-' . strtolower( $socialIcons ) . '"></span>
 							'. $socialIcons . ' ' . $this->msg( 'loopsettings-link-icon-label' ) . '</label>
-							
+
 							<div class="input-group mb-3">
 								<input type="url" ' . ( empty( $socialArray[$socialIcons]['icon'] ) ? 'disabled' : '' ) . ' name="footer-'. $socialIcons .'-url" placeholder="https://www.'. strtolower( $socialIcons) .'.com/" id="footer-'. $socialIcons .'-url" class="setting-input form-control" value="'. $socialArray[$socialIcons]['link'] .'">
 								<div class="invalid-feedback" id="feedback-'. $socialIcons .'">' . $this->msg( 'loopsettings-url-hint' ) . '</div>
@@ -736,16 +736,16 @@ class SpecialLoopSettings extends SpecialPage {
                         </div>';
                         if ( $i % 2 == 0 || $i == count( $wgLoopSocialIcons ) ) {
                             $html .= '</div>';
-                        } 
+                        }
                         $i++;
-                    } 
-                    
+                    }
+
                     ### EXPORT BLOCK ###
                     $showExportOptions = false;
-					$exporthtml = '<h3>' . $this->msg( 'loopsettings-headline-export' ) . '</h3>'; 
+					$exporthtml = '<h3>' . $this->msg( 'loopsettings-headline-export' ) . '</h3>';
 					$exporthtml .= '<div class="form-row mb-4">';
 					$exporthtml .= '<div class="col-12">';
-                    
+
                     $dummyLoopSettings = new LoopSettings(); # check further requirements of export types without interfering LoopSettings
                     $dummyLoopSettings->exportT2s = true;
                     $dummyLoopSettings->exportAudio = true;
@@ -763,7 +763,7 @@ class SpecialLoopSettings extends SpecialPage {
                     if ( LoopExportPdf::isAvailable( $dummyLoopSettings ) ) {
                         $exporthtml .= '<div><input type="checkbox" name="export-pdf" id="export-pdf" class="setting-input mr-1" ' . ( $currentLoopSettings->exportPdf ? 'checked' : '' ) .'>';
                         $exporthtml .= '<label for="export-pdf"><span class="mr-1 ic ic-file-pdf"></span>' . $this->msg( 'loopsettings-export-pdf-label' ) . '</label></div>';
-                        $showExportOptions = true;    
+                        $showExportOptions = true;
                     }
                     if ( LoopExportMp3::isAvailable( $dummyLoopSettings ) ) {
 					    $exporthtml .= '<div><input type="checkbox" name="export-audio" id="export-audio" class="setting-input mr-1" ' . ( $currentLoopSettings->exportAudio ? 'checked' : '' ) .'>';
@@ -796,22 +796,22 @@ class SpecialLoopSettings extends SpecialPage {
                     }
 
 				$html .= '</div>'; // end of general-tab
-				
-				/** 
-				 * APPEARANCE TAB 
-				 */	
+
+				/**
+				 * APPEARANCE TAB
+				 */
 				$html .= '<div class="tab-pane fade" id="nav-appearance" role="tabpanel" aria-labelledby="nav-appearance-tab">';
                     ### SKIN BLOCK ###
 					$html .= '<div class="form-row mb-4">';
 					$html .=    '<div class="col-6 pl-1">';
-					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>'; 
+					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-skinstyle' ) . '</h3>';
                     $skinStyleOptions = '';
                     $styles = array_unique ( ! isset( $wgLoopAvailableSkinStyles ) ? $wgLoopSkinStyles : $wgLoopAvailableSkinStyles );
                     if ( empty( $styles ) ) {
                         $styles[] = "style-blue";
                     }
-					foreach( $styles as $style ) { 
-					    if ( $style == $currentLoopSettings->skinStyle ) { 
+					foreach( $styles as $style ) {
+					    if ( $style == $currentLoopSettings->skinStyle ) {
 							$selected = 'selected';
 						} else {
 							$selected = '';
@@ -821,7 +821,7 @@ class SpecialLoopSettings extends SpecialPage {
                         }
 						$skinStyleOptions .= '<option value="' . $style.'" ' . $selected.'>'. $this->msg( 'loop-skin-'. $style ) .'</option>';
                     }
-                    
+
 					$html .= '<label for="skin-style">' . $this->msg( 'loopsettings-skin-style-label' ) . '</label>';
 					$html .= '<select class="form-control" name="skin-style" id="skin-style" selected="'. $currentLoopSettings->skinStyle .' ">' . $skinStyleOptions . '</select>';
                     $html .=    '</div>';
@@ -859,7 +859,7 @@ class SpecialLoopSettings extends SpecialPage {
                     $html .= '<div class="form-row mb-4">';
                     # extra sidebar
                     $html .=    '<div class="col-6 pl-1">';
-					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-sidebar' ) . '</h3>'; 
+					$html .=        '<h3>' . $this->msg( 'loopsettings-headline-sidebar' ) . '</h3>';
 					$html .=        '<input class="mr-1" type="checkbox" name="extra-sidebar-active" id="extra-sidebar-active" ' . ( ! empty ( $currentLoopSettings->extraSidebar ) ? 'checked' : '' ) .'>';
                     $html .=        '<label for="extra-sidebar-active">' . $this->msg( 'loopsettings-extra-sidebar-label' ) . '</label>';
                     $html .= $linkRenderer->makeLink(
@@ -869,7 +869,7 @@ class SpecialLoopSettings extends SpecialPage {
                     );
                     $html .= '  </div>';
 
-                    
+
 					# extra footer
                     $html .= '<div class="col-6 pl-1">';
                     $html .= '<h3>' . $this->msg( 'loopsettings-headline-extrafooter' ) . '</h3>';
@@ -882,20 +882,20 @@ class SpecialLoopSettings extends SpecialPage {
 					);
                     $html .= '</div>';
                     $html .= '</div>'; #end of form-row
-                    
+
 				$html .= '</div>'; // end of appearence-tab
-				
-				/** 
-				 * TECH SETTINGS TAB 
-				 */	
+
+				/**
+				 * TECH SETTINGS TAB
+				 */
 				$html .= '<div class="tab-pane fade" id="nav-tech" role="tabpanel" aria-labelledby="nav-tech-tab">';
-                
+
                     $html .= '<div class="form-row mb-4">';
-                    
+
                     ### FEEDBACK ###
                         $html .= '<div class="col-6">';
-                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-feedback' )->text() . '</h3>'; 
-                        
+                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-feedback' )->text() . '</h3>';
+
                         $html .= '<label for="feedback-level">'. $this->msg("loopsettings-feedback-level-label")->text().'</label>';
                         $html .= '<select class="form-control mb-2" name="feedback-level" id="feedback-level" selected="'.$currentLoopSettings->feedbackLevel.'">';
                         $html .= '<option value="none" ' . ( $currentLoopSettings->feedbackLevel == "none" ? "selected" : "" ) .'>' . $this->msg("loopsettings-feedback-level-none")->text() .'</option>';
@@ -913,9 +913,9 @@ class SpecialLoopSettings extends SpecialPage {
                         $html .= '</div>';
 
                     ### BUGREPORT ###
-                    if ( LoopBugReport::isAvailable() != "external" ) {
+                    if ( LoopBugReport::isAvailable() != "external" && false ) { # TODO 14.09.2020 remove
                         $html .= '<div class="col-6">';
-                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-bugreport' )->text() . '</h3>'; 
+                        $html .= '<h3>' . $this->msg( 'loopsettings-headline-bugreport' )->text() . '</h3>';
                         $html .= '<label for="ticket-email">'. $this->msg("loopsettings-bugreport-email-label")->text().'</label>';
                         $html .= '<input class="mb-2 mt-2 form-control" type="email" placeholder="'.$this->msg("email")->text().'" value="'.$currentLoopSettings->bugReportEmail.'" name="ticket-email"/>';
                         $html .= '</div>';
@@ -931,7 +931,7 @@ class SpecialLoopSettings extends SpecialPage {
                         $captchaDisabledMsg = '<div class="alert alert-warning w-100">'. $this->msg( 'loopsettings-captcha-nokeys' )->text().'</div>';
                     }
 					$html .= '<div class="form-row mb-4">';
-                    $html .= '<h3>' . $this->msg( 'loopsettings-headline-captcha' )->text() . '</h3>'; 
+                    $html .= '<h3>' . $this->msg( 'loopsettings-headline-captcha' )->text() . '</h3>';
                     $html .= $captchaDisabledMsg;
                     $html .= '<p class="mb-1">'.$this->msg( "loopsettings-captcha-desc")->text().'</p>';
 					$html .= '<div class="col-12">';
@@ -951,10 +951,10 @@ class SpecialLoopSettings extends SpecialPage {
 
 				$html .= '</div>'; // end of tech-tab
 
-				
-				/** 
-				 * CONTENT TAB 
-				 */	
+
+				/**
+				 * CONTENT TAB
+				 */
 				$html .= '<div class="tab-pane fade" id="nav-content" role="tabpanel" aria-labelledby="nav-content-tab">';
 
                     $html .= '<div class="form-row">';
@@ -968,13 +968,13 @@ class SpecialLoopSettings extends SpecialPage {
 
                             $html .= '<div class="mb-1"><input type="radio" name="render-objects" id="render-icon" value="icon" ' . ( $currentLoopSettings->objectRenderOption == "icon" ? 'checked="checked"' : '' ) .'>
                             <label for="render-icon">' . $this->msg( 'loopsettings-render-objects-icon-label' ) . '</label></div>';
-                            
+
                             $html .= '<div class="mb-1"><input type="radio" name="render-objects" id="render-title" value="title" ' . ( $currentLoopSettings->objectRenderOption == "title" ? 'checked="checked"' : '' ) .'>
                             <label for="render-title">' . $this->msg( 'loopsettings-render-objects-title-label' ) . '</label></div>';
-                            
+
                             $html .= '<div class="mb-3"><input type="radio" name="render-objects" id="render-none" value="none" ' . ( $currentLoopSettings->objectRenderOption == "none" ? 'checked="checked"' : '' ) .'>
                             <label for="render-none">' . $this->msg( 'loopsettings-render-objects-none-label' ) . '</label></div>';
-                            
+
                         $html .= '</fieldset>';
                         $html .= '</div>'; // end of col
 
@@ -998,7 +998,7 @@ class SpecialLoopSettings extends SpecialPage {
                         </div>';
                         $html .= '</div>'; // end of col
                     $html .= '</div>'; // end of row
-            
+
                     $html .= '<div class="form-row">';
                         $html .= '<div class="col-8">';
                             $html .= '<h5>' . $this->msg( 'loopsettings-numbering' ) . '</h5>';
@@ -1012,7 +1012,7 @@ class SpecialLoopSettings extends SpecialPage {
                             $html .= '<div class="mb-3"><input type="radio" name="numbering-type" id="chapter" value="chapter" ' . ( $currentLoopSettings->numberingType == "chapter" ? 'checked' : '' ) . ( $currentLoopSettings->numberingObjects != true || $currentLoopSettings->objectRenderOption != "marked" ? ' disabled' : '' ) .'>
                             <label for="chapter">' . $this->msg( 'loopsettings-numbering-type-chapter-label' ) . '</label></div>';
                         $html .= '</div>'; // end of col
-                        
+
                     $html .= '</div>'; // end of row
 
                     $html .= '<div class="form-row">';
@@ -1025,23 +1025,23 @@ class SpecialLoopSettings extends SpecialPage {
                             $html .= '<label for="vancouver"> ' . $this->msg( 'loopsettings-citation-style-vancouver-label' ) . '</label></div>';
                         $html .= '</div>'; // end of col
                     $html .= '</div>'; // end of row
-                    
+
 				$html .= '</div>'; // end of content-tab
-				
+
 			$html .= '</div>'; // end of tab-content
-			
+
 			$html .= '<input type="hidden" name="t" id="loopsettings-token" value="' . $saltedToken . '"></input>';
 			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="loopsettings-submit" value="' . $this->msg( 'submit' ) . '"></input>';
-			
+
 			$html .= '</form>';
-			
+
 			} else {
 				$html .= '<div class="alert alert-warning" role="alert">' . $this->msg( 'loopsettings-no-permission' ) . '</div>';
 		}
 		$out->addHTML( $html );
 	}
-	
-		
+
+
 	/**
 	 * Specify the specialpages-group loop
 	 *
@@ -1050,5 +1050,5 @@ class SpecialLoopSettings extends SpecialPage {
 	protected function getGroupName() {
 		return 'loop';
 	}
-	
+
 }

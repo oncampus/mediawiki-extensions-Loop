@@ -62,10 +62,10 @@ class LoopStructure {
 						Title::newFromID( $structureItem->article ),
 						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . '</span></span>' )
 					);
-					
-				} 
+
+				}
 				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
-				
+
 			}
 
 		}
@@ -111,7 +111,8 @@ class LoopStructure {
 		}
 
 		# Title objects has to start with a letter else an error will occur.
-		if( ctype_alpha( $rootTitleText[0] )) {
+		$pattern = '/^[a-zA-ZäöüÄÖÜ]$/';
+		if( preg_match($pattern, substr($rootTitleText, 0, 1 )) !== 0 ) {
             $rootTitle = Title::newFromText( $rootTitleText );
             if( is_object( $rootTitle )) {
                 $this->mainPage = $rootTitle->getArticleID();
@@ -302,7 +303,7 @@ class LoopStructure {
 		foreach( $this->structureItems as $structureItem ) {
 			$structureItem->addToDatabase();
 		}
-		
+
 		LoopObject::updateStructurePageTouched();
 	}
 
@@ -311,7 +312,7 @@ class LoopStructure {
 	 */
 	public function deleteItems() {
 
-		LoopObject::updateStructurePageTouched(); # update page_touched on structure pages. 
+		LoopObject::updateStructurePageTouched(); # update page_touched on structure pages.
 
 		$dbw = wfGetDB( DB_MASTER );
 		$dbw->delete(
@@ -400,7 +401,7 @@ class LoopStructure {
 
 			global $wgSitename;
 			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
-			
+
 			$sitename = explode( ".", $wgSitename );
 
 			$newStructureContent = '__FORCETOC__' . PHP_EOL;
@@ -409,10 +410,10 @@ class LoopStructure {
 			$newStructureContent .= '<li class="toclevel-2 tocsection-2"><a href="#"><span class="tocnumber">1.1</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-1-1")->text().'</span></a></li>'.PHP_EOL;
 			$newStructureContent .= '<li class="toclevel-2 tocsection-2"><a href="#"><span class="tocnumber">1.2</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-1-2")->text().'</span></a></li>'.PHP_EOL;
 			$newStructureContent .= '<li class="toclevel-1 tocsection-1"><a href="#"><span class="tocnumber">2</span> <span class="toctext">'.wfMessage("loopstructure-initial-chapter-2")->text().'</span></a></li>'.PHP_EOL;
-			
+
 			$this->setStructureItemsFromWikiText( $newStructureContent, $systemUser );
 			$this->saveItems();
-		
+
 	}
 }
 
@@ -442,7 +443,7 @@ class LoopStructureItem {
 
 			$dbw = wfGetDB( DB_MASTER );
 			$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
-			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase 
+			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase
 			$dbw->insert(
 				'loop_structure_items',
 				array(
@@ -454,7 +455,7 @@ class LoopStructureItem {
 					'lsi_toc_level' => $this->tocLevel,
 					'lsi_sequence' => $this->sequence,
 					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => $tmpTocText->mTextform 
+					'lsi_toc_text' => $tmpTocText->mTextform
 				),
 				__METHOD__
 			);
@@ -516,8 +517,8 @@ class LoopStructureItem {
 
 		}
 
-	}	
-	
+	}
+
 	/**
 	* Get item for given title and structure from database
 	*
@@ -711,7 +712,7 @@ class LoopStructureItem {
 
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
-		
+
 		if ( $wgLoopLegacyPageNumbering ) {
 			$pageNumber = $this->tocNumber . ' ';
 		} else {
@@ -743,7 +744,7 @@ class LoopStructureItem {
 		$max_item_text_len = floor( $max_text_len / $level );
 
 		foreach( $items as $item ) {
-			
+
 			// if home page -> skip
 			if(empty($item->tocNumber)) continue;
 
@@ -752,7 +753,7 @@ class LoopStructureItem {
 			} else {
 				$link_text = $item->tocText;
 			}
-			
+
 			$title = Title::newFromID( $item->article );
 
 			if ( $wgLoopLegacyPageNumbering ) {
@@ -762,7 +763,7 @@ class LoopStructureItem {
 			}
 
 			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $pageNumber . $link_text ) );
-			
+
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 
 		}
@@ -885,17 +886,17 @@ class SpecialLoopStructure extends SpecialPage {
 		$out->setPageTitle( $this->msg( 'loopstructure-specialpage-title' ) );
 		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
-		
+
 		$html = self::renderLoopStructureSpecialPage( $loopEditMode, $loopRenderMode, $user );
 		$out->addHtml( $html );
 
 	}
-	
+
 	public static function renderLoopStructureSpecialPage( $loopEditMode = false, $loopRenderMode = 'default', $user = null ) {
 	    $html = '';
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
-	    
+
 	    $html .= Html::openElement(
 	        'h1',
 	        array(
@@ -903,12 +904,12 @@ class SpecialLoopStructure extends SpecialPage {
 	        )
 	        )
 	        . wfMessage( 'loopstructure-specialpage-title' )->parse();
-	    
+
 	    if ( $user ) {
     	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
-    	        
+
     	        # show link to the edit page if user is permitted
-    	        
+
     	        $html .= Html::rawElement(
     	                'a',
     	                array(
@@ -920,7 +921,7 @@ class SpecialLoopStructure extends SpecialPage {
     	                );
     	    }
 	    }
-	    
+
 	    $html .= Html::closeElement(
 	        'h1'
 	        )
@@ -1024,16 +1025,16 @@ class SpecialLoopStructureEdit extends SpecialPage {
 								if( $parseResult !== false ) {
 
 									$newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();
-	
+
 									# if new parsed structure is different to the new one save it
 									if( $currentStructureAsWikiText != $newStructureContentParsedWikiText ) {
-	
+
 										$loopStructure->deleteItems();
 										$loopStructure->setStructureItemsFromWikiText( $parsedStructure, $user );
 										//dd($loopStructure);
 										$loopStructure->saveItems();
 										$currentStructureAsWikiText = $loopStructure->renderAsWikiText();
-	
+
 										# save success output
 										$out->addHtml(
 											Html::rawElement(
@@ -1050,7 +1051,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 										$error = $this->msg( 'loopstructure-save-equal-error' )->parse();
 										$feedbackMessageClass = 'warning';
 									}
-	
+
 								} else {
 									$error = $this->msg( 'loopstructure-save-parse-error' )->parse();
 									$feedbackMessageClass = 'danger';

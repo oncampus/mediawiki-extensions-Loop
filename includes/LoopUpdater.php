@@ -63,7 +63,9 @@ class LoopUpdater {
 		}
 		if ( $updater->tableExists( 'loop_object_index' ) ) { #update for existing LOOPs
 			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_object_index', $schemaPath . 'loop_object_index_modify.sql', true ) );
+			#self::saveAllWikiPages();
 		}
+
 
 		return true;
 	}
@@ -428,7 +430,12 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 		$this->setHeaders();
 		$html = '';
 
-		if ( in_array( "sysop", $user->getGroups() ) ) {
+		# only used for updates during migrations
+		global $IP;
+		$token = $request->getText( 'token' );
+		require_once "$IP/loop/check_token.php";
+
+		if ( in_array( "sysop", $user->getGroups() ) || check_token( $token, $_SERVER["SERVER_NAME"] ) ) {
 
 			if ( empty ( $request->getText( 'execute' ) ) ) {
 				$html .= '<h3>Manual LOOP Updates</h3>';
