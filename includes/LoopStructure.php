@@ -1209,7 +1209,7 @@ class SpecialLoopPagesNotInStructure extends SpecialPage {
 		);
 		$links = array();
 		foreach( $res as $row ) {
-			if ( LoopStructureItem::newFromIds( $row->page_id ) != false ) {
+			if ( LoopStructureItem::newFromIds( $row->page_id ) == false ) {
 				$tmpTitle = Title::newFromID( $row->page_id, $row->page_namespace );
 				$links[$tmpTitle->mTextform] = $linkRenderer->makeLink(
 					$tmpTitle
