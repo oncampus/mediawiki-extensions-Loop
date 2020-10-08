@@ -165,6 +165,7 @@ class LoopHooks {
 	public static function onPreSaveTransformComplete( &$text, $title, $user ) {
 		
 		$text = Loop::setReferenceIds( $text );
+		$text = str_replace( 'scale="true"  scale="true"  ', 'scale="true" ', $text ); # fix for an update error
 		
 		return true;
 
