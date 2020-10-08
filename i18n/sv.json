@@ -129,7 +129,7 @@
 	"loopexport-audio-intro-date": "Nivå: $1",
 	"loopexportpdftest": "Testa pdf",
 	"loopexport-pdf-test-success": "Inga fel hittades! Om PDF funker inte, [[Special:PurgeCache|rensa cachen]] eller kontaktera administratorn.",
-	"loopexport-pdf-test-failure": "På sidan [[$1]] uppstod ett fel. Du kan läsa loggen nedan.",
+	"loopexport-pdf-test-failure": "På sidan/sidor $1 uppstod ett fel. Du kan läsa loggen nedan.",
 	"loopexport-pdf-test-notice": "I trackingkategoriet för $1 finns sidor med fel. Titta på dem i regideringsmodus.",
 	"loopexport-pdf-error": "Ett fel uppstod vid exporten. ",
 
@@ -281,6 +281,7 @@
 	"loopliterature-text-url": "Hämtad av",
 	"loopliterature-text-notreferenced": "Vidare läsning",
 	"loopliterature-text-note": "Anteckning",
+	"loopliterature-text-unpublished": "Opublicerad",
 
 	"loopliterature-label-addentry": "Lägg till litteratur",
 	"loopliterature-label-deleteentry": "Ta bort litteraturen",
@@ -487,6 +488,8 @@
 	"loopstructure-initial-chapter-1": "Först kapitel",
 	"loopstructure-initial-chapter-1-1": "Först underkapitel",
 	"loopstructure-initial-chapter-1-2": "Andra underkapitel",
-	"loopstructure-initial-chapter-2": "Andra kapitel"
+	"loopstructure-initial-chapter-2": "Andra kapitel",
+
+	"looppagesnotinstructure": "Sidor som inte finns i innehållförteckningen"
 
 }

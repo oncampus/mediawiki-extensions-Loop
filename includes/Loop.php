@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 /**
   * @description Handles general functions and settings
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
-  
+
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
 }
@@ -13,23 +13,23 @@ class Loop {
 
 	/**
 	 * Save changes in LoopEditMode and LoopRenderMode
-	 * 
+	 *
 	 * This is called by 'MediaWikiPerformAction' hook.
-	 * 
+	 *
 	 * @param OutputPage $output
 	 * @param Request $request
 	 * @param User $user
 	 */
-	public static function handleLoopRequest( $output, $request, $user ) { 
-		
+	public static function handleLoopRequest( $output, $request, $user ) {
+
 		if ( $user->isAllowed( 'edit' ) ) {
 			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
 			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( "0", "1" ) ) ) ) {
 				$user->setOption( 'LoopEditMode', $loopeditmodeRequestValue );
-				$user->saveSettings(); 
+				$user->saveSettings();
 			}
 		}
-		
+
 		if ( $user->isAllowed( 'loop-rendermode' ) ) {
 			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
 			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
@@ -37,31 +37,34 @@ class Loop {
 			} else {
 				$user->setOption( 'LoopRenderMode', 'default' );
 			}
-		}	
-		
+		}
+
 		# If there is no Structure, create one.
 		$loopStructure = new LoopStructure();
 		$loopStructureItems = $loopStructure->getStructureitems();
 		if ( empty( $loopStructureItems ) ) {
 			$loopStructure->setInitialStructure();
 		}
-			
+
 	}
-		
+
 	public static function onExtensionLoad() {
 
 		# Loop Object constants
 		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
 		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
 
-		global $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgLoopImprintLink,  
-		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions, 
+		global $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgLoopImprintLink,
+		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions,
 		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
 		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
-		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar, 
+		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar,
 		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
-		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS, $wgLoopObjectDefaultRenderOption;
-		
+		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS, $wgLoopObjectDefaultRenderOption,
+		$wgExternalLinkTarget;
+
+		# external links to new tab
+		$wgExternalLinkTarget = '_blank';
 
 		#override preSaveTransform function by copying WikitextContent and adding a Hook
 		$wgContentHandlers[CONTENT_MODEL_WIKITEXT] = 'LoopWikitextContentHandler';
@@ -74,7 +77,7 @@ class Loop {
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
 		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
 		if ( $dbr->tableExists( 'loop_settings' ) ) {
-			
+
 			$res = $dbr->select(
 				'loop_settings',
 				array(
@@ -125,7 +128,7 @@ class Loop {
 			}
 
 		}
-			
+
 		# Define new name for glossary
 		$glossary = array( "de" => "Glossar", "de-formal" => "Glossar", "en" => "Glossary", "es" => "Glosario", "sv" => "Ordlista" );
 		$wgExtraNamespaces[ NS_GLOSSARY ] = array_key_exists( $wgLanguageCode, $glossary ) ? $glossary[ $wgLanguageCode ] : "Glossary";
@@ -133,13 +136,14 @@ class Loop {
 		$wgWhitelistRead = is_array( $wgWhitelistRead ) ? $wgWhitelistRead : array();
 		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:Impressum", "Spezial:Datenschutz", "Special:Imprint", "Special:Privacy", "Especial:Imprint", "Especial:Privacy", "Speciel:Imprint", "Speciel:Privacy"] );
 		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:LoopRSS", "Special:LoopRSS", "Especial:LoopRSS", "Speciel:LoopRSS"] );
+		$wgWhitelistRead = array_merge ( $wgWhitelistRead, [ "Spezial:LoopManualUpdater", "Special:LoopManualUpdater", "Especial:LoopManualUpdater", "Speciel:LoopManualUpdater"] ); # during migration only
 		$wgWhitelistRead[] = $wgLoopImprintLink;
 		$wgWhitelistRead[] = $wgLoopPrivacyLink;
 		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:Common.css";
 		$wgWhitelistRead[] = "MediaWiki:Common.js";
 		$wgWhitelistRead[] = "MediaWiki:ExtraFooter";
-		
+
 		# FlaggedRevs Settings
 		$wgFlaggedRevsLowProfile = false;
 		$wgFlaggedRevsExceptions = array();
@@ -163,7 +167,7 @@ class Loop {
 
 		# Uploadable file extensions
 		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg',
-			'eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr'));
+			'eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr', 'swf' ));
 
 		# Disable Talk Namespaces
 		$wgNamespaceProtection[NS_TALK] = ['*'];
@@ -178,7 +182,7 @@ class Loop {
 		# Lingo configuration
 		$wgexLingoPage = 'MediaWiki:LoopTerminologyPage';
 		$wgexLingoDisplayOnce = true;
-		
+
 		# Captcha post settings configuration
 		if ( empty( $wgReCaptchaSecretKey ) && empty( $wgReCaptchaSiteKey ) ) {
 			# no captchas if there is no captcha service
@@ -194,7 +198,7 @@ class Loop {
 
 		return true;
 	}
-	
+
 	/**
 	 * Set up LOOP-specific pages so they are not red links
 	 */
@@ -204,30 +208,30 @@ class Loop {
 		if ( $systemUser->getId() != 0 ) {
 			$systemUser->addGroup("sysop");
 		}
-		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" ); 
-			
+		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" );
+
 		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
-		$loopExceptionPageUpdater = $loopExceptionPage->newPageUpdater( $systemUser ); 
+		$loopExceptionPageUpdater = $loopExceptionPage->newPageUpdater( $systemUser );
 		$loopExceptionPageUpdater->setContent( "main", $loopExceptionPageContent );
 		$loopExceptionPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
 
 		$loopLegacyPage = WikiPage::factory( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopLegacyPageContent = new WikitextContent( wfMessage( 'looplegacy-tracking-category-desc' )->inContentLanguage()->text() );
-		$loopLegacyPageUpdater = $loopLegacyPage->newPageUpdater( $systemUser ); 
+		$loopLegacyPageUpdater = $loopLegacyPage->newPageUpdater( $systemUser );
 		$loopLegacyPageUpdater->setContent( "main", $loopLegacyPageContent );
 		$loopLegacyPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
 		$loopTerminologyPage = WikiPage::factory( Title::newFromText( "LoopTerminologyPage", NS_MEDIAWIKI ));
 		$loopTerminologyPageContent = new WikitextContent( "" ); #empty
-		$loopTerminologyPageUpdater = $loopTerminologyPage->newPageUpdater( $systemUser ); 
+		$loopTerminologyPageUpdater = $loopTerminologyPage->newPageUpdater( $systemUser );
 		$loopTerminologyPageUpdater->setContent( "main", $loopTerminologyPageContent );
 		$loopTerminologyPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
 	}
 
-	
+
 	/**
 	 * Adds id to object, cite and index tags if there are none
 	 * @param string $text
@@ -242,7 +246,7 @@ class Loop {
 		foreach ( $occurences[1] as $i => $val ) { # replace occurrences with markers
 			$tmpText = preg_replace( $regex, "%LOOPIDMARKER$i%", $tmpText, 1);
 		}
-		
+
 		foreach ( $occurences[1] as $i => $val ) { # replace markers with ids - this is safe for identical entries like <cite> without any attributes
 			if ( strpos( $val, "id=\"" ) === false ) {
 				$tmpReplace = $val.' id="'.uniqid().'">';
@@ -257,19 +261,19 @@ class Loop {
 		/*
 		$changedText = false;
 		$tmptext = mb_convert_encoding("<?xml version='1.0' encoding='utf-8'?>\n<div>" .$text.'</div>', 'HTML-ENTITIES', 'UTF-8');
-		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags 
+		$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source'); # don't set ids when in these tags
 		$dom = new DOMDocument("1.0", 'utf-8');
 		@$dom->loadHTML( $tmptext, LIBXML_HTML_NODEFDTD );
-		
+
 		$xpath = new DOMXPath( $dom );
-		
+
 		$objectTags = array( '//loop_figure', '//loop_formula', '//loop_listing', '//loop_media', '//loop_table', '//loop_task', '//cite', '//loop_index', '//loop_screenshot' );
-		
+
 		$query = implode(' | ', $objectTags);
 		$nodes = $xpath->query( $query );
 		$change = array();
 		foreach ( $nodes as $node ) {
-			# don't set ids when in these tags 
+			# don't set ids when in these tags
 			if ( ! in_array( strtolower($node->parentNode->nodeName), $forbiddenTags ) && ! in_array( strtolower($node->parentNode->parentNode->nodeName), $forbiddenTags ) ) {
 				$existingId = $node->getAttribute( 'id' );
 				if( ! $existingId ) {
@@ -299,7 +303,7 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 	}
 
 	function execute( $par ) {
-		
+
 		global $wgLoopExternalImprintPrivacy, $wgLoopExternalImprintUrl;
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -311,7 +315,7 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 		if ( $wgLoopExternalImprintPrivacy && !empty ( $wgLoopExternalImprintUrl ) ) {
 
 			$return = self::renderLoopImprintSpecialPage();
-	
+
 			if ( empty( $return ) ) {
 				global $wgLoopImprintLink;
 				$out->redirect ( $wgLoopImprintLink );
@@ -327,9 +331,9 @@ class SpecialLoopImprint extends UnlistedSpecialPage {
 	public static function renderLoopImprintSpecialPage () {
 
 		global $wgServerName, $wgLoopExternalImprintPrivacy, $wgLoopExternalImprintUrl;
-			
+
 		$url = $wgLoopExternalImprintUrl.'?loop=' . $wgServerName;
-		
+
 		$cha = curl_init();
 		curl_setopt($cha, CURLOPT_URL, ($url));
 		curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );
@@ -350,7 +354,7 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 	}
 
 	function execute( $par ) {
-		
+
 		global $wgLoopExternalImprintPrivacy, $wgLoopExternalPrivacyUrl;
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -373,13 +377,13 @@ class SpecialLoopPrivacy extends UnlistedSpecialPage {
 		}
 
 	}
-	
+
 	public static function renderLoopPrivacySpecialPage () {
 
 		global $wgServerName, $wgLoopExternalPrivacyUrl;
-			
+
 		$url = $wgLoopExternalPrivacyUrl.'?loop=' . $wgServerName;
-		
+
 		$cha = curl_init();
 		curl_setopt($cha, CURLOPT_URL, ($url));
 		curl_setopt($cha, CURLOPT_ENCODING, "UTF-8" );

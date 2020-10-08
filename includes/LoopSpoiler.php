@@ -64,12 +64,15 @@ class LoopSpoiler {
 	public static function renderLoopSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$parser->getOutput()->addModules( 'loop.spoiler.js' );
 		
+		$input = trim($input);
 		$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
 		
 		$span = "";
 		$parser->extractTagsAndParams( ["math"], $input, $math_tags );
+		$j = 0;
 		foreach ( $math_tags as $i => $math ) {
-			$span .=  $parser->recursiveTagParseFully( "<math>".$math[1]."</math>", $frame );
+			$span .=  "<span class='replacemath' id='mathreplace$j'>" .$parser->recursiveTagParseFully( "<math>".$math[1]."</math>", $frame )."</span>";
+			$j++;
 		}
 		$span = str_replace("<p>", "", $span);
 		$span = str_replace("</p>", "", $span);
@@ -92,7 +95,7 @@ class LoopSpoiler {
 			$content = substr( $content, 0, -1 );
 		}
 		# replace math uniq markers
-		$content = preg_replace('/(\'"`UNIQ--postMath-\w{8}-QINU`"\')/', '<span class="loopspoiler_math_replace"></span>', $content);
+		$content = preg_replace('/(\'"`UNIQ--postMath-)(\w{8})(-QINU`"\')/', '<span class="loopspoiler_math_replace" data-marker="$2"></span>', $content);
 		
 		return Html::rawElement(
 			'button',

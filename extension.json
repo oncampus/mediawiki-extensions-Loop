@@ -116,7 +116,10 @@
 		"SpecialLoopPrivacy": "includes/Loop.php",
 		"SpecialLoopRSS": "includes/LoopRSS.php",
 		"LoopNgSpice": "includes/LoopNgSpice.php",
-		"SpecialLoopNgSpice": "includes/LoopNgSpice.php"
+		"SpecialLoopNgSpice": "includes/LoopNgSpice.php",
+		"LoopComment": "includes/LoopComment.php",
+		"LoopSwfHandler": "includes/LoopMediaHandler.php",
+		"SpecialLoopPagesNotInStructure": "includes/LoopStructure.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -150,7 +153,8 @@
 			"LoopMediaHandler::onParserSetup",
 			"LoopScreenshot::onParserSetup",
 			"LoopAccordion::onParserSetup",
-			"LoopNgSpice::onParserSetup"
+			"LoopNgSpice::onParserSetup",
+			"LoopComment::onParserSetup"
 		],
 		"ParserAfterTidy": [
 			"LoopObject::onParserAfterTidy",
@@ -187,7 +191,8 @@
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
 		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
-		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister",
+		"ImageBeforeProduceHTML": "LoopSwfHandler::onImageBeforeProduceHTML"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -216,7 +221,8 @@
 		"LoopPrivacy": "SpecialLoopPrivacy",
 		"LoopRSS": "SpecialLoopRSS",
 		"LoopNgSpice": "SpecialLoopNgSpice",
-		"LoopManualUpdater": "SpecialLoopManualUpdater"
+		"LoopManualUpdater": "SpecialLoopManualUpdater",
+		"LoopPagesNotInStructure": "SpecialLoopPagesNotInStructure"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
@@ -361,7 +367,7 @@
 				"loopngspice-error-min-value"
 			]
 		}
-	
+
 	},
 	"TrackingCategories": [
 		"loop-tracking-category-error",
@@ -1035,6 +1041,10 @@
 		"LoopNgSpiceUrl": {
 			"value": "",
 			"description" : "Service Url for NgSpice."
+		},
+		"LoopEditorHideReferences": {
+			"value": false,
+			"description" : "Hide References from LOOP WikiEditor for faster loading."
 		}
 	},
 	"LogTypes": [ "loopexport" ],

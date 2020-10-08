@@ -11,10 +11,10 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 class LoopArea {
 
 	static function onParserSetup( Parser $parser ) {
-		$parser->setHook( 'loop_area', 'LoopArea::renderLoopArea' ); 
+		$parser->setHook( 'loop_area', 'LoopArea::renderLoopArea' );
 		return true;
 	}
-	
+
 	public static $typeOptions = [
 		'learningobjectives',
 		'markedsentence',
@@ -54,7 +54,7 @@ class LoopArea {
 		try {
 			// if type attribute exists ...
 			if( isset( $args['type'] ) ) {
-				
+
 				// ... check if attribute contains allowed type
 				if( in_array( $args['type'], self::$typeOptions ) ) {
 					$argtype = $args['type'];
@@ -66,7 +66,7 @@ class LoopArea {
 					} elseif ( $argtype === 'indentation' ) { // because icon with this name does not exist, using 'watch' icon
 						$iconimg = 'watch';
 					}
-				} else {	
+				} else {
 					$argtype = 'area';
 					$iconimg = $argtype;
 					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "type", $args['type'], implode( ', ', self::$typeOptions ), 'area' )->text() );
@@ -87,7 +87,7 @@ class LoopArea {
 		try {
 			if( array_key_exists( 'render', $args ) ) { // array_key_exists() because code convention forbids isset()
 				if ( $args['render'] === 'none' ) {
-					$cssrender = 'renderhide d-none';
+					$cssrender = 'renderhide';
 				} elseif ( $args['render'] === 'icon' ) {
 					$cssrender = 'rendericon';
 				} elseif ( $args['render'] === 'marked') {
@@ -96,7 +96,7 @@ class LoopArea {
 					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "render", $args['render'], implode( ', ', self::$renderOptions ), "marked" )->text() );
 				}
 			}
-			
+
 		} catch ( LoopException $e) {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			$error = $e;
@@ -108,20 +108,22 @@ class LoopArea {
 		if( array_key_exists( 'icontext', $args ) ) { // array_key_exists() because code convention forbids isset()
 			$icontext = strtolower( $args['icontext'] );
 		}
-				
+
 		$cssicon = 'ic ic-' . $iconimg;
 		$ownicon = '';
-		
+
 		// Allow overwriting icon image when parameter 'icon' is used
 		if( array_key_exists( 'icon', $args ) ) { // array_key_exists() because code convention forbids isset()
 
 			try {
-				if( file_exists( wfLocalFile( $args['icon'] )->getLocalRefPath() ) ) {
-					
+				$file = wfLocalFile( $args['icon'] );
+
+				if( $file !== null && file_exists( $file->getLocalRefPath() ) ) {
+
 				    global $wgOut, $wgDefaultUserOptions, $wgUploadDirectory;
 					$user = $wgOut->getUser();
 					$renderMode = $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
-					
+
 					if ( $renderMode == "offline" ) {
 					    $loopHtml = new LoopHtml();
 					    $fileData = array();
@@ -132,12 +134,12 @@ class LoopArea {
 					    $fileContent = $loopHtml->requestContent(array($fileUrl));
 					    #dd($fileUrl, $fileName);
 					    $loopHtml->writeFile( $wgUploadDirectory . '/export/html/0/files/resources/images/', $fileName, $fileContent );
-					    
+
 					} else {
 					    $owniconurl = wfLocalFile( $args['icon'] )->getCanonicalURL();
 					}
 					$cssicon = 'ownicon d-block';
-					$ownicon = 'style="background-image: url(' . $owniconurl . ')"'; 
+					$ownicon = 'style="background-image: url(' . $owniconurl . ')"';
 					#$owniconurl = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');;
 					#dd( , $renderMode);
 				} else {
@@ -152,12 +154,13 @@ class LoopArea {
 		$ret = '';
 		if ( isset( $error ) ) {
 			$ret .= $error;
-		} 
+		}
+		$input = trim($input);
 		$ret .= '<div class="looparea position-relative ' . $cssrender . ' looparea-'. $iconimg .'">';
 		$ret .= '<div class="looparea-container mb-2 d-block d-lg-flex">';
 		$ret .= '<div class="looparea-left position-relative pl-1 pr-1 pt-2 pt-lg-0">';
-		$ret .= '<span class="' . $cssicon . '" ' . $ownicon . '></span>';
-		$ret .= '<span class="looparea-left-type d-block font-weight-bold">' . $icontext . '</span>';
+		$ret .= $cssrender == 'renderhide' ? '' : '<span class="' . $cssicon . '" ' . $ownicon . '></span>
+				<span class="looparea-left-type d-block font-weight-bold">' . $icontext . '</span>';
 		$ret .= '</div>';
 		$ret .= '<div class="looparea-right pl-3 pr-3 pt-1 pt-md-2 pb-1 pb-lg-0">' . $parser->recursiveTagParseFully( $input ) . '</div>';
 		$ret .= '</div>';

@@ -20,10 +20,13 @@ class LoopSidebar {
         try {
             if ( isset ( $args[ "page" ] ) && !empty( $args[ "page" ] ) ) {
                 $sidebarTitle = Title::newFromText( $args["page"] );
-                $sidebarWP = new WikiPage( $sidebarTitle );
-                if ( $sidebarWP->getID() == 0 ) {
-                    $parser->addTrackingCategory( 'loop-tracking-category-error' );
-                } 
+                if ( is_object($sidebarTitle) ) {
+                    $sidebarWP = new WikiPage( $sidebarTitle );
+                    if ( $sidebarWP->getID() == 0 ) {
+                        $parser->addTrackingCategory( 'loop-tracking-category-error' );
+                    } 
+                }
+               
             } else {
                 throw new LoopException( wfMessage("loopsidebar-error-nopage")->text() );
                 $parser->addTrackingCategory( 'loop-tracking-category-error' );

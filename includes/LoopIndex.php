@@ -70,21 +70,24 @@ class LoopIndex {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
-		$dbw = wfGetDB( DB_MASTER );
-		
-        $dbw->insert(
-            'loop_index',
-            array(
-                'li_index' => $this->index,
-                'li_pageid' => $this->pageId,
-                'li_refid' => $this->refId
-            ),
-            __METHOD__
-		);
-        # SpecialPurgeCache::purge();
-        
-        return true;
+		if ( $this->refId !== null ) {
 
+			$dbw = wfGetDB( DB_MASTER );
+		
+			$dbw->insert(
+				'loop_index',
+				array(
+					'li_index' => $this->index,
+					'li_pageid' => $this->pageId,
+					'li_refid' => $this->refId
+				),
+				__METHOD__
+			);
+			# SpecialPurgeCache::purge();
+			
+			return true;
+		}
+		return false;
 	}
 	
     /**

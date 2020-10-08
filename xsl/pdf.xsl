@@ -257,7 +257,7 @@
 				<xsl:value-of select="$word_glossary"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
-		<fo:block id="glossary" keep-with-next="always" margin-bottom="10mm">
+		<fo:block id="glossary" keep-with-next="always" margin-bottom="5mm">
 			<xsl:call-template name="font_head"></xsl:call-template>
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
@@ -1241,14 +1241,14 @@
 							</xsl:if>
 							<fo:inline>	
 								<xsl:choose>
-									<xsl:when test="@title">
-										<xsl:value-of select="@title"></xsl:value-of>
-									</xsl:when>
 									<xsl:when test="descendant::extension[@extension_name='loop_title']">
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_title']"  mode="loop_object"></xsl:apply-templates>
 									</xsl:when>
 									<xsl:when test="descendant::extension[@extension_name='loop_figure_title']">
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_figure_title']" mode="loop_object"></xsl:apply-templates>
+									</xsl:when>
+									<xsl:when test="@title">
+										<xsl:value-of select="@title"></xsl:value-of>
 									</xsl:when>
 								</xsl:choose>	
 								<fo:leader leader-pattern="dots"></fo:leader>
@@ -1490,9 +1490,9 @@
 		
 		
 		<xsl:choose>
-			<xsl:when test="($glossary_exists='1')">
+			<!-- <xsl:when test="($glossary_exists='1')">
 				<xsl:text>glossary_sequence</xsl:text>
-			</xsl:when>		
+			</xsl:when>	 -->
 			<xsl:when test="($index_exists='1')">
 				<xsl:text>index_sequence</xsl:text>
 			</xsl:when>
@@ -1998,39 +1998,21 @@
 
 	<!-- General Handling of possible referenced objects that are in not-rendered tags -->
 	<xsl:template name="noprint_id_handling">
-		<fo:block></fo:block>
-		<xsl:choose>
-			<xsl:when test="./descendant::extension[@extension_name='loop_table']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_table']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_figure']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_figure']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_listing']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_listing']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_formula']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_formula']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_task']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_task']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-			<xsl:when test="./descendant::extension[@extension_name='loop_media']"><fo:block>
-				<xsl:attribute name="id">
-					<xsl:text>id</xsl:text><xsl:value-of select="./descendant::extension[@extension_name='loop_media']/@id"></xsl:value-of>
-				</xsl:attribute></fo:block>
-			</xsl:when>
-		</xsl:choose>
+		<fo:inline margin-top="5pt" margin-bottom="5pt">
+			<xsl:apply-templates select="php:function('LoopXsl::xsl_handle_ids', .)" mode="id_handling"></xsl:apply-templates>
+		</fo:inline>
+	</xsl:template>
+	
+	<xsl:template match="hidden_ids" mode="id_handling">
+		<xsl:apply-templates mode="id_handling"/>
+	</xsl:template>
+
+	<xsl:template match="hidden_id" mode="id_handling">
+		<fo:inline>
+			<xsl:attribute name="id">
+				<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
+			</xsl:attribute>
+		</fo:inline>
 	</xsl:template>
 	
 	<!-- Loop Score -->
@@ -2055,6 +2037,7 @@
 
 	<!-- Extension: Quiz -->
 	<xsl:template match="extension[@extension_name='quiz']">
+		<xsl:call-template name="noprint_id_handling"></xsl:call-template>
 		<fo:block>
 			<fo:inline>
 				<xsl:call-template name="font_icon"></xsl:call-template>
@@ -2082,6 +2065,29 @@
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+								<xsl:when test="@icon">
+									<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
+									
+										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)!=''">
+											
+											<fo:external-graphic>
+												<xsl:choose>
+													<xsl:when test="contains( $iconfilename, '.svg' )">
+														<xsl:attribute name="width">13mm</xsl:attribute>
+														<xsl:attribute name="height">13mm</xsl:attribute>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:attribute name="scaling">uniform</xsl:attribute>
+														<xsl:attribute name="content-width">scale-to-fit</xsl:attribute>
+														<xsl:attribute name="max-width">13mm</xsl:attribute>
+														<xsl:attribute name="max-height">13mm</xsl:attribute>
+													</xsl:otherwise>
+												</xsl:choose>
+												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
+											</fo:external-graphic>
+										</xsl:if>
+								</xsl:when>
+
 								<xsl:when test="@type='task'"><xsl:value-of select="$icon_task"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$icon_timerequirement"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$icon_learningobjectives"></xsl:value-of></xsl:when>
@@ -2107,23 +2113,13 @@
 								<xsl:when test="@type='citation'"><xsl:value-of select="$icon_citation"></xsl:value-of></xsl:when>
 								
 								<xsl:otherwise>
-									<xsl:if test="@icon">
-										<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
-									
-										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)!=''">
-											<fo:external-graphic scaling="uniform" content-width="scale-to-fit" max-width="13mm" max-height="13mm">
-												<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)"></xsl:value-of></xsl:attribute>
-											</fo:external-graphic>
-										</xsl:if>
-
-										<!-- content-width="24mm" -->
-									</xsl:if>
-								</xsl:otherwise> <!-- todo: error msg? -->
+								</xsl:otherwise>
 							</xsl:choose>
 						</fo:block>
 
 						<fo:block font-weight="bold" font-size="8.5pt" margin-right="0mm" line-height="10pt" white-space-treatment="preserve" linefeed-treatment="preserve">
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+								<xsl:when test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$word_looparea_learningobjectives"></xsl:value-of></xsl:when>
@@ -2149,8 +2145,7 @@
 								<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='citation'"><xsl:value-of select="$word_looparea_citation"></xsl:value-of></xsl:when>
 								<xsl:otherwise>
-									<xsl:if test="@icontext"><xsl:value-of select="@icontext"></xsl:value-of></xsl:if>
-								</xsl:otherwise> <!-- todo: error msg? -->
+								</xsl:otherwise>
 							</xsl:choose>
 						</fo:block>
 						</fo:block>
@@ -2460,9 +2455,10 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@extension_name='math'">
-				<xsl:if test="php:function('LoopXsl::xsl_transform_math', .)">
+				<xsl:variable name="math_tag" ><xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of></xsl:variable>
+				<xsl:if test="$math_tag">
 					<fo:instream-foreign-object>
-						<xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of>  
+						<xsl:copy-of select="$math_tag"></xsl:copy-of>  
 					</fo:instream-foreign-object>
 				</xsl:if>
 			</xsl:when>
@@ -2937,7 +2933,14 @@
 						<fo:basic-link><!-- qr? -->
 							<xsl:variable name="youtubeurl">
 								<xsl:text>https://youtu.be/</xsl:text>
-								<xsl:value-of select="substring-before(@videoid, '&#124;')"></xsl:value-of>
+								<xsl:choose>
+									<xsl:when test="substring-before(@videoid, '&#124;')!=''">
+										<xsl:value-of select="substring-before(@videoid, '&#124;')"></xsl:value-of>
+									</xsl:when>	
+									<xsl:otherwise>
+										<xsl:value-of select="@videoid"></xsl:value-of>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:variable>	
 							<xsl:attribute name="external-destination"><xsl:value-of select="$youtubeurl"></xsl:value-of></xsl:attribute>
 							<fo:block text-decoration="underline"><xsl:value-of select="$youtubeurl"></xsl:value-of></fo:block>

@@ -487,5 +487,7 @@
 	"loopstructure-initial-chapter-1": "Initial LoopStructure page name 1",
 	"loopstructure-initial-chapter-1-1": "Initial LoopStructure page name 1.1",
 	"loopstructure-initial-chapter-1-2": "Initial LoopStructure page name 1.2",
-	"loopstructure-initial-chapter-2": "Initial LoopStructure page name 2"
+	"loopstructure-initial-chapter-2": "Initial LoopStructure page name 2",
+
+	"looppagesnotinstructure": "Special page title for list of pages that are not in TOC"
 }

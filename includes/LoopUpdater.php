@@ -1,19 +1,19 @@
-<?php 
+<?php
 /**
   * @description Adds LOOP functions to update/upgrade process
   * @ingroup Extensions
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
-  
+
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
 }
 
 class LoopUpdater {
-	
+
 	/**
 	 * Updates Database
-	 * 
+	 *
 	 * @param DatabaseUpdater $du
 	 * @return bool true
 	 */
@@ -29,7 +29,7 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_feedback', $schemaPath . 'loop_feedback.sql', true ) );
-		
+
 		if ( $updater->tableExists( 'actor' ) ) {
 			$user = User::newFromName( 'LOOP_SYSTEM' );
 			if ( $user->getId() == 0 ) {
@@ -46,7 +46,7 @@ class LoopUpdater {
 		}
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
 		if ( $updater->tableExists( 'loop_structure_items' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
-			
+
 			if ( isset( $wgLoopAddToSettingsDB ) ) { # update settings DB from LocalSettings
 				if ( !empty( $wgLoopAddToSettingsDB )) {
 					self::addOldSettingsToDb();
@@ -63,8 +63,10 @@ class LoopUpdater {
 		}
 		if ( $updater->tableExists( 'loop_object_index' ) ) { #update for existing LOOPs
 			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_object_index', $schemaPath . 'loop_object_index_modify.sql', true ) );
+			#self::saveAllWikiPages();
 		}
-		
+
+
 		return true;
 	}
 
@@ -73,7 +75,7 @@ class LoopUpdater {
 	 * Rendering will be updated; IDs will be given etc
 	 */
 	public static function saveAllWikiPages() {
-		
+
 		global $wgOut;
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
@@ -89,21 +91,26 @@ class LoopUpdater {
 			),
 			__METHOD__
 		);
-		
+
 		foreach( $res as $row ) {
 			$title = Title::newFromId( $row->page_id, NS_MAIN );
 			$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
 			$stableRev = $tmpFPage->getStable();
 			if ( $stableRev == 0 ) {
-				$stableRev = $tmpFPage->getRevision()->getId();
-			} 
+				if ( $tmpFPage->getRevision() !== null ) {
+					$stableRev = $tmpFPage->getRevision()->getId();
+				} else {
+					$stableRev = "null";
+					error_log("NO REVISION AVAILABLE $row->page_id");
+				}
+			}
 			error_log("Updating page " . $row->page_id . " (rev " . $stableRev .  ")");
 			Hooks::run( 'LoopUpdateSavePage', array( $title ) );
 		}
 	}
 
 	/**
-	 * Migrates LOOP 1 glossary category and pages to new namespace 
+	 * Migrates LOOP 1 glossary category and pages to new namespace
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	public static function migrateGlossary() {
@@ -132,10 +139,10 @@ class LoopUpdater {
 						continue;
 					}
 				}
-				
+
 				# Fill a new page in NS_GLOSSARY with the same title as before with the old content
 				$newGlossaryPage = WikiPage::factory( Title::newFromText( $title->mTextform, NS_GLOSSARY ));
-				$newGlossaryPageContent = new WikitextContent( preg_replace( '/(\[\[)(Kategorie){0,1}(Category){0,1}(:Glossar\]\])/i', '', $content ) ); // removes [[Kategorie:Glossar]] and [[Category:Glossar]] 
+				$newGlossaryPageContent = new WikitextContent( preg_replace( '/(\[\[)(Kategorie){0,1}(Category){0,1}(:Glossar\]\])/i', '', $content ) ); // removes [[Kategorie:Glossar]] and [[Category:Glossar]]
 				$newGlossaryPageUpdater = $newGlossaryPage->newPageUpdater( $user );
 				$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 glossary migration' );
 				$newGlossaryPageUpdater->setContent( "main", $newGlossaryPageContent );
@@ -153,29 +160,29 @@ class LoopUpdater {
 				} else {
 					error_log("Copying glossary page " . $title->mArticleID . " (rev " . $stableRev .  ")");
 				}
-				
+
 			}
 		}
-		
+
 		$glossaryCategoryWikiPage = WikiPage::factory( Title::newFromText( "Glossar", NS_CATEGORY ));
 		$glossaryCategoryWikiPage->doDeleteArticle( 'Moved to Special:Glossary / Spezial:Glossar' );
 	}
 
-	
+
 	/**
 	 * Custom hook called when updating LOOP
 	 * - Indexes given LOOP-Objects on page
-	 * 
+	 *
 	 * @param Title $title
 	 */
 	public static function onLoopUpdateSavePage( $title ) {
-		
+
 		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
 		$systemUser->addGroup("sysop");
-		
+
 		$wikiPageRev = $wikiPage->getRevision();
 		if ( isset( $wikiPageRev ) ) {
 			$wikiPageContent = $wikiPageRev->getContent();
@@ -184,7 +191,7 @@ class LoopUpdater {
 			$wikiPageUpdater->setContent( "main", $wikiPageContent );
 			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 		}
-		
+
 		if ( isset( $fwp ) ) {
 			$stableRevId = $fwp->getStable();
 
@@ -220,16 +227,32 @@ class LoopUpdater {
 			}
 		}
 		$newContentText = str_replace("#ev:youtubehd", "#ev:youtube", $contentText);
-		
+
+		# LOOP INDEX
+		$parser = new Parser();
+		$index_tags = array ();
+		$loopliterature_tags = array ();
+		$parser->extractTagsAndParams( array( 'loop_index' ), $newContentText, $index_tags );
+
+		if ( !empty ( $index_tags ) ) {
+			foreach ( $index_tags as $index ) {
+				#dd($index);
+				if ( strpos ( $index[1], "|" ) != false ) {
+					$replace = str_replace("|", "</loop_index><loop_index>", $index[3]);
+					$newContentText = str_replace( $index[3], $replace, $contentText );
+				}
+			}
+		}
+
 		if ( $newContentText != $contentText ) {
 			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
 			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
-			$summary = CommentStoreComment::newUnsavedComment( 'Replaced "youtubehd" with "youtube"' );
+			$summary = CommentStoreComment::newUnsavedComment( 'LOOP Upgrade: loop_index and youtubehd' );
 			$wikiPageUpdater->setContent( "main", $editContent );
 			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-		} 
+		}
 	}
-	
+
 	/**
 	 * Migrates LOOP 1 tag biblio into DB
 	 * - bibliography page "Literatur" and adds given entries to database
@@ -237,12 +260,12 @@ class LoopUpdater {
 	 */
 	public static function migrateLiterature( $wikiPage, $title, $contentText, $systemUser ) {
 		$literaturePage = false;
-		$bibliographyPageTitle = Title::newFromText( "Bibliographypage", NS_MEDIAWIKI); 
+		$bibliographyPageTitle = Title::newFromText( "Bibliographypage", NS_MEDIAWIKI);
 		$bibliographyPageWP = WikiPage::factory( $bibliographyPageTitle );
 		$bibliographyPageRev = $bibliographyPageWP->getRevision();
 		if ( $bibliographyPageRev ) {
 			$bibliographyPageContentText = $bibliographyPageRev->getContent()->getText();
-			if ( $title->mTextform == $bibliographyPageContentText ) { 
+			if ( $title->mTextform == $bibliographyPageContentText ) {
 				$literaturePage = true; #this is the bibliography page and will get a redirect
 			}
 		}
@@ -258,13 +281,13 @@ class LoopUpdater {
 		$biblio_tags = array ();
 		$loopliterature_tags = array ();
 		$parser->extractTagsAndParams( array( 'biblio' ), $contentText, $biblio_tags );
-		
+
 		if ( !empty ( $biblio_tags ) ) {
 			error_log("Migrating bibliography");
 			foreach ( $biblio_tags as $biblio ) {
-				$newTagContent = "\n"; 
+				$newTagContent = "\n";
 				$rows = explode( "\n", $biblio[1] );
-				
+
 				foreach ( $rows as $row ) {
 					if ( !empty ( $row ) ) {
 						$output_array = array();
@@ -273,6 +296,8 @@ class LoopUpdater {
 							$key = $output_array[2];
 							$text = $output_array[4];
 							$text = str_replace( "isbn=", "ISBN: ", $text);
+							$text = str_replace( "'''", "", $text);
+							$text = str_replace( "''", "", $text);
 
 							$existingLiterature = new LoopLiterature();
 							$existingLiterature->loadLiteratureItem( $key );
@@ -285,7 +310,7 @@ class LoopUpdater {
 								$li->addToDatabase();
 							}
 							$newTagContent .=  "<literature>" . $key . "</literature>\n";
-							
+
 						}
 					}
 				}
@@ -297,45 +322,12 @@ class LoopUpdater {
 				$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new bibliography' );
 				$wikiPageUpdater->setContent( "main", $newRedirectContent );
 				$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-			} 
+			}
 		}
 
 		return true;
 	}
 
-	/**
-	 * Changes loop_index tags with multiple words (seperated by |) to multiple tags
-	 * Used in LOOP 1 update process only #LOOP1UPGRADE
-	 */
-	public static function migrateIndex( $wikiPage, $title, $contentText = null, $systemUser ) {
-
-		$revision = $wikiPage->getRevision();
-		if ( $contentText == null ) {
-			$contentText = $revision->getContent()->getText();
-		}
-		$parser = new Parser();
-		$index_tags = array ();
-		$loopliterature_tags = array ();
-		$parser->extractTagsAndParams( array( 'loop_index' ), $contentText, $index_tags );
-		$newContentText = $contentText;
-
-		if ( !empty ( $index_tags ) ) {
-			foreach ( $index_tags as $index ) {
-				if ( strpos ( $index[1], "|" ) != false ) {
-					$replace = str_replace("|", "</loop_index><loop_index>", $index[3]);
-					$newContentText = str_replace( $index[3], $replace, $contentText );
-				}
-			}
-		}
-		if ( $newContentText != $contentText ) {
-			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
-			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
-			$summary = CommentStoreComment::newUnsavedComment( 'Splitted loop_index tags' );
-			$wikiPageUpdater->setContent( "main", $editContent );
-			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-		} 
-	}
-	
 	/**
 	 * Adds scale="true" to loop_zip tags upon update
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
@@ -343,7 +335,7 @@ class LoopUpdater {
 	public static function migrateLoopZip( $wikiPage, $title, $contentText = null, $systemUser ) {
 
 		$revision = $wikiPage->getRevision();
-		
+
 		if ( $contentText == null ) {
 			if ( $revision != null ) {
 				$contentText = $revision->getContent()->getText();
@@ -359,17 +351,17 @@ class LoopUpdater {
 
 		if ( !empty ( $zip_tags ) ) {
 			$newContentText = str_replace( "<loop_zip", '<loop_zip scale="true" ', $contentText );
-			
+
 		}
 		if ( $newContentText != $contentText ) {
 			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
 			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
 			$summary = CommentStoreComment::newUnsavedComment( 'Added scale=true to loop_zip' );
 			$wikiPageUpdater->setContent( "main", $editContent );
-			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );	
-		} 
+			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+		}
 	}
-	
+
 	/**
 	 * Migrate terminology page for Lingo extension
 	 */
@@ -385,20 +377,20 @@ class LoopUpdater {
 		if ( !empty ( $oldPageContent ) ) {
 			$newTerminologyPage = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
 			$newWikiPage = WikiPage::factory( $newTerminologyPage );
-	
+
 			# Add old content to new page
 			$newWikiPageUpdater = $newWikiPage->newPageUpdater( $systemUser );
-			$summary = CommentStoreComment::newUnsavedComment( "Migrated terminology page" ); 
+			$summary = CommentStoreComment::newUnsavedComment( "Migrated terminology page" );
 			$newWikiPageUpdater->setContent( "main", $oldPageContent );
 			$newWikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-	
+
 			# Add redirect to old page
 			$newRedirectContent = new WikitextContent( "#REDIRECT [[Special:LoopTerminology]]" );
 			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
 			$summary = CommentStoreComment::newUnsavedComment( 'Redirect to new terminology page' );
 			$wikiPageUpdater->setContent( "main", $newRedirectContent );
 			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
-			
+
 			error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
 		}
 	}
@@ -416,12 +408,12 @@ class LoopUpdater {
 		foreach( $wgLoopAddToSettingsDB as $key => $value ) {
 			$loopSettings->$key = $value;
 		}
-		
+
 		$loopSettings->addToDatabase();
 	}
 }
 
-# Some LOOPs can't be updated automatically and need manual migration. 
+# Some LOOPs can't be updated automatically and need manual migration.
 # This page saves all pages and offers options for migration of literature, glossary etc
 class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 
@@ -430,7 +422,7 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 	}
 
 	function execute( $par ) {
-		
+
 		$user = $this->getUser();
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -438,9 +430,14 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 		$this->setHeaders();
 		$html = '';
 
-		if ( in_array( "sysop", $user->getGroups() ) ) {
-			
-			if ( empty ( $request->getText( 'execute' ) ) ) { 
+		# only used for updates during migrations
+		global $IP;
+		$token = $request->getText( 'token' );
+		require_once "$IP/loop/check_token.php";
+
+		if ( in_array( "sysop", $user->getGroups() ) || check_token( $token, $_SERVER["SERVER_NAME"] ) ) {
+
+			if ( empty ( $request->getText( 'execute' ) ) ) {
 				$html .= '<h3>Manual LOOP Updates</h3>';
 				$html .= '<div class="form-row mb-4">';
 				$html .= '<div class="col-12">';
@@ -457,26 +454,26 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 
 				$html .= '<input type="hidden" name="execute" id="execute" value="1"></input>';
 				$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'submit' ) . '"></input>';
-				
+
 				$html .= '</div>';
 				$html .= '</div>';
 				$html .= '</form>';
 			} else {
 				set_time_limit(1200);
-				if ( !empty ( $request->getText( 'saveallpages' ) ) ) { 
+				if ( !empty ( $request->getText( 'saveallpages' ) ) ) {
 					LoopUpdater::saveAllWikiPages();
 				}
-				if ( !empty ( $request->getText( 'migrateglossary' ) ) ) { 
+				if ( !empty ( $request->getText( 'migrateglossary' ) ) ) {
 					LoopUpdater::migrateGlossary();
 				}
-				if ( !empty ( $request->getText( 'migrateterminology' ) ) ) { 
+				if ( !empty ( $request->getText( 'migrateterminology' ) ) ) {
 					LoopUpdater::migrateLoopTerminology();
 				}
-				
+
 			}
 		} else {
 			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
-			
+
 		}
 		$out->addHTML( $html );
 	}

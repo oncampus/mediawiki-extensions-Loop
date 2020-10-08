@@ -60,12 +60,12 @@ class LoopTerminology {
 
         return $output;
     }
-    
+
     public static function getTerminologyOutput() {
 
         $contentText = self::getTerminologyPageContentText();
         $items = self::getSortedTerminology( $contentText );
-        
+
         $html = '';
         if ( !empty( $items ) ) {
             ksort( $items );
@@ -102,7 +102,7 @@ class LoopTerminology {
         $output = $parserOutput->getText();
 
         $items = self::getSortedTerminology( $output );
-        
+
         $html = '';
         if ( !empty( $items ) ) {
             ksort( $items );
@@ -128,7 +128,7 @@ class LoopTerminology {
         return $html;
 
     }
-    
+
     public static function getTerminologyWikiText() {
 
         global $wgParserConf;
@@ -152,9 +152,9 @@ class SpecialLoopTerminology extends SpecialPage {
 	public function __construct() {
 		parent::__construct ( 'LoopTerminology' );
 	}
-	
+
 	public function execute( $sub ) {
-        
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
         $user = $this->getUser();
@@ -163,7 +163,7 @@ class SpecialLoopTerminology extends SpecialPage {
 		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
 		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopterminology' ) );
-        
+
 		$html = self::renderLoopTerminologySpecialPage( $loopEditMode, $loopRenderMode, $user );
         $out->addHtml ( $html );
     }
@@ -174,7 +174,7 @@ class SpecialLoopTerminology extends SpecialPage {
 	    $html .= wfMessage( 'loopterminology' )->text();
         if ( $user ) {
     	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
-                
+
                 $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
                 $linkRenderer->setForceArticlePath(true);
     	        # show link to the edit page if user is permitted
@@ -201,9 +201,9 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
 	public function __construct() {
 		parent::__construct ( 'LoopTerminologyEdit' );
 	}
-	
+
 	public function execute( $sub ) {
-        
+
 		global $wgSecretKey;
 
 		$out = $this->getOutput();
@@ -229,10 +229,10 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
         $saltedToken = $user->getEditToken( $wgSecretKey, $request );
         $newterminologyWikitext = $request->getText( 'loopterminology-content' );
 		$requestToken = $request->getText( 't' );
-        
+
 		$userIsPermitted = (! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ));
         $terminologyWikitext = LoopTerminology::getTerminologyWikiText();
-        
+
 		$success = null;
 		$error = false;
 		$feedbackMessageClass = 'success';
@@ -244,19 +244,23 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
             }
 			if ( $userIsPermitted ) {
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
-                    
+
                     $systemUser = User::newFromName( 'LOOP_SYSTEM' );
                     $systemUser->addGroup("sysop");
 
                     $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
                     $wikiPage = WikiPage::factory( $title );
+					$contentHandler = $wikiPage->getContentHandler();
 
-                    $contentHandler = $wikiPage->getRevision()->getContent()->getContentHandler();
                     $wikiPageContent = $contentHandler->unserializeContent( $newterminologyWikitext );
                     $wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser ); # use system user to ensure editing of mediawiki namespace page is successful
                     $summary = CommentStoreComment::newUnsavedComment( $user->getName() ); #add user name to summary to ensure being able to trace back edits
-                    $wikiPageUpdater->setContent( "main", $wikiPageContent );
-                    $wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+					$wikiPageUpdater->setContent( "main", $wikiPageContent );
+					if ( ! $wikiPage->getRevision() ) {
+						$wikiPageUpdater->saveRevision ( $summary, EDIT_NEW );
+					} else {
+						$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
+					}
 
                     # save success output
                     $out->addHtml(
@@ -311,7 +315,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
 	                    'method' => 'post',
 	                    'enctype' => 'multipart/form-data'
 	                )
-                ) 
+                )
                 . Html::rawElement(
 	                'p',
                     array(),

@@ -3,34 +3,34 @@
   * @description Exports LOOP to XML
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
-  
+
 if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
 }
 
 class LoopXml {
-	
+
 	/**
-	 * @param LoopStructure $loopStructure: 
-	 * @param Array $modifiers: 
+	 * @param LoopStructure $loopStructure:
+	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
 		global $wgCanonicalServer, $wgLanguageCode;
 
-		set_time_limit(300);
+		set_time_limit(601);
 		ini_set('memory_limit', '1024M');
-		
-		$loopStructureItems = $loopStructure->getStructureItems();		
-		
+
+		$loopStructureItems = $loopStructure->getStructureItems();
+
 		$langParts = mb_split("-",$wgLanguageCode);
-		
+
 		$xml = "<?xml version='1.0' encoding='UTF-8' ?>\n";
 		$xml.= "<loop ";
 		$xml.= "xmlns:xhtml=\"http://www.w3.org/1999/xhtml\" ";
 		$xml.= ">";
-		
-		
+
+
 		$xml .= "<meta>\n";
 		$xml .= "\t<title>".htmlspecialchars ($loopStructure->getTitle())."</title>\n";
 		$xml .= "\t<url>".$wgCanonicalServer."</url>\n";
@@ -38,62 +38,62 @@ class LoopXml {
 		$xml .= "\t<date_last_changed>".date('Y-m-d H:i:s',strtotime($loopStructure->lastChanged()))."</date_last_changed>\n";
 		$xml .= "\t<lang>".$langParts[0]."</lang>\n";
 		$xml .= "</meta>\n";
-		
-		
+
+
 		$toc = self::structureItemToc($loopStructureItems[0]);
 		$xml .= "<toc>".$toc."</toc>\n";
-		
+
 		$articles = '<articles xmlns:xhtml="http://www.w3.org/1999/xhtml">';
 		foreach ( $loopStructureItems as $loopStructureItem ) {
 		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
 		}
 		$articles .= "</articles>\n";
-		
+
 		$xml .= self::handleDublicateIds( $articles ); # double ids of various items are eliminated
 
 		$xml .= "<loop_objects>\n";
-		
+
 		$xml .= self::objectsTable2xml ( $loopStructureItems, $loopStructure );
-		
+
 		$xml .= "</loop_objects>\n";
-		
-	
+
+
 		$xml .= "<glossary>\n";
-		
+
 		$xml .= self::glossary2xml ();
-		
+
 		$xml .= "</glossary>\n";
 
 		$xml .= self::terminology2xml ();
-		
+
 		$xml .= "</loop>";
 
 		return $xml;
 	}
-	
+
 	public static function objectsTable2xml ( $loopStructureItems, $loopStructure ) {
-	    
+
 	    $xml = '';
-	      
+
 	    $objects = LoopObjectIndex::getAllObjects( $loopStructure );
-	    
+
 	    foreach ( $objects as $object ) {
-	        
+
 	        $xml .= "<loop_object object_type='".$object["index"]."' articleid='".$object["pageid"]."' n='".$object["nthoftype"]."' refid='".$object["id"]."'>\n";
 	        if ( ! empty($object["objectnumber"]) ) {   $xml .= "<object_number>".$object["objectnumber"]."</object_number>\n"; }
 	        if ( ! empty($object["type"]) ) {   $xml .= "<object_media_type>".$object["type"]."</object_media_type>\n"; }
-	       
+
 	        $xml .= "<object_title>".$object["title"]."</object_title>\n";
 	        $xml .= "<object_description>".$object["description"]."</object_description>\n";
 	        $xml .= "</loop_object>\n";
 	    }
 	    return $xml;
 	}
-	
+
 	/**
 	 * Converts structure items to XML code
-	 * @param LoopStructureItem $structureItem: 
-	 * @param Array $modifiers: 
+	 * @param LoopStructureItem $structureItem:
+	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
@@ -104,9 +104,9 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($title->mArticleID);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getText(); 
+			$content = $wp->getContent ()->getText();
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); 
+			$content = Revision::newFromId( $stableRev )->getContent ()->getText();
 		}
 		$content = html_entity_decode($content);
 		$objectTypes = LoopObject::$mObjectTypes;
@@ -114,9 +114,15 @@ class LoopXml {
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
 
+		# math tags are not recognized if there is no space before closing
+		$content = preg_replace('/(<\/math)/iU', "\\, $1", $content);
+
 		# remove html comments - these cause the whole page to vanish from XML and PDF
-		$content = preg_replace('/(<!--.*-->)/iU', "", $content);
-		
+		$content = preg_replace('/(<!--.*-->)/msiU', "", $content);
+
+		# remove loop comments - these may cause the whole page to vanish from XML and PDF
+		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
+
 		# modify content for mp3 export
 		if ( $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
@@ -133,8 +139,11 @@ class LoopXml {
 		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
+		if ($title->getArticleID() == 248) { # debug for specific pages
+			#dd( $content, $xml);
+		}
 		$xml .= "\n</article>\n";
-		
+
 		return $xml;
 	}
 
@@ -155,7 +164,7 @@ class LoopXml {
 		$nodes = $selector->query( '//extension' );
 
 		foreach ( $nodes as $node ) {
-			
+
 			if ( in_array( $node->getAttribute("extension_name"), $objectTags ) ) {
 
 				if ( !empty( $node->getAttribute("id") )) {
@@ -164,7 +173,7 @@ class LoopXml {
 					} else {
 						$node->removeAttribute("id");
 					}
-				} 
+				}
 			}
 		}
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
@@ -177,14 +186,14 @@ class LoopXml {
 		} elseif ( $contentText != $newContentText ) {
 			$contentText = $newContentText;
 		}
-		
+
 		return $contentText;
 	}
-	
+
 	/**
 	 * Converts article to XML code
-	 * @param Int $articleId: 
-	 * @param Array $modifiers: 
+	 * @param Int $articleId:
+	 * @param Array $modifiers:
 	 * 		"nometa" => true; removes <meta>-tag for pdf
 	 * 		"noarticle" => true; removes <article>-tag wrapper for sidebar in pdf
 	 */
@@ -199,12 +208,12 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($articleId);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getText(); 
+			$content = $wp->getContent ()->getText();
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getText(); 
+			$content = Revision::newFromId( $stableRev )->getContent ()->getText();
 		}
 		$content = html_entity_decode($content);
-		
+
 		$wiki2xml = new wiki2xml ();
 		$xml = "";
 		if ( isset( $modifiers["noarticle"] ) ) {
@@ -215,7 +224,7 @@ class LoopXml {
 				$xml .= ">\n";
 			}
 		}
-		
+
 		if ( isset( $modifiers["nometa"] ) ) {
 			if ( ! $modifiers["nometa"] ) {
 				$xml .= "<meta>\n";
@@ -226,7 +235,7 @@ class LoopXml {
 
 		$xml .= $wiki2xml->parse ( $content );
 
-		
+
 		if ( isset( $modifiers["noarticle"] ) ) {
 			if ( ! $modifiers["noarticle"] ) {
 				$xml .= "\n</article>\n";
@@ -234,65 +243,65 @@ class LoopXml {
 		}
 		return $xml;
 	}
-	
-	
+
+
 	private static function structureItemToc(LoopStructureItem $structureItem) {
-		
+
 		$toc_xml = "<chapter>";
-	
+
 		$childs = $structureItem->getDirectChildItems();
 		foreach ($childs as $child) {
-	
+
 			$toc_xml .= "\n<page ";
 			$toc_xml .= 'id="article'.$child->getArticle().'" ';
 			$toc_xml .= 'toclevel="'.$child->getTocLevel().'" ';
 			$toc_xml .= 'tocnumber="'.$child->getTocNumber().'" ';
 			#$toc_xml .= 'toctext="'.htmlspecialchars($child->getTocText()).'" ';
-			
+
 			$toc_xml .= 'toctext="'.htmlspecialchars($child->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 			$toc_xml .= ">";
-				
+
 			if ($subchilds = $child->getDirectChildItems()) {
 				$toc_xml .= self::structureItemToc($child);
 			}
-				
+
 			$toc_xml .= "</page>";
-	
+
 		}
 		$toc_xml .= "</chapter>";
-	
+
 		if ($structureItem->getTocLevel() == 0) {
 			$toc_xml = "<chapter>\n<page id=\"article".$structureItem->getArticle()."\" toclevel=\"".$structureItem->getTocLevel()."\" tocnumber=\"".$structureItem->getTocNumber()."\" toctext=\"".htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8')."\" >".$toc_xml."</page></chapter>";
 		}
-	
+
 		return $toc_xml;
-	}	
-	
-	
-	
+	}
+
+
+
 	public static function error_handler($errno, $errstr, $errfile, $errline)
 	{
 		return true;
 	}
-	
+
 	public static function transform_link( $input, $id = null ) {
-	
+
 		global $wgLang;
 
 		libxml_use_internal_errors(true);
-		
+
 		$input_object=$input[0];
-	
+
 		if ($input_object->hasAttribute('type')) {
 			$link_parts['type']=$input_object->getAttribute('type');
 		}
 		if ($input_object->hasAttribute('href')) {
 			$link_parts['href']=$input_object->getAttribute('href');
 		}
-	
+
 		$link_childs=$input_object->childNodes;
 		$num_childs=$link_childs->length;
-	
+
 		for ($i = 0; $i < $num_childs; $i++) {
 			$child=$link_childs->item($i);
 			if (isset($child->tagName)) {
@@ -305,7 +314,7 @@ class LoopXml {
 				$child_value=$child->textContent;
 				$link_parts[$child_name] = $child_value;
 			}
-			
+
 			$mf = new MagicWordFactory( $wgLang );
 			$allowedAligns = [ 'right', 'left', 'center' ];
 			$allowedFormats = [ 'thumb', 'framed', 'frameless' ];
@@ -313,7 +322,7 @@ class LoopXml {
 			if ($child_name == 'part') {
 				$part_childs = $child->childNodes;
 				$num_part_childs = $part_childs->length;
-			
+
 				for ($j = 0; $j < $num_part_childs; $j++) {
 					$part_child = $part_childs->item( $j );
 					if ( isset( $part_child->tagName ) && $part_child->tagName == "extension" ) {
@@ -322,7 +331,7 @@ class LoopXml {
 						$link_parts[$child_name] = $child_value;
 					}
 				}
-				
+
 				if (substr($child_value, -2) == 'px') {
 					$child_value_width = substr($child_value,0,-2);
 					$link_parts['width'] = $child_value_width;
@@ -335,11 +344,11 @@ class LoopXml {
 						} else {
 							$child_value_align = 'none';
 						}
-						
+
 						$link_parts['align'] = $child_value_align;
 					}
 				}
- 
+
 				foreach( $allowedFormats as $fo ) {
 					if( $mf->get( $fo )->match( $child_value ) ) { // if format
 						if( in_array( $mf->get( $fo )->getSynonym( 1 ), $allowedFormats ) ) {
@@ -347,22 +356,22 @@ class LoopXml {
 						} else {
 							$child_value_format = 'none';
 						}
-						
+
 						$link_parts['format'] = $child_value_format;
 					}
 				}
 			}
 		}
-		
+
 		if (!array_key_exists('type', $link_parts)) {
 			$link_parts['type']='internal';
 		}
 		if (array_key_exists('text', $link_parts)) {
 			$link_parts['text']=htmlspecialchars($link_parts['text']);
 		}
-	
+
 		$return_xml = '';
-	
+
 		if ($link_parts['type']=='external' ) {
 			if ( array_key_exists( "href", $link_parts ) ) {
 				$return_xml = '<php_link_external href="'.$link_parts['href'].'">';
@@ -374,100 +383,104 @@ class LoopXml {
 		} else {
 			if (isset($link_parts['target'])) {
 				$target_title = Title::newFromText($link_parts['target']);
-				$target_ns = $target_title->getNamespace();
-	
-				if ($target_ns == NS_FILE) {
-					$file = wfLocalFile($target_title);
-					if (is_object($file)) {
-						$target_file=$file->getLocalRefPath();
-						$target_url=$file->getFullUrl();
-						if (is_file($target_file)) {
-							$allowed_extensions = array('jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm');
-							if (in_array($file->getExtension(), $allowed_extensions)) {
-									
-								if (array_key_exists('width', $link_parts)) {
-									$width=0.214*intval($link_parts['width']);
-									if ($width>150) {
-										$imagewidth='150mm';
+				if ( is_object( $target_title ) ) {
+
+					$target_ns = $target_title->getNamespace();
+
+					if ($target_ns == NS_FILE) {
+						$file = wfLocalFile($target_title);
+						if (is_object($file)) {
+							$target_file=$file->getLocalRefPath();
+							$target_url=$file->getFullUrl();
+							if (is_file($target_file)) {
+								$allowed_extensions = array('jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm');
+								if (in_array($file->getExtension(), $allowed_extensions)) {
+
+									if (array_key_exists('width', $link_parts)) {
+										$width=0.214*intval($link_parts['width']);
+										if ($width>150) {
+											$imagewidth='150mm';
+										} else {
+											$imagewidth=round($width,0).'mm';
+										}
 									} else {
-										$imagewidth=round($width,0).'mm';
+										$size=getimagesize($target_file);
+										$width=0.214*intval($size[0]);
+										if ($width>150) {
+											$imagewidth='150mm';
+										} else {
+											$imagewidth=round($width,0).'mm';
+										}
 									}
-								} else {
-									$size=getimagesize($target_file);
-									$width=0.214*intval($size[0]);
-									if ($width>150) {
-										$imagewidth='150mm';
-									} else {
-										$imagewidth=round($width,0).'mm';
+
+									$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
+									if (isset($link_parts['align'])) {
+										$return_xml .= ' align="'.$link_parts['align'].'" ';
 									}
+									if (isset($link_parts['format'])) {
+										$return_xml .= ' format="'.$link_parts['format'].'" ';
+									}
+									$return_xml .=  '></php_link_image>';
+
+
+								} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+									$return_xml .= '<paragraph>';
+									$return_xml .= '<extension extension_name="loop_video" source="'.$link_parts['target'].'"></extension>';
+									if ( isset ( $id ) ) {
+										$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+									}
+									$return_xml .= '</paragraph>';
+								} elseif ( $file->getMediaType() == "AUDIO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
+									$return_xml .= '<paragraph>';
+									$return_xml .= '<extension extension_name="loop_audio" source="'.$link_parts['target'].'"></extension>';
+									if ( isset ( $id ) ) {
+										$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
+									}
+									$return_xml .= '</paragraph>';
 								}
-									
-								$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
-								if (isset($link_parts['align'])) {
-									$return_xml .= ' align="'.$link_parts['align'].'" ';
-								}
-								if (isset($link_parts['format'])) {
-									$return_xml .= ' format="'.$link_parts['format'].'" ';
-								}
-								$return_xml .=  '></php_link_image>';
-									
-									
-							} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
-								$return_xml .= '<paragraph>';
-								$return_xml .= '<extension extension_name="loop_video" source="'.$link_parts['target'].'"></extension>';
-								if ( isset ( $id ) ) {
-									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
-								}
-								$return_xml .= '</paragraph>';
-							} elseif ( $file->getMediaType() == "AUDIO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
-								$return_xml .= '<paragraph>';
-								$return_xml .= '<extension extension_name="loop_audio" source="'.$link_parts['target'].'"></extension>';
-								if ( isset ( $id ) ) {
-									$return_xml .= '<extension extension_name="loop_video_link" id="'. $id[0]->value.'"></extension>';
-								}
-								$return_xml .= '</paragraph>';
 							}
 						}
-					}
-				} elseif ($target_ns == NS_CATEGORY) {
-					// Kategorie-Link nicht ausgeben
-	
-				} else {
-					// internal link
-					if (!array_key_exists('text', $link_parts)) {
-						if(array_key_exists('part',$link_parts)) {
-							$link_parts['text']=$link_parts['part'];
-						} else {
-							$link_parts['text']=$link_parts['target'];
+					} elseif ($target_ns == NS_CATEGORY) {
+						// Kategorie-Link nicht ausgeben
+
+					} else {
+						// internal link
+						if (!array_key_exists('text', $link_parts)) {
+							if(array_key_exists('part',$link_parts)) {
+								$link_parts['text']=$link_parts['part'];
+							} else {
+								$link_parts['text']=$link_parts['target'];
+							}
 						}
+						if (!array_key_exists('href', $link_parts)) {
+							$link_parts['href']=$link_parts['target'];
+						}
+
+						if ($structureitem = LoopStructureItem::newFromToctext( $link_parts['href'] )) {
+							$link_parts['href'] = 'article'.$structureitem->getArticle();
+						}
+						$return_xml =  '<php_link_internal href="'.$link_parts['href'].'">'.$link_parts['text'].'</php_link_internal>' ;
 					}
-					if (!array_key_exists('href', $link_parts)) {
-						$link_parts['href']=$link_parts['target'];
-					}
-					
-					if ($structureitem = LoopStructureItem::newFromToctext( $link_parts['href'] )) {
-						$link_parts['href'] = 'article'.$structureitem->getArticle();
-					}
-					$return_xml =  '<php_link_internal href="'.$link_parts['href'].'">'.$link_parts['text'].'</php_link_internal>' ;
+
 				}
 			}
 		}
 		$return = new DOMDocument;
-	
+
 		$old_error_handler = set_error_handler("LoopXml::error_handler");
 		libxml_use_internal_errors(true);
-	
+
 		try {
 			$return->loadXml($return_xml);
 		} catch ( Exception $e ) {
 		}
 		restore_error_handler();
-	
+
 		return $return;
 	}
 
 	public static function glossary2xml( ) {
-		
+
 		$articles = LoopGlossary::getGlossaryPages( "idArray" );
 		$return = '';
 
@@ -481,7 +494,7 @@ class LoopXml {
 	}
 
 	public static function terminology2xml( ) {
-		
+
 		$terminology = LoopTerminology::getTerminologyPageContentText();
 		$items = LoopTerminology::getSortedTerminology( $terminology );
 
@@ -498,13 +511,13 @@ class LoopXml {
                     $i = 0;
                     foreach ( $content["dt"] as $term ) {
                         $xml .= ( $i == 0 ? "" : ", " );
-                        $xml .= $term;
+                        $xml .= htmlspecialchars($term);
                         $i++;
                     }
                     $xml .= "</defkey>\n";
                    # $xml .= "<div class='loopterminology-definition'>";
                     foreach ( $content["dd"] as $def ) {
-                        $xml .= "<paragraph>" . $def . "</paragraph>\n";
+                        $xml .= "<paragraph>" . htmlspecialchars($def) . "</paragraph>\n";
                     }
                     $xml .= "</listitem>\n";
                 }
@@ -515,7 +528,7 @@ class LoopXml {
 		}
 		return $xml;
 	}
-	
+
 }
 
 
@@ -523,7 +536,7 @@ class LoopXml {
 /**
  * wiki2xml was released 2005-2006 by Magnus Manske under the GPL.
  * see https://phabricator.wikimedia.org/diffusion/SVN/browse/trunk/parsers/graveyard/wiki2xml/php/wiki2xml.php
- * 
+ *
  */
 
 class wiki2xml
@@ -884,8 +897,8 @@ class wiki2xml
 			$between = '';
 			#add_authors ( $content_provider->authors ) ;
 
-				
-				
+
+
 			# Removing <noinclude> stuff
 			$between = preg_replace( '?<noinclude>.*</noinclude>?msU', '', $between);
 			$between = str_replace ( "<include>" , "" , $between ) ;
@@ -953,7 +966,7 @@ class wiki2xml
 	}
 
 	function replace_template_variables ( &$text , &$variables ) {
-		
+
 		#echo("<br>w2x_16");
 		global $xmlg ;
 		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
@@ -964,7 +977,7 @@ class wiki2xml
 	}
 
 	function p_template_replace_single_variable ( &$text , $a , &$variables ) {
-		
+
 		#echo("<br>w2x_17");
 		if ( mb_substr ( $text , $a , 3 ) != '{{{' ) return false ;
 		$b = $a + 3 ;
@@ -1199,7 +1212,7 @@ class wiki2xml
 		{
 			#$c = $this->w[$b] ;
 			$c = mb_substr ( $this->w , $b , 1 , 'UTF-8' );
-				
+
 			if ( $c == "\n" ) { $b++ ; break ; }
 			foreach ( $closeit AS $z )
 				if ( $this->nextis ( $b , $z , false ) ) break ;
@@ -1505,7 +1518,7 @@ class wiki2xml
 		}
 		else {
 			$between = htmlspecialchars ( $between ) ; # No wiki parsing in here
-				
+
 			if ($tag == "syntaxhighlight") {
 				$between = str_replace(' ','<space/>',$between);
 				#$between = '<![CDATA['.$between.']]>';
@@ -2064,8 +2077,8 @@ class wiki2xml
 	# The only function to be called directly from outside the class
 	function parse ( &$wiki )
 	{
-		
-		set_time_limit(300);
+
+		set_time_limit(603);
 		#echo("<br>w2x_52");
 		global $IP;
 
@@ -2114,7 +2127,7 @@ class wiki2xml
 			# deal with extension EmbedVideo
 			$this->w= preg_replace('/(\{\{)(#ev:)(dailymotion|divshare|edutopia|funnyordie|googlevideo|interiavideo|interia|revver|sevenload|teachertube|youtube|youtubehd|vimeo)(\|)((.|\s)*?)(\}\})/', '<embed_video service=$3 videoid=$5></embed_video>', $this->w);
 
-				
+
 
 			# Run the thing!
 			#		$this->tables = array () ;

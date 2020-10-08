@@ -117,3 +117,33 @@ class LoopMediaHandler {
 	}
 
 }
+
+# WILL BE REMOVED UPON 02/2021
+# TEMPORARY SOLUTION ONLY
+class LoopSwfHandler  {
+    public static function onImageBeforeProduceHTML( DummyLinker &$linker, Title &$title, &$file, array &$frameParams, array &$handlerParams, &$time, &$result, Parser $parser, string &$query, &$widthOption ) {
+        if ( is_object( $file ) && $file->getMimeType() == "application/x-shockwave-flash" ) {
+            global $wgOut, $wgLanguageCode;
+            
+            $user = $wgOut->getUser();
+            $editMode = $user->getOption( 'LoopEditMode', false, true );
+            $error = "";
+            if ( $editMode ) {
+                $msg = $wgLanguageCode == "de" || $wgLanguageCode == "de-formal" ? "Achtung: Flash Elemente werden nur noch bis Februar 2021 unterstützt." : "Warning: Flash will no longer be supported after February 2021.";
+                $error = new LoopException( $msg ).'<br>';
+            }
+
+            $url = $file->getFullUrl();
+            $s = $error . '<object class="" style="min-width: 100%; min-height: 500px;">
+                <param name="wmode" value="transparent">
+                <param name="movie" value="'. $url .'">
+                <embed src="'. $url .'" type="application/x-shockwave-flash" style="min-width: 100%; min-height: 500px;">
+            </object>';
+        
+			$parser->addTrackingCategory( 'loop-tracking-category-error' );
+            $result = str_replace("\n", ' ', $s);
+            return false;
+        }
+        return true;
+    }
+}

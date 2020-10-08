@@ -35,7 +35,8 @@ $specialPageAliases['en'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' )
+	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -65,7 +66,8 @@ $specialPageAliases['de'] = array(
 	'LoopPrivacy' => array( 'Datenschutz' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' )
+	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'LoopPagesNotInStructure' => array( 'Seiten nicht im Inhaltsverzeichnis' )
 	);
 	
 $specialPageAliases['sv'] = array(
@@ -95,7 +97,8 @@ $specialPageAliases['sv'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' )
+	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'LoopPagesNotInStructure' => array( 'Sidor som inte finns i innehållförteckningen' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -124,7 +127,8 @@ $specialPageAliases['es'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' )
+	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
 );
 
 
