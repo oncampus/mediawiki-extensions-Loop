@@ -85,8 +85,9 @@ class LoopZip {
         $from = $wgUploadDirectory . '/' . $hashpath . $zipfilename;
 		$to = $wgUploadDirectory . '/' . $hashpath . $zipfilename . '.extracted/';
 
-        $zip = new ZipArchive;
-        if ( $zip->open( $from ) === true ) {
+		$zip = new ZipArchive;
+		$continue = $zip->open( $from );
+        if ( $continue === true ) {
 			if ( is_dir($to) ) {
 				exec("rm -r $to");
 			}
