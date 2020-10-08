@@ -1174,3 +1174,62 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		return 'loop';
 	}
 }
+
+# show all pages that are not in structure
+class SpecialLoopPagesNotInStructure extends SpecialPage {
+
+	public function __construct() {
+		parent::__construct( 'LoopPagesNotInStructure' );
+	}
+
+	public function execute( $sub ) {
+
+		$out = $this->getOutput();
+		$request = $this->getRequest();
+		$user = $this->getUser();
+		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+
+		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
+		$linkRenderer->setForceArticlePath(true);
+		$this->setHeaders();
+		$out->setPageTitle( $this->msg( 'looppagesnotinstructure' ) );
+		$html = "<h2>" . $this->msg( 'looppagesnotinstructure' ) . "</h2>";
+
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			array(
+				'page'
+			),
+			array(
+				'page_id',
+				'page_namespace'
+			),
+			array(),
+			__METHOD__
+		);
+		$links = array();
+		foreach( $res as $row ) {
+			if ( LoopStructureItem::newFromIds( $row->page_id ) != false ) {
+				$tmpTitle = Title::newFromID( $row->page_id, $row->page_namespace );
+				$links[$tmpTitle->mTextform] = $linkRenderer->makeLink(
+					$tmpTitle
+				) . "<br>";
+			}
+		}
+		sort( $links );
+		foreach ( $links as $link ) {
+			$html .= $link;
+		}
+		$out->addHtml( $html );
+
+	}
+	/**
+	 * Specify the specialpages-group
+	 *
+	 * @return string
+	 */
+	protected function getGroupName() {
+		return 'maintenance';
+	}
+
+}

@@ -489,5 +489,7 @@
 	"loopstructure-initial-chapter-1": "Erstes Kapitel",
 	"loopstructure-initial-chapter-1-1": "Erstes Unterkapitel",
 	"loopstructure-initial-chapter-1-2": "Zweites Unterkapitel",
-	"loopstructure-initial-chapter-2": "Zweites Kapitel"
+	"loopstructure-initial-chapter-2": "Zweites Kapitel",
+
+	"looppagesnotinstructure": "Seiten nicht im Inhaltsverzeichnis"
 }

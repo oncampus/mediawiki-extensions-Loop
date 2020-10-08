@@ -118,7 +118,8 @@
 		"LoopNgSpice": "includes/LoopNgSpice.php",
 		"SpecialLoopNgSpice": "includes/LoopNgSpice.php",
 		"LoopComment": "includes/LoopComment.php",
-		"LoopSwfHandler": "includes/LoopMediaHandler.php"
+		"LoopSwfHandler": "includes/LoopMediaHandler.php",
+		"SpecialLoopPagesNotInStructure": "includes/LoopStructure.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -220,7 +221,8 @@
 		"LoopPrivacy": "SpecialLoopPrivacy",
 		"LoopRSS": "SpecialLoopRSS",
 		"LoopNgSpice": "SpecialLoopNgSpice",
-		"LoopManualUpdater": "SpecialLoopManualUpdater"
+		"LoopManualUpdater": "SpecialLoopManualUpdater",
+		"LoopPagesNotInStructure": "SpecialLoopPagesNotInStructure"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

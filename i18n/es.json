@@ -428,5 +428,7 @@
 	"loopstructure-initial-chapter-1": "First chapter",
 	"loopstructure-initial-chapter-1-1": "First subchapter",
 	"loopstructure-initial-chapter-1-2": "Second subchapter",
-	"loopstructure-initial-chapter-2": "Second chapter"
+	"loopstructure-initial-chapter-2": "Second chapter",
+
+	"looppagesnotinstructure": "Pages not in table of contents"
 }

@@ -488,6 +488,8 @@
 	"loopstructure-initial-chapter-1": "Först kapitel",
 	"loopstructure-initial-chapter-1-1": "Först underkapitel",
 	"loopstructure-initial-chapter-1-2": "Andra underkapitel",
-	"loopstructure-initial-chapter-2": "Andra kapitel"
+	"loopstructure-initial-chapter-2": "Andra kapitel",
+
+	"looppagesnotinstructure": "Sidor som inte finns i innehållförteckningen"
 
 }
