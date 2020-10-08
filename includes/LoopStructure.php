@@ -1204,7 +1204,9 @@ class SpecialLoopPagesNotInStructure extends SpecialPage {
 				'page_id',
 				'page_namespace'
 			),
-			array(),
+			array(
+				'page_namespace = 0'
+			),
 			__METHOD__
 		);
 		$links = array();
