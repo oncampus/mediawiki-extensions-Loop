@@ -166,8 +166,8 @@ class Loop {
 		$wgLogRestrictions["rights"] = "loop-view-export-log"; #Benutzerrechte-Logbuch
 
 		# Uploadable file extensions
-		$wgFileExtensions = array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg',
-			'eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr', 'swf' ));
+		$wgFileExtensions = array_unique( array_merge( $wgFileExtensions, array('pdf','ppt','pptx','xls','xlsx','doc','docx','odt','odc','odp','odg','zip','svg',
+			'eps','csv','psd','mp4','mp3','mpp','ter','ham','cdf','swr','xdr', 'swf' ) ) );
 
 		# Disable Talk Namespaces
 		$wgNamespaceProtection[NS_TALK] = ['*'];
