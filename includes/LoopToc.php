@@ -47,7 +47,7 @@ class LoopToc extends LoopStructure {
 			} else {
 				$pageNumber = '';
 			}
-
+			
 			$headLink = $linkRenderer->makeLink(
 				Title::newFromID( $lsi->article ),
 				new HtmlArmor( '<span class="loopstructure-number">' . $pageNumber .'</span>' . $tocText )
@@ -83,7 +83,9 @@ class LoopToc extends LoopStructure {
 					} else {
 						break;
 					}
-				} 
+				} else {
+				break;
+				}
 				$next = $tmp_lsi->getNextItem();
 			}
 		}
@@ -92,7 +94,7 @@ class LoopToc extends LoopStructure {
             $return = $html;
         } elseif ( $output == "xml" ) {
             $return = $xml;
-        }
+		}
 
 		return $return;
 	}
