@@ -3137,22 +3137,22 @@
 			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
 		</xsl:variable>
 		<fo:list-item>
-			<fo:list-item-label end-indent="label-end()">
+			<fo:list-item-label keep-together.within-line="always" end-indent="label-end()">
 				<xsl:choose>
 					<xsl:when test="../@type='numbered'">
 						
 						<xsl:choose>
 								<xsl:when test="$listlevel=1">
-									<fo:block><xsl:number level="single" count="listitem" format="1." /></fo:block>
+									<fo:block><xsl:number level="single" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
 								</xsl:when>
 								<xsl:when test="$listlevel=2">
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
+									<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
 								</xsl:when>
 								<xsl:when test="$listlevel=3">
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
+									<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
 								</xsl:when>
 								<xsl:otherwise>
-									<fo:block><xsl:number level="multiple" count="listitem" format="1." /></fo:block>
+									<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
 								</xsl:otherwise>
 						</xsl:choose>
 						
