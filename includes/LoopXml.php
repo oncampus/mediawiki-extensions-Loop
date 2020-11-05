@@ -65,7 +65,6 @@ class LoopXml {
 		$xml .= "</glossary>\n";
 
 		$xml .= self::terminology2xml ();
-
 		$xml .= "</loop>";
 
 		return $xml;
@@ -486,7 +485,7 @@ class LoopXml {
 
 		if ( !empty( $articles ) ) {
 			foreach ( $articles as $articleId ) {
-				$return .= self::articleFromId2xml( $articleId, array( "nometa" => true ) );
+				$return .= self::articleFromId2xml( $articleId, array( "nometa" => true, "noarticle" => false ) );
 			}
 		}
 
