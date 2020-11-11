@@ -812,6 +812,10 @@
 			"value" : "https://h5p.com/h5p/embed/",
 			"description" : "URL for H5P hosted elements"
 		},
+		"H5PHostUrlAppendix": {
+			"value" : "",
+			"description" : "Some H5P Hosts require the ID before the end of the URL"
+		},
 		"LearningAppUrl": {
 			"value" : "https://LearningApps.org/watch?",
 			"description" : "URL for LearningApps elements"

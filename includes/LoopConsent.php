@@ -20,13 +20,13 @@ class LoopConsent {
 
 
     public static function onParserBeforeStrip( &$parser ) {   
-        global $wgH5PHostUrl;
+        global $wgH5PHostUrl, $wgH5PHostUrlAppendix;
 
         if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseTag' );  // <embedvideo>
             
-            if( $wgH5PHostUrl == 'https://h5p.com/h5p/embed/' ) {
+            if( strpos( $wgH5PHostUrl, 'h5p.com' ) != false ) {
                 $parser->setHook('h5p', 'LoopConsent::parseH5P');       // <h5p>
             }
             
