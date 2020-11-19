@@ -67,13 +67,17 @@ class LoopToc extends LoopStructure {
 							$tmp_pageNumber = '';
 						}
 						$tabLevel = $tmp_lsi->tocLevel;
-						$link = $linkRenderer->makeLink(
-							Title::newFromID( $tmp_lsi->article ),
-							new HtmlArmor( '<span class="loopstructure-number">' . $tmp_pageNumber .'</span>' . $tmp_lsi->tocText )
-						);
-						$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '"><span class="loopstructure-title">' . $link . '</span></div>';
-                        $xml .= '<loop_toc_list> <php_link_internal text-decoration="no-underline" href="article'.$tmp_lsi->article.'"><bold>'. $tmp_pageNumber .'</bold> '. $tmp_lsi->tocText . '</php_link_internal></loop_toc_list>';
+						$title = Title::newFromID( $tmp_lsi->article );
+						if ( $title != null ) {
 
+							$link = $linkRenderer->makeLink(
+								Title::newFromID( $tmp_lsi->article ),
+								new HtmlArmor( '<span class="loopstructure-number">' . $tmp_pageNumber .'</span>' . $tmp_lsi->tocText )
+							);
+							$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '"><span class="loopstructure-title">' . $link . '</span></div>';
+							$xml .= '<loop_toc_list> <php_link_internal text-decoration="no-underline" href="article'.$tmp_lsi->article.'"><bold>'. $tmp_pageNumber .'</bold> '. $tmp_lsi->tocText . '</php_link_internal></loop_toc_list>';
+	
+						}
 					} else {
 						break;
 					}
