@@ -15,7 +15,7 @@ class LoopXml {
 	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
-	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
+	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = []) {
 		global $wgCanonicalServer, $wgLanguageCode;
 
 		set_time_limit(601);
@@ -95,7 +95,7 @@ class LoopXml {
 	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
-	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
+	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = []) {
 
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
@@ -147,7 +147,8 @@ class LoopXml {
 	}
 
 	/**
-	 * Removes non-unique IDs from elements from their second occurence.
+	 * - Removes non-unique IDs from elements from their second occurence.
+	 * - Removes IDs from content such as H5P which can occur several times in a single LOOP
 	 * Elements with dublicate IDs cause severe problems in PDF
 	 * @param String $contentText
 	 */
@@ -157,6 +158,7 @@ class LoopXml {
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
+		$contentTags = array( 'h5p', 'learningapp', 'padlet', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
 		$selector = new DOMXPath( $dom );
@@ -173,6 +175,14 @@ class LoopXml {
 						$node->removeAttribute("id");
 					}
 				}
+
+			} elseif ( in_array( $node->getAttribute("extension_name"), $contentTags ) ) {
+				# rename id tags for dublicate id reasons in pdf
+				$id = "";
+				$id = $node->getAttribute("id");
+				$node->removeAttribute("id");
+				$node->setAttribute("content-id", $id);
+
 			}
 		}
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
@@ -189,6 +199,7 @@ class LoopXml {
 		return $contentText;
 	}
 
+
 	/**
 	 * Converts article to XML code
 	 * @param Int $articleId:
@@ -196,7 +207,7 @@ class LoopXml {
 	 * 		"nometa" => true; removes <meta>-tag for pdf
 	 * 		"noarticle" => true; removes <article>-tag wrapper for sidebar in pdf
 	 */
-	public static function articleFromId2xml( $articleId, $modifiers = null ) {
+	public static function articleFromId2xml( $articleId, $modifiers = [] ) {
 
 		global $wgLanguageCode;
 		$langParts = mb_split("-", $wgLanguageCode);
