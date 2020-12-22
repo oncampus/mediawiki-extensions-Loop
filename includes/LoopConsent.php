@@ -7,7 +7,7 @@
 if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); }
 
 class LoopConsent {
-    
+
     public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
         $tags = [ '<youtube', 'service="youtube"', '#ev:youtube' ];
 
@@ -19,17 +19,17 @@ class LoopConsent {
     }
 
 
-    public static function onParserBeforeStrip( &$parser ) {   
+    public static function onParserBeforeStrip( &$parser ) {
         global $wgH5PHostUrl, $wgH5PHostUrlAppendix;
 
         if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
             $parser->setHook( 'embedvideo', 'LoopConsent::parseTag' );  // <embedvideo>
-            
+
             if( strpos( $wgH5PHostUrl, 'h5p.com' ) != false ) {
                 $parser->setHook('h5p', 'LoopConsent::parseH5P');       // <h5p>
             }
-            
+
             $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );   // {{#ev}}
             $parser->setFunctionHook( 'evt', 'LoopConsent::parseEvt' ); // {{#evt}}
             $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' ); // {{#evu}}
@@ -82,7 +82,7 @@ class LoopConsent {
 
     public static function parseEvt( $parser, $callback, $flags ) {
         $lc = new LoopConsent();
-     
+
         if( strpos( $callback, 'youtube' ) !== false) {
             return [
                 $lc->renderOutput( $lc->getYouTubeId( $flags ), 'youtube' ),
@@ -117,7 +117,7 @@ class LoopConsent {
         }
     }
 
-    
+
     private function renderOutput( $id, $service = 'youtube' ) {
         global $wgCanonicalServer, $wgUploadPath;
 
@@ -130,7 +130,7 @@ class LoopConsent {
             $title = '<span class="ic ic-h5p"></span>';
             $bgColor = '2575be';
             $h5pClass = 'is_h5p';
-        } else {            
+        } else {
             // no thumbnail
             if ( strpos( $url, '/.jpg' ) || $service == 'vimeo' || $id == 'h5p' ) {
                 $url = '';
@@ -146,12 +146,12 @@ class LoopConsent {
                 $bgColor = '1ab7ea';
             }
         }
-        
+
         $out = '<div class="loop_consent ' . $h5pClass . '" style="background-image: url(' . $url . '); background-color: #' . $bgColor . ';">';
         $out .= '<div class="loop_consent_text"><h4>' . $title . '</h4><p>' . wfMessage('loopconsent-text')->text() . '</p>';
-        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button')->text() . '</button>';
+        $out .= '<button class="btn btn-dark btn-block border-0 loop_consent_agree" onclick="loop_consent_agree()"><span class="ic ic-page-next"></span> ' . wfMessage('loopconsent-button')->text() . '</button>';
         $out .= '</div></div>';
- 
+
         return $out;
     }
 
@@ -161,7 +161,7 @@ class LoopConsent {
             return $match[1];
         } elseif ( filter_var( $url, FILTER_VALIDATE_URL ) ) {
             return false; //preg_match did not work. this is an url.
-        } 
+        }
         return $url; //assume already extracted youtube video ID
     }
 
@@ -181,7 +181,7 @@ class LoopConsent {
         } else {
             $confstr .= "!loopconsent=false";
         }
-        
+
         return true;
     }
 
@@ -227,7 +227,7 @@ class LoopConsent {
             $tag = preg_quote($tag);
             if ( preg_match_all( "/(<$tag.*?>)(.*?)(<\/$tag>)/", $content, $matches ) ) {
                 $angleMatches = $matches[2];
-    
+
                 foreach($angleMatches as $match) {
                     if( strpos( $match, 'youtube' ) ) {
                         $return['youtube'][] = substr($match, strrpos($match, '=') + 1);
@@ -254,7 +254,7 @@ class LoopConsent {
                         FILE_APPEND
                     );
                 }
-               
+
             }
         }
 
