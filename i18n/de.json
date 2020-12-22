@@ -353,6 +353,9 @@
 	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glossar",
 	"loop-glossary-empty": "Es ist noch kein Glossareintrag vorhanden. Erstellen Sie einen neuen, indem Sie eine Seite wie ''[[Glossar:Begriff]]'' anlegen.",
+	"loopglossary-alert-saved": "Der Glossareintrag [[Glossar:$1|$1]] wurde gespeichert! Sie können den Inhalt jetzt bearbeiten.",
+	"loopglossary-alert-pageexists-error": "Den Glossareintrag [[Glossar:$1|$1]] gibt es bereits.",
+	"loopglossary-input-placeholder": "Glossareintrag hinzufügen",
 
 	"loopindex": "Index",
 	"loopindex-error-dublicate-id" : "Der Indexbegriff '$3' besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiterer Begriff mit der ID vorhanden. Bitte ändern Sie die ID, damit auch dieser Begriff indexiert werden kann.",

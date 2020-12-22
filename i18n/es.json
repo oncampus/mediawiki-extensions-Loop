@@ -2,8 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Francisco Tahhan"
-			
-			
+
+
 
 		]
 	},
@@ -62,7 +62,7 @@
 	"loopsettings-url-imprint-privacy-hint": "Por favor, ingrese la URL completa, incluido http:// O un título de página para este LOOP.",
 	"loopsettings-url-hint": "Por favor, ingrese la URL completa, incluido http://",
 	"loopsettings-skin-style-label": "Estilo de diseño por defecto",
-	"loopsettings-error": "Se ha producido un error al guardar",	
+	"loopsettings-error": "Se ha producido un error al guardar",
 	"loopsettings-tab-content": "Contenido de configuración",
 	"loopsettings-numbering": "Numeración automática",
 	"loopsettings-numbering-objects-label": "Activar numeración de los objetos del LOOP, p. ej. figuras",
@@ -74,7 +74,7 @@
 	"extraSidebar": "Este es el panel adicional de la barra lateral que se ha activado en [[Special:LoopSettings|LOOP Settings]]. Puede editar su contenido [[MediaWiki:ExtraSidebar|here]].",
 	"loopsettings-extra-sidebar-linktext": "Editar el contenido del panel de la barra lateral adicional",
 	"loopsettings-extra-sidebar-label": "Mostrar de manera global el panel de barra lateral personalizado.",
-	"loopsettings-headline-sidebar": "Barra lateral",    
+	"loopsettings-headline-sidebar": "Barra lateral",
 	"loopsettings-headline-bugreport": "Informe de errores",
     "loopsettings-bugreport-email-label": "El informe de errores del usuario será enviado a la siguiente dirección de correo electrónico. Deje el campo en blanco para deshabilitar el informe de errores.",
 	"loopsettings-headline-objects": "Object markings",
@@ -227,7 +227,7 @@
 	"loop_formula-name-short": "Form.",
 	"loop_task-name": "Tarea",
 	"loop_task-name-short": "Task",
-	
+
 	"loopfigures-specialpage-title": "Lista de figuras",
 	"looptables-specialpage-title": "Lista de tablas",
 	"loopmedia-specialpage-title": "Lista de multimedia",
@@ -245,7 +245,7 @@
 	"loopliteratureedit": "Editar referencias",
 	"loopliteratureimport": "Importar referencias",
 	"loopliteratureexport": "Exportar bibliografía",
-	
+
 	"loopliterature-entry-article": "Artículo",
 	"loopliterature-entry-book": "Libro",
 	"loopliterature-entry-booklet": "Folleto",
@@ -327,7 +327,7 @@
 	"loopliterature-error-invalid-export": "Las siguiente entradas bibliográficas no pueden exportarse. La clave no coincide con el formato BibTeX: ",
 	"loopliterature-error-dublicate-id" : "La referencia bibliográfica '$3' no contiene un ID ($1) único. En la página '$2' se encuentra otra referencia bajo el mismo ID. Por favor, cambie de ID para añadir esta referencia a la bibliografía.",
 
-	"looplegacy-error-unsupported": "La etiqueta '''$1''' es obsoleta desde $2.",	
+	"looplegacy-error-unsupported": "La etiqueta '''$1''' es obsoleta desde $2.",
 	"looplegacy-biblio": "La etiqueta '''biblio''' no tiene respaldo en LOOP2. Por favor, utilice la nueva etiqueta '''<loop_literature>'''.",
 	"looplegacy-references": "La etiqueta '''references''' es obsoleta en LOOP2. Las notas de pie se muestran automáticamente en la parte inferior de la página si se utiliza la etiqueta <ref>.",
 
@@ -336,13 +336,16 @@
 	"loopreference-error-unknown-refid" : "El ID ingresado para la referencia: '''$1''', es desconocido.",
 	"loopreference-error-no-refid" : "La referencia bibliográfica no contiene el parámetro ID (id).",
 
-	"loopexternalcontent-prezi-on": "encendido", 
+	"loopexternalcontent-prezi-on": "encendido",
 	"namespace-special": "Especial",
 	"loop-glossary-namespace": "Glosario",
 	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glosario",
 	"loop-glossary-empty": "El glosario está vacio. Ingrese una entrada, para la cual pueda añadir una página del tipo: ''[[Glossary:Term]]''.",
-	
+	"loopglossary-alert-saved": "The glossary page [[Glossary:$1|$1]] was saved! You can edit the page now.",
+	"loopglossary-alert-pageexists-error": "The glossary page [[Glossary:$1|$1]] already exists.",
+	"loopglossary-input-placeholder": "Add a glossary page",
+
 	"loopindex": "Índice",
 	"loopindex-error-dublicate-id" : "El término indexado '$3' no contiene un ID ($1) único. En la página '$2' existe otro término con el mismo ID. Por favor, cambie el ID para indexar el término correctamente.",
 
@@ -392,7 +395,7 @@
 	"loopsidebar-error-notfound": "La página ingresada no existe. Ingrésela [[$1|aquí]].",
 	"loopsidebar-error-nopage": "La etiqueta de la barra lateral no contiene un parámetro de página.",
 	"loopzip-error-nostartfile": "El archivo HTML $1 ingresado (parameter start) no pudo ser encontrado en el archivo ZIP $2.",
-	
+
 	"loop-error-missingrequired": "La etiqueta $1 no contiene el parámetro $2. No se puede mostrar el elemento.",
 	"loop-error-missingfile": "El archivo ingresado $2 para la etiqueta $1 no se pudo encontrar. Por favor, cárguelo. {{PLURAL:$3|El elemento será mostrado sin ese elemento.|El elemento no puede ser mostrado.}}",
 	"loopterminology": "Lista de abreviaciones",
@@ -402,7 +405,7 @@
 	"loopterminology-hint": "Puede editar la lista de abreviaciones aquí. Para información sobre como editar el formato, refiérase al ejemplo a continuación del cuadro de texto.",
 	"loopterminology-example": "Utilice punto y coma antes de la abreviación para definirla. En una nueva línea, utilice dos puntos para describir el término definido anteriormente. Puede utilizar múltiples términos para múltiples definiciones. Ejemplo:<br>;LOOP<br>;L.O.O.P.<br>:Learning Object Online Platform",
 	"loopscreenshot": "Captura de pantalla",
-	
+
 	"loopbugreport": "Reportar error",
     "loopbugreport-specialpage-title": "Reportar error",
     "loopbugreport-message-label": "Descripción de errores",
@@ -418,7 +421,7 @@
 	"loopbugreport-desc": "¿Ha encontrado un error?<br>\nPor favor, háznoslo saber y deja tu dirección de correo electrónico para futuras preguntas. <br>\n¡Muchas gracias por tu ayuda!",
 	"loopconsent-text": "When you start this element, content is loaded by the service providers and your IP address is transfered to them.",
 	"loopconsent-button": "Give consent and start element",
-	
+
 	"loopngspice-label-send": "Start simulation",
 	"loopngspice-error-xml": "Ngspice is not configured correctly.<br>XML Elements can't be loaded. ",
 	"loopngspice-error-no-service": "NgSpice is not available.",
