@@ -19,7 +19,7 @@ class LoopPdf {
 	* @params Array $modifiers
 	* 			-> "pagetest" = true: return will be modified for single page test support.
 	*/
-	public static function structure2pdf(LoopStructure $structure, $modifiers = null) {
+	public static function structure2pdf(LoopStructure $structure, $modifiers = []) {
 		global $IP, $wgLoopExportDebug;
 
 		if ( $wgLoopExportDebug ) {
