@@ -38,12 +38,19 @@ class LoopTerminology {
         foreach ( $tags as $tag ) {
             $childNodes = $tag->childNodes;
             if ( !empty( $childNodes ) ) {
-                $currentELementTitle = $childNodes[0]->nodeValue;
+                $currentELementTitle = trim($childNodes[0]->nodeValue);
                 foreach ( $childNodes as $child ) {
-                    $items[ $currentELementTitle ][ $child->nodeName ][] = $child->nodeValue;
+					if ($child->hasChildNodes()) { # math node
+						$tmpVal = str_replace( "\n", "", $child->nodeValue );
+						$tmpVal = preg_replace('/\s*(\S*)\s*{.*}/', '$1', $tmpVal);
+						$items[ $currentELementTitle ][ $child->nodeName ][] = $tmpVal;
+
+					} else {
+						$items[ $currentELementTitle ][ $child->nodeName ][] = $child->nodeValue;
+					}
                 }
             }
-        }
+		}
         return $items;
     }
 
@@ -66,7 +73,7 @@ class LoopTerminology {
 
         $html = '';
         if ( !empty( $items ) ) {
-            ksort( $items );
+            ksort( $items, SORT_FLAG_CASE | SORT_STRING ); # ignore case
             foreach ( $items as $item => $content ) {
                 if ( array_key_exists( "dt", $content ) &&  array_key_exists( "dd", $content ) ) {
                     $html .= "<div class='loopterminology-term font-weight-bold'><span>";
@@ -85,7 +92,7 @@ class LoopTerminology {
                 }
             }
         }
-
+		#dd($html);
         return $html;
 
     }
