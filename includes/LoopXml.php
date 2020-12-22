@@ -123,7 +123,7 @@ class LoopXml {
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
 
 		# modify content for mp3 export
-		if ( $modifiers["mp3"] ) {
+		if ( array_key_exists( "mp3", $modifiers ) && $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
 				$content = preg_replace('/(<'.$type.')/', "\n<".$type, $content);
 				$content = preg_replace('/(<\/'.$type.'>)/', "</".$type.">\n", $content);
@@ -851,7 +851,9 @@ class wiki2xml
 	{
 		#echo("<br>w2x_14");
 		global $content_provider , $xmlg ;
-		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		if ( is_array( $xmlg ) &&  array_key_exists("useapi", $xmlg) ) { # 2020 edit
+			if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		}
 
 		$x = "" ;
 		$b = $a ;
@@ -979,7 +981,9 @@ class wiki2xml
 
 		#echo("<br>w2x_16");
 		global $xmlg ;
-		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		if ( is_array( $xmlg ) &&  array_key_exists("useapi", $xmlg) ) { # 2020 edit
+			if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		}
 		for ( $a = 0 ; $a+3 < strlen ( $text ) ; $a++ ) {
 			if ( $text[$a] != '{' ) continue ;
 			while ( $this->p_template_replace_single_variable ( $text , $a , $variables ) ) ;
