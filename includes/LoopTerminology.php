@@ -20,16 +20,14 @@ class LoopTerminology {
 		$user = $wgOut->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
 
-		if ( $editMode ) {
-
-            return true;
-
+		if ( !empty( $contentText ) ) {
+			return true;
+		} elseif ( $editMode ) {
+			return "empty";
 		} else {
-			if ( !empty( $contentText ) ) {
-                return true;
-            }
-            return false;
+			return false;
 		}
+
     }
 
     public static function getSortedTerminology( $input ) {

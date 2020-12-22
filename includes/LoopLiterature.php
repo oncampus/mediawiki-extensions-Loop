@@ -478,25 +478,17 @@ class LoopLiterature {
 	public static function getShowLiterature() {
 
 		global $wgOut;
-
-		$showLiterature = false;
-
 		$user = $wgOut->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$literatureItems = self::getAllItems();
 
-		if ( $editMode ) {
-
-			$showLiterature = true;
-
+		if ( $literatureItems ) {
+			return true;
+		} elseif ( $editMode ) {
+			return "empty";
 		} else {
-		    $literatureItems = self::getAllItems();
-
-			if ( $literatureItems ) {
-				$showLiterature = true;
-			}
+			return false;
 		}
-
-		return $showLiterature;
 	}
 
 	static function renderCite( $input, array $args, Parser $parser, PPFrame $frame ) {

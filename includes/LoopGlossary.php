@@ -14,24 +14,17 @@ class LoopGlossary {
 
 		global $wgOut;
 
-		$showGlossary = false;
-
 		$user = $wgOut->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
 
-		if ( $editMode ) {
-
-			$showGlossary = true;
-
+		$glossaryItems = self::getGlossaryPages();
+		if ( $glossaryItems ) {
+			return true;
+		} elseif ( $editMode ) {
+			return "empty";
 		} else {
-			$glossaryItems = self::getGlossaryPages();
-
-			if ( $glossaryItems ) {
-				$showGlossary = true;
-			}
+			return false;
 		}
-
-		return $showGlossary;
 	}
 
 	// returns all pages in glossary namespace.
