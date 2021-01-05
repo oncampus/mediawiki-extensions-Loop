@@ -1507,15 +1507,15 @@ class SpecialLoopLiterature extends SpecialPage {
 		}
         if ( ! empty( $allItemsCopy ) ) {
             $elements = array();
+			if ( !empty( $elements ) ) {
 
-            if ( $type == "html" ) {
-            $return .= "<hr class='mr-4'/>";
-            $return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" )."</p>";
-
-            } else {
-                $return .= "<paragraph><bold>".wfMessage( "loopliterature-text-notreferenced" )."</bold></paragraph>";
-
-            }
+				if ( $type == "html" ) {
+					$return .= "<hr class='mr-4'/>";
+					$return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" )."</p>";
+				} else {
+					$return .= "<paragraph><bold>".wfMessage( "loopliterature-text-notreferenced" )."</bold></paragraph>";
+				}
+			}
             foreach ( $allItemsCopy as $item ) {
                 if ( $item->author ) {
                     $orderkey = ucfirst($item->author);
