@@ -1506,7 +1506,7 @@ class SpecialLoopLiterature extends SpecialPage {
 			}
 		}
         if ( ! empty( $allItemsCopy ) ) {
-            $elements = array();
+
 			if ( !empty( $elements ) ) {
 
 				if ( $type == "html" ) {
@@ -1516,6 +1516,7 @@ class SpecialLoopLiterature extends SpecialPage {
 					$return .= "<paragraph><bold>".wfMessage( "loopliterature-text-notreferenced" )."</bold></paragraph>";
 				}
 			}
+			$elements = array();
             foreach ( $allItemsCopy as $item ) {
                 if ( $item->author ) {
                     $orderkey = ucfirst($item->author);
