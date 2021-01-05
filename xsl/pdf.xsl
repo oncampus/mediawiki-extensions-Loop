@@ -10,15 +10,15 @@
 	extension-element-prefixes="func php str" xmlns:functx="http://www.functx.com" exclude-result-prefixes="xhtml">
 
 	<xsl:import href="pdf_params.xsl"></xsl:import>
-	<xsl:import href="terms.xsl"></xsl:import>	
-		
+	<xsl:import href="terms.xsl"></xsl:import>
+
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"
 		indent="yes"></xsl:output>
 
 	<xsl:variable name="lang">
 		<xsl:value-of select="/loop/meta/lang"></xsl:value-of>
 	</xsl:variable>
-	
+
 	<xsl:template match="loop">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
@@ -26,13 +26,13 @@
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="listing_exists" ><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
-		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>	
+		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>	
+		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
 		<fo:root>
 			<xsl:attribute name="hyphenate">true</xsl:attribute>
-			
+
 			<fo:layout-master-set>
 				<fo:simple-page-master master-name="cover-page"
 					page-height="{$pageheight}" page-width="{$pagewidth}" margin-top="10mm"
@@ -60,22 +60,22 @@
 					<fo:region-body margin-top="15mm" margin-bottom="15mm" column-count="2" column-gap="10mm"/>
 					<fo:region-before extent="20mm" />
 					<fo:region-after extent="15mm" />
-				</fo:simple-page-master>				
+				</fo:simple-page-master>
 			</fo:layout-master-set>
-			
+
 			<xsl:call-template name="make-declarations"></xsl:call-template>
-			
-			<xsl:call-template name="page-sequence-cover"></xsl:call-template>	
+
+			<xsl:call-template name="page-sequence-cover"></xsl:call-template>
 			<xsl:call-template name="page-sequence-table-of-content"></xsl:call-template>
-			<xsl:call-template name="page-sequence-contentpages"></xsl:call-template>				
-		
+			<xsl:call-template name="page-sequence-contentpages"></xsl:call-template>
+
 			<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($listing_exists='1') or ($task_exists='1') or ($index_exists='1') or ($glossary_exists='1') or ($terminology_exists='1')">
 				<xsl:call-template name="page-sequence-appendix"></xsl:call-template>
 			</xsl:if>
 
 		</fo:root>
 	</xsl:template>
-	
+
 	<xsl:template name="page-sequence-appendix">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
@@ -84,19 +84,19 @@
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="listing_exists"><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>			
-		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>	
+		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>
 		<fo:page-sequence master-reference="full-page" id="appendix_sequence">
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
-				<xsl:call-template name="default-header"></xsl:call-template>			
-			</fo:static-content>			
+				<xsl:call-template name="default-header"></xsl:call-template>
+			</fo:static-content>
 			<fo:static-content font-family="{$font_family}" flow-name="xsl-region-after">
 				<xsl:call-template name="default-footer"></xsl:call-template>
 			</fo:static-content>
 			<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
 				<xsl:call-template name="page-content-appendix"></xsl:call-template>
-				
+
 				<xsl:if test="$cite_exists='1'">
 						<xsl:call-template name="page-content-bibliography"></xsl:call-template>
 				</xsl:if>
@@ -124,13 +124,13 @@
 					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_listing</xsl:with-param>
 					</xsl:call-template>
-				</xsl:if>            
+				</xsl:if>
 				<xsl:if test="$task_exists='1'">
 					<xsl:call-template name="page-content-list-of-objects">
 						<xsl:with-param name="object_type">loop_task</xsl:with-param>
 					</xsl:call-template>
 				</xsl:if>
-				        
+
 				<xsl:if test="$terminology_exists='1'">
 					<xsl:call-template name="page-content-terminology">
 						<xsl:with-param name="object_type">terminology</xsl:with-param>
@@ -139,29 +139,29 @@
 				<xsl:if test="$index_exists='1'">
 					<fo:page-sequence master-reference="full-page-2column" id="index_sequence">
 						<fo:static-content font-family="{$font_family}" flow-name="xsl-region-before">
-							<xsl:call-template name="default-header"></xsl:call-template>			
-						</fo:static-content>			
+							<xsl:call-template name="default-header"></xsl:call-template>
+						</fo:static-content>
 						<fo:static-content font-family="{$font_family}" flow-name="xsl-region-after">
 							<xsl:call-template name="default-footer"></xsl:call-template>
 						</fo:static-content>
-						<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">		
+						<fo:flow font-family="{$font_family}" flow-name="xsl-region-body">
 							<xsl:call-template name="page-content-index"></xsl:call-template>
 						</fo:flow>
-					</fo:page-sequence>	            	
-				</xsl:if>    
+					</fo:page-sequence>
+				</xsl:if>
 				<xsl:if test="$glossary_exists='1'">
 					<xsl:call-template name="page-content-glossary">
 						<xsl:with-param name="object_type">glossary</xsl:with-param>
 					</xsl:call-template>
-				</xsl:if>    
+				</xsl:if>
 
 			</fo:flow>
 		</fo:page-sequence>
-		
-		  
-		
-	</xsl:template>			
-	
+
+
+
+	</xsl:template>
+
 	<xsl:template name="page-content-index">
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
@@ -173,7 +173,7 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'index'"></xsl:with-param>
 				</xsl:call-template>
-				<xsl:text> </xsl:text>			
+				<xsl:text> </xsl:text>
 				<xsl:value-of select="$word_index"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
@@ -182,15 +182,15 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'index'"></xsl:with-param>
 				</xsl:call-template>
-				<xsl:text> </xsl:text>			
+				<xsl:text> </xsl:text>
 			<xsl:value-of select="$word_index"></xsl:value-of>
 		</fo:block>
 		<fo:block>
 			<xsl:apply-templates select="php:function('LoopXsl::xsl_getIndex', '')"></xsl:apply-templates>
 		</fo:block>
-	</xsl:template>		
-	
-	
+	</xsl:template>
+
+
 	<xsl:template match="loop_index_list">
 		<xsl:apply-templates></xsl:apply-templates>
 	</xsl:template>
@@ -229,8 +229,8 @@
 			<xsl:attribute name="internal-destination"><xsl:value-of select="@pagetitle"></xsl:value-of></xsl:attribute>
 			<fo:page-number-citation>
 				<xsl:attribute name="ref-id" ><xsl:value-of select="@pagetitle"></xsl:value-of></xsl:attribute>
-			</fo:page-number-citation>	
-		</fo:basic-link> 
+			</fo:page-number-citation>
+		</fo:basic-link>
 	</xsl:template>
 
 
@@ -240,11 +240,11 @@
 		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
-		
+		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
+
 		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($task_exists='1')">
 			<fo:block break-before="page"></fo:block>
-		</xsl:if>	 
+		</xsl:if>
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
 				<xsl:value-of select="$word_appendix"></xsl:value-of>
@@ -255,7 +255,7 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
 				</xsl:call-template>
-				<xsl:text> </xsl:text>			
+				<xsl:text> </xsl:text>
 				<xsl:value-of select="$word_glossary"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
@@ -264,12 +264,12 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
 				</xsl:call-template>
-				<xsl:text> </xsl:text>			
+				<xsl:text> </xsl:text>
 			<xsl:value-of select="$word_glossary"></xsl:value-of>
 		</fo:block>
 		<xsl:apply-templates select="//*/glossary/article"></xsl:apply-templates>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template name="page-content-terminology">
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
@@ -281,8 +281,8 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'terminology'"></xsl:with-param>
 				</xsl:call-template>
-				
-				<xsl:text> </xsl:text>			
+
+				<xsl:text> </xsl:text>
 				<xsl:value-of select="$word_terminology"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
@@ -291,26 +291,26 @@
 			<xsl:call-template name="appendix_number">
 				<xsl:with-param name="content" select="'terminology'"></xsl:with-param>
 			</xsl:call-template>
-			<xsl:text> </xsl:text>			
+			<xsl:text> </xsl:text>
 			<xsl:value-of select="$word_terminology"></xsl:value-of>
 		</fo:block>
 		<xsl:apply-templates select="//*/terminology/article"></xsl:apply-templates>
-	</xsl:template>		
+	</xsl:template>
 
 
 	<xsl:template name="page-content-appendix">
 		<fo:block id="appendix"></fo:block>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template name="make-declarations">
 		<axf:document-info name="document-title" >
 			<xsl:attribute name="value"><xsl:value-of select="/loop/meta/title"></xsl:value-of></xsl:attribute>
 		</axf:document-info>
-		
+
 		<!-- ToDo: add more infos, see https://www.antennahouse.com/product/ahf65/ahf-ext.html#axf.document-info -->
-	</xsl:template>		
-	
-	
+	</xsl:template>
+
+
 	<!-- Page Sequence für Cover-Page -->
 	<xsl:template name="page-sequence-cover">
 		<fo:page-sequence master-reference="cover-page" id="cover_sequence">
@@ -318,8 +318,8 @@
 				<xsl:call-template name="page-content-cover"></xsl:call-template>
 			</fo:flow>
 		</fo:page-sequence>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<!-- Page Content der Cover-Page -->
 	<xsl:template name="page-content-cover">
 		<fo:block text-align="right" font-size="26pt" font-weight="bold"
@@ -335,10 +335,10 @@
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="/loop/meta/date_generated"></xsl:value-of>
 		</fo:block>
-		
-	</xsl:template>	
-	
-	
+
+	</xsl:template>
+
+
 	<!-- Page Sequence für Inhaltsverzeichnis -->
 	<xsl:template name="page-sequence-table-of-content">
 		<fo:page-sequence master-reference="full-page"
@@ -357,27 +357,27 @@
 				<xsl:call-template name="page-content-table-of-content"></xsl:call-template>
 			</fo:flow>
 		</fo:page-sequence>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<!-- Page Content des Inhaltsverzeichnises -->
 	<xsl:template name="page-content-table-of-content">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>	
+		<xsl:param name="table_exists"><xsl:call-template name="table_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="listing_exists"><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>	
-		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>	
+		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
-				<xsl:value-of select="//loop/meta/title"></xsl:value-of> 
+				<xsl:value-of select="//loop/meta/title"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
 		<fo:block>
-			<fo:marker marker-class-name="page-title-right"> 
+			<fo:marker marker-class-name="page-title-right">
 				<xsl:value-of select="$word_content"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
@@ -385,16 +385,16 @@
 			<xsl:call-template name="font_head"></xsl:call-template>
 			<xsl:value-of select="$word_content"></xsl:value-of>
 		</fo:block>
-		
+
 		<xsl:call-template name="make-toc"></xsl:call-template>
-		
+
 		<xsl:if test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($task_exists='1') or ($index_exists='1') or ($glossary_exists='1')">
 			<fo:block margin-bottom="1em"></fo:block>
 			<fo:block>
 				<xsl:call-template name="font_subsubhead"></xsl:call-template>
 				<xsl:value-of select="$word_appendix"></xsl:value-of>
-			</fo:block>		
-		</xsl:if>	
+			</fo:block>
+		</xsl:if>
 		<xsl:if test="$cite_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
@@ -402,7 +402,7 @@
 					<xsl:attribute name="internal-destination">bibliography</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'bibliography'"></xsl:with-param>
-					</xsl:call-template> 				
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_bibliography"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -411,9 +411,9 @@
 						<xsl:attribute name="ref-id">bibliography</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
-		</xsl:if>		
-		
+			</fo:block>
+		</xsl:if>
+
 		<xsl:if test="$figure_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
@@ -421,7 +421,7 @@
 					<xsl:attribute name="internal-destination">list_of_figures</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_figures'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_figures"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -430,8 +430,8 @@
 						<xsl:attribute name="ref-id">list_of_figures</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
-		</xsl:if>	
+			</fo:block>
+		</xsl:if>
 		<xsl:if test="$table_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
@@ -439,7 +439,7 @@
 					<xsl:attribute name="internal-destination">list_of_tables</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_tables'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_tables"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -448,7 +448,7 @@
 						<xsl:attribute name="ref-id">list_of_tables</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
+			</fo:block>
 		</xsl:if>
 		<xsl:if test="$media_exists='1'">
 			<fo:block text-align-last="justify">
@@ -457,7 +457,7 @@
 					<xsl:attribute name="internal-destination">list_of_media</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_media'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_media"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -466,7 +466,7 @@
 						<xsl:attribute name="ref-id">list_of_media</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
+			</fo:block>
 		</xsl:if>
 		<xsl:if test="$formula_exists='1'">
 			<fo:block text-align-last="justify">
@@ -475,7 +475,7 @@
 					<xsl:attribute name="internal-destination">list_of_formulas</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_formulas'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_formulas"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -484,8 +484,8 @@
 						<xsl:attribute name="ref-id">list_of_formulas</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
-		</xsl:if>	
+			</fo:block>
+		</xsl:if>
 		<xsl:if test="$listing_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
@@ -493,7 +493,7 @@
 					<xsl:attribute name="internal-destination">list_of_listings</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_listings'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_listings"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -502,7 +502,7 @@
 						<xsl:attribute name="ref-id">list_of_listings</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
+			</fo:block>
 		</xsl:if>
 		<xsl:if test="$task_exists='1'">
 			<fo:block text-align-last="justify">
@@ -511,7 +511,7 @@
 					<xsl:attribute name="internal-destination">list_of_tasks</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'list_of_tasks'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_list_of_tasks"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -520,9 +520,9 @@
 						<xsl:attribute name="ref-id">list_of_tasks</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
+			</fo:block>
 		</xsl:if>
-		
+
 		<xsl:if test="$terminology_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
@@ -530,7 +530,7 @@
 					<xsl:attribute name="internal-destination">terminology</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'terminology'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_terminology"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -539,27 +539,27 @@
 						<xsl:attribute name="ref-id">terminology</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
+			</fo:block>
 		</xsl:if>
 
 		<xsl:if test="$index_exists='1'">
 			<fo:block text-align-last="justify">
 				<xsl:call-template name="font_normal"></xsl:call-template>
 				<fo:basic-link color="black">
-					<xsl:attribute name="internal-destination">index</xsl:attribute> 
+					<xsl:attribute name="internal-destination">index</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'index'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_index"></xsl:value-of>
-				</fo:basic-link> 
+				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
 					<fo:leader leader-pattern="dots"></fo:leader>
 					<fo:page-number-citation>
 						<xsl:attribute name="ref-id">index</xsl:attribute>
 					</fo:page-number-citation>
-				</fo:inline> 
-			</fo:block>		
-		</xsl:if> 
+				</fo:inline>
+			</fo:block>
+		</xsl:if>
 
 		<xsl:if test="$glossary_exists='1'">
 			<fo:block text-align-last="justify">
@@ -568,7 +568,7 @@
 					<xsl:attribute name="internal-destination">glossary</xsl:attribute>
 					<xsl:call-template name="appendix_number">
 						<xsl:with-param name="content" select="'glossary'"></xsl:with-param>
-					</xsl:call-template>					
+					</xsl:call-template>
 					<xsl:text> </xsl:text><xsl:value-of select="$word_glossary"></xsl:value-of>
 				</fo:basic-link>
 				<fo:inline keep-together.within-line="always">
@@ -577,12 +577,12 @@
 						<xsl:attribute name="ref-id">glossary</xsl:attribute>
 					</fo:page-number-citation>
 				</fo:inline>
-			</fo:block>		
+			</fo:block>
 		</xsl:if>
 
-		
-	</xsl:template>		
-	
+
+	</xsl:template>
+
 	<xsl:template match="loop_toc_list">
 		<xsl:choose>
 			<xsl:when test="position() != last()">
@@ -601,14 +601,14 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	
+
+
 	<!-- Bibliography -->
-	
+
 	<xsl:template name="bibliography" mode="bibliography">
 		<xsl:apply-templates mode="bibliography"/>
 	</xsl:template>
-	
+
 	<xsl:template name="page-content-bibliography">
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
@@ -620,7 +620,7 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'bibliography'"></xsl:with-param>
 				</xsl:call-template>
-				<xsl:text> </xsl:text>			
+				<xsl:text> </xsl:text>
 				<xsl:value-of select="$word_bibliography"></xsl:value-of>
 			</fo:marker>
 		</fo:block>
@@ -629,14 +629,14 @@
 				<xsl:call-template name="appendix_number">
 					<xsl:with-param name="content" select="'bibliography'"></xsl:with-param>
 				</xsl:call-template>
-				<xsl:text> </xsl:text>			
+				<xsl:text> </xsl:text>
 			<xsl:value-of select="$word_bibliography"></xsl:value-of>
 		</fo:block>
 		<fo:block>
-			<xsl:apply-templates select="php:function('LoopXsl::xsl_get_bibliography', '')" mode="bibliography"></xsl:apply-templates>
+		<xsl:apply-templates select="//*/bibliography"></xsl:apply-templates>
 		</fo:block>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template name="loop_literature">
 		<fo:block>
 			<xsl:apply-templates select="php:function('LoopXsl::xsl_get_bibliography', .)" mode="bibliography"></xsl:apply-templates>
@@ -648,28 +648,28 @@
 			<xsl:apply-templates mode="loop_accordion"/>
 		</fo:block>
 	</xsl:template>
-	
-	
+
+
 	<!-- LOOP_OBJECTS -->
 	<xsl:template name="loop_object">
 		<xsl:param name="object"></xsl:param>
 		<xsl:variable name="objectid" select="@id"></xsl:variable>
 		<xsl:variable name="rendertype">
-			<xsl:choose> 
+			<xsl:choose>
 				<xsl:when test="count(@render) = 0">
 					<xsl:value-of select="php:function('LoopXsl::xsl_get_rendertype')"></xsl:value-of>
 				</xsl:when>
 				<xsl:when test="@render = 'default'">
 					<xsl:value-of select="php:function('LoopXsl::xsl_get_rendertype')"></xsl:value-of>
 				</xsl:when>
-				
+
 				<xsl:when test="@render = 'marked' or @render = 'icon' or @render = 'title' or @render = 'none' ">
 					<xsl:value-of select="@render"></xsl:value-of>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="php:function('LoopXsl::xsl_get_rendertype')"></xsl:value-of>
 				</xsl:otherwise>
-			</xsl:choose> 
+			</xsl:choose>
 		</xsl:variable>
 			<fo:block>
 				<xsl:if test="ancestor::extension[@extension_name='loop_area']">
@@ -679,7 +679,7 @@
 					<!-- <xsl:attribute name="id"><xsl:text>object</xsl:text><xsl:value-of select="@id"></xsl:value-of></xsl:attribute> -->
 					<fo:table-column column-number="1" column-width="0.4mm"/>
 					<fo:table-column column-number="2">
-						<xsl:choose> 
+						<xsl:choose>
 							<xsl:when test="ancestor::extension[@extension_name='loop_area']">
 								<xsl:attribute name="column-width">145mm</xsl:attribute>
 							</xsl:when>
@@ -690,18 +690,18 @@
 								<xsl:attribute name="column-width">140mm</xsl:attribute>
 							</xsl:when>
 							<xsl:when test="ancestor::table">
-							
+
 							</xsl:when>
 							<xsl:otherwise>
 								<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 							</xsl:otherwise>
-						</xsl:choose> 
+						</xsl:choose>
 					</fo:table-column>
-					<fo:table-body>	
+					<fo:table-body>
 						<xsl:if test="not($object[@extension_name='loop_task'])">
 							<fo:table-row keep-together.within-column="auto">
 								<fo:table-cell number-columns-spanned="2">
-									<xsl:choose> 
+									<xsl:choose>
 										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
 											<xsl:attribute name="max-width">145mm</xsl:attribute>
 										</xsl:when>
@@ -714,9 +714,9 @@
 										<xsl:otherwise>
 											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 										</xsl:otherwise>
-									</xsl:choose> 
+									</xsl:choose>
 									<fo:block text-align="left" margin-bottom="1mm">
-										<xsl:choose> 
+										<xsl:choose>
 												<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
 													<xsl:attribute name="margin-left">0mm</xsl:attribute>
 												</xsl:when>
@@ -732,29 +732,29 @@
 												<xsl:otherwise>
 													<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 												</xsl:otherwise>
-										</xsl:choose> 
+										</xsl:choose>
 										<xsl:apply-templates/><!-- mode="loop_object"-->
 									</fo:block>
-								</fo:table-cell>	
+								</fo:table-cell>
 							</fo:table-row>
 						</xsl:if>
-						
+
 						<xsl:if test="$rendertype != 'none'">
 							<fo:table-row keep-together.within-column="auto" >
 								<fo:table-cell width="0.4mm" background-color="{$accent_color}">
 								</fo:table-cell>
 								<fo:table-cell width="150mm" text-align="left" padding-right="2mm">
-								<xsl:choose> 
+								<xsl:choose>
 									<xsl:when test="ancestor::extension[@extension_name='loop_area']">
 										<!-- <xsl:attribute name="padding-left">13mm</xsl:attribute> -->
 									</xsl:when>
 									<xsl:otherwise>
 										<xsl:attribute name="padding-left">1mm</xsl:attribute>
 									</xsl:otherwise>
-								</xsl:choose> 
+								</xsl:choose>
 									<xsl:call-template name="font_object_title"></xsl:call-template>
 									<fo:block text-align="left">
-									<xsl:choose> 
+									<xsl:choose>
 										<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
 											<xsl:attribute name="margin-left">0mm</xsl:attribute>
 										</xsl:when>
@@ -770,14 +770,14 @@
 										<xsl:otherwise>
 											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 										</xsl:otherwise>
-									</xsl:choose> 
-									
-									<xsl:if test="$rendertype='marked' or $rendertype='icon'">			
+									</xsl:choose>
+
+									<xsl:if test="$rendertype='marked' or $rendertype='icon'">
 										<xsl:choose>
 											<xsl:when test="$object[@extension_name='loop_figure']">
 												<xsl:value-of select="$icon_figure"></xsl:value-of>
 												<xsl:text> </xsl:text>
-												<xsl:if test="$rendertype='marked'">	
+												<xsl:if test="$rendertype='marked'">
 													<fo:inline font-weight="bold">
 														<xsl:value-of select="$word_figure_short"></xsl:value-of>
 													</fo:inline>
@@ -786,7 +786,7 @@
 											<xsl:when test="$object[@extension_name='loop_formula']">
 												<xsl:value-of select="$icon_formula"></xsl:value-of>
 												<xsl:text> </xsl:text>
-												<xsl:if test="$rendertype='marked'">	
+												<xsl:if test="$rendertype='marked'">
 													<fo:inline font-weight="bold">
 														<xsl:value-of select="$word_formula_short"></xsl:value-of>
 													</fo:inline>
@@ -795,13 +795,13 @@
 											<xsl:when test="$object[@extension_name='loop_listing']">
 												<xsl:value-of select="$icon_listing"></xsl:value-of>
 												<xsl:text> </xsl:text>
-												<xsl:if test="$rendertype='marked'">	
+												<xsl:if test="$rendertype='marked'">
 													<fo:inline font-weight="bold">
 														<xsl:value-of select="$word_listing_short"></xsl:value-of>
 													</fo:inline>
 												</xsl:if>
 											</xsl:when>
-											<xsl:when test="$object[@extension_name='loop_media']">	
+											<xsl:when test="$object[@extension_name='loop_media']">
 												<xsl:choose>
 													<xsl:when test="$object[@type='rollover']">
 														<xsl:value-of select="$icon_rollover"></xsl:value-of>
@@ -834,17 +834,17 @@
 														<xsl:value-of select="$icon_media"></xsl:value-of>
 													</xsl:otherwise>
 												</xsl:choose>
-												<xsl:text> </xsl:text>	
-												<xsl:if test="$rendertype='marked'">	
+												<xsl:text> </xsl:text>
+												<xsl:if test="$rendertype='marked'">
 													<fo:inline font-weight="bold">
 														<xsl:value-of select="$word_media_short"></xsl:value-of>
 													</fo:inline>
 												</xsl:if>
 											</xsl:when>
-											<xsl:when test="$object[@extension_name='loop_task']">	
+											<xsl:when test="$object[@extension_name='loop_task']">
 												<xsl:value-of select="$icon_task"></xsl:value-of>
 												<xsl:text> </xsl:text>
-												<xsl:if test="$rendertype='marked'">	
+												<xsl:if test="$rendertype='marked'">
 													<fo:inline font-weight="bold">
 														<xsl:value-of select="$word_task_short"></xsl:value-of>
 													</fo:inline>
@@ -853,7 +853,7 @@
 											<xsl:when test="$object[@extension_name='loop_table']">
 												<xsl:value-of select="$icon_table"></xsl:value-of>
 												<xsl:text> </xsl:text>
-												<xsl:if test="$rendertype='marked'">	
+												<xsl:if test="$rendertype='marked'">
 													<fo:inline font-weight="bold">
 														<xsl:value-of select="$word_table_short"></xsl:value-of>
 													</fo:inline>
@@ -863,8 +863,8 @@
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:if>
-									
-									<xsl:if test="$rendertype='marked'">			
+
+									<xsl:if test="$rendertype='marked'">
 										<fo:inline font-weight="bold">
 											<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
 												<xsl:text> </xsl:text>
@@ -878,12 +878,12 @@
 											<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_title']" mode="loop_object"></xsl:apply-templates>
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:value-of select="$object/@title"></xsl:value-of>	
+											<xsl:value-of select="$object/@title"></xsl:value-of>
 											<!-- <xsl:attribute name="padding-top">5mm</xsl:attribute> -->
 										</xsl:otherwise>
 									</xsl:choose>
 									</fo:block>
-									<xsl:if test="$rendertype!='title'">	
+									<xsl:if test="$rendertype!='title'">
 										<xsl:if test="($object/@description) or ($object/descendant::extension[@extension_name='loop_description'])">
 											<fo:block text-align="left">
 												<!-- <xsl:if test="ancestor::extension[@extension_name='loop_area']">
@@ -894,10 +894,10 @@
 														<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_description']" mode="loop_object"></xsl:apply-templates>
 													</xsl:when>
 													<xsl:otherwise>
-														<xsl:value-of select="$object/@description"></xsl:value-of>	
+														<xsl:value-of select="$object/@description"></xsl:value-of>
 													</xsl:otherwise>
 												</xsl:choose>
-											</fo:block>		
+											</fo:block>
 										</xsl:if>
 
 										<xsl:if test="($object/@copyright) or ($object/descendant::extension[@extension_name='loop_copyright'])">
@@ -910,20 +910,20 @@
 														<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_copyright']" mode="loop_object"></xsl:apply-templates>
 													</xsl:when>
 													<xsl:otherwise>
-														<xsl:value-of select="$object/@copyright"></xsl:value-of>	
+														<xsl:value-of select="$object/@copyright"></xsl:value-of>
 													</xsl:otherwise>
 												</xsl:choose>
-											</fo:block>		
+											</fo:block>
 										</xsl:if>
 									</xsl:if>
 								</fo:table-cell>
 							</fo:table-row>
 						</xsl:if>
-						
-						<xsl:if test="@extension_name='loop_task'">		
+
+						<xsl:if test="@extension_name='loop_task'">
 							<fo:table-row keep-together.within-column="auto">
 								<fo:table-cell number-columns-spanned="2">
-									<xsl:choose> 
+									<xsl:choose>
 										<xsl:when test="ancestor::extension[@extension_name='loop_area']">
 											<xsl:attribute name="max-width">145mm</xsl:attribute>
 										</xsl:when>
@@ -936,9 +936,9 @@
 										<xsl:otherwise>
 											<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 										</xsl:otherwise>
-									</xsl:choose> 
+									</xsl:choose>
 									<fo:block text-align="left" margin-bottom="1mm">
-										<xsl:choose> 
+										<xsl:choose>
 											<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
 												<xsl:attribute name="margin-left">0mm</xsl:attribute>
 											</xsl:when>
@@ -954,23 +954,23 @@
 											<xsl:otherwise>
 												<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 											</xsl:otherwise>
-										</xsl:choose> 
+										</xsl:choose>
 										<xsl:apply-templates/><!-- mode="loop_object"-->
 									</fo:block>
-								</fo:table-cell>	
+								</fo:table-cell>
 							</fo:table-row>
 						</xsl:if>
 					</fo:table-body>
 				</fo:table>
 			</fo:block>
 	</xsl:template>
-	
+
 	<xsl:template name="page-content-list-of-objects">
 		<xsl:param name="object_type"></xsl:param>
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:if test="$cite_exists='1'">
 			<fo:block break-before="page"></fo:block>
-		</xsl:if>		
+		</xsl:if>
 		<fo:block>
 			<fo:marker marker-class-name="page-title-left">
 				<xsl:value-of select="$word_appendix"></xsl:value-of>
@@ -1012,7 +1012,7 @@
 						<xsl:otherwise>
 						</xsl:otherwise>
 					</xsl:choose>
-				<xsl:text> </xsl:text>				
+				<xsl:text> </xsl:text>
 				<xsl:choose>
 					<xsl:when test="$object_type='loop_figure'">
 						<xsl:value-of select="$word_list_of_figures"></xsl:value-of>
@@ -1044,7 +1044,7 @@
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_figures'"></xsl:with-param>
 						</xsl:call-template>
-						<xsl:text> </xsl:text>			
+						<xsl:text> </xsl:text>
 					<xsl:value-of select="$word_list_of_figures"></xsl:value-of>
 				</fo:block>
 			</xsl:when>
@@ -1054,7 +1054,7 @@
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_formulas'"></xsl:with-param>
 						</xsl:call-template>
-						<xsl:text> </xsl:text>			
+						<xsl:text> </xsl:text>
 					<xsl:value-of select="$word_list_of_formulas"></xsl:value-of>
 				</fo:block>
 			</xsl:when>
@@ -1064,7 +1064,7 @@
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_listings'"></xsl:with-param>
 						</xsl:call-template>
-						<xsl:text> </xsl:text>			
+						<xsl:text> </xsl:text>
 					<xsl:value-of select="$word_list_of_listings"></xsl:value-of>
 				</fo:block>
 			</xsl:when>
@@ -1074,7 +1074,7 @@
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_media'"></xsl:with-param>
 						</xsl:call-template>
-						<xsl:text> </xsl:text>			
+						<xsl:text> </xsl:text>
 					<xsl:value-of select="$word_list_of_media"></xsl:value-of>
 				</fo:block>
 			</xsl:when>
@@ -1084,7 +1084,7 @@
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_tables'"></xsl:with-param>
 						</xsl:call-template>
-						<xsl:text> </xsl:text>			
+						<xsl:text> </xsl:text>
 					<xsl:value-of select="$word_list_of_tables"></xsl:value-of>
 				</fo:block>
 			</xsl:when>
@@ -1094,60 +1094,60 @@
 						<xsl:call-template name="appendix_number">
 							<xsl:with-param name="content" select="'list_of_tasks'"></xsl:with-param>
 						</xsl:call-template>
-						<xsl:text> </xsl:text>			
+						<xsl:text> </xsl:text>
 					<xsl:value-of select="$word_list_of_tasks"></xsl:value-of>
 				</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
 			</xsl:otherwise>
 		</xsl:choose>
-		 		
+
 		<fo:table width="170mm" table-layout="auto" margin-bottom="8mm">
 			<fo:table-body>
 				<xsl:choose>
 					<xsl:when test="$object_type='loop_figure'">
 						<xsl:apply-templates select="//*/extension[@extension_name='loop_figure']" mode="list_of_objects">
-							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param> 
+							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param>
                 </xsl:apply-templates>
 					</xsl:when>
 					<xsl:when test="$object_type='loop_formula'">
 						<xsl:apply-templates select="//*/extension[@extension_name='loop_formula']" mode="list_of_objects">
-							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param> 
+							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param>
 						</xsl:apply-templates>
 					</xsl:when>
 					<xsl:when test="$object_type='loop_listing'">
 						<xsl:apply-templates select="//*/extension[@extension_name='loop_listing']" mode="list_of_objects">
-							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param> 
+							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param>
                 </xsl:apply-templates>
 					</xsl:when>
 					<xsl:when test="$object_type='loop_media'">
 						<xsl:apply-templates select="//*/extension[@extension_name='loop_media']" mode="list_of_objects">
-							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param> 
+							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param>
                 </xsl:apply-templates>
 					</xsl:when>
 					<xsl:when test="$object_type='loop_task'">
 						<xsl:apply-templates select="//*/extension[@extension_name='loop_task']" mode="list_of_objects">
-							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param> 
+							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param>
                 </xsl:apply-templates>
 					</xsl:when>
 					<xsl:when test="$object_type='loop_table'">
 						<xsl:apply-templates select="//*/extension[@extension_name='loop_table']" mode="list_of_objects">
-							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param> 
+							<xsl:with-param name="object_type" select="$object_type"></xsl:with-param>
                 </xsl:apply-templates>
 					</xsl:when>
 					<xsl:otherwise>
 					</xsl:otherwise>
 				</xsl:choose>
 			</fo:table-body>
-		</fo:table>	
-	</xsl:template>	
-		
+		</fo:table>
+	</xsl:template>
+
 	<xsl:template match="extension" mode="list_of_objects">
 		<xsl:param name="object_type"></xsl:param>
 		<xsl:variable name="objectid" select="@id"></xsl:variable>
 
 		<xsl:if test="//*/loop_object[@refid = $objectid]"> <!-- Check if object is in DB -->
-				
+
 			<fo:table-row>
 				<fo:table-cell>
 					<xsl:attribute name="width">
@@ -1158,7 +1158,7 @@
 							<xsl:otherwise>
 								10mm
 							</xsl:otherwise>
-						</xsl:choose>	
+						</xsl:choose>
 					</xsl:attribute>
 					<xsl:choose>
 						<xsl:when test="$object_type='loop_figure'">
@@ -1185,18 +1185,18 @@
 											</fo:external-graphic>
 										</xsl:if>
 									</xsl:otherwise>
-								</xsl:choose>	
+								</xsl:choose>
 							</fo:block>
 							</xsl:when>
 						<xsl:otherwise>
 						</xsl:otherwise>
-					</xsl:choose>	
+					</xsl:choose>
 				</fo:table-cell>
 
 				<fo:table-cell width="140mm">
 					<fo:block text-align-last="justify" text-align="justify">
 						<fo:basic-link color="black">
-						
+
 							<xsl:attribute name="internal-destination">
 							<xsl:choose>
 								<xsl:when test="@id!=''">
@@ -1205,7 +1205,7 @@
 								<xsl:otherwise>
 									cover_sequence
 								</xsl:otherwise>
-							</xsl:choose>	
+							</xsl:choose>
 							</xsl:attribute>
 							<xsl:variable name="rendertype">
 								<xsl:value-of select="php:function('LoopXsl::xsl_get_rendertype')"></xsl:value-of>
@@ -1233,16 +1233,16 @@
 										</xsl:when>
 										<xsl:otherwise>
 										</xsl:otherwise>
-									</xsl:choose>	
-									
+									</xsl:choose>
+
 									<xsl:if test="//*/loop_object[@refid = $objectid]/object_number">
 										<xsl:text> </xsl:text>
 										<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
 									</xsl:if>
 									<xsl:text>: </xsl:text>
-								</fo:inline>	
+								</fo:inline>
 							</xsl:if>
-							<fo:inline>	
+							<fo:inline>
 								<xsl:choose>
 									<xsl:when test="descendant::extension[@extension_name='loop_title']">
 										<xsl:apply-templates select="descendant::extension[@extension_name='loop_title']"  mode="loop_object"></xsl:apply-templates>
@@ -1253,7 +1253,7 @@
 									<xsl:when test="@title">
 										<xsl:value-of select="@title"></xsl:value-of>
 									</xsl:when>
-								</xsl:choose>	
+								</xsl:choose>
 								<fo:leader leader-pattern="dots"></fo:leader>
 								<fo:page-number-citation>
 									<xsl:attribute name="ref-id">
@@ -1261,42 +1261,42 @@
 									</xsl:attribute>
 								</fo:page-number-citation>
 							</fo:inline>
-						</fo:basic-link>					
+						</fo:basic-link>
 					</fo:block>
-				</fo:table-cell>			
+				</fo:table-cell>
 			</fo:table-row>
 		</xsl:if>
-	</xsl:template>	
+	</xsl:template>
 	<!-- /LOOP_OBJECTS -->
-	
+
 	<xsl:template name="make-toc">
 		<xsl:apply-templates select="toc"  mode="toc"></xsl:apply-templates>
 	</xsl:template>
-	
+
 	<xsl:template match="toc" mode="toc">
 		<xsl:apply-templates select="chapter"  mode="toc"></xsl:apply-templates>
 	</xsl:template>
-	
+
 	<xsl:template match="chapter" mode="toc">
 		<xsl:apply-templates select="page"  mode="toc"></xsl:apply-templates>
 	</xsl:template>
 
 	<xsl:template match="page" mode="toc">
 		<fo:block text-align-last="justify">
-			<xsl:call-template name="font_normal"></xsl:call-template>	
+			<xsl:call-template name="font_normal"></xsl:call-template>
 			<xsl:if test="@toclevel &gt; 0">
 				<xsl:attribute name="margin-left">
 					<xsl:value-of select="@toclevel - 1"></xsl:value-of><xsl:text>em</xsl:text>
 				</xsl:attribute>
 			</xsl:if>
-			
+
 			<fo:basic-link color="black">
 				<xsl:attribute name="internal-destination" >
 				<!--  <xsl:value-of select="@title"></xsl:value-of>
 				<xsl:value-of select="generate-id()"/> -->
 				<xsl:value-of select="@id"></xsl:value-of>
 				</xsl:attribute>
-				
+
 				<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
 					<xsl:value-of select="@tocnumber"></xsl:value-of>
 				</xsl:if>
@@ -1310,15 +1310,15 @@
 					<xsl:attribute name="ref-id">
 					<!-- <xsl:value-of select="@title"></xsl:value-of>
 					<xsl:value-of select="generate-id()"/> -->
-					<xsl:value-of select="@id"></xsl:value-of>			
+					<xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</fo:page-number-citation>
-			</fo:inline>				
+			</fo:inline>
 		</fo:block>
-		<xsl:apply-templates select="chapter"  mode="toc"></xsl:apply-templates>	
-		
-	</xsl:template>			
-	
+		<xsl:apply-templates select="chapter"  mode="toc"></xsl:apply-templates>
+
+	</xsl:template>
+
 	<!-- Page Sequence für Wiki-Seiten -->
 	<xsl:template name="page-sequence-contentpages">
 		<fo:page-sequence master-reference="default-page"
@@ -1347,8 +1347,8 @@
 	<!-- Page Content einer Wiki-Seite -->
 	<xsl:template name="page-content-contentpages">
 		<xsl:apply-templates select="articles/article"></xsl:apply-templates>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<!-- Page Content einer Wiki-Seite -->
 	<xsl:template match="article">
 		<xsl:variable name="toclevel" select="@toclevel"></xsl:variable>
@@ -1372,12 +1372,12 @@
 						<xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 					<xsl:choose>
-						<xsl:when test="$toclevel &lt; 2"> 
+						<xsl:when test="$toclevel &lt; 2">
 							<xsl:attribute name="break-before">page</xsl:attribute>
 						</xsl:when>
 						<xsl:otherwise>
 							<fo:block margin-top="10mm">
-							</fo:block>		
+							</fo:block>
 						</xsl:otherwise>
 					</xsl:choose>
 					<fo:block>
@@ -1395,7 +1395,7 @@
 								</xsl:if>
 								<xsl:text> </xsl:text>
 								<xsl:value-of select="preceding-sibling::node()[@toclevel &lt; $toclevel][1]/@toctext"></xsl:value-of>
-							</xsl:otherwise>					
+							</xsl:otherwise>
 						</xsl:choose>
 						</fo:marker>
 					</fo:block>
@@ -1404,7 +1404,7 @@
 							<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
 								<xsl:value-of select="@tocnumber"></xsl:value-of>
 							</xsl:if>
-							
+
 							<xsl:text> </xsl:text>
 							<xsl:choose>
 								<xsl:when test="string-length(@toctext) &gt; 63">
@@ -1431,8 +1431,8 @@
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<!-- Default Header -->
 	<xsl:template name="default-header">
 		<fo:table table-layout="fixed" width="100%" margin-bottom="2mm">
@@ -1460,8 +1460,8 @@
 				rule-thickness="0.5pt" rule-style="solid" color="black"
 				display-align="after"></fo:leader>
 		</fo:block>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<!-- Default Footer -->
 	<xsl:template name="default-footer">
 		<xsl:param name="last-page-sequence-name">
@@ -1478,7 +1478,7 @@
 			<fo:page-number-citation-last ref-id="{$last-page-sequence-name}"></fo:page-number-citation-last>
 		</fo:block>
 	</xsl:template>
-		
+
 	<xsl:template name="last-page-sequence-name">
 		<xsl:param name="cite_exists"><xsl:call-template name="cite_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="figure_exists"><xsl:call-template name="figure_exists"></xsl:call-template></xsl:param>
@@ -1486,12 +1486,12 @@
 		<xsl:param name="media_exists"><xsl:call-template name="media_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="formula_exists"><xsl:call-template name="formula_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="listing_exists"><xsl:call-template name="listing_exists"></xsl:call-template></xsl:param>
-		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>			
-		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>		
+		<xsl:param name="task_exists"><xsl:call-template name="task_exists"></xsl:call-template></xsl:param>
+		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>
-		
-		
+
+
 		<xsl:choose>
 			<!-- <xsl:when test="($glossary_exists='1')">
 				<xsl:text>glossary_sequence</xsl:text>
@@ -1501,19 +1501,19 @@
 			</xsl:when>
 			<xsl:when test="($cite_exists='1') or ($figure_exists='1') or ($table_exists='1') or ($media_exists='1') or ($formula_exists='1') or ($listing_exists='1') or ($task_exists='1') or ($glossary_exists='1') or ($terminology_exists='1')">
 				<xsl:text>appendix_sequence</xsl:text>
-			</xsl:when>			
+			</xsl:when>
 			<xsl:otherwise>
-				<xsl:text>contentpages_sequence</xsl:text>		
+				<xsl:text>contentpages_sequence</xsl:text>
 			</xsl:otherwise>
-		</xsl:choose>	
+		</xsl:choose>
 	</xsl:template>
-	
-	
+
+
 <xsl:template name="font_icon">
 		<xsl:attribute name="font-size" >16pt</xsl:attribute>
 		<xsl:attribute name="line-height" >12pt</xsl:attribute>
 		<xsl:attribute name="vertical-align" >middle</xsl:attribute>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template name="font_small">
 		<xsl:attribute name="font-size">9.5pt</xsl:attribute>
@@ -1545,12 +1545,12 @@
 		<xsl:attribute name="font-weight">normal</xsl:attribute>
 		<xsl:attribute name="line-height">18.5pt</xsl:attribute>
 	</xsl:template>
-	
+
 	<xsl:template name="font_subsubsubsubhead">
 		<xsl:attribute name="font-size">11.5pt</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 		<xsl:attribute name="line-height">18.5pt</xsl:attribute>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template name="font_subsubsubhead">
 		<xsl:attribute name="font-size">11.5pt</xsl:attribute>
@@ -1558,8 +1558,8 @@
 		<xsl:attribute name="line-height">18.5pt</xsl:attribute>
 		<xsl:attribute name="margin-top">7pt</xsl:attribute>
 		<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-	</xsl:template>	
-		
+	</xsl:template>
+
 	<xsl:template name="font_subsubhead">
 		<xsl:attribute name="font-size">12.5pt</xsl:attribute>
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1582,28 +1582,28 @@
 		<xsl:attribute name="line-height">16.5pt</xsl:attribute>
 		<xsl:attribute name="margin-top">7pt</xsl:attribute>
 		<xsl:attribute name="margin-bottom">5pt</xsl:attribute>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template name="font_object_title">
 		<xsl:attribute name="font-size">9.5pt</xsl:attribute>
 		<xsl:attribute name="font-weight">normal</xsl:attribute>
 		<xsl:attribute name="line-height">12.5pt</xsl:attribute>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="paragraph">
 		<fo:block margin-bottom="5pt">
 			<xsl:call-template name="font_normal"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
-	
+
 	<xsl:template match="paragraph" mode="bibliography">
 		<fo:block margin-bottom="5pt" text-indent="-25mm" line-height="20mm" margin-left="25mm">
 			<xsl:call-template name="font_normal"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:block>
 	</xsl:template>
-	
+
 	<xsl:template match="preblock" >
 		<xsl:apply-templates></xsl:apply-templates>
 	</xsl:template>
@@ -1612,49 +1612,49 @@
 		<fo:block font-family="{$font_family}">
 	    	<xsl:apply-templates></xsl:apply-templates>
     	</fo:block>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template match="space">
 		<xsl:text> </xsl:text>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template match="br">
 		<xsl:choose>
 			<xsl:when test="preceding::node()[1][name()='br']">
-				<fo:block white-space-collapse="false" white-space-treatment="preserve" font-size="0pt" >.</fo:block>	
+				<fo:block white-space-collapse="false" white-space-treatment="preserve" font-size="0pt" >.</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block></fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template match="xhtml:br">
 		<xsl:choose>
 			<xsl:when test="preceding::node()[1][name()='xhtml:br']">
-				<fo:block white-space-collapse="false" white-space-treatment="preserve" font-size="0pt" >.</fo:block>	
+				<fo:block white-space-collapse="false" white-space-treatment="preserve" font-size="0pt" >.</fo:block>
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block></fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template match="sub">
 		<fo:inline vertical-align="sub" font-size="0.8em"><xsl:apply-templates></xsl:apply-templates></fo:inline>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="sup">
 		<fo:inline vertical-align="super" font-size="0.8em"><xsl:apply-templates></xsl:apply-templates></fo:inline>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template match="xhtml:sub">
 		<fo:inline vertical-align="sub" font-size="0.8em"><xsl:apply-templates></xsl:apply-templates></fo:inline>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="xhtml:sup">
 		<fo:inline vertical-align="super" font-size="0.8em"><xsl:apply-templates></xsl:apply-templates></fo:inline>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template match="xhtml:span|span" >
 		<fo:inline>
@@ -1662,42 +1662,42 @@
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>
-	
+
 	<xsl:template match="xhtml:div|div" >
 		<fo:block>
 			<xsl:call-template name="css-style-attributes"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:block>
-	</xsl:template>	
-	
-	
+	</xsl:template>
+
+
 	<xsl:template match="big">
 		<fo:inline>
 			<xsl:call-template name="font_big"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="small">
 		<fo:inline>
 			<xsl:call-template name="font_small"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>			
+	</xsl:template>
 
 	<xsl:template match="xhtml:big">
 		<fo:inline>
 			<xsl:call-template name="font_big"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="xhtml:small">
 		<fo:inline>
 			<xsl:call-template name="font_small"></xsl:call-template>
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>		
+	</xsl:template>
 
 	<xsl:template match="bold">
 		<fo:inline font-weight="bold">
@@ -1713,19 +1713,19 @@
 		<fo:inline font-weight="bold">
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template match="italics">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>	
+	</xsl:template>
 	<xsl:template match="italics" mode="bibliography">
 		<fo:inline font-style="italic">
 			<xsl:apply-templates></xsl:apply-templates>
 		</fo:inline>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<!-- loop_zip -->
 	<xsl:template match="extension[@extension_name='loop_zip']">
 		<fo:block>
@@ -1735,11 +1735,11 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
+
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- H5P -->
@@ -1754,7 +1754,7 @@
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- LearningApps -->
@@ -1769,9 +1769,9 @@
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
-	
+
 	<!-- Quizlet -->
 	<xsl:template match="extension[@extension_name='quizlet']">
 		<fo:block>
@@ -1781,11 +1781,11 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
+
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- Padlet -->
@@ -1797,11 +1797,11 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
+
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- Prezi -->
@@ -1814,11 +1814,11 @@
 
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
+
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- Slideshare -->
@@ -1830,13 +1830,13 @@
 			</fo:inline>
 			<xsl:text> </xsl:text>
 			<xsl:value-of select="$phrase_interactive_element"/>
-				
+
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
-	
+
 	<!-- Loop Spoiler -->
 	<xsl:template name="spoiler">
 	<xsl:choose>
@@ -1846,7 +1846,7 @@
 					<fo:inline wrap-option="no-wrap" axf:border-top-left-radius="1mm" axf:border-top-right-radius="1mm" padding-left="1.3mm" padding-right="1.3mm" padding-top="1.3mm" padding-bottom="1.5mm">
 
 						<xsl:attribute name="background-color"><xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
-						<xsl:attribute name="color">#ffffff</xsl:attribute>					
+						<xsl:attribute name="color">#ffffff</xsl:attribute>
 						<xsl:choose>
 							<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
 								<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']"></xsl:apply-templates>
@@ -1858,7 +1858,7 @@
 									<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
 							</xsl:otherwise>
 						</xsl:choose>
-					</fo:inline>			
+					</fo:inline>
 			</fo:block>
 			<fo:table keep-together.within-column="auto" keep-together.within-page="auto" width="150mm" table-layout="fixed" border-collapse="separate" border-style="solid" border-width="0.3mm" border-color="{$accent_color}">
 				<fo:table-body>
@@ -1868,9 +1868,9 @@
 							<xsl:attribute name="padding-left">1mm</xsl:attribute>
 							<xsl:attribute name="padding-right">3mm</xsl:attribute>
 							<xsl:attribute name="padding-end">3mm</xsl:attribute>
-		
+
 							<fo:block>
-								<xsl:choose> 
+								<xsl:choose>
 									<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
 										<xsl:attribute name="margin-left">0mm</xsl:attribute>
 									</xsl:when>
@@ -1886,7 +1886,7 @@
 									<xsl:otherwise>
 										<!-- <xsl:attribute name="margin-left">0mm</xsl:attribute> -->
 									</xsl:otherwise>
-								</xsl:choose> 
+								</xsl:choose>
 								<xsl:apply-templates></xsl:apply-templates>
 							</fo:block>
 						</fo:table-cell>
@@ -1900,7 +1900,7 @@
 		</xsl:otherwise>
 	</xsl:choose>
 	</xsl:template>
-	
+
 	<!-- Loop Sidenote-->
 	<xsl:template match="extension[@extension_name='loop_sidenote']">
 		<fo:float float="left">
@@ -1924,17 +1924,17 @@
 							<xsl:value-of select="."></xsl:value-of>
 						</fo:block>
 					</xsl:otherwise>
-				</xsl:choose>			
+				</xsl:choose>
 			</fo:block-container>
 		</fo:float>
 	</xsl:template>
-	
+
 	<!-- Loop Paragraph -->
 	<xsl:template match="extension[@extension_name='loop_paragraph']">
 		<fo:table table-layout="auto" border-collapse="separate" width="145mm" margin="3mm 0 3mm 0">
 			<fo:table-column column-number="1" column-width="10mm"/>
 			<fo:table-column column-number="2">
-				<xsl:choose> 
+				<xsl:choose>
 					<xsl:when test="ancestor::extension[@extension_name='loop_area'] and ancestor::extension[@extension_name='loop_spoiler']">
 						<xsl:attribute name="column-width">125mm</xsl:attribute>
 					</xsl:when>
@@ -1950,7 +1950,7 @@
 					<xsl:otherwise>
 						<xsl:attribute name="column-width">135mm</xsl:attribute>
 					</xsl:otherwise>
-				</xsl:choose> 
+				</xsl:choose>
 			</fo:table-column>
 
 			<fo:table-body>
@@ -1963,7 +1963,7 @@
 					<fo:table-cell>
 						<fo:block>
 							<xsl:apply-templates></xsl:apply-templates>
-						</fo:block>								
+						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
 				<xsl:if test="@copyright">
@@ -1974,12 +1974,12 @@
 						<fo:table-cell>
 							<fo:block text-align="right" font-style="italic">
 								<xsl:value-of select="@copyright"></xsl:value-of>
-							</fo:block>								
+							</fo:block>
 						</fo:table-cell>
 					</fo:table-row>
 				</xsl:if>
 			</fo:table-body>
-		</fo:table>	
+		</fo:table>
 	</xsl:template>
 
 	<!-- Loop Print-->
@@ -2005,7 +2005,7 @@
 			<xsl:apply-templates select="php:function('LoopXsl::xsl_handle_ids', .)" mode="id_handling"></xsl:apply-templates>
 		</fo:inline>
 	</xsl:template>
-	
+
 	<xsl:template match="hidden_ids" mode="id_handling">
 		<xsl:apply-templates mode="id_handling"/>
 	</xsl:template>
@@ -2017,7 +2017,7 @@
 			</xsl:attribute>
 		</fo:inline>
 	</xsl:template>
-	
+
 	<!-- Loop Score -->
 	<xsl:template match="extension[@extension_name='score']">
 		<fo:block>
@@ -2052,7 +2052,7 @@
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>		
+		</fo:block>
 	</xsl:template>
 
 	<!-- Loop Area -->
@@ -2070,9 +2070,9 @@
 							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
 								<xsl:when test="@icon">
 									<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
-									
+
 										<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $iconfilename)!=''">
-											
+
 											<fo:external-graphic>
 												<xsl:choose>
 													<xsl:when test="contains( $iconfilename, '.svg' )">
@@ -2114,7 +2114,7 @@
 								<xsl:when test="@type='websource'"><xsl:value-of select="$icon_websource"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='experiment'"><xsl:value-of select="$icon_experiment"></xsl:value-of></xsl:when>
 								<xsl:when test="@type='citation'"><xsl:value-of select="$icon_citation"></xsl:value-of></xsl:when>
-								
+
 								<xsl:otherwise>
 								</xsl:otherwise>
 							</xsl:choose>
@@ -2153,7 +2153,7 @@
 						</fo:block>
 						</fo:block>
 					</fo:table-cell>
-				
+
 				<fo:table-cell border-left="solid 0.8mm {$accent_color}">
 					<fo:block ></fo:block>
 				</fo:table-cell>
@@ -2163,8 +2163,8 @@
 					</fo:block>
 				</fo:table-cell>
 			</fo:table-row>
-			
-		</fo:table-body>	
+
+		</fo:table-body>
 	</fo:table>
 	<fo:block white-space-collapse="false" white-space-treatment="preserve" font-size="0pt" line-height="18.5pt">.</fo:block>
   	</xsl:template>
@@ -2173,13 +2173,13 @@
 		<xsl:variable name="level" select="@level"></xsl:variable>
 		<xsl:choose>
 			<xsl:when test=".=ancestor::article/@title">
-			
+
 			</xsl:when>
 			<xsl:otherwise>
 				<fo:block keep-with-next.within-page="always">
 					<xsl:attribute name="id">
 					<xsl:value-of select="generate-id()"/>
-					<!-- 
+					<!--
 						<xsl:value-of select="ancestor::article/@title"></xsl:value-of>
 						<xsl:text>#</xsl:text>
 						<xsl:value-of select="."></xsl:value-of>
@@ -2197,7 +2197,7 @@
 						</xsl:when>
 						<xsl:when test="$level='4'">
 							<xsl:call-template name="font_subsubsubhead"></xsl:call-template>
-						</xsl:when>						
+						</xsl:when>
 						<xsl:otherwise>
 							<xsl:call-template name="font_subsubsubsubhead"></xsl:call-template>
 						</xsl:otherwise>
@@ -2207,27 +2207,27 @@
 				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>			
+	</xsl:template>
 
 	<xsl:template match="link">
 		<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
-	</xsl:template> 
+	</xsl:template>
 	<xsl:template match="link" mode="loop_object">
 		<xsl:apply-templates select="php:function('LoopXml::transform_link', ., ancestor::article/@id)"></xsl:apply-templates>
-	</xsl:template> 
-	
+	</xsl:template>
+
 	<xsl:template match="php_link">
 		<xsl:value-of select="."></xsl:value-of>
 	</xsl:template>
-	
+
 	<xsl:template match="php_link_external">
 		<fo:basic-link>
 			<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
 			<fo:inline text-decoration="underline"><xsl:value-of select="."></xsl:value-of></fo:inline>
-			<xsl:text> </xsl:text><!-- 
+			<xsl:text> </xsl:text><!--
 			<fo:inline ><fo:external-graphic scaling="uniform" content-height="scale-to-fit" content-width="2mm" src="/opt/www/loop.oncampus.de/mediawiki/skins/loop/images/print/www_link.png"></fo:external-graphic></fo:inline>
  -->		</fo:basic-link>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template match="php_link_internal">
 		<fo:basic-link text-decoration="underline">
@@ -2235,11 +2235,11 @@
 			<xsl:value-of select="."></xsl:value-of>
 		</fo:basic-link>
 	</xsl:template>
-	
+
 	<xsl:template match="php_link_image">
 		<xsl:variable name="align">
 			<xsl:choose>
-				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">inside</xsl:when>			
+				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">inside</xsl:when>
 				<xsl:when test="@align='left'">start</xsl:when>
 				<xsl:when test="@align='right'">end</xsl:when>
 				<xsl:when test="@align='center'">center</xsl:when>
@@ -2248,14 +2248,14 @@
 		</xsl:variable>
 
 		<xsl:variable name="format">
-			<xsl:choose>		
+			<xsl:choose>
 				<xsl:when test="@format='framed'">framed</xsl:when>
 				<xsl:when test="@format='frameless'">frameless</xsl:when>
 				<xsl:when test="@format='thumb'">thumb</xsl:when>
 				<xsl:otherwise></xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>	
-	
+		</xsl:variable>
+
 		<fo:block>
 			<fo:float>
 
@@ -2263,7 +2263,7 @@
 					<xsl:when test="$align='start'">
 						<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
 						<xsl:attribute name="float">start</xsl:attribute>
-					</xsl:when>			
+					</xsl:when>
 					<xsl:when test="$align='end'">
 						<xsl:attribute name="axf:float-margin-x">5mm</xsl:attribute>
 						<xsl:attribute name="float">end</xsl:attribute>
@@ -2277,7 +2277,7 @@
 					</xsl:when>
 					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose>
-				
+
 				<xsl:if test="@imagepath">
 					<fo:block font-size="0pt" line-height="0pt" padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt" padding-left="0pt" padding-right="0pt">
 
@@ -2285,10 +2285,10 @@
 
 							<xsl:choose>
 								<xsl:when test="$align='start'">
-									<xsl:attribute name="padding-right">6mm</xsl:attribute>				
+									<xsl:attribute name="padding-right">6mm</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$align='end'">
-									<xsl:attribute name="padding-left">6mm</xsl:attribute>				
+									<xsl:attribute name="padding-left">6mm</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$align='center'">
 									<!-- <xsl:attribute name="padding-bottom">7mm</xsl:attribute>				 -->
@@ -2303,28 +2303,28 @@
 									<xsl:attribute name="border">solid 0.2mm <xsl:value-of select="$accent_color"></xsl:value-of></xsl:attribute>
 									<xsl:attribute name="padding-left">0mm</xsl:attribute>
 									<xsl:attribute name="padding-right">0mm</xsl:attribute>
-								</xsl:when>			
+								</xsl:when>
 								<xsl:otherwise></xsl:otherwise>
 							</xsl:choose>
-							
+
 							<xsl:attribute name="src" ><xsl:value-of select="@imagepath"></xsl:value-of></xsl:attribute>
-							
+
 							<xsl:choose>
 								<xsl:when test="@imagewidth">
 									<xsl:attribute name="content-width"><xsl:value-of select="@imagewidth"></xsl:value-of></xsl:attribute>
-								</xsl:when>		
+								</xsl:when>
 								<xsl:otherwise>
 									<xsl:attribute name="max-width">145mm</xsl:attribute>
 								</xsl:otherwise>
 							</xsl:choose>
-							
+
 						</fo:external-graphic>
 					</fo:block>
 				</xsl:if>
 			</fo:float>
-		</fo:block>	
-	</xsl:template>	
-	
+		</fo:block>
+	</xsl:template>
+
 	<xsl:template match="extension" mode="loop_object">
 		<xsl:choose>
 			<xsl:when test="@extension_name='loop_title'">
@@ -2341,16 +2341,16 @@
 			</xsl:when>
 			<xsl:when test="@extension_name='loop_copyright'">
 				<xsl:apply-templates></xsl:apply-templates>
-			</xsl:when>			
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_task'">
 				<xsl:apply-templates></xsl:apply-templates>
-			</xsl:when>			
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_spoiler_text'">
 				<xsl:apply-templates></xsl:apply-templates>
 			</xsl:when>
-		</xsl:choose>	
-	</xsl:template>	
-	
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="extension" mode="loop_accordion">
 		<xsl:choose>
 			<xsl:when test="@extension_name='loop_title'">
@@ -2364,8 +2364,8 @@
 					<xsl:apply-templates></xsl:apply-templates>
 				</fo:block>
 			</xsl:when>
-		</xsl:choose>	
-	</xsl:template>	
+		</xsl:choose>
+	</xsl:template>
 
 	<xsl:template match="extension">
 		<!-- <xsl:if test="not(@extension_name='mathimage')"> -->
@@ -2376,8 +2376,8 @@
 						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</xsl:if>
-			</fo:inline>			
-		</xsl:if>	
+			</fo:inline>
+		</xsl:if>
 		<xsl:if test="@extension_name='loop_formula'">
 			<fo:inline>
 				<xsl:if test="@id">
@@ -2385,8 +2385,8 @@
 						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</xsl:if>
-			</fo:inline>			
-		</xsl:if>	
+			</fo:inline>
+		</xsl:if>
 		<xsl:if test="@extension_name='loop_listing'">
 			<fo:inline>
 				<xsl:if test="@id">
@@ -2394,8 +2394,8 @@
 						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</xsl:if>
-			</fo:inline>			
-		</xsl:if>	
+			</fo:inline>
+		</xsl:if>
 		<xsl:if test="@extension_name='loop_media'">
 			<fo:inline>
 				<xsl:if test="@id">
@@ -2403,8 +2403,8 @@
 						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</xsl:if>
-			</fo:inline>			
-		</xsl:if>	
+			</fo:inline>
+		</xsl:if>
 		<xsl:if test="@extension_name='loop_table'">
 			<fo:inline>
 				<xsl:if test="@id">
@@ -2412,8 +2412,8 @@
 						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</xsl:if>
-			</fo:inline>			
-		</xsl:if>	
+			</fo:inline>
+		</xsl:if>
 		<xsl:if test="@extension_name='loop_task'">
 			<fo:inline>
 				<xsl:if test="@id">
@@ -2421,17 +2421,17 @@
 						<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 					</xsl:attribute>
 				</xsl:if>
-			</fo:inline>			
-		</xsl:if>	
+			</fo:inline>
+		</xsl:if>
 		<xsl:choose>
 
-		
+
 			<xsl:when test="@extension_name='loop_figure'">
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
-		
+
 			<xsl:when test="@extension_name='loop_formula'">
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
@@ -2461,7 +2461,7 @@
 				<xsl:variable name="math_tag" ><xsl:copy-of select="php:function('LoopXsl::xsl_transform_math', .)"></xsl:copy-of></xsl:variable>
 				<xsl:if test="$math_tag">
 					<fo:instream-foreign-object>
-						<xsl:copy-of select="$math_tag"></xsl:copy-of>  
+						<xsl:copy-of select="$math_tag"></xsl:copy-of>
 					</fo:instream-foreign-object>
 				</xsl:if>
 			</xsl:when>
@@ -2470,7 +2470,7 @@
                 	<xsl:with-param name="object" select="."></xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
-			
+
 			<xsl:when test="@extension_name='syntaxhighlight'">
 				<fo:block margin-top="5pt" margin-bottom="5pt">
 					<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_syntaxhighlight', .)" mode="syntaxhighlight"></xsl:apply-templates>
@@ -2498,9 +2498,9 @@
 			</xsl:when>
 			<xsl:otherwise>
 			</xsl:otherwise>
-		</xsl:choose>	
+		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template name="nowiki">
 			<fo:inline>
 				<xsl:value-of select="."/>
@@ -2516,19 +2516,19 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template name="cite_exists">
 		<xsl:choose>
-			<xsl:when test="//*/xhtml:cite">
+			<xsl:when test="//*/bibliography">
 				<xsl:text>1</xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template name="figure_exists">
 		<xsl:choose>
 			<xsl:when test="//*/extension[@extension_name='loop_figure']">
@@ -2538,8 +2538,8 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>			
-	
+	</xsl:template>
+
 	<xsl:template name="table_exists">
 		<xsl:choose>
 			<xsl:when test="//*/extension[@extension_name='loop_table']">
@@ -2550,7 +2550,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template name="media_exists">
 		<xsl:choose>
 			<xsl:when test="//*/extension[@extension_name='loop_media']">
@@ -2560,7 +2560,7 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template name="formula_exists">
 		<xsl:choose>
@@ -2571,7 +2571,7 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>		
+	</xsl:template>
 
 	<xsl:template name="listing_exists">
 		<xsl:choose>
@@ -2582,8 +2582,8 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template name="task_exists">
 		<xsl:choose>
 			<xsl:when test="//*/extension[@extension_name='loop_task']">
@@ -2593,7 +2593,7 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>		
+	</xsl:template>
 
 	<xsl:template name="index_exists">
 		<xsl:choose>
@@ -2604,7 +2604,7 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template name="terminology_exists">
 		<xsl:choose>
@@ -2615,12 +2615,12 @@
 				<xsl:text>0</xsl:text>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>		
-	
+	</xsl:template>
+
 	<xsl:template name="appendix_number">
 		<xsl:param name="content"></xsl:param>
-		
-		<xsl:variable name="c_bibliography" ><xsl:call-template name="cite_exists"></xsl:call-template></xsl:variable>	
+
+		<xsl:variable name="c_bibliography" ><xsl:call-template name="cite_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_figures" ><xsl:call-template name="figure_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_tables" ><xsl:call-template name="table_exists"></xsl:call-template></xsl:variable>
 		<xsl:variable name="c_media" ><xsl:call-template name="media_exists"></xsl:call-template></xsl:variable>
@@ -2638,16 +2638,16 @@
 				</xsl:when>
 				<xsl:when test="$content='list_of_figures'">
 					<xsl:value-of select="$c_bibliography + $c_figures"></xsl:value-of>
-				</xsl:when>				
+				</xsl:when>
 				<xsl:when test="$content='list_of_tables'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables"></xsl:value-of>
 				</xsl:when>
 				<xsl:when test="$content='list_of_media'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media"></xsl:value-of>
-				</xsl:when>				
+				</xsl:when>
 				<xsl:when test="$content='list_of_formulas'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas"></xsl:value-of>
-				</xsl:when>		
+				</xsl:when>
 				<xsl:when test="$content='list_of_listings'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings"></xsl:value-of>
 				</xsl:when>
@@ -2659,10 +2659,10 @@
 				</xsl:when>
 				<xsl:when test="$content='index'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings + $c_tasks + $c_terminology + $c_index"></xsl:value-of>
-				</xsl:when>												
+				</xsl:when>
 				<xsl:when test="$content='glossary'">
 					<xsl:value-of select="$c_bibliography + $c_figures + $c_tables + $c_media + $c_formulas + $c_listings + $c_tasks + $c_terminology + $c_index + $c_glossary"></xsl:value-of>
-				</xsl:when>																												
+				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:choose>
@@ -2680,13 +2680,13 @@
 
 	</xsl:template>
 
-	
+
 	<xsl:template name="loop_reference">
 		<xsl:param name="object"></xsl:param>
 
 		<xsl:variable name="objectid">
 			<xsl:choose>
-				<xsl:when test="@id"> 
+				<xsl:when test="@id">
 					<xsl:value-of select="@id"></xsl:value-of>
 				</xsl:when>
 				<xsl:otherwise>
@@ -2694,14 +2694,14 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-			
+
 		<fo:basic-link color="black" text-decoration="underline">
-			<xsl:if test="@id"> 
+			<xsl:if test="@id">
 				<xsl:attribute name="internal-destination">
 					<xsl:text>id</xsl:text><xsl:value-of select="@id"></xsl:value-of>
 				</xsl:attribute>
 			</xsl:if>
-		
+
 			<xsl:choose>
 				<xsl:when test="$object=''">
 					<xsl:choose>
@@ -2748,7 +2748,7 @@
 
 	</xsl:template>
 
-	
+
 	<xsl:template match="xhtml:code">
 		<fo:block linefeed-treatment="preserve" white-space-collapse="false" white-space-treatment="preserve" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt" margin-top="5pt">
 			<xsl:value-of select="."></xsl:value-of>
@@ -2760,7 +2760,7 @@
 			<xsl:value-of select="."></xsl:value-of>
 		</fo:block>
 	</xsl:template>
-	
+
 	<xsl:template match="xhtml:cite">
 		<xsl:variable name="citetext">
 			<xsl:value-of select="."></xsl:value-of>
@@ -2779,28 +2779,28 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</fo:inline>
-			<xsl:text> </xsl:text>		
+			<xsl:text> </xsl:text>
 			</fo:basic-link>
 		<fo:inline font-style="italic">
-		
+
 			<xsl:choose>
 				<xsl:when test="@pages">
-					<xsl:text>, </xsl:text>	
+					<xsl:text>, </xsl:text>
 					<xsl:value-of select="$word_literature_pages"></xsl:value-of>
 					<xsl:value-of select="@pages"></xsl:value-of>
-					<xsl:text> </xsl:text>	
+					<xsl:text> </xsl:text>
 				</xsl:when>
 				<xsl:when test="@page">
-					<xsl:text>, </xsl:text>	
+					<xsl:text>, </xsl:text>
 					<xsl:value-of select="$word_literature_page"></xsl:value-of>
 					<xsl:value-of select="@page"></xsl:value-of>
-					<xsl:text> </xsl:text>	
+					<xsl:text> </xsl:text>
 				</xsl:when>
 			</xsl:choose>
-				
+
 		</fo:inline>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="pre" mode="syntaxhighlight">
 		<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 	</xsl:template>
@@ -2808,8 +2808,8 @@
 		<fo:block linefeed-treatment="preserve" white-space-collapse="false" hyphenation-character=" " white-space-treatment="preserve" background-color="#f8f9fa" font-family="SourceCodePro" font-size="8.5pt" line-height="12pt">
 			<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 		</fo:block>
-	</xsl:template>	
-	
+	</xsl:template>
+
 
 	<xsl:template match="span" mode="syntaxhighlight">
 			<fo:wrapper width="50mm" wrap-option="wrap">
@@ -2817,7 +2817,7 @@
 			<xsl:when test="@class='lineno'">
 				<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 			</xsl:when>
-			
+
 <xsl:when test="@class='nbsp'"><fo:inline white-space="pre"><xsl:value-of select="."></xsl:value-of></fo:inline></xsl:when>
 <xsl:when test="@class='p'"><fo:inline><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
 <xsl:when test="@class='n'"><fo:inline><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
@@ -2884,26 +2884,26 @@
 <xsl:when test="@class='vg'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
 <xsl:when test="@class='vi'"><fo:inline color="#19177C"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
 <xsl:when test="@class='il'"><fo:inline color="#666666"><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
-			
-<xsl:when test="@class='x'"><fo:inline ><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>			
-			
-			
+
+<xsl:when test="@class='x'"><fo:inline ><xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates></fo:inline></xsl:when>
+
+
 			<xsl:otherwise>
-			
+
 				<!-- C<xsl:value-of select="@class"></xsl:value-of>D<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates> -->
 				<xsl:apply-templates mode="syntaxhighlight"></xsl:apply-templates>
 			</xsl:otherwise>
 		</xsl:choose>
-		
+
 				</fo:wrapper>
 	</xsl:template>
-	
+
 	<!-- Sidebar -->
 	<xsl:template match="extension[@extension_name='loop_sidebar']">
 		<fo:block>
 			<xsl:choose>
 				<xsl:when test="@print='false'">
-				</xsl:when>	
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:if test="php:function('LoopXsl::xsl_getSidebarPage', @page)!=''">
 						<fo:leader leader-pattern="rule" leader-length="100%" rule-style="solid" rule-thickness="0.5pt"/>
@@ -2918,7 +2918,7 @@
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- EmbedVideo, via MagicWord -->
@@ -2939,18 +2939,18 @@
 								<xsl:choose>
 									<xsl:when test="substring-before(@videoid, '&#124;')!=''">
 										<xsl:value-of select="substring-before(@videoid, '&#124;')"></xsl:value-of>
-									</xsl:when>	
+									</xsl:when>
 									<xsl:otherwise>
 										<xsl:value-of select="@videoid"></xsl:value-of>
 									</xsl:otherwise>
 								</xsl:choose>
-							</xsl:variable>	
+							</xsl:variable>
 							<xsl:attribute name="external-destination"><xsl:value-of select="$youtubeurl"></xsl:value-of></xsl:attribute>
 							<fo:block text-decoration="underline"><xsl:value-of select="$youtubeurl"></xsl:value-of></fo:block>
 							<xsl:text> </xsl:text>
 						</fo:basic-link>
-					</xsl:if>	
-				</xsl:when>	
+					</xsl:if>
+				</xsl:when>
 				<xsl:when test="@service!=''">
 					<fo:inline>
 						<xsl:call-template name="font_icon"></xsl:call-template>
@@ -2961,11 +2961,11 @@
 					<xsl:call-template name="page-link">
 						<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 					</xsl:call-template>
-				</xsl:when>	
+				</xsl:when>
 				<xsl:otherwise>
 				</xsl:otherwise>
 			</xsl:choose>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- EmbedVideo, via tag. A direct link to the service can't be provided as there are too many options for the input -->
@@ -2982,7 +2982,7 @@
 					<xsl:call-template name="page-link">
 						<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 					</xsl:call-template>
-				</xsl:when>	
+				</xsl:when>
 				<xsl:when test="@service!=''">
 					<fo:inline>
 						<xsl:call-template name="font_icon"></xsl:call-template>
@@ -2990,15 +2990,15 @@
 					</fo:inline>
 					<xsl:text> </xsl:text>
 					<xsl:value-of select="$phrase_video"/>
-					
+
 					<xsl:call-template name="page-link">
 						<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 					</xsl:call-template>
-				</xsl:when>	
+				</xsl:when>
 				<xsl:otherwise>
 				</xsl:otherwise>
 			</xsl:choose>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
 	<!-- loop_video -->
@@ -3008,14 +3008,14 @@
 				<xsl:variable name="image">
 					<xsl:text>File:</xsl:text>
 					<xsl:value-of select="@image"></xsl:value-of>
-				</xsl:variable>	
+				</xsl:variable>
 				<xsl:if test="php:function('LoopXsl::xsl_transform_imagepath', $image )!=''">
 					<fo:external-graphic scaling="uniform" content-height="scale-to-fit" max-height="70mm" max-width="140mm">
 						<xsl:attribute name="src"><xsl:value-of select="php:function('LoopXsl::xsl_transform_imagepath', $image )"></xsl:value-of></xsl:attribute>
 					</fo:external-graphic>
 				</xsl:if>
 			</xsl:if>
-		</fo:block>		
+		</fo:block>
 		<fo:block>
 			<fo:inline>
 				<xsl:call-template name="font_icon"></xsl:call-template>
@@ -3028,10 +3028,10 @@
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
 
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="extension[@extension_name='loop_video_link']">	
+	<xsl:template match="extension[@extension_name='loop_video_link']">
 		<xsl:call-template name="page-link">
 			<xsl:with-param name="destination-id"><xsl:value-of select="@id"/></xsl:with-param>
 		</xsl:call-template>
@@ -3049,26 +3049,26 @@
 			<xsl:call-template name="page-link">
 				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
 			</xsl:call-template>
-		</fo:block>				
+		</fo:block>
 	</xsl:template>
-	
+
 	<xsl:template name="page-link">
 		<xsl:param name="destination-id"></xsl:param>
 		<xsl:variable name="pageurl">
 			<xsl:value-of select="php:function('LoopXsl::get_page_link', $destination-id)"></xsl:value-of>
-		</xsl:variable>	
-		
+		</xsl:variable>
+
 		<xsl:if test="$pageurl">
 			<fo:basic-link><!-- qr? -->
 				<xsl:attribute name="external-destination"><xsl:value-of select="$pageurl"></xsl:value-of></xsl:attribute>
 				<fo:block text-decoration="underline"><xsl:value-of select="$pageurl"></xsl:value-of></fo:block>
 				<xsl:text> </xsl:text>
 			</fo:basic-link>
-			
+
 		</xsl:if>
 	</xsl:template>
 
-	
+
 	<!-- Extension:Cite - Footnotes -->
 	<xsl:template match="extension[@extension_name='ref']">
 
@@ -3099,7 +3099,7 @@
 				</fo:list-block>
 			</fo:footnote-body>
 		</fo:footnote>
-	
+
 	</xsl:template>
 
 	<xsl:template match="list">
@@ -3143,7 +3143,7 @@
 			<fo:list-item-label keep-together.within-line="always" end-indent="label-end()">
 				<xsl:choose>
 					<xsl:when test="../@type='numbered'">
-						
+
 						<xsl:choose>
 								<xsl:when test="$listlevel=1">
 									<fo:block><xsl:number level="single" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
@@ -3158,11 +3158,11 @@
 									<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
 								</xsl:otherwise>
 						</xsl:choose>
-						
+
 					</xsl:when>
 					<xsl:when test="../@type='ident'">
 						<fo:block padding-before="2pt"></fo:block>
-					</xsl:when>						
+					</xsl:when>
 					<xsl:otherwise>
 						<fo:block padding-before="2pt">
 							<xsl:choose>
@@ -3182,31 +3182,31 @@
 				<xsl:apply-templates select="list"></xsl:apply-templates>
 			</fo:list-item-body>
 		</fo:list-item>
-	</xsl:template>	
-	
+	</xsl:template>
+
 <xsl:template match="table">
 		<xsl:variable name="looparea">
 			<xsl:choose>
-				<xsl:when test="ancestor::extension[@extension_name='loop_area']">true</xsl:when>		
-				<xsl:otherwise>false</xsl:otherwise>	
+				<xsl:when test="ancestor::extension[@extension_name='loop_area']">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="loopspoiler">
 			<xsl:choose>
-				<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">true</xsl:when>	
-				<xsl:when test="ancestor::extension[@extension_name='spoiler']">true</xsl:when>		
-				<xsl:otherwise>false</xsl:otherwise>	
+				<xsl:when test="ancestor::extension[@extension_name='loop_spoiler']">true</xsl:when>
+				<xsl:when test="ancestor::extension[@extension_name='spoiler']">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="loopobject">
 			<xsl:choose>
-				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">true</xsl:when>	
-				<xsl:when test="ancestor::extension[@extension_name='loop_table']">true</xsl:when>	
-				<xsl:when test="ancestor::extension[@extension_name='loop_listing']">true</xsl:when>	
-				<xsl:when test="ancestor::extension[@extension_name='loop_formula']">true</xsl:when>	
-				<xsl:when test="ancestor::extension[@extension_name='loop_media']">true</xsl:when>		
-				<xsl:when test="ancestor::extension[@extension_name='loop_task']">true</xsl:when>		
-				<xsl:otherwise>false</xsl:otherwise>	
+				<xsl:when test="ancestor::extension[@extension_name='loop_figure']">true</xsl:when>
+				<xsl:when test="ancestor::extension[@extension_name='loop_table']">true</xsl:when>
+				<xsl:when test="ancestor::extension[@extension_name='loop_listing']">true</xsl:when>
+				<xsl:when test="ancestor::extension[@extension_name='loop_formula']">true</xsl:when>
+				<xsl:when test="ancestor::extension[@extension_name='loop_media']">true</xsl:when>
+				<xsl:when test="ancestor::extension[@extension_name='loop_task']">true</xsl:when>
+				<xsl:otherwise>false</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 	<xsl:apply-templates select="php:function('LoopXsl::xsl_transform_table_attributes', ., $looparea, $loopspoiler, $loopobject)" mode="xsl_table"></xsl:apply-templates>
@@ -3235,7 +3235,7 @@
         	<xsl:attribute name="border-width">0.5pt</xsl:attribute>
         	<xsl:attribute name="border-color">black</xsl:attribute>
         	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
-			
+
 			<xsl:call-template name="css-style-attributes"></xsl:call-template>
 
         	<xsl:if test="@colspan">
@@ -3243,9 +3243,9 @@
         	</xsl:if>
         	<xsl:if test="@rowspan">
 				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
-        	</xsl:if>    
+        	</xsl:if>
         		<fo:block keep-together.within-column="auto">
-					<xsl:choose> 
+					<xsl:choose>
 						<xsl:when test="ancestor::table[@looparea!=''] and ancestor::table[@loopspoiler!='']">
 							<xsl:attribute name="margin-left">0mm</xsl:attribute>
 						</xsl:when>
@@ -3255,10 +3255,10 @@
 						<xsl:when test="ancestor::table[@looparea!='']">
 							<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
 						</xsl:when>
-					</xsl:choose> 
+					</xsl:choose>
         			<xsl:apply-templates></xsl:apply-templates>
 			</fo:block>
-			
+
         </fo:table-cell>
     </xsl:template>
 
@@ -3269,18 +3269,18 @@
         	<xsl:attribute name="border-width">0.5pt</xsl:attribute>
         	<xsl:attribute name="border-color">black</xsl:attribute>
         	<xsl:attribute name="border-collapse">collapse</xsl:attribute>
-			
+
 			<xsl:call-template name="css-style-attributes"></xsl:call-template>
-			
+
         	<xsl:if test="@colspan">
 				<xsl:attribute name="number-columns-spanned"><xsl:value-of select="@colspan"></xsl:value-of></xsl:attribute>
         	</xsl:if>
         	<xsl:if test="@rowspan">
 				<xsl:attribute name="number-rows-spanned"><xsl:value-of select="@rowspan"></xsl:value-of></xsl:attribute>
-        	</xsl:if>        	           	        	
-        	
+        	</xsl:if>
+
 			<fo:block font-weight="bold" >
-				<xsl:choose> 
+				<xsl:choose>
 					<xsl:when test="ancestor::table[@looparea!=''] and ancestor::table[@loopspoiler!='']">
 						<xsl:attribute name="margin-left">0mm</xsl:attribute>
 					</xsl:when>
@@ -3290,45 +3290,45 @@
 					<xsl:when test="ancestor::table[@looparea!='']">
 						<xsl:attribute name="margin-left">12.5mm</xsl:attribute>
 					</xsl:when>
-				</xsl:choose> 
+				</xsl:choose>
 				<xsl:apply-templates></xsl:apply-templates>
-			</fo:block>		
-		
+			</fo:block>
+
         </fo:table-cell>
-    </xsl:template>	
-	
+    </xsl:template>
+
 	<xsl:template name="css-style-attributes">
 		<xsl:variable name="cssentries">
 			<xsl:call-template name="str:tokenize">
 				<xsl:with-param name="string" select="translate(@style,' ','')" />
 				<xsl:with-param name="delimiters" select="';'" />
 			</xsl:call-template>
-		</xsl:variable>		
+		</xsl:variable>
 		<xsl:for-each select="exsl:node-set($cssentries)/node()">
 			<xsl:call-template name="css-style-attribute">
 				<xsl:with-param name="cssentry" select="." />
 			</xsl:call-template>
 		</xsl:for-each>
 	</xsl:template>
-	
-	
+
+
 	<xsl:template name="css-style-attribute">
 		<xsl:param name="cssentry"></xsl:param>
-		
+
 		<xsl:variable name="cssparts">
 			<xsl:call-template name="str:tokenize">
 				<xsl:with-param name="string" select="$cssentry" />
 				<xsl:with-param name="delimiters" select="':'" />
 			</xsl:call-template>
-		</xsl:variable>			
-		
+		</xsl:variable>
+
 		<xsl:variable name="csskey">
 			<xsl:value-of select="exsl:node-set($cssparts)/node()[1]"/>
 		</xsl:variable>
 		<xsl:variable name="cssvalue">
 			<xsl:value-of select="exsl:node-set($cssparts)/node()[2]"/>
 		</xsl:variable>
-		
+
 		<xsl:choose>
 			<xsl:when test="$csskey='background-color'">
 				<xsl:attribute name="background-color">
@@ -3339,14 +3339,14 @@
 				<xsl:attribute name="background-color">
 					<xsl:value-of select="$cssvalue"/>
 				</xsl:attribute>
-			</xsl:when>			
+			</xsl:when>
 			<xsl:when test="$csskey='color'">
 				<xsl:attribute name="color">
 					<xsl:value-of select="$cssvalue"/>
 				</xsl:attribute>
 			</xsl:when>
 			<xsl:when test="$csskey='width'">
-				
+
 			</xsl:when>
 			<xsl:when test="$csskey='text-align'">
 				<xsl:attribute name="text-align">
@@ -3362,11 +3362,11 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-			</xsl:when>		
+			</xsl:when>
 			<xsl:otherwise>
-			</xsl:otherwise>	
+			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>	
+	</xsl:template>
 
 	<xsl:template name="str:tokenize">
 	  <xsl:param name="string" select="''" />
@@ -3424,7 +3424,7 @@
 		  </xsl:call-template>
 		</xsl:otherwise>
 	  </xsl:choose>
-	</xsl:template>	
+	</xsl:template>
 
 	<!-- loop_screenshot -->
 	<xsl:template match="extension[@extension_name='loop_screenshot']">
@@ -3437,11 +3437,12 @@
 				<xsl:attribute name="src"><xsl:value-of select="$img"></xsl:value-of></xsl:attribute>
 			</fo:external-graphic>
 		</xsl:if>
-    </xsl:template>	
-	
+    </xsl:template>
+
 	<!-- loop_zoom -->
 	<xsl:template match="extension[@extension_name='loop_zoom']">
-		<xsl:apply-templates/>	
+		<xsl:apply-templates/>
 	</xsl:template>
 
 </xsl:stylesheet>
+

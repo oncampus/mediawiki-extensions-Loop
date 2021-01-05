@@ -64,7 +64,10 @@ class LoopXml {
 
 		$xml .= "</glossary>\n";
 
+		$xml .= self::bibliography2xml ();
+
 		$xml .= self::terminology2xml ();
+
 		$xml .= "</loop>";
 
 		return $xml;
@@ -536,6 +539,13 @@ class LoopXml {
 			$xml .= "</article>\n";
 			$xml .= "</terminology>\n";
 		}
+		return $xml;
+	}
+
+
+	public static function bibliography2xml( ) {
+	    global $wgLoopLiteratureCiteType;
+		$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
 		return $xml;
 	}
 
