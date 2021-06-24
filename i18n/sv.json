@@ -237,7 +237,7 @@
 	"loop_formula-name-short": "Form.",
 	"loop_task-name": "Uppgift",
 	"loop_task-name-short": "Uppg.",
-	
+
 	"loopfigures-specialpage-title": "Figurförteckning",
 	"looptables-specialpage-title": "Tabellförteckning",
 	"loopmedia-specialpage-title": "Medieförteckning",
@@ -347,13 +347,16 @@
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Ingen ID (id) har angivits i referensen.",
 
-	"loopexternalcontent-prezi-on": "på", 
+	"loopexternalcontent-prezi-on": "på",
 	"namespace-special": "Special",
 	"loop-glossary-namespace": "Ordlista",
 	"loop-glossary-object-objectnumber-prefix": "O-",
 	"loopglossary": "Ordlista",
 	"loop-glossary-empty": "Ordlistan är fortfarande tom. Lägg till en post genom att skapa en sida som ''[[Glossary:Ord]]''.",
-	
+	"loopglossary-alert-saved": "The glossary page [[Glossary:$1|$1]] was saved! You can edit the page now.",
+	"loopglossary-alert-pageexists-error": "The glossary page [[Glossary:$1|$1]] already exists.",
+	"loopglossary-input-placeholder": "Add a glossary page",
+
 	"loopindex": "Index",
 	"loopindex-error-dublicate-id" : "Index termen '$3' besitter ingen unik ID ($1). På sidan '$2' finns det en annan index term med den här ID. Vänligen byt ID:n, så termen kan indexeras.",
 
@@ -403,7 +406,7 @@
 	"loopsidebar-error-notfound": "Den angivit sida (page) kunde inte hittas. Lägg till den [[$1|här]].",
 	"loopsidebar-error-nopage": "Ingen sida (page) har angivits i sidebar-taggen.",
 	"loopzip-error-nostartfile": "Den angivit HTML-fil $1 (parameter start)  kunde inte hittas i ZIP-filen $2.",
-	
+
 	"loop-error-missingrequired": "Taggen $1 saknas parametern $2. Elementet visas inte.",
 	"loop-error-missingfile": "Filen $2 som har angivits i taggen $1 kunde inte hittas. Vänligen ladda upp den. {{PLURAL:$3|Elementet visas uten filen.|Elementet visas inte.}}",
 	"loop-error-unknown-param" : "Parametern $2 av taggen $1 är ogiltig: '''$3'''.<br/>\nTillåtna värden är '''$4'''. Elementet visas med värdet $5.",
@@ -444,7 +447,7 @@
 	"loopfeedback-specialpage-feedback-for": "Feedback för",
 	"loopfeedback-specialpage-feedback-for-chapter": "Feedback på innehållet i kapitlet ",
 	"loopfeedback-specialpage-feedback-for-module": "Feedback på innehållet i LOOP ",
-	"loopfeedback-specialpage-feedback-count": "Antal<br/>Feedbacks",	
+	"loopfeedback-specialpage-feedback-count": "Antal<br/>Feedbacks",
 	"loopfeedback-specialpage-feedback-info-sum-all": "Antal Feedbacks: $1",
 	"loopfeedback-specialpage-feedback-info-average": "&empty; $1 ",
 	"loopfeedback-specialpage-feedback-info-average-stars": "&empty; $1 {{PLURAL:$1|Stjärna|Stjärnor}}",

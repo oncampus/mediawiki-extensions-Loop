@@ -353,6 +353,9 @@
 	"loop-glossary-objectnumber-prefix": "G-",
 	"loopglossary": "Glossary",
 	"loop-glossary-empty": "The glossary is still empty. Add an entry by creating a page like ''[[Glossary:Term]]''.",
+	"loopglossary-alert-saved": "The glossary page [[Glossary:$1|$1]] was saved! You can edit the page now.",
+	"loopglossary-alert-pageexists-error": "The glossary page [[Glossary:$1|$1]] already exists.",
+	"loopglossary-input-placeholder": "Add a glossary page",
 
 	"loopindex": "Index",
 	"loopindex-error-dublicate-id" : "The indexed term '$3' does not have a unique ID ($1). On page '$2' is another term with that same ID. Please change the ID so the term can be properly indexed.",

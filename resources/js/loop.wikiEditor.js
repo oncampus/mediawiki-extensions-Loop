@@ -650,7 +650,7 @@ var customizeWikiEditor = function () {
                                             options: {
                                                 pre: '<loop_accordion>\n<loop_row>\n<loop_title>Title 1</loop_title>\n',
                                                 peri: 'Text',
-                                                post: '\n</loop_row>\n<loop_row>\n<loop_title>Title 2</loop_title>\nText 2\n</loop_accordion>\n'
+                                                post: '\n</loop_row>\n<loop_row>\n<loop_title>Title 2</loop_title>\nText 2\n</loop_row>\n</loop_accordion>\n'
                                             }
                                         }
                                     },

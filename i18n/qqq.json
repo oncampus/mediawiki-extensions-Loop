@@ -161,7 +161,7 @@
 	"purgecache-button": "Button label for purging",
 	"right-purgecache": "Right for PurgeCache",
 	"specialpage-no-permission": "Error message when the user has no permission to view page",
-	
+
 	"log-export-generated": "Log entry message for export files that have been generated at request",
 	"log-export-reused": "Log entry message for export files that have been reused",
 	"log-name-loopexport": "Name for logs of LOOP-Exports",
@@ -237,7 +237,7 @@
 	"loop_formula-name-short": "Prepend title of loop_formula (short)",
 	"loop_task-name": "Prepend title of loop_task",
 	"loop_task-name-short": "Prepend title of loop_task (short)",
-	
+
 	"loopfigures-specialpage-title": "Page title for Loop figures special page",
 	"looptables-specialpage-title": "Page title for Loop tables special page",
 	"loopmedia-specialpage-title": "Page title for Loop media special page",
@@ -255,7 +255,7 @@
 	"loopliteratureedit": "Page title for Special:LoopLiteratureEdit",
 	"loopliteratureimport": "Page title for Special:LoopLiteratureImport",
 	"loopliteratureexport": "Page title for Special:LoopLiteratureExport",
-	
+
 	"loopliterature-entry-article": "Type of literature entry (bibtex): Article",
 	"loopliterature-entry-book": "Type of literature entry (bibtex): Book",
 	"loopliterature-entry-booklet": "Type of literature entry (bibtex): Booklet",
@@ -336,7 +336,7 @@
 	"loopliterature-error-keyunknown": "Error message for literature: key unknown",
 	"loopliterature-error-invalid-export": "Error message for literature: key invalid for export",
 	"loopliterature-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used; $3 -> Key/Term of the original object",
-	
+
 	"looplegacy-error-unsupported": "General error message for deprecated functions. $1 -> The deprecated tag; $2 -> Since when the tag is deprecated.",
 	"looplegacy-biblio": "Special error message for biblio tag which has been deprecated in LOOP2 and replaced by loop_literature tag.",
 	"looplegacy-references": "Special error message for references tag is been obsolte since LOOP2.",
@@ -346,14 +346,17 @@
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
 
-	"loopexternalcontent-prezi-on": "The 'on' as in 'View on Prezi.com'", 
+	"loopexternalcontent-prezi-on": "The 'on' as in 'View on Prezi.com'",
 	"namespace-special": "Special name space message",
 	"loop-glossary-namespace": "Namespace name for Glossary pages",
 	"loop-glossary-objectnumber-prefix": "prefix for LOOP object names in glossary",
 	"loopglossary": "Title displayed for list glossary",
 	"loop-glossary-empty": "Shown message on Glossary special page when there is no glossary entry. ",
+	"loopglossary-alert-saved": "The glossary page [[Glossary:$1|$1]] was saved! You can edit the page now.",
+	"loopglossary-alert-pageexists-error": "The glossary page [[Glossary:$1|$1]] already exists.",
+	"loopglossary-input-placeholder": "Add a glossary page",
 
-	"loopindex": "page title for Special:LoopIndex",	
+	"loopindex": "page title for Special:LoopIndex",
 	"loopindex-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used; $3 -> Key/Term of the original object",
 
 	"loopwikieditor-section-loop": "Wikieditor section: LOOP functions",
@@ -402,7 +405,7 @@
 	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag",
 	"loopsidebar-error-nopage": "Error message for non-existent page parameter.",
 	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
-	
+
 	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
 	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} ",
 	"loop-error-unknown-param" : "General Error message for unknown parameters entered in a tag. $1 -> the tag that has an unknown parameter; $2 -> The unknown parameter name; $3 -> The unknown value of that parameter; $4 -> Allowed values; $5 -> the given default for that tag;",
@@ -443,7 +446,7 @@
 	"loopfeedback-specialpage-feedback-for": "Feedback for",
 	"loopfeedback-specialpage-feedback-for-chapter": "Feedback for the contents of this chapter ",
 	"loopfeedback-specialpage-feedback-for-module": "Feedback for the contents of this LOOP ",
-	"loopfeedback-specialpage-feedback-count": "Number of<br/>Feedbacks",	
+	"loopfeedback-specialpage-feedback-count": "Number of<br/>Feedbacks",
 	"loopfeedback-specialpage-feedback-info-sum-all": "Collected feedbacks: $1",
 	"loopfeedback-specialpage-feedback-info-average": "&empty; $1 ",
 	"loopfeedback-specialpage-feedback-info-average-stars": "&empty; $1 {{PLURAL:$1|Star|Stars}}",
@@ -477,7 +480,7 @@
 	"loopfeedback-already-done": "You already gave us feedback. Thank you!",
     "loopconsent-text": "Message on consent prompt for e.g. youtube videos.",
 	"loopconsent-button": "Give consent and load media",
-	
+
 	"loopngspice-label-send": "Button text for starting ng spice simulations",
 	"loopngspice-error-xml": "Error in XML of NgSpice",
 	"loopngspice-error-no-service": "Message when NgSpice is not configured",

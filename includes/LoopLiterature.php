@@ -478,25 +478,17 @@ class LoopLiterature {
 	public static function getShowLiterature() {
 
 		global $wgOut;
-
-		$showLiterature = false;
-
 		$user = $wgOut->getUser();
 		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$literatureItems = self::getAllItems();
 
-		if ( $editMode ) {
-
-			$showLiterature = true;
-
+		if ( $literatureItems ) {
+			return true;
+		} elseif ( $editMode ) {
+			return "empty";
 		} else {
-		    $literatureItems = self::getAllItems();
-
-			if ( $literatureItems ) {
-				$showLiterature = true;
-			}
+			return false;
 		}
-
-		return $showLiterature;
 	}
 
 	static function renderCite( $input, array $args, Parser $parser, PPFrame $frame ) {
@@ -1514,16 +1506,17 @@ class SpecialLoopLiterature extends SpecialPage {
 			}
 		}
         if ( ! empty( $allItemsCopy ) ) {
-            $elements = array();
 
-            if ( $type == "html" ) {
-            $return .= "<hr class='mr-4'/>";
-            $return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" )."</p>";
+			if ( !empty( $elements ) ) {
 
-            } else {
-                $return .= "<paragraph><bold>".wfMessage( "loopliterature-text-notreferenced" )."</bold></paragraph>";
-
-            }
+				if ( $type == "html" ) {
+					$return .= "<hr class='mr-4'/>";
+					$return .= "<p class='font-weight-bold' id='literature-unreferenced'>".wfMessage( "loopliterature-text-notreferenced" )."</p>";
+				} else {
+					$return .= "<paragraph><bold>".wfMessage( "loopliterature-text-notreferenced" )."</bold></paragraph>";
+				}
+			}
+			$elements = array();
             foreach ( $allItemsCopy as $item ) {
                 if ( $item->author ) {
                     $orderkey = ucfirst($item->author);

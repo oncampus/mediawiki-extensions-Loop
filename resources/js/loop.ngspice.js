@@ -3,6 +3,8 @@ $(document).ready(function() {
 
 
 	$(".ngspice_send").click( function(){
+		console.log("NgSpice is not available")
+		/* removed 2021/01/06
 		var id = $(this).attr("data-id");
 		var netlist = $(this).attr("data-netlist");
 		var plotlist = $(this).attr("data-plotlist");
@@ -11,6 +13,7 @@ $(document).ready(function() {
 		var tableView = $(this).attr("data-table");
 		var resultConfig = $(this).attr("data-resultconf");
 		Content_ngspice.sendContent(id, netlist, plotlist, varconfs, rawView, tableView, resultConfig);
+		*/
 	})
 
 	var Content_ngspice = {
