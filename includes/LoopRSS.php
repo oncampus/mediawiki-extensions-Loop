@@ -1,10 +1,11 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
   * @description RSS Feed special page
   * @ingroup Extensions
   * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
   */
-  
+
   if ( !defined( 'MEDIAWIKI' ) ) {
 	die( "This file cannot be run standalone.\n" );
 }
@@ -18,7 +19,7 @@ class SpecialLoopRSS extends SpecialPage {
 	}
 
 	function execute( $par ) {
-        
+
         global $wgLoopUnprotectedRSS;
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -26,7 +27,7 @@ class SpecialLoopRSS extends SpecialPage {
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$out->setPageTitle( $this->msg( "looprss" ) );
         $token = $request->getText( 't' );
-        
+
         if ( $user->isLoggedIn() ) {
 
             $this->outputRecentChanges();
@@ -52,13 +53,13 @@ class SpecialLoopRSS extends SpecialPage {
         }
 
     }
-    
+
     function outputRecentChanges() {
         global $wgCanonicalServer, $wgScriptPath;
         $apiPath = $wgCanonicalServer . $wgScriptPath . "/api.php";
-        
+
         $params = "";
-        if ( class_exists( "LoopSessionProvider" ) ) { 
+        if ( class_exists( "LoopSessionProvider" ) ) {
             $params .= LoopSessionProvider::getApiPermission();
         } else {
             if ( !$this->getUser()->isLoggedIn() ) {
@@ -68,12 +69,12 @@ class SpecialLoopRSS extends SpecialPage {
             }
         }
         $params .= "hidebots=1&namespace=2&invert=1&urlversion=1&days=30&limit=20&action=feedrecentchanges&feedformat=atom";
-        
+
         $url = $apiPath . "?" . $params;
         $httpRequest = MWHttpRequest::factory( $url );
         $status = $httpRequest->execute();
         $result = $httpRequest->getContent();
-        
+
         $this->getOutput()->disable();
         wfResetOutputBuffers();
 

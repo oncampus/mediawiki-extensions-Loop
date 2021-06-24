@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description Renders LOOP objects
  * @ingroup Extensions
@@ -14,25 +15,25 @@ use MediaWiki\Logger\LoggerFactory;
 class LoopObject {
 	public static $mTag;
 	public static $mIcon;
-	
+
 	public $mInput;
 	public $mArgs;
-	public $mParser;	
+	public $mParser;
 	public $mFrame;
-	
+
 	public $mId;
-	public $mArticleId;	
+	public $mArticleId;
 	public $mTitle;
 	public $mTitleInput;
-	
+
 	public $mDescription;
 	public $mCopyright;
 	public $mNumber;
 	public $mIndexing;
-	
+
 	public $mRenderOption;
 	public $mAlignment;
-	
+
 	public $mContent;
 	public static $mObjectTypes = array (
 			'loop_figure',
@@ -42,7 +43,7 @@ class LoopObject {
 			'loop_formula',
 			'loop_task'
 		);
-	
+
 	public static $mRenderOptions=array(
 			'none',
 			'icon',
@@ -50,20 +51,20 @@ class LoopObject {
 			'default',
 			'title'
 		);
-	
+
 	public static $mAlignmentOptions = array (
 			'left',
 			'right',
 			'none'
-	);	
+	);
 	public static $mIndexingOptions = array (
 			'true',
 			'false'
-	);	
+	);
 	public static $mShowCopyrightOptions = array (
 			'true',
 			'false'
-	);	
+	);
 	/**
 	 * Register the loop object tags hook
 	 * @param Parser $parser
@@ -76,27 +77,27 @@ class LoopObject {
 		$parser->setHook ( 'loop_formula', 'LoopFormula::renderLoopFormula' ); # todo
 		$parser->setHook ( 'loop_task', 'LoopTask::renderLoopTask' );
 		$parser->setHook ( 'loop_listing', 'LoopListing::renderLoopListing' );
-		
+
 		$parser->setHook ( 'loop_title', 'LoopObject::renderLoopTitle' );
 		$parser->setHook ( 'loop_description', 'LoopObject::renderLoopDescription' );
 		$parser->setHook ( 'loop_copyright', 'LoopObject::renderLoopCopyright' );
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Dummy render for loop_title
 	 * Real rendering is done in the respective object
-	 * 
-	 * @param string $input        	
-	 * @param array $args        	
-	 * @param Parser $parser        	
-	 * @param Frame $frame        	
+	 *
+	 * @param string $input
+	 * @param array $args
+	 * @param Parser $parser
+	 * @param Frame $frame
 	 * @return string
 	 */
 	public static function renderLoopTitle($input, array $args, $parser, $frame) {
 		return '';
 	}
-	
+
 	/**
 	 * Dummy render for loop_description
 	 * Real rendering is done in the respective object
@@ -106,11 +107,11 @@ class LoopObject {
 	 * @param Parser $parser
 	 * @param Frame $frame
 	 * @return string
-	 */	
+	 */
 	public static function renderLoopDescription($input, array $args, $parser, $frame) {
 		return '';
 	}
-	
+
 	/**
 	 * Dummy render for loop_copyright
 	 * Real rendering is done in the respective object
@@ -120,24 +121,24 @@ class LoopObject {
 	 * @param Parser $parser
 	 * @param Frame $frame
 	 * @return string
-	 */	
+	 */
 	public static function renderLoopCopyright($input, array $args, $parser, $frame) {
 		return '';
-	}	
+	}
 	/**
 	 * Get the tag name
 	 */
 	public function getTag() {
 		return static::$mTag;
 	}
-	
+
 	/**
 	 * Get the icon name
 	 */
 	public function getIcon() {
 		return static::$mIcon;
-	}	
-	
+	}
+
 	/**
 	 * Returns whether the numbering is to be displayed
 	 * @return bool
@@ -145,7 +146,7 @@ class LoopObject {
 	public function getShowNumber() {
 		return true;
 	}
-	
+
 	/**
 	 * Get the default render option
 	 * @return string
@@ -153,8 +154,8 @@ class LoopObject {
 	public function getDefaultRenderOption() {
 		global $wgLoopObjectDefaultRenderOption;
 		return $wgLoopObjectDefaultRenderOption;
-	}	
-	
+	}
+
 	/**
 	 * Render loop object for content
 	 *
@@ -175,21 +176,21 @@ class LoopObject {
 		}
 		$html = '<div ';
 		if ( $this->getId() ) {
-			
+
 			$html .= 'id="' . $this->getId() . '" ';
 			$object = LoopObjectIndex::getObjectData( $this->getId() );
 			$articleId = $this->getParser()->getTitle()->getArticleID();
-			
+
 			# objects with render=none are not numbered as it would lead to confusion
 			if ( !$object && $this->getRenderOption() == "none" ) {
 				$showNumbering = false;
-			} elseif ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) { 
+			} elseif ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) {
 				#if there are hints for this element has a dublicate id, don't render the number and add an error
-				
+
 				$otherTitle = Title::newFromId( $object["articleId"] );
 				if (! isset( $this->error ) ){
 					$this->error = "";
-				} 
+				}
 				$textform = "-";
 				if ( is_object( $otherTitle ) ) {
 					$textform = $otherTitle->mTextform;
@@ -203,7 +204,7 @@ class LoopObject {
 						$latestRevId = $title->getLatestRevID();
 						$wikiPage = WikiPage::factory($title);
 						$fwp = new FlaggableWikiPage ( $title );
-					
+
 						if ( isset($fwp) ) {
 							$stableRevId = $fwp->getStable();
 
@@ -212,25 +213,25 @@ class LoopObject {
 								$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
 								$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 								$this->error .= $e . "\n";
-							} 
-						} 
+							}
+						}
 					}
 				}
-				
-				
+
+
 				$showNumbering = false;
 			}
-		} 
+		}
 		$html .= 'class="loop_object '.$this->getTag().' '.$floatclass.' loop_object_render_'.$this->getRenderOption().'"';
 		$html .= '>';
-		
+
 		if ( isset( $this->error ) ) {
 			$html .= $this->error;
-		} 
-	
+		}
+
 		$content = '<div class="loop_object_content">';
 		$content .= $this->getContent();
-		
+
 		$content .= '</div>';
 
 		$footer = '';
@@ -258,7 +259,7 @@ class LoopObject {
 					$footer .= '<span class="loop_object_title_content">'.$this->getTitle().'</span>';
 				}
 			$footer .= '</div>';
-			
+
 			if ( $this->getRenderOption() != 'title' ) {
 				if ( $this->getDescription() ) {
 					$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
@@ -266,21 +267,21 @@ class LoopObject {
 				if ( $this->getCopyright() ) {
 					$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
 				}
-			} 
-	
+			}
+
 			$footer .= '</div>';
 		}
-		
+
 		if ( $this->getTag() == "loop_task" ) {
 			$html .= $footer . $content;
 		} else {
 			$html .= $content . $footer;
 		}
 		$html .= '</div>';
-	
+
 		return $html;
-	}	
-	
+	}
+
 	/**
 	 * Render loop object for list of objects
 	 *
@@ -313,7 +314,7 @@ class LoopObject {
 				$loopStructure = new LoopStructure();
 				$loopStructure->loadStructureItems();
 				$lsi = LoopStructureItem::newFromIds ( $this->mArticleId );
-				
+
 				$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
 				if ( $lsi ) {
 					$pageData = array( "structure", $lsi, $loopStructure );
@@ -326,7 +327,7 @@ class LoopObject {
 			}
 		}
 		$html = '<tr scope="row" class="ml-1 pb-3">';
-		
+
 		if ( $wgLoopObjectDefaultRenderOption == "marked" ) {
 			$html .= '<td scope="col" class="pl-1 pr-1 loop-listofobjects-type">';
 			$html .= '<span class="font-weight-bold">';
@@ -345,25 +346,25 @@ class LoopObject {
 			$html .= $this->getParser()->stripOuterParagraph( $parserOutput->getText() ) . '</span><br/><span>';
 		}
 		$linkTitle->setFragment ( '#' . $this->getId () );
-		
-		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () ); 
+
+		$lsi = LoopStructureItem::newFromIds ( $this->getArticleId () );
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 		if ( $lsi ) {
 			global $wgLoopLegacyPageNumbering;
 
 			$linktext = $wgLoopLegacyPageNumbering ? $lsi->tocNumber . ' ' . $lsi->tocText : $lsi->tocText;
-			
-			$html .= $linkRenderer->makeLink( 
-				$linkTitle, 
+
+			$html .= $linkRenderer->makeLink(
+				$linkTitle,
 				new HtmlArmor( $linktext ),
 				array()
 				) . '<br/>';
 		} elseif ( $ns == NS_GLOSSARY ) {
 			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
-			
-			$html .= $linkRenderer->makeLink( 
-				$linkTitle, 
+
+			$html .= $linkRenderer->makeLink(
+				$linkTitle,
 				new HtmlArmor( $linktext ),
 				array()
 				) . '<br/>';
@@ -371,8 +372,8 @@ class LoopObject {
 		$html .= '</span></td>';
 		$html .= '</tr>';
 		return $html;
-	}	
-	
+	}
+
 	/**
 	 * Init loop object
 	 * @param string $input
@@ -385,7 +386,7 @@ class LoopObject {
 		$user = $wgOut->getUser();
 		$this->setInput($input);
 		$this->setArgs($args);
-				
+
 		if ($parser == false) {
 			$parser = new Parser ( $wgParserConf );
 			$parserOptions = ParserOptions::newFromUser ( $user );
@@ -395,43 +396,43 @@ class LoopObject {
 			$parser->clearState ();
 			$frame = $parser->getPreprocessor ()->newFrame ();
 		}
-		
+
 		$this->setParser($parser);
 		$this->setFrame($frame);
 	}
-	
+
 	/**
 	 * Set the input from a tag
 	 * @param string $input
 	 */
 	public function setInput($input) {
 		$this->mInput = $input;
-	}	
-	
+	}
+
 	/**
 	 * Set the args from a tag
 	 * @param array $args
 	 */
 	public function setArgs($args) {
 		$this->mArgs = $args;
-	}	
-	
+	}
+
 	/**
 	 * Set parser
 	 * @param Parser $parser
 	 */
 	public function setParser($parser) {
 		$this->mParser = $parser;
-	}	
-	
+	}
+
 	/**
 	 * Set frame
 	 * @param PPFrame $frame
 	 */
 	public function setFrame($frame) {
 		$this->mFrame = $frame;
-	}	
-	
+	}
+
 	/**
 	 * Set the id
 	 * @param integer $id
@@ -439,15 +440,15 @@ class LoopObject {
 	public function setId($id) {
 		$this->mId = $id;
 	}
-	
+
 	/**
 	 * Set the article id the object belongs to
 	 * @param integer $articleId
 	 */
 	public function setArticleId($articleId) {
 		$this->mArticleId = $articleId;
-	}	
-	
+	}
+
 	/**
 	 * Set the title
 	 * @param string $title
@@ -456,7 +457,7 @@ class LoopObject {
 		$this->mTitle = $title;
 		$this->mTitleInput = $title;
 	}
-	
+
 	/**
 	 * Set the description
 	 * @param string $description
@@ -464,7 +465,7 @@ class LoopObject {
 	public function setDescription($description) {
 		$this->mDescription = $description;
 	}
-	
+
 	/**
 	 * Set the copyright
 	 * @param string $copyright
@@ -478,14 +479,14 @@ class LoopObject {
 	 */
 	public function setShowCopyright($showcopyright) {
 		$this->mShowCopyright = $showcopyright;
-	}	
+	}
 	/**
 	 * Set indexing
 	 * @param bool $indexing
 	 */
 	public function setIndexing($indexing) {
 		$this->mIndexing = $indexing;
-	}	
+	}
 	/**
 	 * Set the number
 	 * @param integer $number
@@ -499,24 +500,24 @@ class LoopObject {
 	 */
 	public function setRenderOption($renderoption) {
 		$this->mRenderOption = $renderoption;
-	}	
-	
+	}
+
 	/**
 	 * Set the alignment option
 	 * @param string $alignment
 	 */
 	public function setAlignment($alignment) {
 		$this->mAlignment = $alignment;
-	}	
-	
+	}
+
 	/**
 	 * Set the parsed content
 	 * @param string $content
 	 */
 	public function setContent($content) {
 		$this->mContent = $content;
-	}	
-	
+	}
+
 	/**
 	 * Get the input from a tag
 	 * @return string
@@ -524,10 +525,10 @@ class LoopObject {
 	public function GetInput() {
 		return $this->mInput;
 	}
-	
+
 	/**
 	 * Get the args from a tag
-	 * @return array 
+	 * @return array
 	 */
 	public function GetArgs() {
 		return $this->mArgs;
@@ -542,8 +543,8 @@ class LoopObject {
 		} else {
 			return false;
 		}
-	}	
-	
+	}
+
 	/**
 	 * Get parser
 	 * @return Parser
@@ -551,7 +552,7 @@ class LoopObject {
 	public function GetParser() {
 		return $this->mParser;
 	}
-	
+
 	/**
 	 * Get frame
 	 * @return PPFrame
@@ -559,7 +560,7 @@ class LoopObject {
 	public function GetFrame() {
 		return $this->mFrame;
 	}
-	
+
 	/**
 	 * Get ID
 	 * @return string
@@ -567,15 +568,15 @@ class LoopObject {
 	public function getId() {
 		return $this->mId;
 	}
-	
+
 	/**
 	 * Get the article id the object belongs to
 	 * @return integer
 	 */
 	public function getArticleId() {
 		return $this->mArticleId;
-	}	
-	
+	}
+
 	/**
 	 * Get the title
 	 * @return string
@@ -583,7 +584,7 @@ class LoopObject {
 	public function getTitle() {
 		return $this->mTitle;
 	}
-	
+
 	/**
 	 * Get the description
 	 * @return string
@@ -591,7 +592,7 @@ class LoopObject {
 	public function getDescription() {
 		return $this->mDescription;
 	}
-	
+
 	/**
 	 * Get the copyright
 	 * @return string
@@ -599,45 +600,45 @@ class LoopObject {
 	public function getCopyright() {
 		return $this->mCopyright;
 	}
-	
+
 	/**
 	 * Get show copyright
 	 * @return bool
 	 */
 	public function getShowCopyright() {
 		return $this->mShowCopyright;
-	}	
+	}
 	/**
 	 * Get the number
 	 * @return integer
 	 */
 	public function getNumber() {
 		return $this->mNumber;
-	}	
+	}
 	/**
 	 * Get the render option
 	 * @return string
 	 */
 	public function getRenderOption() {
 		return $this->mRenderOption;
-	}	
-	
+	}
+
 	/**
 	 * Get the alignment option
 	 * @return string
 	 */
 	public function getAlignment() {
 		return $this->mAlignment;
-	}	
-	
+	}
+
 	/**
 	 * Get the parsed content
 	 * @return string
 	 */
 	public function getContent() {
 		return $this->mContent;
-	}	
-	
+	}
+
 	/**
 	 * Fully parse wikitext with extra parser instance
 	 * @param string $wikiText
@@ -651,7 +652,7 @@ class LoopObject {
 		$localParserOptions = ParserOptions::newFromUser ( $user );
 		$result = $localParser->parse ( html_entity_decode( $wikiText ), $tmpTitle, $localParserOptions );
 		$result->clearWrapperDivClass();
-		return $localParser->stripOuterParagraph( $result->getText() );	
+		return $localParser->stripOuterParagraph( $result->getText() );
 	}
 
 	/**
@@ -673,18 +674,18 @@ class LoopObject {
 
 		$this->setContent($this->getParser()->recursiveTagParse($text,$this->GetFrame()) );
 	}
-	
+
 	/**
-	 * Parse common args 
+	 * Parse common args
 	 * Parse common subtags and strip them from input
 	 */
 	public function preParse() {
-		
+
 		$this->error = "";
 		if ($id = $this->GetArg('id')) {
 			$this->setId(htmlspecialchars($id));
 		}
-		
+
 		// handle rendering option
 		if ($renderoption = $this->GetArg('render')) {
 			$this->setRenderOption(strtolower(htmlspecialchars($renderoption)));
@@ -697,33 +698,33 @@ class LoopObject {
 		if ( ! in_array ( $this->getRenderOption(), self::$mRenderOptions ) ) {
 			$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "render", $this->GetArg('render'), implode( ', ', self::$mRenderOptions ), $this->getDefaultRenderOption() )->text() );
 			$this->setRenderOption($this->getDefaultRenderOption());
-				
+
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 			$this->error .= $e;
 		}
-		
+
 		try {
 			if ($alignment = $this->GetArg('align')) {
 				$this->setAlignment(strtolower(htmlspecialchars($alignment)));
 			} else {
 				$this->setAlignment('none');
-			}		
-			
+			}
+
 			if ( ! in_array ( $this->getAlignment(), self::$mAlignmentOptions ) ) {
 				global $wgParser, $wgFrame;
 				$this->setAlignment('none');
 				throw new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "align", $this->GetArg('align'), implode( ', ', self::$mAlignmentOptions ), 'none' )->text() );
-			
-			}	
+
+			}
 		} catch ( LoopException $e ) {
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 			$this->error .= $e;
 		}
-		
+
 		if ($title = $this->GetArg('title')) {
 			$this->setTitle(htmlspecialchars($title));
 		}
-		
+
 		if ($description = $this->GetArg('description')) {
 			$this->setDescription($this->getParser()->recursiveTagParse(htmlspecialchars($description),$this->GetFrame()));
 		}
@@ -732,7 +733,7 @@ class LoopObject {
 		} else {
 			$showcopyright = 'false';
 		}
-		
+
 		switch ($showcopyright) {
 			case 'true':
 				$this->setShowCopyright(true);
@@ -751,7 +752,7 @@ class LoopObject {
 		} else {
 			$indexing = 'true';
 		}
-		
+
 		switch ($indexing) {
 			case 'true':
 				$this->setIndexing(true);
@@ -766,11 +767,11 @@ class LoopObject {
 				$this->error = $e;
 				break;
 		}
-		
+
 		if ( $copyright = $this->GetArg('copyright') ) {
 			$this->setCopyright(htmlspecialchars($copyright));
 		}
-		
+
 		// strip other objects in the text to prevent mismatch for title, descrition and copyright
 		$otherObjectTypes = array();
 		foreach (self::$mObjectTypes as $objectType) {
@@ -781,7 +782,7 @@ class LoopObject {
 		$otherObjectMatches = array();
 		$text = $this->getParser()->extractTagsAndParams ( $otherObjectTypes, $this->getInput(), $otherObjectMatches );
 		$striped_text = $this->getParser()->killMarkers ( $text );
-		
+
 		$matches = array ();
 		$subtags = array (
 				'loop_title',
@@ -808,25 +809,25 @@ class LoopObject {
 		#if (){}
 		#dd($this,$objectData, $matches);
 	}
-	
+
 	/**
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
 	 * @param Title $title
 	 * @param Content $content
 	 */
 	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
-		
+
 		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-	
+
 		if ( isset($fwp) ) {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
 				self::handleObjectItems( $wikiPage, $title, $content->getText() );
-			} 
-		} 
+			}
+		}
 		return true;
 	}
 	/**
@@ -834,7 +835,7 @@ class LoopObject {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-		
+
 		$wikiPage = WikiPage::factory( $title );
 		self::handleObjectItems( $wikiPage, $title );
 		return true;
@@ -845,7 +846,7 @@ class LoopObject {
 	 * Attached to ArticleDeleteComplete hook.
 	 */
 	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ) {
-		
+
 		LoopObjectIndex::removeAllPageItemsFromDb ( $id );
 
 		return true;
@@ -868,10 +869,10 @@ class LoopObject {
 				}
 			}
 		}
-		
-		
+
+
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
-				
+
 			$parser = new Parser();
 			$loopObjectIndex = new LoopObjectIndex();
 			$fwp = new FlaggableWikiPage ( $title );
@@ -880,10 +881,10 @@ class LoopObject {
 			$stable = false;
 			if ( $stableRevId == $latestRevId ) {
 				$stable = true;
-				# on edit, delete all objects of that page from db. 
+				# on edit, delete all objects of that page from db.
 				LoopObjectIndex::removeAllPageItemsFromDb ( $title->getArticleID() );
-			} 
-			
+			}
+
 			# check if loop_object in page content
 			$has_object = false;
 			foreach (self::$mObjectTypes as $objectType) {
@@ -914,7 +915,7 @@ class LoopObject {
 								$tmpLoopObjectIndex->nthItem = $objects[$object[0]];
 								$tmpLoopObjectIndex->index = $object[0];
 								$tmpLoopObjectIndex->pageId = $title->getArticleID();
-								
+
 								if ( $object[0] == "loop_figure" ) {
 									preg_match('/(.*)(\[\[.*\]\])(.*)/U', $object[1], $thumb);
 									$tmpLoopObjectIndex->itemThumb = array_key_exists( 2, $thumb ) ? $thumb[2] : null;
@@ -953,9 +954,9 @@ class LoopObject {
 								} else {
 									$valid = false;
 								}
-								
+
 								#dd($tmpLoopObjectIndex, $valid, $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ); #debug, wird öfter mal gebraucht
-								
+
 								if ( $valid && $stable ) {
 									# page is valid and stable
 									if ( ! isset ( $object[2]["index"] ) ) {
@@ -966,7 +967,7 @@ class LoopObject {
 										} elseif ( strtolower( $object[2]["render"] ) != "none" ) {
 											# no index but render is not none -> save
 											$tmpLoopObjectIndex->addToDatabase();
-										} 
+										}
 										# index defaults to true but if render=none, there is no indexing. unless it is explicitly said so in index=true
 
 									} elseif ( strtolower($object[2]["index"]) != "false" ) {
@@ -979,7 +980,7 @@ class LoopObject {
 					}
 				}
 				$lsi = LoopStructureItem::newFromIds ( $title->getArticleID() );
-				
+
 				if ( $lsi ) {
 					self::updateStructurePageTouched( $title );
 				} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
@@ -1001,7 +1002,7 @@ class LoopObject {
 		// if a title is given, each page after given one is updated
 		if ( isset($title) ) {
 			# $cond = "lsi_article=" . $title->getArticleID(); # TODO remove? Für referenzen müssen alle Seiten immer neu geladen werden.
-		} 
+		}
 
 		$dbr = wfGetDB ( DB_REPLICA );
 		$article_ids = array ();
@@ -1011,13 +1012,13 @@ class LoopObject {
 				'lsi_structure',
 				'lsi_sequence'
 		),  $cond,
-		 __METHOD__ 
+		 __METHOD__
 		);
 
 		foreach ( $structuresResult as $structureRow ) {
 			$lsi_structure = $structureRow->lsi_structure;
 			$lsi_sequence = $structureRow->lsi_sequence;
-				
+
 			$pagesResult = $dbr->select ( array (
 					'loop_structure_items'
 			), array (
@@ -1031,11 +1032,11 @@ class LoopObject {
 			}
 		}
 
-		// Update page_touched 
+		// Update page_touched
 		if ( $article_ids ) {
 			$article_ids = array_unique ( $article_ids );
 			$dbw = wfGetDB ( DB_MASTER );
-				
+
 			$dbPageTouchedResult = $dbw->update ( 'page', array (
 					'page_touched' => $dbw->timestamp()
 			), array (
@@ -1050,9 +1051,9 @@ class LoopObject {
 	 * @param Parser $parser
 	 * @param string $text
 	 */
-	
+
 	public static function onParserAfterTidy( &$parser, &$text ) {
-		
+
 		global $wgLoopObjectNumbering;
 		$title = $parser->getTitle();
 		$article = $title->getArticleID();
@@ -1069,34 +1070,34 @@ class LoopObject {
 		}
 		$count = array();
 		foreach (self::$mObjectTypes as $objectType) {
-			$count[$objectType] = 0; 
+			$count[$objectType] = 0;
 		}
 		$lsi = LoopStructureItem::newFromIds ( $article );
-		
+
 		if ( $lsi ) {
 			$loopStructure = new LoopStructure();
 			$loopStructure->loadStructureItems();
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForPage ( $lsi, $loopStructure );
-			
+
 		} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
 			$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $article );
 		}
 		foreach ( self::$mObjectTypes as $objectType ) {
-			
+
 			$matches = array();
 			preg_match_all( "/(" . LOOPOBJECTNUMBER_MARKER_PREFIX . $objectType . ")(.*)(" . LOOPOBJECTNUMBER_MARKER_SUFFIX . ")/U", $text, $matches );
-			
+
 			if ( $lsi && $wgLoopObjectNumbering == 1 && $showNumbers ) {
-				
+
 				$i = 0;
 				foreach ( $matches[0] as $objectmarker ) {
 					$objectid = $matches[2][$i];
 					$pageData = array( "structure", $lsi, $loopStructure );
 					$numbering = self::getObjectNumberingOutput($objectid, $pageData, $previousObjects);
-					
+
 					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
 					$i++;
-				} 
+				}
 
 			} elseif ( $title->getNamespace() == NS_GLOSSARY && $wgLoopObjectNumbering == 1 && $showNumbers ) {
 				$i = 0;
@@ -1106,13 +1107,13 @@ class LoopObject {
 					$numbering = self::getObjectNumberingOutput( $objectid, $pageData, $previousObjects );
 					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
 					$i++;
-				} 
+				}
 
 			} else {
 				foreach ( $matches[0] as $objectmarker ) {
 					$text = preg_replace ( "/" . $objectmarker . "/", "", $text );
 				}
-			}	
+			}
 		}
 		return true;
 	}
@@ -1148,7 +1149,7 @@ class LoopObject {
 			$tmpPreviousObjects = 0;
 
 			if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
-					
+
 				$lsi = $pageData[1];
 
 				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
@@ -1161,9 +1162,9 @@ class LoopObject {
 				}
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
-				} 
+				}
 				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
-				
+
 			} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
 				if ( isset($previousObjects[$objectData["index"]]) ) {
 					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
@@ -1173,8 +1174,8 @@ class LoopObject {
 					$prefix = wfMessage("loop-glossary-objectnumber-prefix")->text();
 				}
 				return $prefix . ( $tmpPreviousObjects + $objectData["nthoftype"] );
-					
-			} 
+
+			}
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-
+#TODO MW 1.35 DEPRECATION
 /**
  * Class representing a book structure and other meta information
  * @author Kevin Berg @bedoke <kevin-dominick.berg@th-luebeck.de>

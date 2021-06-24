@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 if ( !defined( 'MEDIAWIKI' ) ) {
 	echo( "This file is an extension to the MediaWiki software and cannot be used standalone.\n" );
 	exit( 1 );
@@ -26,7 +27,7 @@ class SpecialPurgeCache extends SpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-		
+
 		$this->setHeaders();
 		if ( $out->getUser()->isAllowed( 'purgecache' ) ) {
 			if ( $request->getCheck( 'purge' ) && $request->wasPosted() ) {
@@ -35,7 +36,7 @@ class SpecialPurgeCache extends SpecialPage {
 				#$dbw->delete( 'objectcache', '*', __METHOD__ );
 				$out->addWikiMsg( 'purgecache-purged' );
 				$out->addHTML( $this->makeForm() );
-						
+
 				#$exportPath = $wgUploadDirectory . "/export/";
 				#SpecialPurgeCache::deleteAll($exportPath);
 
@@ -54,7 +55,7 @@ class SpecialPurgeCache extends SpecialPage {
 		if ( $wgOut->getUser()->isAllowed( 'purgecache' ) ) {
 			$dbw = wfGetDB( DB_MASTER );
 			$dbw->delete( 'objectcache', "keyname NOT LIKE '%MWSession%'", __METHOD__ );
-					
+
 			$exportPath = $wgUploadDirectory . "/export/";
 			$screenshotPath = $wgUploadDirectory . "/screenshots/";
 			SpecialPurgeCache::deleteAll($exportPath);
@@ -79,13 +80,13 @@ class SpecialPurgeCache extends SpecialPage {
 	}
 
 	function makeForm() {
-		$self = Title::newFromText( 'Special:PurgeCache' ); 
+		$self = Title::newFromText( 'Special:PurgeCache' );
 		$form  = Xml::openElement( 'form', array( 'method' => 'post', 'action' => $self->getLocalUrl() ) );
 		$form .= Xml::element( 'input', array( 'type' => 'submit', 'name' => 'purge', 'value' => $this->msg( 'purgecache-button' ) ) );
 		$form .= Xml::closeElement( 'form' );
 		return $form;
 	}
-			
+
 	/**
 	 * Specify the specialpages-group loop
 	 *
@@ -94,5 +95,5 @@ class SpecialPurgeCache extends SpecialPage {
 	protected function getGroupName() {
 		return 'loop';
 	}
-	
+
 }

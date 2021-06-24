@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
   * @description Content as for example notes or comments only for displaying in wikitext.
   * @ingroup Extensions
@@ -10,19 +11,19 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 }
 
 class LoopComment {
-    
+
     public static function onParserSetup( Parser $parser) {
         $parser->setHook( 'loop_comment', 'LoopComment::renderLoopComment' );
 
 		return true;
     }
-    
-	static function renderLoopComment( $input, array $args, Parser $parser, PPFrame $frame ) {		
-        
+
+	static function renderLoopComment( $input, array $args, Parser $parser, PPFrame $frame ) {
+
         global $wgOut;
 		$user = $wgOut->getUser();
-		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
-        
+		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );
+
         if ( !$loopeditmode ) {
             return "";
         }
@@ -32,7 +33,7 @@ class LoopComment {
         $html .= '</div>';
 
 		return $html;
-		
-	}	
+
+	}
 
 }

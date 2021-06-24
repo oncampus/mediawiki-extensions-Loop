@@ -1,5 +1,5 @@
 <?php
-
+#TODO MW 1.35 DEPRECATION
 /**
  * @description All hooks for LOOP that don't fit into more specific classes
  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
@@ -65,7 +65,7 @@ class LoopHooks {
 	 */
 	public static function onSpecialPageinitList ( &$specialPages ) {
 
-		global $wgOut; 
+		global $wgOut;
 		$user = $wgOut->getUser();
 		$hideSpecialPages = false;
 		if ( $user->mId == null ) { # no check for specific rights - anon users get blocked from viewing these special pages.
@@ -78,20 +78,20 @@ class LoopHooks {
 		}
 
 		if ( $hideSpecialPages ) {
-			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects', 'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates', 
-				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log', 
-				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers', 
-				'MergeHistory', 'Randompage', 'Protectedpages', 'Wantedfiles', 'Listgrouprights', 'EditWatchlist', 'Blockme', 'FileDuplicateSearch', 
-				'Withoutinterwiki', 'Randomredirect', 'BlockList', 'Popularpages', 'Emailuser', 'Booksources', 'Upload', 'Confirmemail', 'Watchlist', 
+			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects', 'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates',
+				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log',
+				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers',
+				'MergeHistory', 'Randompage', 'Protectedpages', 'Wantedfiles', 'Listgrouprights', 'EditWatchlist', 'Blockme', 'FileDuplicateSearch',
+				'Withoutinterwiki', 'Randomredirect', 'BlockList', 'Popularpages', 'Emailuser', 'Booksources', 'Upload', 'Confirmemail', 'Watchlist',
 				'MIMEsearch', 'Allpages', 'Fewestrevisions', 'Unblock', 'ComparePages', 'Uncategorizedimages', 'Mostinterwikis', 'LoopExportPdfTest',
-				'Categories', 'Statistics', 'Version', 'UploadStash', 'Undelete', 'Whatlinkshere', 'Lockdb', 'Lonelypages', 'Mostimages', 
-				'Unwatchedpages', 'Shortpages', 'Protectedtitles', 'Revisiondelete', 'Newpages', 'Unusedtemplates', 'Allmessages', 'CachedPage', 
-				'Filepath', 'Wantedpages', 'LinkSearch', 'Prefixindex', 'BrokenRedirects', 'Mostlinked', 'Tags', 'LoopStructureEdit', 'LoopSettings', 
-				'Longpages', 'Uncategorizedpages', 'Newimages', 'Blankpage', 'Disambiguations', 'Unusedcategories', 'Wantedcategories', 
+				'Categories', 'Statistics', 'Version', 'UploadStash', 'Undelete', 'Whatlinkshere', 'Lockdb', 'Lonelypages', 'Mostimages',
+				'Unwatchedpages', 'Shortpages', 'Protectedtitles', 'Revisiondelete', 'Newpages', 'Unusedtemplates', 'Allmessages', 'CachedPage',
+				'Filepath', 'Wantedpages', 'LinkSearch', 'Prefixindex', 'BrokenRedirects', 'Mostlinked', 'Tags', 'LoopStructureEdit', 'LoopSettings',
+				'Longpages', 'Uncategorizedpages', 'Newimages', 'Blankpage', 'Disambiguations', 'Unusedcategories', 'Wantedcategories',
 				'Unlockdb', 'PagesWithProp', 'Listfiles', 'Contributions', 'Listusers', 'Wantedtemplates', 'TrackingCategories', 'Stabilization',
-				'AutoblockList', 'ResetTokens', 'Listgrants', 'Listadmins', 'Listbots', 'PasswordPolicies', 'MediaStatistics', 'ListDuplicatedFiles', 
-				'ApiSandbox', 'RandomInCategory', 'Randomrootpage', 'GoToInterwiki', 'ExpandTemplates', 'ApiHelp', 'Diff', 'EditTags', 'Mycontributions', 
-				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel', 
+				'AutoblockList', 'ResetTokens', 'Listgrants', 'Listadmins', 'Listbots', 'PasswordPolicies', 'MediaStatistics', 'ListDuplicatedFiles',
+				'ApiSandbox', 'RandomInCategory', 'Randomrootpage', 'GoToInterwiki', 'ExpandTemplates', 'ApiHelp', 'Diff', 'EditTags', 'Mycontributions',
+				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel',
 				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'RemoveCredentials',
 				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages',
 				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit', 'NewSection', 'LoopFeedback'
@@ -99,19 +99,19 @@ class LoopHooks {
 			if ( isset( $hideExtended ) ) {
 				$hidePages = array_merge($hidePages, $hideExtended);
 			}
-			foreach( $hidePages as $page ){ 
+			foreach( $hidePages as $page ){
 				unset( $specialPages[$page] );
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Remove image link when not in loopeditmode and add responsive-img class to all images
-	 * 
+	 *
 	 * This is attached to the MediaWiki 'ParserMakeImageParams' hook.
-	 * 
+	 *
 	 * @param Title $title
 	 * @param File $file
 	 * @param array $params
@@ -126,7 +126,7 @@ class LoopHooks {
 
 		if ( is_object( $file ) ) {
 			$mediaType = $file->getMediaType();
-			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) { 
+			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) {
 				$params['frame']['class'] = 'responsive-image';
 				if ( $loopEditMode ) {
 					$params['frame']['class'] .= ' image-editmode';
@@ -143,18 +143,18 @@ class LoopHooks {
 				if ( isset( $params['frame']['align'] ) ) {
 					$params['horizAlign'][ $params['frame']['align'] ] = true;
 				}
-			} elseif ( $mediaType == "VIDEO" ) { 
+			} elseif ( $mediaType == "VIDEO" ) {
 				$params['frame']['class'] = 'responsive-video';
 				if ( !isset( $params['handler']['width'] ) ) {
 					$params['handler']['width']= "800";
 				}
-			}  elseif ( $mediaType == "AUDIO" ) { 
+			}  elseif ( $mediaType == "AUDIO" ) {
 				$params['frame']['class'] = 'responsive-audio';
-			} 
+			}
 		}
-		
+
 		return true;
-	}	
+	}
 
 	/**
 	 * Custom hook called after after pre save transforming
@@ -163,10 +163,10 @@ class LoopHooks {
 	 * @param User $user
 	 */
 	public static function onPreSaveTransformComplete( &$text, $title, $user ) {
-		
+
 		$text = Loop::setReferenceIds( $text );
 		$text = str_replace( 'scale="true"  scale="true"  ', 'scale="true" ', $text ); # fix for an update error
-		
+
 		return true;
 
 	}

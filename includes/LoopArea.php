@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description Adds support for <loop_area> Tags
  * @ingroup Extensions

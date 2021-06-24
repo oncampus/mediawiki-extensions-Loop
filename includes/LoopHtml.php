@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description Exports LOOP to HTML offline version
  * @ingroup Extensions

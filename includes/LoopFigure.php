@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description A parser extension that adds the tag <loop_figure> to mark content as figure and provide a table of figures
  * @ingroup Extensions

@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
   * @description Exports LOOP to XML
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>

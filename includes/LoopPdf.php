@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description Exports LOOP to PDF and test PDF side
  * @ingroup Extensions

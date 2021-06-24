@@ -1,5 +1,5 @@
 <?php
-
+#TODO MW 1.35 DEPRECATION
 /**
  * Class for Lingo extension implementation https://www.mediawiki.org/wiki/Extension:Lingo
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>

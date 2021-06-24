@@ -1,16 +1,16 @@
-<?php 
-
+<?php
+#TODO MW 1.35 DEPRECATION
 /**
   * @description Cloned WikitextContent objects
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
-  
+
 class LoopWikitextContentHandler extends WikitextContentHandler {
     protected function getContentClass() {
         return 'LoopWikitextContent';
     }
 }
-class LoopWikitextContent extends WikitextContent {	
+class LoopWikitextContent extends WikitextContent {
 	/**
 	* Copied from WikitextContent.php, overriding it with our own content and a custom Hook
 	*

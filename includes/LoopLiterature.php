@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description Adds Literature support for LOOP - <cite> and <loop_literature> tags. Replaces BiblioPlus
  * @ingroup Extensions

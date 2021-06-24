@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 class LoopObjectIndex {
 
     public $id; // id of the indexed item
@@ -7,7 +8,7 @@ class LoopObjectIndex {
 	public $index; // the index an item is displayed in (figure, table, etc)
 	public $nthItem; // the n-th item of that index on that page
 	public $itemType; // the item's type (only for loop_media: rollover, animation, etc)
-	public $itemTitle; // the entered title 
+	public $itemTitle; // the entered title
 	public $itemDescription; // the entered description
 	public $itemThumb; // preview image (only for loop_figure)
 
@@ -17,7 +18,7 @@ class LoopObjectIndex {
 	 */
 	public function addToDatabase() {
         $dbw = wfGetDB( DB_MASTER );
-        
+
         $dbw->insert(
             'loop_object_index',
             array(
@@ -36,7 +37,7 @@ class LoopObjectIndex {
         return true;
 
     }
-	
+
 	// deletes all objects of a page
     public static function removeAllPageItemsFromDb ( $article ) {
 
@@ -49,12 +50,12 @@ class LoopObjectIndex {
 
         return true;
     }
-    
+
     // returns ALL objects of a type in the wiki.
     public static function getObjectsOfType ( $type ) {
-        
+
         $dbr = wfGetDB( DB_REPLICA );
-        
+
         $res = $dbr->select(
             'loop_object_index',
             array(
@@ -72,7 +73,7 @@ class LoopObjectIndex {
             ),
             __METHOD__
             );
-        
+
         $objects = array(  );
         foreach( $res as $row ) {
             $objects[$row->loi_pageid][$row->loi_nthoftype] = array(
@@ -88,14 +89,14 @@ class LoopObjectIndex {
         }
         return $objects;
     }
-    
+
     // returns structure objects with numberings in the table
     public static function getAllObjects ( $loopStructure ) {
-        
+
         global $wgLoopObjectNumbering;
-        
+
         $dbr = wfGetDB( DB_REPLICA );
-        
+
         $res = $dbr->select(
             'loop_object_index',
             array(
@@ -112,32 +113,32 @@ class LoopObjectIndex {
             ),
             __METHOD__
             );
-        
+
         $objects = array(  );
-        
+
         $loopStructureItems = $loopStructure->getStructureItems();
-        
+
         foreach ( $loopStructureItems as $loopStructureItem ) {
             $previousObjects[ $loopStructureItem->article ] = self::getObjectNumberingsForPage( $loopStructureItem, $loopStructure );
         }
-        
+
 		$glossaryItems = LoopGlossary::getGlossaryPages("idArray");
         foreach ( $glossaryItems as $glossaryItem ) {
             $previousObjects[ $glossaryItem ] = self::getObjectNumberingsForGlossaryPage( $glossaryItem );
         }
         #dd($previousObjects);
         foreach( $res as $row ) {
-            
+
             $numberText = '';
-            
+
             if ( $wgLoopObjectNumbering == true ) {
-                
+
                 $objectData = array(
                     "refId" => $row->loi_refid,
                     "index" => $row->loi_index,
                     "nthoftype" => $row->loi_nthoftype
                 );
-                
+
                 $lsi = LoopStructureItem::newFromIds($row->loi_pageid);
                 if ( array_key_exists( $row->loi_pageid, $previousObjects ) ) {
                     if ( $lsi ) {
@@ -148,9 +149,9 @@ class LoopObjectIndex {
                         $numberText = LoopObject::getObjectNumberingOutput( $row->loi_refid, $pageData, $previousObjects[ $row->loi_pageid ], $objectData );
                     }
                 }
-                
+
             }
-        
+
             $objects[$row->loi_refid] = array(
                 "pageid" => $row->loi_pageid,
                 "id" => $row->loi_refid,
@@ -174,11 +175,11 @@ class LoopObjectIndex {
 		global $wgLoopNumberingType;
 
 		if ( $wgLoopNumberingType == "chapter" ) {
-			
+
 			$lsiTocNumberArray = array();
 			$lsiTocNumber = '';
 			preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $lsiTocNumberArray);
-			
+
 			if (isset($lsiTocNumberArray[1])) {
 				#dd($lsiTocNumber);
 				$lsiTocNumber = $lsiTocNumberArray[1];
@@ -187,8 +188,8 @@ class LoopObjectIndex {
 
 		$objects = array();
 		foreach (LoopObject::$mObjectTypes as $objectType) {
-			$objects[$objectType] = array(); 
-			$return[$objectType] = 0; 
+			$objects[$objectType] = array();
+			$return[$objectType] = 0;
 		}
 
 		$dbr = wfGetDB( DB_REPLICA );
@@ -224,7 +225,7 @@ class LoopObjectIndex {
 				$tmpId = $item->article;
 				$tocNumber = array();
 				preg_match('/(\d+)\.{0,1}/', $item->tocNumber, $tocNumber);
-				
+
 				if ( isset( $tocNumber[1] ) && $tocNumber[1] == $lsiTocNumber ) {
 					if (  $item->sequence < $lsi->sequence  ) {
 						foreach( $objects as $objectType => $page ) {
@@ -238,7 +239,7 @@ class LoopObjectIndex {
 		}
         return $return;
     }
-    
+
 	// returns number of objects in glossary pages before current glossary page
     public static function getObjectNumberingsForGlossaryPage ( $articleId ) {
         $glossaryItems = LoopGlossary::getGlossaryPages();
@@ -256,13 +257,13 @@ class LoopObjectIndex {
             }
         }
         if ( $pageHasObjects ) {
-            
+
             $objects = array();
             foreach ( LoopObject::$mObjectTypes as $objectType ) {
-                $objects[$objectType] = array(); 
-                $return[$objectType] = 0; 
+                $objects[$objectType] = array();
+                $return[$objectType] = 0;
             }
-            
+
             $dbr = wfGetDB( DB_REPLICA );
 
             $res = $dbr->select(
@@ -284,7 +285,7 @@ class LoopObjectIndex {
                     if ( $tmpId[0] != $articleId ) {
                         if ( array_key_exists( $tmpId[0], $page ) ) {
                             $return[$objectType] += sizeof($page[$tmpId[0]]);
-                        }  
+                        }
                     }
                 }
             }
@@ -293,7 +294,7 @@ class LoopObjectIndex {
     }
 
 	public function checkDublicates( $refId ) {
-		
+
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_object_index',
@@ -305,19 +306,19 @@ class LoopObjectIndex {
 			),
 			__METHOD__
 		);
-		
+
 		foreach( $res as $row ) {
-            # if res has rows, 
-			# given refId is already in use. 
+            # if res has rows,
+			# given refId is already in use.
 			return false;
 
 		}
 		# id is unique in index
 		return true;
     }
-    
-    public static function getObjectData( $refId ) { 
-        
+
+    public static function getObjectData( $refId ) {
+
         $dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_object_index',

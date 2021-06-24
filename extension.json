@@ -13,9 +13,9 @@
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": "1.34.*",
+		"MediaWiki": "1.35.*",
 		"extensions": {
-			"Cite": ">= 1.0.0",
+			"Cite": "*",
 			"ConfirmEdit": ">= 1.6.0",
 			"EmbedVideo": ">= 2.8.0",
 			"FlaggedRevs": "*",
@@ -190,7 +190,7 @@
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
-		"ParserBeforeStrip": "LoopConsent::onParserBeforeStrip",
+
 		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister",
 		"ImageBeforeProduceHTML": "LoopSwfHandler::onImageBeforeProduceHTML"
 	},

@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * A parser extension that adds the tags <loop_video> and <loop_audio>
  *
@@ -18,13 +19,13 @@ class LoopMediaHandler {
         $html = '';
         $width = "100%";
         $height = "auto";
-        
+
 		if ( array_key_exists( 'width', $args ) ) {
 			if ( !empty ( $args["width"] ) ) {
 				$width = $args["width"];
 			}
 		}
-		
+
 		if ( array_key_exists( 'height', $args ) ) {
 			if ( !empty ( $args["height"] ) ) {
 				$height = $args["height"];
@@ -61,7 +62,7 @@ class LoopMediaHandler {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			$html = $e;
         }
-		
+
         if ( isset( $source ) ) {
             $html .= '<video controls class="responsive-video" width="' . $width . '" height="' . $height . '"';
             if ( isset ( $image ) ) {
@@ -76,13 +77,13 @@ class LoopMediaHandler {
         $html = '';
         $width = "100%";
         $height = "auto";
-        
+
 		if ( array_key_exists( 'width', $args ) ) {
 			if ( !empty ( $args["width"] ) ) {
 				$width = $args["width"];
 			}
 		}
-		
+
 		if ( array_key_exists( 'height', $args ) ) {
 			if ( !empty ( $args["height"] ) ) {
 				$height = $args["height"];
@@ -108,7 +109,7 @@ class LoopMediaHandler {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			$html = $e;
         }
-		
+
         if ( isset( $source ) ) {
             $html .= '<audio controls class="responsive-audio" width="' . $width . '" height="' . $height . '"';
             $html .= ' src="' . $source . '"></audio>';
@@ -124,7 +125,7 @@ class LoopSwfHandler  {
     public static function onImageBeforeProduceHTML( DummyLinker &$linker, Title &$title, &$file, array &$frameParams, array &$handlerParams, &$time, &$result, Parser $parser, string &$query, &$widthOption ) {
         if ( is_object( $file ) && $file->getMimeType() == "application/x-shockwave-flash" ) {
             global $wgOut, $wgLanguageCode;
-            
+
             $user = $wgOut->getUser();
             $editMode = $user->getOption( 'LoopEditMode', false, true );
             $error = "";
@@ -139,7 +140,7 @@ class LoopSwfHandler  {
                 <param name="movie" value="'. $url .'">
                 <embed src="'. $url .'" type="application/x-shockwave-flash" style="min-width: 100%; min-height: 500px;">
             </object>';
-        
+
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
             $result = str_replace("\n", ' ', $s);
             return false;

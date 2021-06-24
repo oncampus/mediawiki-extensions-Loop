@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
  * @description Special page for LOOP settings
  * @ingroup Extensions

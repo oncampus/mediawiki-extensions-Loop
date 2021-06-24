@@ -1,4 +1,5 @@
 <?php
+#TODO MW 1.35 DEPRECATION
 /**
   * @description Adds LOOP functions to update/upgrade process
   * @ingroup Extensions
@@ -33,7 +34,7 @@ class LoopUpdater {
 		if ( $updater->tableExists( 'actor' ) ) {
 			$user = User::newFromName( 'LOOP_SYSTEM' );
 			if ( $user->getId() == 0 ) {
-				$user = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+				$user = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => false ) );
 			}
 		}
 

@@ -1,5 +1,5 @@
 <?php
-
+#TODO MW 1.35 DEPRECATION
 /**
   * @description Handles general functions and settings
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
