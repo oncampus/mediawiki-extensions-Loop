@@ -1,6 +1,8 @@
 <?php
-if ( ! defined( 'MEDIAWIKI' ) )
-	die();
+
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopZip {
 
@@ -27,7 +29,7 @@ class LoopZip {
 
 		if ( ! empty( $loopzip->file ) && ! empty( $loopzip->start ) ) {
 			$filetitle = Title::newFromText( $loopzip->file, NS_FILE );
-            $localfile = wfLocalFile( $filetitle ); # wfLocalFile() will be deprecated in 1.34
+            $localfile = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $filetitle );
 
             if ( is_object( $localfile ) && $localfile->exists() ) {
                 $zipfilename = $localfile->getName();

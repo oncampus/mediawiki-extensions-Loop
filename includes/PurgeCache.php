@@ -1,9 +1,4 @@
 <?php
-#TODO MW 1.35 DEPRECATION
-if ( !defined( 'MEDIAWIKI' ) ) {
-	echo( "This file is an extension to the MediaWiki software and cannot be used standalone.\n" );
-	exit( 1 );
-}
 /**
  * Special page used to wipe the OBJECTCACHE table
  * I use it on test wikis when I am fiddling about with things en masse that could be cached
@@ -14,6 +9,10 @@ if ( !defined( 'MEDIAWIKI' ) ) {
  * @licence of this file Public domain
  */
 
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
+
 class SpecialPurgeCache extends SpecialPage {
 
 	function __construct() {
@@ -21,18 +20,17 @@ class SpecialPurgeCache extends SpecialPage {
 	}
 
 	function execute( $par ) {
-		global $wgRequest, $wgOut, $wgUploadDirectory;
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$this->setHeaders();
-		if ( $out->getUser()->isAllowed( 'purgecache' ) ) {
+		if ( $permissionManager->userHasRight( $out->getUser(), 'purgecache' ) ) {
 			if ( $request->getCheck( 'purge' ) && $request->wasPosted() ) {
 				self::purge();
-				#$dbw = wfGetDB( DB_MASTER );
+				#$dbw = wfGetDB( DB_PRIMARY );
 				#$dbw->delete( 'objectcache', '*', __METHOD__ );
 				$out->addWikiMsg( 'purgecache-purged' );
 				$out->addHTML( $this->makeForm() );
@@ -51,9 +49,9 @@ class SpecialPurgeCache extends SpecialPage {
 	}
 	public static function purge() {
 		global $wgOut, $wgUploadDirectory;
-
-		if ( $wgOut->getUser()->isAllowed( 'purgecache' ) ) {
-			$dbw = wfGetDB( DB_MASTER );
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $permissionManager->userHasRight( $wgOut->getUser(), 'purgecache' ) ) {
+			$dbw = wfGetDB( DB_PRIMARY );
 			$dbw->delete( 'objectcache', "keyname NOT LIKE '%MWSession%'", __METHOD__ );
 
 			$exportPath = $wgUploadDirectory . "/export/";

@@ -1,11 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * A parser extension that adds the tag <loop_media> to mark content as media and provide a table of media
  *
  * @ingroup Extensions
  *
  */
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 class LoopMedia extends LoopObject{
 
 	public static $mTag = 'loop_media';
@@ -162,7 +163,7 @@ class SpecialLoopMedia extends SpecialPage {
 
 	    $parser = new Parser ( $wgParserConf );
 	    $parserOptions = new ParserOptions();
-	    $parser->Options ( $parserOptions );
+	    $parser->getOptions ( $parserOptions );
 
 	    $medias = array ();
 	    $structureItems = $loopStructure->getStructureItems();

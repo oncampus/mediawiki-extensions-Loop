@@ -1,13 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Screenshot tag. Content will have a screenshot taken to be displayed in PDF instead of the otherwise regularily rendered content
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopScreenshot {
 
@@ -78,25 +77,26 @@ class LoopScreenshot {
 
 			$user = $parser->getUser();
 			$articleId = $parser->getTitle()->getArticleID();
-			$loopeditmode = $user->getOption( 'LoopEditMode', false, true );
+			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+			$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
 			$html .= '<div class="loop_screenshot_begin" id="'.$refId.'" data-width="'.$width.'" data-height="'.$height.'">';
 			$html .= $parser->recursiveTagParseFully( $input );
 			$html .= '</div><div class="loop_screenshot_end"></div>';
 
-			if ( $loopeditmode ) {
+			if ( $editMode ) {
 				global $wgCanonicalServer, $wgUploadPath;
 
 				$screenshotUrl = $wgCanonicalServer . $wgUploadPath."/screenshots/$articleId/$refId.png";
 
 				$btnId = uniqid();
 				$btnIcon = '<span class="ic ic-print-area float-none"></span>';
-				$editModeClass = $loopeditmode ? " loopeditmode-hint" : "";
+				$editModeClass = $editMode ? " loopeditmode-hint" : "";
 
 				$html .= '<div class="loopprint-container loopprint-button">';
 				$html .= '<input id="'. $btnId .'" type="checkbox">';
 				$html .= '<label for="'. $btnId .'" class="mb-0"><span data-title="'.wfMessage('loopscreenshot')->text().'" class="loopprint-tag '. $btnId;
-				$html .= ( $loopeditmode ) ? ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"' : '"';
+				$html .= ( $editMode ) ? ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"' : '"';
 				$html .= '>' . $btnIcon . '<span class="loopprint-button-text pl-1">'.wfMessage('loopscreenshot')->text().'</span></span></label>';
 				$html .= '<div class="loopprint-content pb-1"><img class="responsive-image" src="'.$screenshotUrl.'"/></div>';
 				$html .= '</div>';
@@ -125,7 +125,7 @@ class LoopScreenshot {
 				$wikiPage = WikiPage::factory( $title );
 				$fwp = new FlaggableWikiPage ( $title );
 
-				$rev = $wikiPage->getRevision();
+				$rev = $wikiPage->getRevisionRecord();
 				$revId = $rev->getId();
 				$stableRevId = $fwp->getStable();
 

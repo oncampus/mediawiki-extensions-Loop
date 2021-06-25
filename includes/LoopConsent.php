@@ -1,5 +1,4 @@
 <?php
-#TODO MW 1.35 DEPRECATION - HOOK DEPRECATED out of use
 /**
   * @description Consent prompt for YouTube, Vimeo and H5P
   * @author Dustin Neß <dustin.ness@th-luebeck.de>

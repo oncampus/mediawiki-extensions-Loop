@@ -1,14 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description A parser extension that adds the tag <loop_formula> to mark content as formula and provide a table of formulas
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 class LoopFormula extends LoopObject{
 
 	public static $mTag = 'loop_formula';
@@ -90,7 +88,7 @@ class SpecialLoopFormulas extends SpecialPage {
 
 	    $parser = new Parser ( $wgParserConf );
 	    $parserOptions = new ParserOptions();
-	    $parser->Options ( $parserOptions );
+	    $parser->getOptions ( $parserOptions );
 
 	    $formulas = array ();
 	    $structureItems = $loopStructure->getStructureItems();

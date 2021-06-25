@@ -4,10 +4,8 @@
   * @ingroup Extensions
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
-  
-  if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -15,8 +13,8 @@ class LoopReference {
     public static function onParserSetup(Parser $parser) {
 		$parser->setHook ( 'loop_reference', 'LoopReference::renderLoopReference' );
 		return true;
-    }	
-    
+    }
+
 	/**
 	 *
 	 * @param string $input
@@ -62,7 +60,7 @@ class LoopReference {
 			$html = $e . $html;
 		}
 		if ( isset($objectData) && $objectData ) {
-			
+
 			$lsi = LoopStructureItem::newFromIds ( $objectData["articleId"] );
 			if ( !empty( $input ) ) {
 				$linkTitle .= $parser->recursiveTagParse ( $input, $frame );
@@ -78,7 +76,7 @@ class LoopReference {
 				$linkTitle .= wfMessage ( $objectData["index"].'-name-short' )->inContentLanguage ()->text () . " ";
 				if ( $wgLoopObjectNumbering ) {
 					if ( $lsi ) {
-						
+
 						$pageData = array( "structure", $lsi, $loopStructure );
 						$linkTitle .= LoopObject::getObjectNumberingOutput($refId, $pageData, null, $objectData );
 					}
@@ -88,10 +86,10 @@ class LoopReference {
 				}
 				$linkTitleAttr = htmlspecialchars($linkTitle);
 			}
-			$html .= $linkRenderer->makelink( 
+			$html .= $linkRenderer->makelink(
 				Title::newFromId($objectData["articleId"]),
 				new HtmlArmor( $linkTitle ),
-				array( 
+				array(
 					"class" => "loop-reference",
 					"title" => $linkTitleAttr,
 					"alt" => $linkTitleAttr,
@@ -102,6 +100,6 @@ class LoopReference {
 			$html .= $parser->recursiveTagParse ( $input, $frame );
 		}
 
-		return  $html;			
+		return  $html;
 	}
 }

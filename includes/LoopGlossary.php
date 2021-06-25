@@ -1,11 +1,8 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @author Dennis Krohn @krohnden
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -16,7 +13,8 @@ class LoopGlossary {
 		global $wgOut;
 
 		$user = $wgOut->getUser();
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
 		$glossaryItems = self::getGlossaryPages();
 		if ( $glossaryItems ) {
@@ -69,7 +67,7 @@ class LoopGlossary {
 		// Update page_touched
 		if ( $article_ids ) {
 			$article_ids = array_unique ( $article_ids );
-			$dbw = wfGetDB ( DB_MASTER );
+			$dbw = wfGetDB ( DB_PRIMARY );
 
 			$dbPageTouchedResult = $dbw->update ( 'page', array (
 					'page_touched' => $dbw->timestamp()
@@ -130,7 +128,9 @@ class SpecialLoopGlossary extends SpecialPage {
 			global $wgSecretKey;
 			$saltedToken = $user->getEditToken( $wgSecretKey, $request );
 
-			$editMode = $user->getOption( 'LoopEditMode', false, true );
+			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+			$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+
 			if ( $editMode && $user->isAllowed('edit') ) {
 
 				$html .= '<form class="mw-editform mt-3 mb-3" id="glossary-entry-form"  enctype="multipart/form-data">';
@@ -177,7 +177,7 @@ class SpecialLoopGlossary extends SpecialPage {
 
 				if ( $title->getArticleID() === 0 ) { // 0 when the page does not exist
 					$newGlossaryPage = WikiPage::factory( Title::newFromText( $title->mTextform, NS_GLOSSARY ));
-					$newGlossaryPageContent = new WikitextContent( wfMessage ("loopstructure-default-newpage-content" )->text() ); #todo
+					$newGlossaryPageContent = new WikitextContent( wfMessage ("loopstructure-default-newpage-content" )->text() );
 					$newGlossaryPageUpdater = $newGlossaryPage->newPageUpdater( $user );
 					$summary = CommentStoreComment::newUnsavedComment( 'New Glossary page' );
 					$newGlossaryPageUpdater->setContent( "main", $newGlossaryPageContent );

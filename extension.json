@@ -3,12 +3,13 @@
 	"namemsg": "loop-extensionname",
 	"type": "other",
 	"author": [
-		"Marc Vorreiter",
+		"Technische Hochschule Lübeck, Institut für Interaktive Systeme",
 		"Dennis Krohn",
-		"Kevin Berg",
-    	"Dustin Neß"
+    	"Dustin Neß",
+		"Marc Vorreiter",
+		"Kevin Berg"
 	],
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
@@ -118,7 +119,6 @@
 		"LoopNgSpice": "includes/LoopNgSpice.php",
 		"SpecialLoopNgSpice": "includes/LoopNgSpice.php",
 		"LoopComment": "includes/LoopComment.php",
-		"LoopSwfHandler": "includes/LoopMediaHandler.php",
 		"SpecialLoopPagesNotInStructure": "includes/LoopStructure.php"
 	},
 	"Hooks": {

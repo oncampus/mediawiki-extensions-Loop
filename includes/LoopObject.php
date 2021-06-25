@@ -1,14 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Renders LOOP objects
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Logger\LoggerFactory;
 
@@ -74,7 +72,7 @@ class LoopObject {
 		$parser->setHook ( 'loop_figure', 'LoopFigure::renderLoopFigure' );
 		$parser->setHook ( 'loop_table', 'LoopTable::renderLoopTable' );
 		$parser->setHook ( 'loop_media', 'LoopMedia::renderLoopMedia' );
-		$parser->setHook ( 'loop_formula', 'LoopFormula::renderLoopFormula' ); # todo
+		$parser->setHook ( 'loop_formula', 'LoopFormula::renderLoopFormula' );
 		$parser->setHook ( 'loop_task', 'LoopTask::renderLoopTask' );
 		$parser->setHook ( 'loop_listing', 'LoopListing::renderLoopListing' );
 
@@ -390,7 +388,7 @@ class LoopObject {
 		if ($parser == false) {
 			$parser = new Parser ( $wgParserConf );
 			$parserOptions = ParserOptions::newFromUser ( $user );
-			$parser->Options ( $parserOptions );
+			$parser->getOptions ( $parserOptions );
 			$t = Title::newFromText ( 'NO TITLE' );
 			$parser->setTitle ( $t );
 			$parser->clearState ();
@@ -711,7 +709,6 @@ class LoopObject {
 			}
 
 			if ( ! in_array ( $this->getAlignment(), self::$mAlignmentOptions ) ) {
-				global $wgParser, $wgFrame;
 				$this->setAlignment('none');
 				throw new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "align", $this->GetArg('align'), implode( ', ', self::$mAlignmentOptions ), 'none' )->text() );
 
@@ -806,8 +803,6 @@ class LoopObject {
 					break;
 			}
 		}
-		#if (){}
-		#dd($this,$objectData, $matches);
 	}
 
 	/**
@@ -825,7 +820,9 @@ class LoopObject {
 			$stableRevId = $fwp->getStable();
 
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				self::handleObjectItems( $wikiPage, $title, $content->getText() );
+				$content = $wikiPage->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+				$contentText = ContentHandler::getContentText( $content );
+				self::handleObjectItems( $wikiPage, $title, $contentText );
 			}
 		}
 		return true;
@@ -863,7 +860,8 @@ class LoopObject {
 			$content = $wikiPage->getContent();
 			if ( $contentText == null) {
 				if ( $wikiPage->getContent() != null ) {
-					$contentText = $content->getText();
+					$content = $wikiPage->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+					$contentText = ContentHandler::getContentText( $content );
 				} else {
 					return '';
 				}
@@ -1001,7 +999,7 @@ class LoopObject {
 		$cond = "";
 		// if a title is given, each page after given one is updated
 		if ( isset($title) ) {
-			# $cond = "lsi_article=" . $title->getArticleID(); # TODO remove? Für referenzen müssen alle Seiten immer neu geladen werden.
+			# $cond = "lsi_article=" . $title->getArticleID();
 		}
 
 		$dbr = wfGetDB ( DB_REPLICA );
@@ -1035,7 +1033,7 @@ class LoopObject {
 		// Update page_touched
 		if ( $article_ids ) {
 			$article_ids = array_unique ( $article_ids );
-			$dbw = wfGetDB ( DB_MASTER );
+			$dbw = wfGetDB ( DB_PRIMARY );
 
 			$dbPageTouchedResult = $dbw->update ( 'page', array (
 					'page_touched' => $dbw->timestamp()
@@ -1060,8 +1058,8 @@ class LoopObject {
 		$showNumbers = true;
 		if ( isset( $title->flaggedRevsArticle ) ) {
 			$fwp = $title->flaggedRevsArticle;
-			if ( $fwp->getRevision() ) {
-				$revId = $fwp->getRevision()->getId();
+			if ( $fwp->getRevisionRecord() ) {
+				$revId = $fwp->getRevisionRecord()->getId();
 				$stableId = $fwp->getStable();
 				if ( $stableId != $revId && $stableId != null ) {
 					$showNumbers = false;

@@ -1,14 +1,13 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
   * @description Content as for example notes or comments only for displaying in wikitext.
   * @ingroup Extensions
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopComment {
 
@@ -22,9 +21,10 @@ class LoopComment {
 
         global $wgOut;
 		$user = $wgOut->getUser();
-		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
-        if ( !$loopeditmode ) {
+        if ( !$editMode ) {
             return "";
         }
 

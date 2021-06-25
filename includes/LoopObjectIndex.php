@@ -1,5 +1,7 @@
 <?php
-#TODO MW 1.35 DEPRECATION
+
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 class LoopObjectIndex {
 
     public $id; // id of the indexed item
@@ -17,7 +19,7 @@ class LoopObjectIndex {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
-        $dbw = wfGetDB( DB_MASTER );
+        $dbw = wfGetDB( DB_PRIMARY );
 
         $dbw->insert(
             'loop_object_index',
@@ -41,7 +43,7 @@ class LoopObjectIndex {
 	// deletes all objects of a page
     public static function removeAllPageItemsFromDb ( $article ) {
 
-		$dbr = wfGetDB( DB_MASTER );
+		$dbr = wfGetDB( DB_PRIMARY );
 		$dbr->delete(
 			'loop_object_index',
 			'loi_pageid = ' . $article,

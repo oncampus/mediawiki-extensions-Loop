@@ -4,9 +4,7 @@
  * @ingroup Extensions
  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopAccordion {
 
@@ -14,9 +12,9 @@ class LoopAccordion {
 		$parser->setHook( 'loop_accordion', 'LoopAccordion::renderLoopAccordion' );
 		return true;
 	}
-	
+
 	static function renderLoopAccordion( $input, array $args, Parser $parser, PPFrame $frame ) {
-        
+
         $html = '';
         $parser->extractTagsAndParams ( array( "loop_row" ), $input, $row_matches );
 
@@ -40,7 +38,7 @@ class LoopAccordion {
             $html .= '</div>';
         }
         $html .= '</div>';
-        
+
 
 		return $html;
     }

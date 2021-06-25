@@ -1,14 +1,13 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
   * @description
   * @ingroup Extensions
   * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>, Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class ApiLoopFeedbackSave extends ApiBase {
 	public function __construct( $main, $action ) {
@@ -17,7 +16,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 
 	public function execute() {
 
-
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$result   = $this->getResult();
 
 		$user = $this->getUser();
@@ -28,7 +27,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 			);
 		}
 
-		if (!$user->isAllowed( 'loopfeedback-view' ) ) {
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
@@ -56,7 +55,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$feedback['lf_timestamp'] = wfTimestampNow();
 		$feedback['lf_archive_timestamp'] = '00000000000000';
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->insert(
 			'loop_feedback',
 			$feedback,
@@ -112,7 +111,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),
@@ -151,7 +150,8 @@ class ApiLoopFeedbackSave extends ApiBase {
 		 * in a 32-character (at max) string of hexadecimal characters.
 		 * Pad the string to full 32-char length if the value is lower.
 		 */
-		$id = UIDGenerator::newTimestampedUID128( 16 );
+		$idGenerator = MediaWikiServices::getInstance()->getGlobalIdGenerator();
+		$id = $idGenerator->newTimestampedUID128( 16 );
 		return str_pad( $id, 32, 0, STR_PAD_LEFT );
 	}
 }
@@ -166,7 +166,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 
 
 		$result   = $this->getResult();
-
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
 		$user = $this->getUser();
 		if ( $user->getBlock() != null ) {
@@ -176,7 +176,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 			);
 		}
 
-		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
@@ -223,7 +223,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),
@@ -273,8 +273,8 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 				'userblocked'
 			);
 		}
-
-		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
@@ -368,7 +368,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),
@@ -403,7 +403,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 
 	public function execute() {
 
-
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$result   = $this->getResult();
 
 		$user = $this->getUser();
@@ -414,7 +414,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 			);
 		}
 
-		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
@@ -474,7 +474,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),

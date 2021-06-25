@@ -1,14 +1,11 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Exports LOOP to PDF and test PDF side
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -153,8 +150,8 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 			$loopStructure->loadStructureItems();
 		}
 		$error = array();
-
-		if ( $user->isAllowed('loop-pdf-test') ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $permissionManager->userHasRight( $user, 'loop-pdf-test') ) {
 
 			$html = "<br>";
 			foreach ( $loopStructure->structureItems as $item ) {

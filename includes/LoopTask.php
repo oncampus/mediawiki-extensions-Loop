@@ -1,14 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description A parser extension that adds the tag <loop_task> to mark content as task and provide a table of tasks
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 class LoopTask extends LoopObject{
 
 	public static $mTag = 'loop_task';
@@ -51,9 +49,6 @@ class LoopTask extends LoopObject{
 		return  $html ;
 	}
 
-
-
-
 }
 
 /**
@@ -93,7 +88,7 @@ class SpecialLoopTasks extends SpecialPage {
 
 	    $parser = new Parser ( $wgParserConf );
 	    $parserOptions = new ParserOptions();
-	    $parser->Options ( $parserOptions );
+	    $parser->getOptions ( );
 
 	    $tasks = array ();
 	    $structureItems = $loopStructure->getStructureItems();

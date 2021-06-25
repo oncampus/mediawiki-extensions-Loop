@@ -1,14 +1,13 @@
 <?php
-#TODO MW 1.35 DEPRECATION
+# TODO test
 /**
  * @description A parser extension that adds the tag <loop_listing> to mark content as listing and provide a table of listings
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 class LoopListing extends LoopObject{
 
 	public static $mTag = 'loop_listing';
@@ -88,8 +87,8 @@ class SpecialLoopListings extends SpecialPage {
 	    $loopStructure->loadStructureItems();
 
 	    $parser = new Parser ( $wgParserConf );
-	    $parserOptions = new ParserOptions();
-	    $parser->Options ( $parserOptions );
+	    #$parserOptions = new ParserOptions();
+	    $parser->getOptions (); # TODO test
 
 	    $listings = array ();
 	    $structureItems = $loopStructure->getStructureItems();

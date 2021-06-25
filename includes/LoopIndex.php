@@ -1,13 +1,11 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Adds index functions
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 
 use MediaWiki\MediaWikiServices;
 
@@ -33,7 +31,7 @@ class LoopIndex {
 		}
 
 		$item = self::getIndexItem( $id );
-		if ( $item ) {
+		if ( is_object( $item ) ) {
 			$articleId = $parser->getTitle()->getArticleID();
 			# check if a dublicate id has been used
 			if ( $input != $item->li_index || $articleId != $item->li_pageid ) {
@@ -73,7 +71,7 @@ class LoopIndex {
 	public function addToDatabase() {
 		if ( $this->refId !== null ) {
 
-			$dbw = wfGetDB( DB_MASTER );
+			$dbw = wfGetDB( DB_PRIMARY );
 
 			$dbw->insert(
 				'loop_index',
@@ -120,7 +118,7 @@ class LoopIndex {
 
 	// deletes all index items of a page
     public static function removeAllPageItemsFromDb ( $article ) {
-		$dbr = wfGetDB( DB_MASTER );
+		$dbr = wfGetDB( DB_PRIMARY );
 		$dbr->delete(
 			'loop_index',
 			'li_pageid = ' . $article,
@@ -222,7 +220,8 @@ class LoopIndex {
 	        $stableRevId = $fwp->getStable();
 
 	        if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-	            self::handleIndexItems( $wikiPage, $title, $content->getText() );
+				$contentText = ContentHandler::getContentText( $content );
+	            self::handleIndexItems( $wikiPage, $title, $contentText );
 	        }
 	    }
 	    return true;
@@ -259,7 +258,7 @@ class LoopIndex {
 
 		$content = $wikiPage->getContent();
 		if ($contentText == null) {
-			$contentText = $content->getText();
+			$contentText = ContentHandler::getContentText( $content );
 		}
 
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {

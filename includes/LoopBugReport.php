@@ -1,16 +1,11 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Ticket from users to admins/authors.
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
-
-use MediaWiki\MediaWikiServices;
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopBugReport {
 
@@ -80,7 +75,7 @@ class SpecialLoopBugReport extends SpecialPage {
         $message = urldecode ( $request->getText('message') );
         $accept = urldecode( $request->getText('g-recaptcha-response') );
 
-        if ( $user->isLoggedIn() ) {
+        if ( $user->isRegistered() ) {
             if ( $service != false ) {
                 if ( !empty( $page ) && !empty( $url ) ) {
                     $html .= $this->makeForm( $request, $page, $url, $captcha );
@@ -96,7 +91,7 @@ class SpecialLoopBugReport extends SpecialPage {
 
                             $url = 'https://www.google.com/recaptcha/api/siteverify';
                             $url = wfAppendQuery( $url, $data );
-                            $captchaRequest = MWHttpRequest::factory( $url, [ 'method' => 'GET' ] );
+                            $captchaRequest = MediaWiki\MediaWikiServices::getInstance()->getHttpRequestFactory()->create( $url, [], 'GET' ); #untested TODO
                             $status = $captchaRequest->execute();
                             $result = FormatJson::decode( $captchaRequest->getContent(), true );
 

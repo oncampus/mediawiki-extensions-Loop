@@ -1,13 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description All hooks for LOOP that don't fit into more specific classes
  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopHooks {
 
@@ -42,9 +41,8 @@ class LoopHooks {
 	 */
 	public static function onPageRenderingHash( &$confstr, $user, $forOptions ) {
 
-		global $wgDefaultUserOptions;
-
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
 		if ( $editMode ) {
 			$confstr .= "!loopeditmode=true";
@@ -67,13 +65,15 @@ class LoopHooks {
 
 		global $wgOut;
 		$user = $wgOut->getUser();
+		$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$hideSpecialPages = false;
 		if ( $user->mId == null ) { # no check for specific rights - anon users get blocked from viewing these special pages.
 			$hideSpecialPages = true;
-		} elseif ( in_array( "shared", $user->getGroups() ) || in_array( "shared_basic", $user->getGroups() ) ) {
+		} elseif ( in_array( "shared", $userGroupManager->getUserGroups($user) ) || in_array( "shared_basic", $userGroupManager->getUserGroups($user) ) ) {
 			$hideSpecialPages = true;
 			$hideExtended = array( 'ChangeCredentials', 'ChangeEmail', "PasswordReset", "Preferences" );
-		} elseif ( ! $user->isAllowed( "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
+		} elseif ( ! $permissionManager->userHasRight( $user, "loop-view-special-pages" ) ) { # for logged in users, we can check the rights.
 			$hideSpecialPages = true;
 		}
 
@@ -121,20 +121,21 @@ class LoopHooks {
 	public static function onParserMakeImageParams( $title, $file, &$params, $parser ) {
 		global $wgOut;
 		$user = $wgOut->getUser();
-		$loopEditMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 		$parser->getOptions()->optionUsed( 'LoopEditMode' );
 
 		if ( is_object( $file ) ) {
 			$mediaType = $file->getMediaType();
 			if ( $mediaType == "BITMAP" || $mediaType == "DRAWING" ) {
 				$params['frame']['class'] = 'responsive-image';
-				if ( $loopEditMode ) {
+				if ( $editMode ) {
 					$params['frame']['class'] .= ' image-editmode';
 				}
 				if( class_exists( 'ImageMap' ) ) {
 					$params['frame']['no-link'] = false;
 				} else {
-					if ( $loopEditMode ) {
+					if ( $editMode ) {
 						$params['frame']['no-link'] = false;
 					} else {
 						$params['frame']['no-link'] = true;

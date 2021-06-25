@@ -1,15 +1,14 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Transforms XML to XSLT-compatible content
  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>, Dustin Neß <dustin.ness@th-luebeck.de>
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\Shell\Shell;
+use MediaWiki\MediaWikiServices;
+
 class LoopXsl {
 
 	/**
@@ -19,6 +18,8 @@ class LoopXsl {
 	 * @return String $return
 	 */
     public static function xsl_transform_imagepath($input) {
+		$localRepo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+
 		$imagepath='';
 		if (is_array($input)) {
 			if (isset($input[0])) {
@@ -28,7 +29,7 @@ class LoopXsl {
 				if (count($input_array)==2) {
 					$target_uri=trim($input_array[1]);
 					$filetitle=Title::newFromText( $target_uri, NS_FILE );
-					$file = wfLocalFile($filetitle);
+					$file = $localRepo->newFile($filetitle);
 
 					if (is_object($file)) {
 						$imagepath=$file->getFullUrl();
@@ -46,7 +47,7 @@ class LoopXsl {
 		} else {
 			#$target_uri=trim($input_array[1]);
 			$filetitle=Title::newFromText( $input, NS_FILE );
-			$file = wfLocalFile($filetitle);
+			$file = $localRepo->newFile($filetitle);
 			if (is_object($file)) {
 				$imagepath=$file->getFullUrl();
 				if ( file_exists($file->getLocalRefPath()) ) {
@@ -464,7 +465,7 @@ class LoopXsl {
 		$title = Title::newFromId( $articleId );
 		$wikiPage = WikiPage::factory( $title );
 		$fwp = new FlaggableWikiPage ( $title );
-		$rev = $wikiPage->getRevision();
+		$rev = $wikiPage->getRevisionRecord();
 		$revId = $rev->getId();
 		$stableRevId = $fwp->getStable();
 
@@ -476,9 +477,11 @@ class LoopXsl {
 		} else { # parse the page so images are rendered and can be returned
 			global $wgParserConf;
 			$content = $wikiPage->getContent();
+			$contentText = ContentHandler::getContentText( $content );
 
 			$parser = new Parser( $wgParserConf );
-			$parser->parse( $content->getText(), $title, new ParserOptions() );
+
+			$parser->parse( $contentText, $title, new ParserOptions() );
 			if ( file_exists( $screenshotPath ) ) {
 				return $publicScreenshotPath;
 			}

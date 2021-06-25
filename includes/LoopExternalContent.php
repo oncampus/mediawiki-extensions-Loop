@@ -1,5 +1,4 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Renders External contents from for example H5P, LearningApp, ...
  * @ingroup Extensions

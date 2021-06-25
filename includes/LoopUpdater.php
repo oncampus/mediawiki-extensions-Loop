@@ -1,14 +1,13 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
   * @description Adds LOOP functions to update/upgrade process
   * @ingroup Extensions
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopUpdater {
 
@@ -19,7 +18,7 @@ class LoopUpdater {
 	 * @return bool true
 	 */
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
-		global $IP, $wgLoopAddToSettingsDB;
+		global $IP;
 		$schemaPath = $IP . '/extensions/Loop/schema/';
 
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_structure_items', $schemaPath . 'loop_structure_items.sql', true ));
@@ -34,19 +33,21 @@ class LoopUpdater {
 		if ( $updater->tableExists( 'actor' ) ) {
 			$user = User::newFromName( 'LOOP_SYSTEM' );
 			if ( $user->getId() == 0 ) {
-				$user = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => false ) );
+				$user = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => 'valid' ) );
 			}
 		}
 
 		if ( $updater->tableExists( 'loop_structure_items' ) ) {
 			$systemUser = $user;
-			if ( $systemUser->getId() != 0 ) { #why is system user null sometimes? #TODO investigate
-				$systemUser->addGroup("sysop");
+			$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
+			if ( $systemUser->getId() != 0 ) { #why is system user null sometimes?
+				$userGroupManager->addUserToGroup ( $systemUser, "sysop" );
 			}
 			Loop::setupLoopPages();
 		}
+		/*
 		# LOOP1 to LOOP2 migration process #LOOP1UPGRADE
-		if ( $updater->tableExists( 'loop_structure_items' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen #todo
+		if ( $updater->tableExists( 'loop_structure_items' ) && $updater->tableExists( 'loopstructure' )  ) { #sonst bricht der updater ab. updater muss so jetzt zweimal laufen
 
 			if ( isset( $wgLoopAddToSettingsDB ) ) { # update settings DB from LocalSettings
 				if ( !empty( $wgLoopAddToSettingsDB )) {
@@ -58,10 +59,11 @@ class LoopUpdater {
 			$updater->addExtensionUpdate(array( 'dropTable', 'loopstructure', $schemaPath . 'loopstructure_delete.sql', true ) );
 
 			self::saveAllWikiPages();
-			self::migrateGlossary();
-			self::migrateLoopTerminology();
+			#self::migrateGlossary();
+			#self::migrateLoopTerminology();
 
 		}
+		*/
 		if ( $updater->tableExists( 'loop_object_index' ) ) { #update for existing LOOPs
 			$updater->addExtensionUpdate(array( 'modifyTable', 'loop_object_index', $schemaPath . 'loop_object_index_modify.sql', true ) );
 			#self::saveAllWikiPages();
@@ -77,7 +79,7 @@ class LoopUpdater {
 	 */
 	public static function saveAllWikiPages() {
 
-		global $wgOut;
+		$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			array(
@@ -98,15 +100,15 @@ class LoopUpdater {
 			$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
 			$stableRev = $tmpFPage->getStable();
 			if ( $stableRev == 0 ) {
-				if ( $tmpFPage->getRevision() !== null ) {
-					$stableRev = $tmpFPage->getRevision()->getId();
+				if ( $tmpFPage->getRevisionRecord() !== null ) {
+					$stableRev = $tmpFPage->getRevisionRecord()->getId();
 				} else {
 					$stableRev = "null";
 					error_log("NO REVISION AVAILABLE $row->page_id");
 				}
 			}
 			error_log("Updating page " . $row->page_id . " (rev " . $stableRev .  ")");
-			Hooks::run( 'LoopUpdateSavePage', array( $title ) );
+			$hookContainer->run( 'LoopUpdateSavePage', array( $title ) );
 		}
 	}
 
@@ -115,12 +117,12 @@ class LoopUpdater {
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	public static function migrateGlossary() {
-
+		/*
         $glossary = Category::newFromName("Glossar");
 		$glossaryItems = $glossary->getMembers();
 
 		if ( !empty( $glossaryItems ) ) {
-			$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+			$user = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => 'valid' ] );
 			$user->addGroup("sysop");
 			foreach ( $glossaryItems as $title ) {
 
@@ -167,6 +169,7 @@ class LoopUpdater {
 
 		$glossaryCategoryWikiPage = WikiPage::factory( Title::newFromText( "Glossar", NS_CATEGORY ));
 		$glossaryCategoryWikiPage->doDeleteArticle( 'Moved to Special:Glossary / Spezial:Glossar' );
+		*/
 	}
 
 
@@ -178,15 +181,16 @@ class LoopUpdater {
 	 */
 	public static function onLoopUpdateSavePage( $title ) {
 
+		$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
 		$latestRevId = $title->getLatestRevID();
 		$wikiPage = WikiPage::factory($title);
 		$fwp = new FlaggableWikiPage ( $title );
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
-		$systemUser->addGroup("sysop");
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => 'valid' ] );
+		$userGroupManager->addUserToGroup ( $systemUser, "sysop" );
 
-		$wikiPageRev = $wikiPage->getRevision();
+		$wikiPageRev = $wikiPage->getRevisionRecord();
 		if ( isset( $wikiPageRev ) ) {
-			$wikiPageContent = $wikiPageRev->getContent();
+			$wikiPageContent = $wikiPage->getContent( MediaWiki\Revision\RevisionRecord::RAW );
 			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
 			$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 Upgrade' );
 			$wikiPageUpdater->setContent( "main", $wikiPageContent );
@@ -199,14 +203,14 @@ class LoopUpdater {
 			if ( $latestRevId == $stableRevId || $stableRevId == null ) { # page is stable or does not have any stable version
 				$contentText = null;
 			} else {
-				$revision = $wikiPage->getRevision();
-				$contentText = $revision->getContent()->getText();
+				$content = $wikiPage->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+				$contentText = ContentHandler::getContentText( $content );
 			}
 
 			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
-			self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
-			self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
-			self::replaceCommonWikitext( $wikiPage, $title, $contentText, $systemUser );
+			#self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
+			#self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
+			#self::replaceCommonWikitext( $wikiPage, $title, $contentText, $systemUser );
 		}
 		return true;
 	}
@@ -218,7 +222,8 @@ class LoopUpdater {
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	public static function replaceCommonWikitext ( $wikiPage, $title, $contentText, $systemUser ) {
-		$revision = $wikiPage->getRevision();
+		/*
+		$revision = $wikiPage->getRevisionRecord();
 		if ( $contentText == null ) {
 			if ( $revision !== null ) {
 				$contentText = $revision->getContent()->getText();
@@ -252,6 +257,7 @@ class LoopUpdater {
 			$wikiPageUpdater->setContent( "main", $editContent );
 			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 		}
+		*/
 	}
 
 	/**
@@ -260,10 +266,11 @@ class LoopUpdater {
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	public static function migrateLiterature( $wikiPage, $title, $contentText, $systemUser ) {
+		/*
 		$literaturePage = false;
 		$bibliographyPageTitle = Title::newFromText( "Bibliographypage", NS_MEDIAWIKI);
 		$bibliographyPageWP = WikiPage::factory( $bibliographyPageTitle );
-		$bibliographyPageRev = $bibliographyPageWP->getRevision();
+		$bibliographyPageRev = $bibliographyPageWP->getRevisionRecord();
 		if ( $bibliographyPageRev ) {
 			$bibliographyPageContentText = $bibliographyPageRev->getContent()->getText();
 			if ( $title->mTextform == $bibliographyPageContentText ) {
@@ -271,7 +278,7 @@ class LoopUpdater {
 			}
 		}
 		if ( $contentText == null ) {
-			$revision = $wikiPage->getRevision();
+			$revision = $wikiPage->getRevisionRecord();
 			if ( $revision != null ) {
 				$contentText = $revision->getContent()->getText();
 			} else {
@@ -327,6 +334,7 @@ class LoopUpdater {
 		}
 
 		return true;
+		*/
 	}
 
 	/**
@@ -334,8 +342,8 @@ class LoopUpdater {
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	public static function migrateLoopZip( $wikiPage, $title, $contentText = null, $systemUser ) {
-
-		$revision = $wikiPage->getRevision();
+		/*
+		$revision = $wikiPage->getRevisionRecord();
 
 		if ( $contentText == null ) {
 			if ( $revision != null ) {
@@ -361,14 +369,15 @@ class LoopUpdater {
 			$wikiPageUpdater->setContent( "main", $editContent );
 			$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 		}
+		*/
 	}
 
 	/**
 	 * Migrate terminology page for Lingo extension
 	 */
 	public static function migrateLoopTerminology() {
-
-		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => true ] );
+		/*
+		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => 'valid' ] );
 		$systemUser->addGroup("sysop");
 
         $terminologyPage = Title::newFromText( "Abkuerzungen" );
@@ -394,6 +403,7 @@ class LoopUpdater {
 
 			error_log("Moving and redirecting terminology page " . $terminologyPage->mArticleID );
 		}
+		*/
 	}
 
 	/**
@@ -425,6 +435,8 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 	function execute( $par ) {
 
 		$user = $this->getUser();
+		$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$out->setPageTitle( "Manual LOOP Update" );
@@ -436,7 +448,7 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 		$token = $request->getText( 'token' );
 		require_once "$IP/loop/check_token.php";
 
-		if ( in_array( "sysop", $user->getGroups() ) || check_token( $token, $_SERVER["SERVER_NAME"] ) ) {
+		if ( in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) /*||  check_token( $token, $_SERVER["SERVER_NAME"] ) */ ) {
 
 			if ( empty ( $request->getText( 'execute' ) ) ) {
 				$html .= '<h3>Manual LOOP Updates</h3>';

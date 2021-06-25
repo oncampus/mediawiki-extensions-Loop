@@ -1,14 +1,11 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Exports LOOP to various formats.
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -337,7 +334,7 @@ class LoopExportEpub extends LoopExport {
 	}
 
 	public function generateExportContent() {
-		$this->exportContent = ''; // ToDo: LoopEpub
+		$this->exportContent = '';
 	}
 
 	public function sendExportHeader() {
@@ -416,7 +413,7 @@ class LoopExportScorm extends LoopExport {
 	}
 
 	public function generateExportContent() {
-		$this->exportContent = ''; // ToDo: LoopScorm
+		$this->exportContent = '';
 	}
 
 	public function sendExportHeader() {
@@ -443,6 +440,9 @@ class SpecialLoopExport extends SpecialPage {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
+		$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
@@ -465,37 +465,37 @@ class SpecialLoopExport extends SpecialPage {
 		$export = false;
 		switch ($sub) {
 			case 'xml':
-				if ($user->isAllowed( 'loop-export-xml' ) && LoopExportXml::isAvailable() ) {
+				if ($permissionManager->userHasRight( $user,  'loop-export-xml' ) && LoopExportXml::isAvailable() ) {
 					$export = new LoopExportXml($structure, $request);
 					$logEntry = new ManualLogEntry( 'loopexport', "xml");
 				}
 				break;
 			case 'pdf':
-				if ($user->isAllowed( 'loop-export-pdf' ) && LoopExportPdf::isAvailable() ) {
+				if ($permissionManager->userHasRight( $user,  'loop-export-pdf' ) && LoopExportPdf::isAvailable() ) {
 					$export = new LoopExportPdf($structure);
 					$logEntry = new ManualLogEntry( 'loopexport', "pdf");
 				}
 				break;
 			case 'mp3':
-				if ($user->isAllowed( 'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) {
+				if ($permissionManager->userHasRight( $user,  'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) {
 					$export = new LoopExportMp3($structure);
 					$logEntry = new ManualLogEntry( 'loopexport', "mp3");
 				}
 				break;
 			case 'html':
-				if ($user->isAllowed( 'loop-export-html' ) && LoopExportHtml::isAvailable() ) {
+				if ($permissionManager->userHasRight( $user,  'loop-export-html' ) && LoopExportHtml::isAvailable() ) {
 					$export = new LoopExportHtml($structure, $context);
 					$logEntry = new ManualLogEntry( 'loopexport', "html");
 				}
 			break;
 			case 'epub':
-				if ($user->isAllowed( 'loop-export-epub' ) && LoopExportEpub::isAvailable() ) {
+				if ($permissionManager->userHasRight( $user,  'loop-export-epub' ) && LoopExportEpub::isAvailable() ) {
 					$export = new LoopExportEpub($structure);
 					$logEntry = new ManualLogEntry( 'loopexport', "epub");
 				}
 			break;
 			case 'pageaudio':
-				if ($user->isAllowed( 'loop-pageaudio' ) && LoopExportPageMp3::isAvailable() ) {
+				if ($permissionManager->userHasRight( $user,  'loop-pageaudio' ) && LoopExportPageMp3::isAvailable() ) {
 					$export = new LoopExportPageMp3($structure, $request);
 					# page audio logging is moved to LoopMp3.php
 				}
@@ -504,7 +504,7 @@ class SpecialLoopExport extends SpecialPage {
 
 		if ( $export != false ) {
 			$logMsg = "";
-			if ( ! in_array( "sysop", $this->getUser()->getGroups() ) ) {
+			if ( ! in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) ) {
 				error_reporting(E_ERROR | E_PARSE); # no error reports for non-admins
 			}
 			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
@@ -522,13 +522,13 @@ class SpecialLoopExport extends SpecialPage {
 			if ( is_array( $export->getExportContent() ) ) {
 				$msg = $this->msg( "loopexport-pdf-error" );
 
-				if ( $this->getUser()->isAllowed('loop-pdf-test') ) {
+				if ( $permissionManager->userHasRight( $user, 'loop-pdf-test') ) {
 					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExportPdfTest' ), $this->msg( "loopexportpdftest" )->parse() );
 				} elseif ( LoopBugReport::isAvailable() != false ) {
 					$msg .= $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopBugReport' ), $this->msg( "loopbugreport" )->parse(), array(), array( "url" => "PDF Export", "page" => "Special:LoopExport/pdf" ) );
 				}
 				$html = Html::rawElement( 'div', array( 'class' => 'errorbox' ), $msg );
-				if ( in_array( "sysop", $this->getUser()->getGroups() ) ) {
+				if ( in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) ) {
 					$errors = $export->getExportContent();
 					$html .= '<pre class="d-none1"><b>Error:</b> <br>'.implode("\n", array_slice(explode("\n", $errors[0]), 1)) .'</pre>';
 					$html .= '<pre class="d-none1"><b>XML</b>: <br>'.htmlspecialchars($errors[2]).'</pre>';
@@ -555,22 +555,22 @@ class SpecialLoopExport extends SpecialPage {
 
 			$out->addHtml('<ul>');
 
-			if ($user->isAllowed( 'loop-export-xml' ) && LoopExportXml::isAvailable() ) {
+			if ($permissionManager->userHasRight( $user,  'loop-export-xml' ) && LoopExportXml::isAvailable() ) {
 				$xmlExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/xml' ), new HtmlArmor(wfMessage ( 'export-linktext-xml' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$xmlExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-pdf' ) && LoopExportPdf::isAvailable() ) {
+			if ($permissionManager->userHasRight( $user,  'loop-export-pdf' ) && LoopExportPdf::isAvailable() ) {
 				$pdfExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/pdf' ), new HtmlArmor(wfMessage ( 'export-linktext-pdf' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$pdfExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) {
+			if ($permissionManager->userHasRight( $user,  'loop-export-mp3' ) && LoopExportMp3::isAvailable() ) {
 				$mp3ExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/mp3' ), new HtmlArmor(wfMessage ( 'export-linktext-mp3' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$mp3ExportLink.'</li>');
 			}
 
-			if ($user->isAllowed( 'loop-export-html' ) && LoopExportHtml::isAvailable() ) {
+			if ($permissionManager->userHasRight( $user,  'loop-export-html' ) && LoopExportHtml::isAvailable() ) {
 				$htmlExportLink = $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopExport/html' ), new HtmlArmor(wfMessage ( 'export-linktext-html' )->inContentLanguage ()->text () ));
 				$out->addHtml ('<li>'.$htmlExportLink.'</li>');
 			}

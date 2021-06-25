@@ -1,13 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description Exports LOOP to HTML offline version
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopHtml{
 
@@ -52,12 +51,16 @@ class LoopHtml{
             //$articlePath = preg_replace('/(\/)/', '\/', $wgArticlePath);
             //LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
 
+			$user = $wgOut->getUser();
             # prepare global config
-            $editModeBefore = $wgOut->getUser()->getOption( 'LoopEditMode', $wgDefaultUserOptions['LoopEditMode'], true );
-            $renderModeBefore = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+			$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
+			$editModeBefore = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+			$renderModeBefore = $userOptionsLookup->getOption( $user, 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+
             $debugModeBefore = $wgResourceLoaderDebug;
-            $wgOut->getUser()->setOption( 'LoopRenderMode', 'offline' );
-            $wgOut->getUser()->setOption( 'LoopEditMode', false );
+            $userOptionsManager->setOption( $user, 'LoopRenderMode', 'offline' );
+            $userOptionsManager->setOption( $user, 'LoopEditMode', false );
             $wgResourceLoaderDebug = true;
 
             $exportSkin = clone $context->getSkin();
@@ -66,7 +69,7 @@ class LoopHtml{
             $mainPage = $context->getTitle()->newMainPage(); # Content of Mediawiki:Mainpage. Might not exist and cause error
 
             $wikiPage = WikiPage::factory( $mainPage );
-            $revision = $wikiPage->getRevision();
+            $revision = $wikiPage->getRevisionRecord();
             if ( $revision != null ) {
                 LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
             } else {
@@ -109,7 +112,7 @@ class LoopHtml{
                 $imprintTitle = Title::newFromText( $wgLoopImprintLink );
                 if ( ! empty ( $imprintTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $imprintTitle );
-                    $revision = $wikiPage->getRevision();
+                    $revision = $wikiPage->getRevisionRecord();
                     if ( $revision != null ) {
                         LoopHtml::writeArticleToFile( $imprintTitle, "", $exportSkin );
                     }
@@ -129,7 +132,7 @@ class LoopHtml{
                 $privacyTitle = Title::newFromText( $wgLoopPrivacyLink );
                 if ( ! empty ( $privacyTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $privacyTitle );
-                    $revision = $wikiPage->getRevision();
+                    $revision = $wikiPage->getRevisionRecord();
                     if ( $revision != null ) {
                         LoopHtml::writeArticleToFile( $privacyTitle, "", $exportSkin );
                     }
@@ -328,8 +331,8 @@ class LoopHtml{
             $title = Title::newFromId($title);
         }
         $wikiPage = WikiPage::factory( $title );
-        $revision = $wikiPage->getRevision();
-        $content = $revision->getContent( Revision::RAW );
+        $revision = $wikiPage->getRevisionRecord();
+        $content = $revision->getContent( MediaWiki\Revision\RevisionRecord::RAW );
 
         $localParser = new Parser();
         $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;

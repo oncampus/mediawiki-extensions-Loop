@@ -1,14 +1,11 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
   * @description
   * @ingroup Extensions
   * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>, Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -22,9 +19,13 @@ class LoopFeedback {
 			return false;
 		}
 
+		$mws = MediaWikiServices::getInstance();
+		$userGroupManager = $mws->getUserGroupManager();
+		$permissionManager = $mws->getPermissionManager();
+
 		$title = $wgOut->getTitle();
 		$user = $wgOut->getUser();
-		if ( !$user->isAllowed( 'loopfeedback-view' ) || in_array( "shared", $user->getGroups() ) || in_array( "shared_basic", $user->getGroups() ) ) {
+		if ( !$permissionManager->userHasRight( $user, 'loopfeedback-view' ) || in_array( "shared", $userGroupManager->getUserGroups($user) ) || in_array( "shared_basic", $userGroupManager->getUserGroups($user) ) ) {
 			return false;
 		}
 
@@ -170,6 +171,7 @@ class LoopFeedback {
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		if ( self::getShowFeedback() ) {
 			global $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
+			$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
 			$articleId = $out->getTitle()->getArticleID();
 			$user = $out->getUser();
@@ -238,13 +240,13 @@ class LoopFeedback {
 						)
 					);
 
-					if ( $user->isAllowed( 'loopfeedback-view-results' ) ) {
+					if ( $permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 						$view_results = 1;
 					} else {
 						$view_results = 0;
 					}
 
-					if ( $user->isAllowed( 'loopfeedback-view-comments' ) ) {
+					if ( $permissionManager->userHasRight( $user, 'loopfeedback-view-comments' ) ) {
 						$view_comments = 1;
 					} else {
 						$view_comments = 0;
@@ -314,7 +316,7 @@ class LoopFeedback {
 			$periods[] = array(
 						'begin' => $timestamps[0],
 						'end' => '00000000000000',
-						'begin_text' => self::formatTimestamp( $timestamps[0] ),
+						'begin_text' => $this->formatTimestamp( $timestamps[0] ),
 						'end_text' => wfMessage( 'loopfeedback-specialpage-period-now' )->text()
 						);
 
@@ -327,8 +329,8 @@ class LoopFeedback {
 					$periods[] = array(
 						'begin' => $timestamp,
 						'end' => $lasttimestamp,
-						'begin_text' => self::formatTimestamp( $timestamp ),
-						'end_text' => self::formatTimestamp( $lasttimestamp )
+						'begin_text' => $this->formatTimestamp( $timestamp ),
+						'end_text' => $this->formatTimestamp( $lasttimestamp )
 						);
 
 					$lasttimestamp = $timestamp;
@@ -339,7 +341,7 @@ class LoopFeedback {
 				'begin' => '00000000000000',
 				'end' => $timestamp,
 				'begin_text' => wfMessage( 'loopfeedback-specialpage-period-begin' )->text(),
-				'end_text' => self::formatTimestamp( $timestamp)
+				'end_text' => $this->formatTimestamp( $timestamp)
 				);
 
 		} else{
@@ -403,7 +405,7 @@ class LoopFeedback {
 				if ( $comments == true) {
 					$return[ 'comments' ][] = array (
 						'timestamp' => $row[ 'lf_timestamp' ],
-						'timestamp_text' => self::formatTimestamp( $row[ 'lf_timestamp' ]),
+						'timestamp_text' => $this->formatTimestamp( $row[ 'lf_timestamp' ]),
 						'comment' => $row[ 'lf_comment' ]
 						);
 				}
@@ -438,8 +440,11 @@ class SpecialLoopFeedback extends SpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
+		// $userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		// $editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+
 		$out->setPageTitle( $this->msg('loopfeedback') );
 
 		$action = $request->getText( 'action' );
@@ -455,7 +460,7 @@ class SpecialLoopFeedback extends SpecialPage {
 			if ( $action == 'reset_page' )  {
 				if ( $page != '' ) {
 					if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
-						self::resetPage( $page );
+						$this->resetPage( $page );
 						$view = 'all';
 						$period_begin = '00000000000000';
 						$period_end = '00000000000000';
@@ -466,7 +471,7 @@ class SpecialLoopFeedback extends SpecialPage {
 			}
 			if ( $action == 'reset_all' )  {
 				if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
-					self::resetAll();
+					$this->resetAll();
 					$view = 'all';
 					$period_begin = '00000000000000';
 					$period_end = '00000000000000';
@@ -499,37 +504,37 @@ class SpecialLoopFeedback extends SpecialPage {
 
 		$return = '';
 		if ( $view == 'none' ) {
-			$return .= self::printInactive();
+			$return .= $this->printInactive();
 		}
 		if ( $view == 'confirm_reset_page' ) {
-			if ( !$this->getUser()->isAllowed( 'loopfeedback-reset' ) ) {
+			if ( !$permissionManager->userHasRight( $user, 'loopfeedback-reset' ) ) {
 				throw new PermissionsError( 'loopfeedback-reset' );
 			}
-			$return .= self::printConfirmResetPage( $page, $period_begin, $period_end );
+			$return .= $this->printConfirmResetPage( $page, $period_begin, $period_end );
 		}
 		if ( $view == 'confirm_reset_all' ) {
-			if ( !$this->getUser()->isAllowed( 'loopfeedback-reset' ) ) {
+			if ( !$permissionManager->userHasRight( $user, 'loopfeedback-reset' ) ) {
 				throw new PermissionsError( 'loopfeedback-reset' );
 			}
-			$return .= self::printConfirmResetAll( $page, $period_begin, $period_end );
+			$return .= $this->printConfirmResetAll( $page, $period_begin, $period_end );
 		}
 		if ( $view == 'overview' ) {
-			if ( !$this->getUser()->isAllowed( 'loopfeedback-view-results' ) ) {
+			if ( !$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 				throw new PermissionsError( 'loopfeedback-view-result' );
 			}
-			$return .= self::printOverview();
+			$return .= $this->printOverview();
 		}
 		if ( $view == 'all' ) {
-			if ( !$this->getUser()->isAllowed( 'loopfeedback-view-results' ) ) {
+			if ( !$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 				throw new PermissionsError( 'loopfeedback-view-result' );
 			}
-			$return .= self::printAll();
+			$return .= $this->printAll();
 		}
 		if ( $view == 'page' ) {
-			if ( !$this->getUser()->isAllowed( 'loopfeedback-view-results' ) ) {
+			if ( !$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 				throw new PermissionsError( 'loopfeedback-view-result' );
 			}
-			$return .= self::printPage( $page, $period_begin, $period_end);
+			$return .= $this->printPage( $page, $period_begin, $period_end);
 		}
 
 		$this->setHeaders();
@@ -670,6 +675,7 @@ class SpecialLoopFeedback extends SpecialPage {
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
 		if ( $period_begin == '' ) {
 			$period_begin = '00000000000000';
@@ -741,7 +747,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		$return .= '<div class="row mt-2 mb-0">';
 
 		$return .= '<div class="loopfeedback-bar-stars float-left">';
-		$return .= self::printStars( $feedback_detail[ 'average' ] );
+		$return .= $this->printStars( $feedback_detail[ 'average' ] );
 		$return .= '</div>';
 
 		if ( $feedback_detail[ 'count' ][ 'all' ] > 0) {
@@ -763,7 +769,7 @@ class SpecialLoopFeedback extends SpecialPage {
 			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-no-comments' )->text().'</p>';
 		}
 
-		if ( $this->getUser()->isAllowed( 'loopfeedback-view-comments' ) ) {
+		if ( $permissionManager->userHasRight( $this->getUser(),'loopfeedback-view-comments' ) ) {
 			foreach ( $feedback_detail[ 'comments' ] as $comment) {
 				$return .= '<p><strong>'.$comment[ 'timestamp_text' ].'</strong><br/>'.$comment[ 'comment' ].'</p>';
 			}
@@ -782,7 +788,7 @@ class SpecialLoopFeedback extends SpecialPage {
 				$f = 0;
 			}
 			$return .= '<div class="row loopfeedback-bar">';
-			$return .= '<div class="loopfeedback-bar-stars">'.self::printStars( $i ).'</div>';
+			$return .= '<div class="loopfeedback-bar-stars">'.$this->printStars( $i ).'</div>';
 			$return .= '<div class="progress mt-1"><div class="progress-bar" role="progressbar" style="width: '.$f.'%" aria-valuenow="'.$f.'" aria-valuemin="0" aria-valuemax="100"></div></div>';
 
 			$return .= '<div class="loopfeedback-bar-info ml-2">( '.$feedback_detail[ 'count' ][$i].' )</div>';
@@ -901,7 +907,7 @@ class SpecialLoopFeedback extends SpecialPage {
 				$loopFeedback = new LoopFeedback;
 				$feedback_detail = $loopFeedback->getDetails( $lsi->article );
 
-				$return .= '<td class="pl-2 pr-1">'. self::printStars( $feedback_detail[ 'average' ] ).'</td>';
+				$return .= '<td class="pl-2 pr-1">'. $this->printStars( $feedback_detail[ 'average' ] ).'</td>';
 
 				$return .= '<td class="pl-2 pr-1">';
 
@@ -966,7 +972,7 @@ class SpecialLoopFeedback extends SpecialPage {
 
 	function resetPage ( $page ) {
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(
@@ -980,7 +986,7 @@ class SpecialLoopFeedback extends SpecialPage {
 
 	function resetAll () {
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(

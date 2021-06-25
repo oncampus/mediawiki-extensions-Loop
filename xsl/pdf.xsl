@@ -307,7 +307,7 @@
 			<xsl:attribute name="value"><xsl:value-of select="/loop/meta/title"></xsl:value-of></xsl:attribute>
 		</axf:document-info>
 
-		<!-- ToDo: add more infos, see https://www.antennahouse.com/product/ahf65/ahf-ext.html#axf.document-info -->
+		<!-- infos, see https://www.antennahouse.com/product/ahf65/ahf-ext.html#axf.document-info -->
 	</xsl:template>
 
 
@@ -2067,7 +2067,7 @@
 						<fo:block>
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
-							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+							<xsl:choose>
 								<xsl:when test="@icon">
 									<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
 

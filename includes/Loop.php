@@ -1,13 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
   * @description Handles general functions and settings
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class Loop {
 
@@ -22,20 +21,24 @@ class Loop {
 	 */
 	public static function handleLoopRequest( $output, $request, $user ) {
 
-		if ( $user->isAllowed( 'edit' ) ) {
+		$mws = MediaWikiServices::getInstance();
+		$permissionManager = $mws->getPermissionManager();
+		$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
+
+		if ( $permissionManager->userHasRight( $user, 'edit' ) ) {
 			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
 			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( "0", "1" ) ) ) ) {
-				$user->setOption( 'LoopEditMode', $loopeditmodeRequestValue );
-				$user->saveSettings();
+				$userOptionsManager->setOption( $user, 'LoopEditMode', $loopeditmodeRequestValue );
+				$userOptionsManager->saveOptions($user);
 			}
 		}
 
-		if ( $user->isAllowed( 'loop-rendermode' ) ) {
+		if ( $permissionManager->userHasRight( $user, 'loop-rendermode' ) ) {
 			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
 			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
-				$user->setOption( 'LoopRenderMode', $looprendermodeRequestValue );
+				$userOptionsManager->setOption( $user, 'LoopRenderMode', $looprendermodeRequestValue );
 			} else {
-				$user->setOption( 'LoopRenderMode', 'default' );
+				$userOptionsManager->setOption( $user, 'LoopRenderMode', 'default' );
 			}
 		}
 
@@ -204,9 +207,11 @@ class Loop {
 	 */
 	public static function setupLoopPages() {
 
+		$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
+
 		$systemUser = User::newFromName( 'LOOP_SYSTEM' );
 		if ( $systemUser->getId() != 0 ) {
-			$systemUser->addGroup("sysop");
+			$userGroupManager->addUserToGroup ( $systemUser, "sysop" );
 		}
 		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" );
 
@@ -236,7 +241,7 @@ class Loop {
 	 * Adds id to object, cite and index tags if there are none
 	 * @param string $text
 	 */
-	public static function setReferenceIds( $text ) { #todo remove id and type
+	public static function setReferenceIds( $text ) { #todo remove id and type # why?
 
 		# REGEX: All tags to get IDs that don't have id="" or id='' (might be empty!)
 		$regex = '/(<(loop_figure|loop_formula|loop_listing|loop_media|loop_table|loop_task|cite|loop_index|loop_screenshot)([^>]*(\s*id=[\'"]{1}[^>]*[\'"]{1}\s*){0})[^>]*)(>)/iUs';

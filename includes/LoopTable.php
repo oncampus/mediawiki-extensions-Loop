@@ -1,14 +1,12 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * @description A parser extension that adds the tag <loop_table> to mark content as table and provide a table of tables
  * @ingroup Extensions
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 class LoopTable extends LoopObject{
 
 	public static $mTag = 'loop_table';
@@ -88,10 +86,10 @@ class SpecialLoopTables extends SpecialPage {
 	    $loopStructure->loadStructureItems();
 
 	    $parser = new Parser ( $wgParserConf );
-	    $parserOptions = new ParserOptions();
-	    $parser->Options ( $parserOptions );
+	    #$parserOptions = new ParserOptions();
+	    $parser->getOptions ( );
 
-	    $tables = array ();
+	    #$tables = array ();
 	    $structureItems = $loopStructure->getStructureItems();
 	    $glossaryItems = LoopGlossary::getGlossaryPages();
 	    $table_number = 1;

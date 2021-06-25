@@ -1,8 +1,11 @@
 <?php
-#TODO MW 1.35 DEPRECATION
 /**
  * Loop exception
  */
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
+
 class LoopException extends Exception {
 	/**
 	 * Constructor function
@@ -24,11 +27,16 @@ class LoopException extends Exception {
 		global $wgOut;
 		$user = $wgOut->getUser();
 
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
-		if ( $editMode == true ) {
-			global $wgParser, $wgFrame;
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
-			$parsedMsg = $wgParser->recursiveTagParse( $this->getMessage(), $wgFrame );
+		if ( $editMode == true ) {
+			global $wgFrame;
+
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
+
+			$parsedMsg = $parser->recursiveTagParse( $this->getMessage(), $wgFrame );
 			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg );
 		} else {
 			return '';
