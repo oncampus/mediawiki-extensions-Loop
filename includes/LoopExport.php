@@ -154,7 +154,7 @@ class LoopExportXml extends LoopExport {
 	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
-	public function generateExportContent( Array $modifiers = null ) {
+	public function generateExportContent( Array $modifiers = [] ) {
 		$query = array();
 		if ( isset( $this->request ) ) {
 			$query = $this->request->getQueryValues();

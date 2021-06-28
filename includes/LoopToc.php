@@ -47,14 +47,14 @@ class LoopToc extends LoopStructure {
 			} else {
 				$pageNumber = '';
 			}
-
+			
 			$headLink = $linkRenderer->makeLink(
 				Title::newFromID( $lsi->article ),
 				new HtmlArmor( '<span class="loopstructure-number">' . $pageNumber .'</span>' . $tocText )
 			);
             $html .= '<div class="loopstructure-listitem loopstructure-level-' . $level . '">' . $headLink . '</div>';
             $xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="article'.$rootArticleId.'"><bold>'. $pageNumber .'</bold>  ' . $tocText . '</php_link_internal></loop_toc_list>';
-			
+
 			while ( !empty ( $next ) ) {
 				$tmp_lsi = $next;
 				if ( $tmp_lsi->getTocLevel() == $level + 1 ) { # if next item toclevel is one higher than current level, add to output
@@ -66,25 +66,28 @@ class LoopToc extends LoopStructure {
 						} else {
 							$tmp_pageNumber = '';
 						}
+						$tabLevel = $tmp_lsi->tocLevel;
+						$title = Title::newFromID( $tmp_lsi->article );
+						if ( $title != null ) {
 
-						//if( isset( $tmp_lsi->tocLevel ) && $tmp_lsi->tocLevel > 0 ) {
-							$tabLevel = $tmp_lsi->tocLevel;
-					//	} else {
-						//	$tabLevel = 1;
-						//}
-
-						$link = $linkRenderer->makeLink(
-							Title::newFromID( $tmp_lsi->article ),
-							new HtmlArmor( '<span class="loopstructure-number">' . $tmp_pageNumber .'</span>' . $tmp_lsi->tocText )
-						);
-						$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '"><span class="loopstructure-title">' . $link . '</span></div>';
-                        $xml .= '<loop_toc_list> <php_link_internal text-decoration="no-underline" href="article'.$tmp_lsi->article.'"><bold>'. $tmp_pageNumber .'</bold> '. $tmp_lsi->tocText . '</php_link_internal></loop_toc_list>';
-
+							$link = $linkRenderer->makeLink(
+								Title::newFromID( $tmp_lsi->article ),
+								new HtmlArmor( '<span class="loopstructure-number">' . $tmp_pageNumber .'</span>' . $tmp_lsi->tocText )
+							);
+							$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '"><span class="loopstructure-title">' . $link . '</span></div>';
+							$xml .= '<loop_toc_list> <php_link_internal text-decoration="no-underline" href="article'.$tmp_lsi->article.'"><bold>'. $tmp_pageNumber .'</bold> '. $tmp_lsi->tocText . '</php_link_internal></loop_toc_list>';
+	
+						}
 					} else {
 						break;
 					}
-				} 
-				$next = $tmp_lsi->getNextItem();
+				} elseif ( $tmp_lsi->getTocLevel() >= $level + 1 ) {
+					$next = $tmp_lsi->getNextItem();
+					
+				} else {
+					$next = $tmp_lsi->getNextChapterItem();
+					break;
+				}
 			}
 		}
 
@@ -92,7 +95,7 @@ class LoopToc extends LoopStructure {
             $return = $html;
         } elseif ( $output == "xml" ) {
             $return = $xml;
-        }
+		}
 
 		return $return;
 	}

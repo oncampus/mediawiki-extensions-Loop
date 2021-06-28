@@ -15,7 +15,7 @@ class LoopXml {
 	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
-	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = null) {
+	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = []) {
 		global $wgCanonicalServer, $wgLanguageCode;
 
 		set_time_limit(601);
@@ -64,6 +64,8 @@ class LoopXml {
 
 		$xml .= "</glossary>\n";
 
+		$xml .= self::bibliography2xml ();
+
 		$xml .= self::terminology2xml ();
 
 		$xml .= "</loop>";
@@ -96,7 +98,7 @@ class LoopXml {
 	 * @param Array $modifiers:
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
-	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = null) {
+	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = []) {
 
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
@@ -124,7 +126,7 @@ class LoopXml {
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
 
 		# modify content for mp3 export
-		if ( $modifiers["mp3"] ) {
+		if ( array_key_exists( "mp3", $modifiers ) && $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {
 				$content = preg_replace('/(<'.$type.')/', "\n<".$type, $content);
 				$content = preg_replace('/(<\/'.$type.'>)/', "</".$type.">\n", $content);
@@ -148,7 +150,8 @@ class LoopXml {
 	}
 
 	/**
-	 * Removes non-unique IDs from elements from their second occurence.
+	 * - Removes non-unique IDs from elements from their second occurence.
+	 * - Removes IDs from content such as H5P which can occur several times in a single LOOP
 	 * Elements with dublicate IDs cause severe problems in PDF
 	 * @param String $contentText
 	 */
@@ -158,6 +161,7 @@ class LoopXml {
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
+		$contentTags = array( 'h5p', 'learningapp', 'padlet', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
 		$selector = new DOMXPath( $dom );
@@ -174,6 +178,14 @@ class LoopXml {
 						$node->removeAttribute("id");
 					}
 				}
+
+			} elseif ( in_array( $node->getAttribute("extension_name"), $contentTags ) ) {
+				# rename id tags for dublicate id reasons in pdf
+				$id = "";
+				$id = $node->getAttribute("id");
+				$node->removeAttribute("id");
+				$node->setAttribute("content-id", $id);
+
 			}
 		}
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
@@ -190,6 +202,7 @@ class LoopXml {
 		return $contentText;
 	}
 
+
 	/**
 	 * Converts article to XML code
 	 * @param Int $articleId:
@@ -197,7 +210,7 @@ class LoopXml {
 	 * 		"nometa" => true; removes <meta>-tag for pdf
 	 * 		"noarticle" => true; removes <article>-tag wrapper for sidebar in pdf
 	 */
-	public static function articleFromId2xml( $articleId, $modifiers = null ) {
+	public static function articleFromId2xml( $articleId, $modifiers = [] ) {
 
 		global $wgLanguageCode;
 		$langParts = mb_split("-", $wgLanguageCode);
@@ -486,7 +499,7 @@ class LoopXml {
 
 		if ( !empty( $articles ) ) {
 			foreach ( $articles as $articleId ) {
-				$return .= self::articleFromId2xml( $articleId, array( "nometa" => true ) );
+				$return .= self::articleFromId2xml( $articleId, array( "nometa" => true, "noarticle" => false ) );
 			}
 		}
 
@@ -526,6 +539,13 @@ class LoopXml {
 			$xml .= "</article>\n";
 			$xml .= "</terminology>\n";
 		}
+		return $xml;
+	}
+
+
+	public static function bibliography2xml( ) {
+	    global $wgLoopLiteratureCiteType;
+		$xml = '<bibliography>'.SpecialLoopLiterature::renderBibliography('xml')."</bibliography>";
 		return $xml;
 	}
 
@@ -841,7 +861,9 @@ class wiki2xml
 	{
 		#echo("<br>w2x_14");
 		global $content_provider , $xmlg ;
-		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		if ( is_array( $xmlg ) &&  array_key_exists("useapi", $xmlg) ) { # 2020 edit
+			if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		}
 
 		$x = "" ;
 		$b = $a ;
@@ -969,7 +991,9 @@ class wiki2xml
 
 		#echo("<br>w2x_16");
 		global $xmlg ;
-		if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		if ( is_array( $xmlg ) &&  array_key_exists("useapi", $xmlg) ) { # 2020 edit
+			if ( $xmlg["useapi"] ) return false ; # API already resolved templates
+		}
 		for ( $a = 0 ; $a+3 < strlen ( $text ) ; $a++ ) {
 			if ( $text[$a] != '{' ) continue ;
 			while ( $this->p_template_replace_single_variable ( $text , $a , $variables ) ) ;

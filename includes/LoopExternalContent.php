@@ -30,20 +30,19 @@ class LoopExternalContent {
     
     public static function renderH5P ( $input, array $args, Parser $parser, PPFrame $frame ) { 
 
-        global $wgH5PHostUrl;
+        global $wgH5PHostUrl, $wgH5PHostUrlAppendix;
         $errors = '';
         $return = '';
         $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
-        $hostUrl = $wgH5PHostUrl;
         $parser->getOutput()->addModules("skins.loop-h5p-resizer.js");
 
         if ( !empty( $id ) ) {
             $return = Html::rawElement(
                 'iframe',
                 array(
-                    'src' => $hostUrl . $id,
+                    'src' => $wgH5PHostUrl . $id . $wgH5PHostUrlAppendix,
                     'width' => $width,
                     'height' => $height,
                     'data-height' => $height,

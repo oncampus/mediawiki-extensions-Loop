@@ -720,10 +720,13 @@ class LoopStructureItem {
 		}
 
 		//preventing home page occouring on breadcrumb nav
-		$breadcrumb = (empty($this->tocNumber)) ? '' : '<li class="active">' . $pageNumber . ' ' . $this->tocText .'</li>';
+		$breadcrumb = empty($this->tocNumber) ? '' : '<li class="active">' . $pageNumber . ' ' .'</li>';
 
-		$len = strlen( $this->tocNumber ) + strlen( $this->tocText ) + 1;
+		$len = strlen( $this->tocNumber ) + 1;
 		$level = $this->tocLevel;
+		if ( $level <= 1) {
+			return '<ol class="breadcrumb"><li>&nbsp;</li></ol>';
+		}
 
 		$items = array();
 		$item = $this->getParentItem();
@@ -747,7 +750,6 @@ class LoopStructureItem {
 
 			// if home page -> skip
 			if(empty($item->tocNumber)) continue;
-
 			if( strlen( $item->tocText ) > $max_item_text_len) {
 				$link_text = mb_substr( $item->tocText, 0, ( $max_item_text_len - 2 ) ) . '..';
 			} else {
@@ -1204,12 +1206,14 @@ class SpecialLoopPagesNotInStructure extends SpecialPage {
 				'page_id',
 				'page_namespace'
 			),
-			array(),
+			array(
+				'page_namespace = 0'
+			),
 			__METHOD__
 		);
 		$links = array();
 		foreach( $res as $row ) {
-			if ( LoopStructureItem::newFromIds( $row->page_id ) != false ) {
+			if ( LoopStructureItem::newFromIds( $row->page_id ) == false ) {
 				$tmpTitle = Title::newFromID( $row->page_id, $row->page_namespace );
 				$links[$tmpTitle->mTextform] = $linkRenderer->makeLink(
 					$tmpTitle
