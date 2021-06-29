@@ -191,8 +191,7 @@
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
 
-		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister",
-		"ImageBeforeProduceHTML": "LoopSwfHandler::onImageBeforeProduceHTML"
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
