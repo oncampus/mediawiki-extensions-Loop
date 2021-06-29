@@ -737,7 +737,11 @@
 		"watchuploads",
 		"flaggedrevswatch",
 		"rcenhancedfilters-disable",
-		"wlenhancedfilters-disable"
+		"wlenhancedfilters-disable",
+		"showrollbackconfirmation",
+		"minordefault",
+		"hidepatrolled",
+		"oldsig"
 	],
 	"AvailableRights": [
 		"loop-toc-edit",
