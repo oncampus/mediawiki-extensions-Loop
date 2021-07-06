@@ -190,7 +190,7 @@
 		"UploadComplete": "LoopZip::onUploadComplete",
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
-
+		"ParserBeforeInternalParse": "LoopConsent::onParserBeforeInternalParse",
 		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
 	},
 	"SpecialPages": {
