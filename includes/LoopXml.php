@@ -7,6 +7,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\SlotRecord;
 
 class LoopXml {
 
@@ -113,7 +114,7 @@ class LoopXml {
 			$revStore = MediaWikiServices::getInstance()->getRevisionStore();
 			$revision = $revStore->getRevisionById( $stableRev );
 
-			$pageContent = $revision->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+			$pageContent = $revision->getContent( SlotRecord::MAIN );
 			$contentText = ContentHandler::getContentText( $pageContent );
 		}
 		$content = html_entity_decode($contentText);
@@ -233,7 +234,7 @@ class LoopXml {
 			$revStore = MediaWikiServices::getInstance()->getRevisionStore();
 			$revision = $revStore->getRevisionById( $stableRev );
 
-			$pageContent = $revision->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+			$pageContent = $revision->getContent( SlotRecord::MAIN );
 			$contentText = ContentHandler::getContentText( $pageContent );
 		}
 		$content = html_entity_decode($contentText);
