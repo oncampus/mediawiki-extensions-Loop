@@ -411,6 +411,7 @@ class LoopUpdater {
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
 	private static function addOldSettingsToDb() {
+		/*
 		global $wgLoopAddToSettingsDB;
 
 		$loopSettings = new LoopSettings();
@@ -421,15 +422,15 @@ class LoopUpdater {
 		}
 
 		$loopSettings->addToDatabase();
+		*/
 	}
 }
 
-# Some LOOPs can't be updated automatically and need manual migration.
-# This page saves all pages and offers options for migration of literature, glossary etc
-class SpecialLoopManualUpdater extends UnlistedSpecialPage {
+
+class SpecialLoopMediaWikiUpdater extends UnlistedSpecialPage {
 
 	function __construct() {
-		parent::__construct( 'LoopManualUpdater' );
+		parent::__construct( 'SpecialLoopMediaWikiUpdater' );
 	}
 
 	function execute( $par ) {
@@ -439,56 +440,41 @@ class SpecialLoopManualUpdater extends UnlistedSpecialPage {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
-		$out->setPageTitle( "Manual LOOP Update" );
+		$out->setPageTitle( "MediaWiki Updater" );
 		$this->setHeaders();
 		$html = '';
 
-		# only used for updates during migrations
-		global $IP;
-		$token = $request->getText( 'token' );
-		require_once "$IP/loop/check_token.php";
+		if ( in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) ) {
 
-		if ( in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) /*||  check_token( $token, $_SERVER["SERVER_NAME"] ) */ ) {
+			$html .= '<h3>MediaWiki Updater</h3>';
+			$html .= '<div class="form-row">';
+			$html .= '<div class="col-12">';
+			$html .= "<p>". $this->msg( 'loopupdater-description-update' ) ."</p>";
+			$html .= '<form class="mw-editform mt-3" id="loopupdate-form" method="post" novalidate enctype="multipart/form-data">';
 
-			if ( empty ( $request->getText( 'execute' ) ) ) {
-				$html .= '<h3>Manual LOOP Updates</h3>';
-				$html .= '<div class="form-row mb-4">';
-				$html .= '<div class="col-12">';
-				$html .= '<form class="mw-editform mt-3 mb-3" id="loopupdate-form" method="post" novalidate enctype="multipart/form-data">';
+			$html .= '<div><input type="checkbox" name="updatemw" id="updatemw" class="mr-1">';
+			$html .= '<label for="updatemw">'.$this->msg( 'loopupdater-warning-update' ).'</label></div>';
 
-				$html .= '<div><input type="checkbox" name="saveallpages" id="saveallpages" class="mr-1">';
-				$html .= '<label for="saveallpages">Save all pages</label></div>';
+			$html .= '<input type="hidden" name="execute" id="execute" value="1"></input>';
+			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'loopupdater-submit-update' ) . '"></input>';
 
-				$html .= '<div><input type="checkbox" name="migrateglossary" id="migrateglossary" class="mr-1">';
-				$html .= '<label for="migrateglossary">Migrate Glossary</label></div>';
+			$html .= '</div>';
+			$html .= '</div>';
+			$html .= '</form>';
 
-				$html .= '<div><input type="checkbox" name="migrateterminology" id="migrateterminology" class="mr-1">';
-				$html .= '<label for="migrateterminology">Migrate Terminology</label></div>';
-
-				$html .= '<input type="hidden" name="execute" id="execute" value="1"></input>';
-				$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'submit' ) . '"></input>';
-
-				$html .= '</div>';
-				$html .= '</div>';
-				$html .= '</form>';
-			} else {
-				set_time_limit(1200);
-				if ( !empty ( $request->getText( 'saveallpages' ) ) ) {
-					LoopUpdater::saveAllWikiPages();
-				}
-				if ( !empty ( $request->getText( 'migrateglossary' ) ) ) {
-					LoopUpdater::migrateGlossary();
-				}
-				if ( !empty ( $request->getText( 'migrateterminology' ) ) ) {
-					LoopUpdater::migrateLoopTerminology();
-				}
-
+			if ( !empty ( $request->getText( 'execute' ) ) && !empty ( $request->getText( 'updatemw' ) ) ) {
+				global $IP, $wgServerName;
+				$loop = $wgServerName;
+				$updcmd = "$IP/maintenance/update.php --quick --wiki $loop 2>&1";
+				$updres = shell_exec("php $updcmd");
+				$html .= "Update Log:<br>" . str_replace( "\n", "<br>" , $updres);
 			}
+
 		} else {
 			$html = '<div class="alert alert-warning" role="alert">' . $this->msg( 'specialpage-no-permission' ) . '</div>';
-
 		}
 		$out->addHTML( $html );
 	}
 }
+
 ?>

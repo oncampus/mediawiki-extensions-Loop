@@ -494,5 +494,9 @@
 	"loopstructure-initial-chapter-1-2": "Second subchapter",
 	"loopstructure-initial-chapter-2": "Second chapter",
 
-	"looppagesnotinstructure": "Pages not in table of contents"
+	"looppagesnotinstructure": "Pages not in table of contents",
+
+	"loopupdater-description-update": "Executes CLI command /maintenance/update.php. WARNING: Only to be used by administrators. In case of errors this LOOP might cease to function.",
+	"loopupdater-warning-update": "I confirm that backups of the database and files of this LOOP have been made.",
+	"loopupdater-submit-update": "Execute MediaWiki update"
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Aliases for Loop special pages
  *
@@ -35,7 +35,7 @@ $specialPageAliases['en'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
 	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
 	);
 
@@ -66,10 +66,10 @@ $specialPageAliases['de'] = array(
 	'LoopPrivacy' => array( 'Datenschutz' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
 	'LoopPagesNotInStructure' => array( 'Seiten nicht im Inhaltsverzeichnis' )
 	);
-	
+
 $specialPageAliases['sv'] = array(
 	'LoopStructure' => array( 'Innehåll' ),
 	'LoopStructureEdit' => array( 'Regidera innehåll' ),
@@ -97,7 +97,7 @@ $specialPageAliases['sv'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
 	'LoopPagesNotInStructure' => array( 'Sidor som inte finns i innehållförteckningen' )
 	);
 
@@ -127,7 +127,7 @@ $specialPageAliases['es'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
 	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
 );
 

@@ -494,5 +494,9 @@
 	"loopstructure-initial-chapter-1-2": "Zweites Unterkapitel",
 	"loopstructure-initial-chapter-2": "Zweites Kapitel",
 
-	"looppagesnotinstructure": "Seiten nicht im Inhaltsverzeichnis"
+	"looppagesnotinstructure": "Seiten nicht im Inhaltsverzeichnis",
+
+	"loopupdater-description-update": "Führt den CLI Befehl /maintenance/update.php durch. ACHTUNG: Darf nur von Administratoren benutzt werden. Im Fall eines Fehlers funktioniert das LOOP ggf. nicht mehr.",
+	"loopupdater-warning-update": "Ich bestätige, dass Backups der Datenbank des LOOPs und des Images-Ordners angefertigt wurden.",
+	"loopupdater-submit-update": "MediaWiki Update ausführen"
 }
