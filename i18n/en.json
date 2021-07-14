@@ -498,5 +498,10 @@
 
 	"loopupdater-description-update": "Executes CLI command /maintenance/update.php. WARNING: Only to be used by administrators. In case of errors this LOOP might cease to function.",
 	"loopupdater-warning-update": "I confirm that backups of the database and files of this LOOP have been made.",
-	"loopupdater-submit-update": "Execute MediaWiki update"
+	"loopupdater-submit-update": "Execute MediaWiki update",
+
+	"loopsearch": "Wikitest search",
+	"loopsearch-description": "Use this page to search through wikitext. It also checks tags like 'cite' or 'loop_figure' and their parameters.",
+	"loopsearch-placeholder": "Term",
+	"loopsearch-results": "Results for \"$1\":"
 }

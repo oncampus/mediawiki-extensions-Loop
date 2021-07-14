@@ -132,8 +132,8 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 		$out->addWikiMsg( 'loopexportpdftest' );
 		$out->addHtml ('</h1>');
 		$loopStructure = new LoopStructure();
-
 		$query = $request->getQueryValues();
+		dd($query);
 		# you use ?articleId=1 to debug to test only one page
 		if ( array_key_exists( "articleId", $query ) ) {
 			$title = Title::newFromId( $query["articleId"] );

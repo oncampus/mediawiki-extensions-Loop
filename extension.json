@@ -119,7 +119,8 @@
 		"LoopNgSpice": "includes/LoopNgSpice.php",
 		"SpecialLoopNgSpice": "includes/LoopNgSpice.php",
 		"LoopComment": "includes/LoopComment.php",
-		"SpecialLoopPagesNotInStructure": "includes/LoopStructure.php"
+		"SpecialLoopPagesNotInStructure": "includes/LoopStructure.php",
+		"SpecialLoopSearch": "includes/LoopSearch.php"
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates":[
@@ -221,7 +222,8 @@
 		"LoopRSS": "SpecialLoopRSS",
 		"LoopNgSpice": "SpecialLoopNgSpice",
 		"SpecialLoopMediaWikiUpdater": "SpecialLoopMediaWikiUpdater",
-		"LoopPagesNotInStructure": "SpecialLoopPagesNotInStructure"
+		"LoopPagesNotInStructure": "SpecialLoopPagesNotInStructure",
+		"LoopSearch": "SpecialLoopSearch"
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",

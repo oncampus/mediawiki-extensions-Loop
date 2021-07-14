@@ -36,7 +36,8 @@ $specialPageAliases['en'] = array(
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
 	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
-	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
+	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' ),
+	'LoopSearch' => array( 'Wikitext search' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -67,7 +68,8 @@ $specialPageAliases['de'] = array(
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
 	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
-	'LoopPagesNotInStructure' => array( 'Seiten nicht im Inhaltsverzeichnis' )
+	'LoopPagesNotInStructure' => array( 'Seiten nicht im Inhaltsverzeichnis' ),
+	'LoopSearch' => array( 'Wikitextsuche' )
 	);
 
 $specialPageAliases['sv'] = array(
@@ -98,7 +100,8 @@ $specialPageAliases['sv'] = array(
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
 	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
-	'LoopPagesNotInStructure' => array( 'Sidor som inte finns i innehållförteckningen' )
+	'LoopPagesNotInStructure' => array( 'Sidor som inte finns i innehållförteckningen' ),
+	'LoopSearch' => array( 'Wikitext search' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -128,7 +131,8 @@ $specialPageAliases['es'] = array(
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
 	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
-	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
+	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' ),
+	'LoopSearch' => array( 'Wikitext search' )
 );
 
 

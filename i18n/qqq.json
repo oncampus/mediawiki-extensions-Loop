@@ -496,5 +496,10 @@
 
 	"loopupdater-description-update": "Descriptive message of MediaWiki Updates shown on special page to do so",
 	"loopupdater-warning-update": "A confirmation of the user that they made backups of the loop before executing the update",
-	"loopupdater-submit-update": "MediaWiki Update execution button label"
+	"loopupdater-submit-update": "MediaWiki Update execution button label",
+
+	"loopsearch": "Special page title for wiki text search",
+	"loopsearch-description": "Description of Wikitext search special page",
+	"loopsearch-placeholder": "Placeholder for term input",
+	"loopsearch-results": "Result message for special page. $1 -> search term"
 }
