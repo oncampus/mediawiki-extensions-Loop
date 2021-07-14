@@ -182,42 +182,44 @@ class LoopObject {
 			# objects with render=none are not numbered as it would lead to confusion
 			if ( !$object && $this->getRenderOption() == "none" ) {
 				$showNumbering = false;
-			} elseif ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) {
-				#if there are hints for this element has a dublicate id, don't render the number and add an error
+			} elseif ( is_array( $object ) ) {
+				if ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) {
+					#if there are hints for this element has a dublicate id, don't render the number and add an error
 
-				$otherTitle = Title::newFromId( $object["articleId"] );
-				if (! isset( $this->error ) ){
-					$this->error = "";
-				}
-				$textform = "-";
-				if ( is_object( $otherTitle ) ) {
-					$textform = $otherTitle->mTextform;
-					$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
-					$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-					$this->error .= $e . "\n";
-				} else {
-					$lsi = LoopStructureItem::newFromIds($articleId);
-					if ( $lsi ) {
-						$title = $this->getParser()->getTitle();
-						$latestRevId = $title->getLatestRevID();
-						$wikiPage = WikiPage::factory($title);
-						$fwp = new FlaggableWikiPage ( $title );
+					$otherTitle = Title::newFromId( $object["articleId"] );
+					if (! isset( $this->error ) ){
+						$this->error = "";
+					}
+					$textform = "-";
+					if ( is_object( $otherTitle ) ) {
+						$textform = $otherTitle->mTextform;
+						$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
+						$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+						$this->error .= $e . "\n";
+					} else {
+						$lsi = LoopStructureItem::newFromIds($articleId);
+						if ( $lsi ) {
+							$title = $this->getParser()->getTitle();
+							$latestRevId = $title->getLatestRevID();
+							$wikiPage = WikiPage::factory($title);
+							$fwp = new FlaggableWikiPage ( $title );
 
-						if ( isset($fwp) ) {
-							$stableRevId = $fwp->getStable();
+							if ( isset($fwp) ) {
+								$stableRevId = $fwp->getStable();
 
-							if ( $latestRevId == $stableRevId && $stableRevId != null ) {
-								# the id is not in db
-								$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
-								$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-								$this->error .= $e . "\n";
+								if ( $latestRevId == $stableRevId && $stableRevId != null ) {
+									# the id is not in db
+									$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
+									$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+									$this->error .= $e . "\n";
+								}
 							}
 						}
 					}
+
+
+					$showNumbering = false;
 				}
-
-
-				$showNumbering = false;
 			}
 		}
 		$html .= 'class="loop_object '.$this->getTag().' '.$floatclass.' loop_object_render_'.$this->getRenderOption().'"';
@@ -380,18 +382,20 @@ class LoopObject {
 	 * @param PPFrame $frame
 	 */
 	public function init($input, array $args, $parser = false, $frame = false) {
-		global $wgOut, $wgParserConf;
+		global $wgOut;
 		$user = $wgOut->getUser();
 		$this->setInput($input);
 		$this->setArgs($args);
 
 		if ($parser == false) {
-			$parser = new Parser ( $wgParserConf );
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
 			$parserOptions = ParserOptions::newFromUser ( $user );
-			$parser->getOptions ( $parserOptions );
+			$parser->setOptions ( $parserOptions );
 			$t = Title::newFromText ( 'NO TITLE' );
 			$parser->setTitle ( $t );
 			$parser->clearState ();
+			$parser->mStripState = new StripState( $parser );
 			$frame = $parser->getPreprocessor ()->newFrame ();
 		}
 
@@ -644,13 +648,14 @@ class LoopObject {
 	 */
 	public static function localParse( $wikiText ) {
 		global $wgOut;
-		$localParser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$user = $wgOut->getUser();
 		$tmpTitle = Title::newFromText('NO_TITLE');
-		$localParserOptions = ParserOptions::newFromUser ( $user );
-		$result = $localParser->parse ( html_entity_decode( $wikiText ), $tmpTitle, $localParserOptions );
+		$parserOptions = ParserOptions::newFromUser ( $user );
+		$result = $parser->parse ( html_entity_decode( $wikiText ), $tmpTitle, $parserOptions );
 		$result->clearWrapperDivClass();
-		return $localParser->stripOuterParagraph( $result->getText() );
+		return $parser->stripOuterParagraph( $result->getText() );
 	}
 
 	/**
@@ -778,6 +783,7 @@ class LoopObject {
 		}
 		$otherObjectMatches = array();
 		$text = $this->getParser()->extractTagsAndParams ( $otherObjectTypes, $this->getInput(), $otherObjectMatches );
+		#dd($this->getParser(), $text);
 		$striped_text = $this->getParser()->killMarkers ( $text );
 
 		$matches = array ();
@@ -786,8 +792,8 @@ class LoopObject {
 				'loop_description',
 				'loop_copyright'
 		);
-		$text2 = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
-		$objectData = LoopObjectIndex::getObjectData($this->mId);
+		#$text2 = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
+		#$objectData = LoopObjectIndex::getObjectData($this->mId);
 
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
@@ -871,8 +877,9 @@ class LoopObject {
 
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 
-			$parser = new Parser();
-			$loopObjectIndex = new LoopObjectIndex();
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
+			#$loopObjectIndex = new LoopObjectIndex();
 			$fwp = new FlaggableWikiPage ( $title );
 			$stableRevId = $fwp->getStable();
 			$latestRevId = $title->getLatestRevID();
@@ -1143,36 +1150,38 @@ class LoopObject {
 			$objectData = LoopObjectIndex::getObjectData( $objectid );
 		}
 
-		if ( $objectData["refId"] == $objectid ) {
-			$tmpPreviousObjects = 0;
+		if ( is_array($objectData) ) {
+			if ( $objectData["refId"] == $objectid ) {
+				$tmpPreviousObjects = 0;
 
-			if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
+				if ( $wgLoopNumberingType == "chapter" && $typeOfPage == "structure" ) {
 
-				$lsi = $pageData[1];
+					$lsi = $pageData[1];
 
-				preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
+					preg_match('/(\d+)\.{0,1}/', $lsi->tocNumber, $tocChapter);
 
-				if (isset($tocChapter[1])) {
-					$tocChapter = $tocChapter[1];
+					if (isset($tocChapter[1])) {
+						$tocChapter = $tocChapter[1];
+					}
+					if ( empty( $tocChapter ) ) {
+						$tocChapter = 0;
+					}
+					if ( isset($previousObjects[$objectData["index"]]) ) {
+						$tmpPreviousObjects = $previousObjects[$objectData["index"]];
+					}
+					return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
+
+				} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
+					if ( isset($previousObjects[$objectData["index"]]) ) {
+						$tmpPreviousObjects = $previousObjects[$objectData["index"]];
+					}
+					$prefix = '';
+					if ( $typeOfPage == "glossary" ) {
+						$prefix = wfMessage("loop-glossary-objectnumber-prefix")->text();
+					}
+					return $prefix . ( $tmpPreviousObjects + $objectData["nthoftype"] );
+
 				}
-				if ( empty( $tocChapter ) ) {
-					$tocChapter = 0;
-				}
-				if ( isset($previousObjects[$objectData["index"]]) ) {
-					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
-				}
-				return $tocChapter . "." . ( $tmpPreviousObjects + $objectData["nthoftype"] );
-
-			} elseif ( $wgLoopNumberingType == "ongoing" || $typeOfPage == "glossary" ) {
-				if ( isset($previousObjects[$objectData["index"]]) ) {
-					$tmpPreviousObjects = $previousObjects[$objectData["index"]];
-				}
-				$prefix = '';
-				if ( $typeOfPage == "glossary" ) {
-					$prefix = wfMessage("loop-glossary-objectnumber-prefix")->text();
-				}
-				return $prefix . ( $tmpPreviousObjects + $objectData["nthoftype"] );
-
 			}
 		}
 	}

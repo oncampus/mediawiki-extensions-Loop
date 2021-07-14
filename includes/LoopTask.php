@@ -86,11 +86,6 @@ class SpecialLoopTasks extends SpecialPage {
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
-	    $parser = new Parser ( $wgParserConf );
-	    $parserOptions = new ParserOptions();
-	    $parser->getOptions ( );
-
-	    $tasks = array ();
 	    $structureItems = $loopStructure->getStructureItems();
 	    $glossaryItems = LoopGlossary::getGlossaryPages();
 	    $task_number = 1;

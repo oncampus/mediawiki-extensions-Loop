@@ -78,17 +78,13 @@ class SpecialLoopListings extends SpecialPage {
 	}
 
 	public static function renderLoopListingSpecialPage() {
-	    global $wgParserConf, $wgLoopNumberingType;
+	    global $wgLoopNumberingType;
 	    $html = '<h1>';
 	    $html .= wfMessage( 'looplistings-specialpage-title' );
 	    $html .= '</h1>';
 
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
-
-	    $parser = new Parser ( $wgParserConf );
-	    #$parserOptions = new ParserOptions();
-	    $parser->getOptions (); # TODO test
 
 	    $listings = array ();
 	    $structureItems = $loopStructure->getStructureItems();

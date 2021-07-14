@@ -7,6 +7,8 @@
  */
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
+use MediaWiki\MediaWikiServices;
+
 class LoopFormula extends LoopObject{
 
 	public static $mTag = 'loop_formula';
@@ -86,7 +88,8 @@ class SpecialLoopFormulas extends SpecialPage {
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
-	    $parser = new Parser ( $wgParserConf );
+	    $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
 	    $parserOptions = new ParserOptions();
 	    $parser->getOptions ( $parserOptions );
 

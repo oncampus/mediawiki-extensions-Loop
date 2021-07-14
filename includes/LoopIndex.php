@@ -263,8 +263,9 @@ class LoopIndex {
 
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 
-			$parser = new Parser();
-			$loopIndex = new LoopIndex();
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
+			#$loopIndex = new LoopIndex();
 			$fwp = new FlaggableWikiPage ( $title );
 			$stableRevId = $fwp->getStable();
 			$latestRevId = $title->getLatestRevID();
@@ -281,7 +282,7 @@ class LoopIndex {
 				$has_reference = true;
 			}
 			if ( $has_reference ) {
-				$references = array();
+				#$references = array();
 				$object_tags = array ();
 				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( array('loop_index'), $forbiddenTags );

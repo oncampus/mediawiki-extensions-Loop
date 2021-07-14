@@ -251,9 +251,8 @@ class SpecialLoopFigures extends SpecialPage {
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
-	    $parser = new Parser ( $wgParserConf );
-	    $parserOptions = new ParserOptions();
-	    $parser->getOptions ( $parserOptions );
+	    $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
 
 	    $structureItems = $loopStructure->getStructureItems();
 	    $glossaryItems = LoopGlossary::getGlossaryPages();

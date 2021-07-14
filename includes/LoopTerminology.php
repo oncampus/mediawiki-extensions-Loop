@@ -55,9 +55,8 @@ class LoopTerminology {
 
     public static function getTerminologyPageContentText() {
 
-        global $wgParserConf;
-
-        $parser = new Parser( $wgParserConf );
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
         $tmpTitle = Title::newFromText( 'NO TITLE' );
         $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
         $output = $parserOutput->getText();
@@ -98,9 +97,8 @@ class LoopTerminology {
 
     public static function getTerminologyOutputForXML() {
 
-        global $wgParserConf;
-
-        $parser = new Parser( $wgParserConf );
+        $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
         $tmpTitle = Title::newFromText( 'NO TITLE' );
         $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
         $output = $parserOutput->getText();

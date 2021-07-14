@@ -419,7 +419,8 @@ class LoopXsl {
 			$language = 'lilypond';
 		}
 
-		$parser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$html = Score::renderScore( $input[0]->textContent, ['lang' => $language], $parser );
 		preg_match_all( '~<img.*?src=["\']+(.*?)["\']+~', $html, $url );
 		$return = $wgCanonicalServer . $url[1][0];
@@ -475,11 +476,12 @@ class LoopXsl {
 		if ( file_exists( $screenshotPath ) ) {
 			return $publicScreenshotPath;
 		} else { # parse the page so images are rendered and can be returned
-			global $wgParserConf;
+
 			$content = $wikiPage->getContent();
 			$contentText = ContentHandler::getContentText( $content );
 
-			$parser = new Parser( $wgParserConf );
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
 
 			$parser->parse( $contentText, $title, new ParserOptions() );
 			if ( file_exists( $screenshotPath ) ) {

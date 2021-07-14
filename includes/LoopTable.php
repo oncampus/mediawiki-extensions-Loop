@@ -76,7 +76,7 @@ class SpecialLoopTables extends SpecialPage {
 	}
 
 	public static function renderLoopTableSpecialPage() {
-	    global $wgParserConf, $wgLoopNumberingType;
+	    global $wgLoopNumberingType;
 
 	    $html = '<h1>';
 	    $html .= wfMessage( 'looptables-specialpage-title' );
@@ -84,10 +84,6 @@ class SpecialLoopTables extends SpecialPage {
 
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
-
-	    $parser = new Parser ( $wgParserConf );
-	    #$parserOptions = new ParserOptions();
-	    $parser->getOptions ( );
 
 	    #$tables = array ();
 	    $structureItems = $loopStructure->getStructureItems();

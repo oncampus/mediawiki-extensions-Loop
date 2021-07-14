@@ -573,7 +573,8 @@ class LoopLiterature {
 		global $wgLoopLiteratureCiteType;
 
 		if ( $parser == null ) {
-			$parser = new Parser();
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
 		}
 
 		$matches = array();
@@ -685,8 +686,9 @@ class LoopLiterature {
 
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 
-			$parser = new Parser();
-			$loopLiteratureReference = new LoopLiteratureReference();
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
+			#$loopLiteratureReference = new LoopLiteratureReference();
 			$fwp = new FlaggableWikiPage ( $title );
 			$stableRevId = $fwp->getStable();
 			$latestRevId = $title->getLatestRevID();

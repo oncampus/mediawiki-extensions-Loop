@@ -258,9 +258,10 @@ class LoopSettings {
 	 */
 	function parse( $input ) {
 
-		$localParser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$tmpTitle = Title::newFromText( 'NO TITLE' );
-	    $parserOutput = $localParser->parse( $input, $tmpTitle, new ParserOptions() );
+	    $parserOutput = $parser->parse( $input, $tmpTitle, new ParserOptions() );
 	    return $parserOutput->mText;
 
 	}

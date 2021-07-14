@@ -31,8 +31,8 @@ class LoopWikitextContent extends WikitextContent {
 
 	   	$text = $this->getText();
 		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
-		$localParser = $parserFactory->create();
-	   	$pst = $localParser->preSaveTransform( $text, $title, $user, $popts );
+		$parser = $parserFactory->create();
+	   	$pst = $parser->preSaveTransform( $text, $title, $user, $popts );
 
 		# Custom Hook for changing content before it's saved
 	   	$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
@@ -42,7 +42,7 @@ class LoopWikitextContent extends WikitextContent {
 			return $this;
 		}
 		$ret = new static( $pst );
-		if ( $localParser->getOutput()->getFlag( 'user-signature' ) ) {
+		if ( $parser->getOutput()->getFlag( 'user-signature' ) ) {
 			$ret->hadSignature = true;
 		}
 		return $ret;

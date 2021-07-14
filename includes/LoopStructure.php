@@ -1019,9 +1019,9 @@ class SpecialLoopStructureEdit extends SpecialPage {
 
 					# use local parser to get a default parsed result
 					$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
-					$localParser = $parserFactory->create();
+					$parser = $parserFactory->create();
 					$tmpTitle = Title::newFromText( 'NO TITLE' );
-                    $parserOutput = $localParser->parse( $newStructureContent, $tmpTitle, new ParserOptions() );
+                    $parserOutput = $parser->parse( $newStructureContent, $tmpTitle, new ParserOptions() );
 
 					if( is_object( $parserOutput )) {
 

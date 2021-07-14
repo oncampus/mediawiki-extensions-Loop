@@ -7,6 +7,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\SlotRecord;
 
 class LoopHtml{
 
@@ -332,10 +333,11 @@ class LoopHtml{
         }
         $wikiPage = WikiPage::factory( $title );
         $revision = $wikiPage->getRevisionRecord();
-        $content = $revision->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+        $content = $revision->getContent( SlotRecord::MAIN );
 
-        $localParser = new Parser();
-        $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
+        $text = $parser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
 
         # regular articles are in ZIP/files/ folder, start article in ZIP/
         if ( $prependHref == "" ) {

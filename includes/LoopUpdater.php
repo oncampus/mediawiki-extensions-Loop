@@ -8,6 +8,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\SlotRecord;
 
 class LoopUpdater {
 
@@ -136,7 +137,7 @@ class LoopUpdater {
 				} else {
 					$revision = Revision::newFromId( $stableRev );
 					if ( $revision !== null ) {
-						$content = $revision->getContent ()->getText();
+						$content = $revision->getContent ( SlotRecord::MAIN )->getText();
 					} else {
 						echo "!!!! ERROR !!!! Page ".$title->mArticleID."  has no revision!\n";
 						continue;
@@ -226,7 +227,7 @@ class LoopUpdater {
 		$revision = $wikiPage->getRevisionRecord();
 		if ( $contentText == null ) {
 			if ( $revision !== null ) {
-				$contentText = $revision->getContent()->getText();
+				$contentText = $revision->getContent( SlotRecord::MAIN )->getText();
 			} else {
 				echo "!!!! ERROR !!!! Page ".$title->mArticleID."  has no revision!\n";
 				return;
@@ -235,7 +236,8 @@ class LoopUpdater {
 		$newContentText = str_replace("#ev:youtubehd", "#ev:youtube", $contentText);
 
 		# LOOP INDEX
-		$parser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$index_tags = array ();
 		$loopliterature_tags = array ();
 		$parser->extractTagsAndParams( array( 'loop_index' ), $newContentText, $index_tags );
@@ -251,7 +253,7 @@ class LoopUpdater {
 		}
 
 		if ( $newContentText != $contentText ) {
-			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
+			$editContent = $revision->getContent(SlotRecord::MAIN)->getContentHandler()->unserializeContent( $newContentText );
 			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
 			$summary = CommentStoreComment::newUnsavedComment( 'LOOP Upgrade: loop_index and youtubehd' );
 			$wikiPageUpdater->setContent( "main", $editContent );
@@ -280,12 +282,13 @@ class LoopUpdater {
 		if ( $contentText == null ) {
 			$revision = $wikiPage->getRevisionRecord();
 			if ( $revision != null ) {
-				$contentText = $revision->getContent()->getText();
+				$contentText = $revision->getContent(SlotRecord::MAIN)->getText();
 			} else {
 				return true;
 			}
 		}
-		$parser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$biblio_tags = array ();
 		$loopliterature_tags = array ();
 		$parser->extractTagsAndParams( array( 'biblio' ), $contentText, $biblio_tags );
@@ -347,12 +350,13 @@ class LoopUpdater {
 
 		if ( $contentText == null ) {
 			if ( $revision != null ) {
-				$contentText = $revision->getContent()->getText();
+				$contentText = $revision->getContent(SlotRecord::MAIN)->getText();
 			} else {
 				return true;
 			}
 		}
-		$parser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$zip_tags = array ();
 		$loopliterature_tags = array ();
 		$parser->extractTagsAndParams( array( 'loop_zip' ), $contentText, $zip_tags );
@@ -363,7 +367,7 @@ class LoopUpdater {
 
 		}
 		if ( $newContentText != $contentText ) {
-			$editContent = $revision->getContent()->getContentHandler()->unserializeContent( $newContentText );
+			$editContent = $revision->getContent(SlotRecord::MAIN)->getContentHandler()->unserializeContent( $newContentText );
 			$wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser );
 			$summary = CommentStoreComment::newUnsavedComment( 'Added scale=true to loop_zip' );
 			$wikiPageUpdater->setContent( "main", $editContent );

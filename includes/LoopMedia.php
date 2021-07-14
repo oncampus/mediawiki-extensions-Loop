@@ -139,8 +139,6 @@ class SpecialLoopMedia extends SpecialPage {
 
 	public function execute($sub) {
 
-		$config = $this->getConfig ();
-
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
@@ -153,7 +151,7 @@ class SpecialLoopMedia extends SpecialPage {
 	}
 
 	public static function renderLoopMediaSpecialPage() {
-	    global $wgParserConf, $wgLoopNumberingType;
+	    global $wgLoopNumberingType;
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
@@ -161,11 +159,6 @@ class SpecialLoopMedia extends SpecialPage {
 	    $html .= wfMessage( 'loopmedia-specialpage-title' )->text();
 	    $html .= '</h1>';
 
-	    $parser = new Parser ( $wgParserConf );
-	    $parserOptions = new ParserOptions();
-	    $parser->getOptions ( $parserOptions );
-
-	    $medias = array ();
 	    $structureItems = $loopStructure->getStructureItems();
 	    $glossaryItems = LoopGlossary::getGlossaryPages();
 	    $media_number = 1;
