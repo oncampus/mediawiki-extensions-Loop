@@ -500,7 +500,7 @@
 	"loopupdater-warning-update": "I confirm that backups of the database and files of this LOOP have been made.",
 	"loopupdater-submit-update": "Execute MediaWiki update",
 
-	"loopsearch": "Wikitest search",
+	"loopsearch": "Wikitext search",
 	"loopsearch-description": "Use this page to search through wikitext. It also checks tags like 'cite' or 'loop_figure' and their parameters.",
 	"loopsearch-placeholder": "Term",
 	"loopsearch-results": "Results for \"$1\":"
