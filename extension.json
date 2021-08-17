@@ -14,7 +14,7 @@
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": "1.35.*",
+		"MediaWiki": ">= 1.35",
 		"extensions": {
 			"Cite": "*",
 			"ConfirmEdit": ">= 1.6.0",
