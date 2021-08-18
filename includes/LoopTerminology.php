@@ -163,9 +163,10 @@ class SpecialLoopTerminology extends SpecialPage {
         $user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
-		$userOptionsLookup = $this->mwService->getUserOptionsLookup();
-		$renderMode = $userOptionsLookup->getOption( $this->user, 'renderMode', $wgDefaultUserOptions['renderMode'], true );
-		$editMode = $userOptionsLookup->getOption( $this->user, 'editMode', false, true );
+		$mwService = MediaWikiServices::getInstance();
+		$userOptionsLookup = $mwService->getUserOptionsLookup();
+		$renderMode = $userOptionsLookup->getOption( $user, 'renderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+		$editMode = $userOptionsLookup->getOption( $user, 'editMode', false, true );
 
 		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopterminology' ) );

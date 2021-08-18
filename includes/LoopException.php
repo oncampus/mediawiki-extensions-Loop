@@ -35,9 +35,12 @@ class LoopException extends Exception {
 
 			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 			$parser = $parserFactory->create();
+			$tmpTitle = Title::newFromText('NO_TITLE');
+			$parserOptions = ParserOptions::newFromUser ( $user );
+			$parser->getOptions ( $parserOptions );
+			$parsedMsg = $parser->parse( $this->getMessage(), $tmpTitle, $parserOptions );
 
-			$parsedMsg = $parser->recursiveTagParse( $this->getMessage(), $wgFrame );
-			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg );
+			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg->getText() );
 		} else {
 			return '';
 		}

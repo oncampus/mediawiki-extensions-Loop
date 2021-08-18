@@ -343,6 +343,7 @@
 
 	"loopobject-error-unknown-id" : "Error Message rendered when Object has an ID that's not in DB: $1 -> given ID; ",
 	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
+	"loopobject-error-unknown" : "Error message for unknown errors in the object numbering process",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
 

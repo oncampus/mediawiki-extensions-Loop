@@ -79,7 +79,8 @@ abstract class LoopExport {
 		fclose($fh);
 
 		// delete old export file
-		if ($handle = opendir($export_dir)) {
+		if ( is_dir($export_dir) ) {
+			$handle = opendir($export_dir);
 			while (false !== ($entry = readdir($handle))) {
 				if ($entry != "." && $entry != "..") {
 					if (is_file($export_dir.'/'.$entry)) {

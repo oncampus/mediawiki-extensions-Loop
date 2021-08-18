@@ -344,6 +344,7 @@
 
 	"loopobject-error-unknown-id" : "The object's ID is not in the database ($1). Please check the object's syntax.",
 	"loopobject-error-dublicate-id" : "The object's ID is not unique ($1). On page '$2' is another object with that same ID. Please change the ID and save the pages again so the numbering will be correct.",
+	"loopobject-error-unknown" : "An unknown error has occurred.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
 

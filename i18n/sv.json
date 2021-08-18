@@ -344,6 +344,7 @@
 
 	"loopobject-error-unknown-id" : "Objektet:s ID ($1) finns inte i databasen. Vänligen checka syntaxen.",
 	"loopobject-error-dublicate-id" : "Objektet besitter ingen unik ID ($1). På sidan '$2' finns det ett annat objekt med den här ID. Vänligen byt ID:n och spara sidor igen, så objektet kan numereras korrekt.",
+	"loopobject-error-unknown" : "An unknown error has occurred.",
 	"loopreference-error-unknown-refid" : "Referensens angivit ID är okänd: '''$1'''.",
 	"loopreference-error-no-refid" : "Ingen ID (id) har angivits i referensen.",
 

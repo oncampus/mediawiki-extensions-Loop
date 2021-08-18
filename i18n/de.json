@@ -344,6 +344,7 @@
 
 	"loopobject-error-unknown-id" : "Die Objektauszeichnung mit der ID $1 konnte nicht in der Datenbank gespeichert werden. Bitte überprüfen Sie die Syntax.",
 	"loopobject-error-dublicate-id" : "Die Objektauszeichnung besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiteres Objekt mit der ID vorhanden. Bitte ändern Sie die ID und speichern Sie die Seiten neu ab, um eine korrekte Zählung sicherzustellen.",
+	"loopobject-error-unknown" : "Es ist ein unbekannter Fehler bei der Nummerierung aufgetreten.",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 

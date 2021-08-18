@@ -183,25 +183,31 @@ class LoopObject {
 			if ( !$object && $this->getRenderOption() == "none" ) {
 				$showNumbering = false;
 			} elseif ( is_array( $object ) ) {
-				if ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] ) || $articleId != $object["articleId"] || $this->getTag() != $object["index"] ) {
+				if ( htmlspecialchars_decode( $this->mTitleInput ) != htmlspecialchars_decode( $object["title"] )
+				|| $articleId != $object["articleId"]
+				|| $this->getTag() != $object["index"] ) {
 					#if there are hints for this element has a dublicate id, don't render the number and add an error
-
 					$otherTitle = Title::newFromId( $object["articleId"] );
 					if (! isset( $this->error ) ){
 						$this->error = "";
 					}
 					$textform = "-";
-					if ( is_object( $otherTitle ) ) {
-						$textform = $otherTitle->mTextform;
-						$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
-						$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-						$this->error .= $e . "\n";
+					if ( !is_null( $otherTitle ) ) {
+						if ( $otherTitle->getArticleId() == $articleId  ) {
+							$e = new LoopException( wfMessage( 'loopobject-error-unknown', $this->getId(), $textform )->text() );
+							$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+							$this->error .= $e . "\n";
+						} else {
+							$textform = $otherTitle->mTextform;
+							$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
+							$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+							$this->error .= $e . "\n";
+						}
 					} else {
 						$lsi = LoopStructureItem::newFromIds($articleId);
 						if ( $lsi ) {
 							$title = $this->getParser()->getTitle();
 							$latestRevId = $title->getLatestRevID();
-							$wikiPage = WikiPage::factory($title);
 							$fwp = new FlaggableWikiPage ( $title );
 
 							if ( isset($fwp) ) {
@@ -395,7 +401,7 @@ class LoopObject {
 			$t = Title::newFromText ( 'NO TITLE' );
 			$parser->setTitle ( $t );
 			$parser->clearState ();
-			$parser->mStripState = new StripState( $parser );
+			# $parser->mStripState = new StripState( $parser ); #safe to remove?
 			$frame = $parser->getPreprocessor ()->newFrame ();
 		}
 
@@ -783,7 +789,6 @@ class LoopObject {
 		}
 		$otherObjectMatches = array();
 		$text = $this->getParser()->extractTagsAndParams ( $otherObjectTypes, $this->getInput(), $otherObjectMatches );
-		#dd($this->getParser(), $text);
 		$striped_text = $this->getParser()->killMarkers ( $text );
 
 		$matches = array ();
@@ -792,9 +797,7 @@ class LoopObject {
 				'loop_description',
 				'loop_copyright'
 		);
-		#$text2 = $this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
-		#$objectData = LoopObjectIndex::getObjectData($this->mId);
-
+		$this->getParser()->extractTagsAndParams ( $subtags, $striped_text, $matches );
 		foreach ( $matches as $marker => $subtag ) {
 			switch ($subtag [0]) {
 				case 'loop_title' :
@@ -810,7 +813,6 @@ class LoopObject {
 			}
 		}
 	}
-
 	/**
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
 	 * @param Title $title
