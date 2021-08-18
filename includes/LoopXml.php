@@ -132,6 +132,9 @@ class LoopXml {
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
 
+		# remove score tags - these may cause the whole XML to fail
+		$content = preg_replace('/(<score.*>)(.*)(<\/score>)/msiU', "<score></score>", $content);
+
 		# modify content for mp3 export
 		if ( array_key_exists( "mp3", $modifiers ) && $modifiers["mp3"] ) {
 			foreach( $objectTypes as $type ) {

@@ -502,5 +502,6 @@
 	"loopsearch": "Special page title for wiki text search",
 	"loopsearch-description": "Description of Wikitext search special page",
 	"loopsearch-placeholder": "Placeholder for term input",
-	"loopsearch-results": "Result message for special page. $1 -> search term"
+	"loopsearch-results": "Result message for special page. $1 -> search term",
+	"loop-maintenance": "Maintenance mode message. $1 -> string given in wgReadOnly variable."
 }

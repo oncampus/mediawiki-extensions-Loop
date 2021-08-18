@@ -504,6 +504,7 @@
 	"loopsearch": "Wikitextsuche",
 	"loopsearch-description": "Diese Suche durchsucht den gesamten Wikitext. Auch Tags wie 'cite' oder 'loop_figure' und deren Parameter werden durchsucht.",
 	"loopsearch-placeholder": "Suchbegriff",
-	"loopsearch-results": "Ergebnisse für die Suche nach \"$1\":"
+	"loopsearch-results": "Ergebnisse für die Suche nach \"$1\":",
+	"loop-maintenance": "LOOP befindet sich im Wartungsmodus. Bitte versuchen Sie es später erneut. <br>$1"
 
 }

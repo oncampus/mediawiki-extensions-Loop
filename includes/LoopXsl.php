@@ -423,7 +423,8 @@ class LoopXsl {
 		$parser = $parserFactory->create();
 		$html = Score::renderScore( $input[0]->textContent, ['lang' => $language], $parser );
 		preg_match_all( '~<img.*?src=["\']+(.*?)["\']+~', $html, $url );
-		$return = $wgCanonicalServer . $url[1][0];
+
+		$return = !empty($url[1]) ? $wgCanonicalServer . $url[1][0] : "";
 
 		return $return;
 	}

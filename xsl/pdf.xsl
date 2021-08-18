@@ -2025,9 +2025,11 @@
 			<xsl:variable name="lang" select="@lang"/>
 			<xsl:variable name="scoreimg" select="php:function('LoopXsl::xsl_score', $score, $lang)"/>
 
+			<xsl:if test="php:function('LoopXsl::xsl_score', $score, $lang)!=''">
 			<fo:external-graphic scaling="uniform" content-width="scale-to-fit">
 				<xsl:attribute name="src"><xsl:value-of select="$scoreimg"></xsl:value-of></xsl:attribute>
 			</fo:external-graphic>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 
