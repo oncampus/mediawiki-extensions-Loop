@@ -461,8 +461,8 @@ class LoopHtml{
                 "targetpath" => "resources/js/",
                 "link" => "script-btm"
             ),
-            "shared.css" => array(
-                "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/shared.css",
+            "mw.shared.css" => array(
+                "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/oldshared.css",
                 "targetpath" => "resources/styles/",
                 "link" => "style"
             ),
@@ -516,20 +516,28 @@ class LoopHtml{
         $skinStyle = str_replace( "style-", "loop-", $wgDefaultUserOptions["LoopSkinStyle"]);
         $skinFolder = "resources/styles/less/skins/common/$skinStyle/img/";
         $folderPath = "skins/Loop/$skinFolder";
+        $addSkinFiles = true;
+
         if ( ! is_dir( $folderPath ) ) {
             $skinFolder = "resources/styles/less/skins/custom/$skinStyle/img/";
             $folderPath = "skins/Loop/$skinFolder";
+			if ( ! is_dir( $folderPath ) ) {
+				$addSkinFiles = false;
+			}
         }
-        $skinFiles = scandir("skins/Loop/$skinFolder");
-        $skinFiles = array_slice($skinFiles, 2);
+        if ($addSkinFiles) {
 
-        foreach( $skinFiles as $file => $data ) {
-            $resources[$data] = array(
-                "srcpath" => "skins/Loop/$skinFolder$data",
-                "targetpath" => $skinFolder
-            );
+			$skinFiles = scandir("skins/Loop/$skinFolder");
+			$skinFiles = array_slice($skinFiles, 2);
 
+			foreach( $skinFiles as $file => $data ) {
+				$resources[$data] = array(
+					"srcpath" => "skins/Loop/$skinFolder$data",
+					"targetpath" => $skinFolder
+				);
+			}
         }
+
         # load resourcemodules from skin and extension json
 
         $resourceModules = $wgResourceModules;

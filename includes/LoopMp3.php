@@ -374,7 +374,10 @@ class LoopMp3 {
 			$data["articleXml"] = $tmpDom->saveXml();
 
 			$structureItem = LoopStructureItem::newFromIds($data["articleId"]);
-			$data["lastChanged"] = $structureItem->lastChanged();
+			$data["lastChanged"] = "";
+			if ( $structureItem != false ) {
+				$data["lastChanged"] = $structureItem->lastChanged();
+			}
 
 			return $data;
 		}

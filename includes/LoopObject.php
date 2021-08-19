@@ -192,17 +192,11 @@ class LoopObject {
 						$this->error = "";
 					}
 					$textform = "-";
-					if ( !is_null( $otherTitle ) ) {
-						if ( $otherTitle->getArticleId() == $articleId  ) {
-							$e = new LoopException( wfMessage( 'loopobject-error-unknown', $this->getId(), $textform )->text() );
-							$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-							$this->error .= $e . "\n";
-						} else {
-							$textform = $otherTitle->mTextform;
-							$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
-							$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
-							$this->error .= $e . "\n";
-						}
+					if ( !is_null( $otherTitle ) && $otherTitle->getArticleId() != $articleId ) {
+						$textform = $otherTitle->mTextform;
+						$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
+						$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
+						$this->error .= $e . "\n";
 					} else {
 						$lsi = LoopStructureItem::newFromIds($articleId);
 						if ( $lsi ) {
