@@ -395,7 +395,7 @@ class LoopObject {
 			$t = Title::newFromText ( 'NO TITLE' );
 			$parser->setTitle ( $t );
 			$parser->clearState ();
-			# $parser->mStripState = new StripState( $parser ); #safe to remove?
+			$parser->mStripState = new StripState( $parser );
 			$frame = $parser->getPreprocessor ()->newFrame ();
 		}
 
