@@ -39,46 +39,28 @@ class LoopZip {
                 $scaleClass = 'responsive-iframe';
 
                 if ( is_dir( $startdir ) ) {
-
-					# check if existing extractions contain php files. if so, the extraction will be deleted.
-					$zipfiles = scandir( $startdir );
-					$safeToPublish = true;
-					foreach( $zipfiles as $pos => $filename ) {
-						if ( strrpos($filename, ".php", -1 ) ) {
-							$safeToPublish = false;
-							break;
+					if ( file_exists( $startfile ) ) {
+						$starturl = $wgUploadPath . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;
+						if ( $loopzip->scale ) {
+							$parser->getOutput()->addModules("skins.loop-resizer.js");
+							$scaleClass = "scale-frame";
 						}
-					}
-
-					if ( $safeToPublish ) {
-						if ( file_exists( $startfile ) ) {
-							$starturl = $wgUploadPath . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;
-							$iframe = Html::rawElement(
-								'iframe',
-								array(
-									'src' => $starturl,
-									'width' => $loopzip->width,
-									'height' => $loopzip->height,
-									'data-width' => $loopzip->width,
-									'data-height' => $loopzip->height,
-									'allowfullscreen' => 'allowfullscreen',
-									'class' => 'loop-zip ' . $scaleClass
-								),
-								''
-							);
-							if ( $loopzip->scale ) {
-								$parser->getOutput()->addModules("skins.loop-resizer.js");
-								$scaleClass = "scale-frame";
-							}
-							$return .= '<div class="loop-zip-wrapper">' . $iframe . '</div>';
-						} else {
-							$return .= new LoopException( wfMessage( 'loopzip-error-nostartfile', $loopzip->start, $loopzip->file )->text() );
-							$parser->addTrackingCategory( 'loop-tracking-category-error' );
-						}
+						$iframe = Html::rawElement(
+							'iframe',
+							array(
+								'src' => $starturl,
+								'width' => $loopzip->width,
+								'height' => $loopzip->height,
+								'data-width' => $loopzip->width,
+								'data-height' => $loopzip->height,
+								'allowfullscreen' => 'allowfullscreen',
+								'class' => 'loop-zip ' . $scaleClass
+							),
+							''
+						);
+						$return .= '<div class="loop-zip-wrapper">' . $iframe . '</div>';
 					} else {
-						# in case the zip contains a PHP file from when this was not checked, delete the extracted files. Can be removed after some checks?
-						exec("rm -r $startdir");
-						$return .= new LoopException( wfMessage( 'loopzip-error-noextraction', $loopzip->file )->text() );
+						$return .= new LoopException( wfMessage( 'loopzip-error-nostartfile', $loopzip->start, $loopzip->file )->text() );
 						$parser->addTrackingCategory( 'loop-tracking-category-error' );
 					}
                 } else {
@@ -119,6 +101,7 @@ class LoopZip {
 				$stat = $zip->statIndex( $i );
 				if ( strrpos($stat['name'], ".php", -1 ) ) {
 					$extract = false;
+					break;
 				}
 			}
 			if ( $extract ) {
