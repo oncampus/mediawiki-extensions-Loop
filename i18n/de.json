@@ -407,7 +407,7 @@
 	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an.",
 	"loopsidebar-error-nopage": "In dem Sidebar-Tag wurde keine Seite (page) angegeben.",
 	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
-
+	"loopzip-error-noextraction": "Die ZIP-Datei $1 wurde zwar hochgeladen, jedoch nicht entpackt. Zips, die PHP-Dateien enthalten, sind für eine LOOP-ZIP-Interaktion nicht verfügbar. Ist keine PHP-Datei enthalten, liegt ein Berechtigungsproblem vor. In dem Fall kontaktieren Sie bitte den Administrator.",
 	"loop-error-missingrequired": "In dem Tag $1 fehlt der notwendige Parameter $2. Das Element kann nicht dargestellt werden.",
 	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}",
 	"loop-error-unknown-param" : "Im Tag $1 enthält der Parameter $2 den unbekannten Wert '''$3'''.<br/>\nErlaubte Werte sind '''$4'''. Das Element wird nun standardmäßig mit dem Wert $5 dargestellt.",

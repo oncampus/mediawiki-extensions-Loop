@@ -407,7 +407,7 @@
 	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist.",
 	"loopsidebar-error-nopage": "The sidebar-tag is missing a page parameter.",
 	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
-
+	"loopzip-error-noextraction": "The ZIP file $1 was uploaded but not extracted. Zips that contain PHP files are not permitted in LOOP ZIP media. In case there is no PHP file in this ZIP, there is a permissions problem. In that case please contact the administrator.",
 	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
 	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}",
 	"loop-error-unknown-param" : "The tag $1 contains a parameter $2 with an unknown value '''$3'''.<br/>\nValid values are '''$4'''. The element is rendered by default with value $5.",

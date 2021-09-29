@@ -34,37 +34,57 @@ class LoopZip {
             if ( is_object( $localfile ) && $localfile->exists() ) {
                 $zipfilename = $localfile->getName();
                 $hashpath = $localfile->getHashPath();
-                $startfile = $wgUploadDirectory . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;
-                $fileID = uniqid();
+                $startdir = $wgUploadDirectory . '/' . $hashpath . $zipfilename . '.extracted/';
+                $startfile = $startdir . $loopzip->start;
                 $scaleClass = 'responsive-iframe';
 
-                if ( $loopzip->scale ) {
-                    $parser->getOutput()->addModules("skins.loop-resizer.js");
-                    $scaleClass = "scale-frame";
-                }
+                if ( is_dir( $startdir ) ) {
 
-                if ( file_exists( $startfile ) ) {
-                    $starturl = $wgUploadPath . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;
-                    $iframe = Html::rawElement(
-                        'iframe',
-                        array(
-                            'src' => $starturl,
-                            'width' => $loopzip->width,
-                            'height' => $loopzip->height,
-                            'data-width' => $loopzip->width,
-                            'data-height' => $loopzip->height,
-                            'allowfullscreen' => 'allowfullscreen',
-                            'class' => 'loop-zip ' . $scaleClass
-                        ),
-                        ''
-                    );
-                    $return .= '<div class="loop-zip-wrapper">' . $iframe . '</div>';
+					# check if existing extractions contain php files. if so, the extraction will be deleted.
+					$zipfiles = scandir( $startdir );
+					$safeToPublish = true;
+					foreach( $zipfiles as $pos => $filename ) {
+						if ( strrpos($filename, ".php", -1 ) ) {
+							$safeToPublish = false;
+							break;
+						}
+					}
 
-
+					if ( $safeToPublish ) {
+						if ( file_exists( $startfile ) ) {
+							$starturl = $wgUploadPath . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;
+							$iframe = Html::rawElement(
+								'iframe',
+								array(
+									'src' => $starturl,
+									'width' => $loopzip->width,
+									'height' => $loopzip->height,
+									'data-width' => $loopzip->width,
+									'data-height' => $loopzip->height,
+									'allowfullscreen' => 'allowfullscreen',
+									'class' => 'loop-zip ' . $scaleClass
+								),
+								''
+							);
+							if ( $loopzip->scale ) {
+								$parser->getOutput()->addModules("skins.loop-resizer.js");
+								$scaleClass = "scale-frame";
+							}
+							$return .= '<div class="loop-zip-wrapper">' . $iframe . '</div>';
+						} else {
+							$return .= new LoopException( wfMessage( 'loopzip-error-nostartfile', $loopzip->start, $loopzip->file )->text() );
+							$parser->addTrackingCategory( 'loop-tracking-category-error' );
+						}
+					} else {
+						# in case the zip contains a PHP file from when this was not checked, delete the extracted files. Can be removed after some checks?
+						exec("rm -r $startdir");
+						$return .= new LoopException( wfMessage( 'loopzip-error-noextraction', $loopzip->file )->text() );
+						$parser->addTrackingCategory( 'loop-tracking-category-error' );
+					}
                 } else {
-                    $return .= new LoopException( wfMessage( 'loopzip-error-nostartfile', $loopzip->start, $loopzip->file )->text() );
-                    $parser->addTrackingCategory( 'loop-tracking-category-error' );
-                }
+					$return .= new LoopException( wfMessage( 'loopzip-error-noextraction', $loopzip->file )->text() );
+					$parser->addTrackingCategory( 'loop-tracking-category-error' );
+				}
             } else {
                 $return .= new LoopException( wfMessage( "loop-error-missingfile", "loop_zip", $loopzip->file, 1 )->text() );
                 $parser->addTrackingCategory( 'loop-tracking-category-error' );
@@ -81,7 +101,7 @@ class LoopZip {
         global $wgUploadDirectory;
         $zipfile = $upload->getLocalFile();
         $zipfilename = $zipfile->getName();
-        $filetitle = Title::newFromText( $zipfilename, NS_FILE );
+        #$filetitle = Title::newFromText( $zipfilename, NS_FILE );
 
         $hashpath = $zipfile->getHashPath();
         $from = $wgUploadDirectory . '/' . $hashpath . $zipfilename;
@@ -93,7 +113,17 @@ class LoopZip {
 			if ( is_dir($to) ) {
 				exec("rm -r $to");
 			}
-            $zip->extractTo( $to );
+			$extract = true;
+			# exclude php files within zips
+			for( $i = 0; $i < $zip->numFiles; $i++ ){
+				$stat = $zip->statIndex( $i );
+				if ( strrpos($stat['name'], ".php", -1 ) ) {
+					$extract = false;
+				}
+			}
+			if ( $extract ) {
+				$zip->extractTo( $to );
+			}
             $zip->close();
         }
 		return true;
