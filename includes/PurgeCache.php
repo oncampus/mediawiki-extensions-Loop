@@ -5,7 +5,7 @@
  *
  * @file
  * @ingroup Extensions
- * @author Rob Church <robchur@gmail.com>, Dennis Krohn (oncampus)
+ * @author Rob Church <robchur@gmail.com>, Dennis Krohn @krohnden
  * @licence of this file Public domain
  */
 

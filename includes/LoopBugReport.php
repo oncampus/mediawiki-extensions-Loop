@@ -21,10 +21,11 @@ class LoopBugReport {
 
     public static function externalTicketService() {
         global $wgLoopBugReportEnabled, $wgLoopExternalServiceBugReportUrl, $wgLoopExternalServiceUser, $wgLoopExternalServicePw;
-
+        /* 2021-10-21/dk: bugreport service disabled 
         if ( !empty ( $wgLoopExternalServiceBugReportUrl ) && !empty ( $wgLoopExternalServiceUser ) && !empty ( $wgLoopExternalServicePw ) && $wgLoopBugReportEnabled ) {
             return true;
         }
+        */
         return false;
     }
 
