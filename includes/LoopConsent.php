@@ -140,7 +140,7 @@ class LoopConsent {
 
             if( $service == 'youtube' ) {
                 $title = 'YouTube';
-                $bgColor = 'ff0000';
+                $bgColor = '181818';
             } else if ( $service == 'vimeo' ) {
                 $title = 'Vimeo';
                 $bgColor = '1ab7ea';
