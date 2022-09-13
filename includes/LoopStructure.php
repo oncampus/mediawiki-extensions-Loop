@@ -144,7 +144,7 @@ class LoopStructure {
 		$summary = CommentStoreComment::newUnsavedComment( "New main page" );
 		$mwMainPageUpdater = $mwMainPageWP->newPageUpdater( $user );
 		$mwMainPageUpdater->setContent( "main", $newMainPageContent );
-		$mwMainPageUpdater->saveRevision ( $summary, EDIT_NEW );
+		$mwMainPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 
 		$parent_id = array();
 		$parent_id[0] = $this->mainPage;
