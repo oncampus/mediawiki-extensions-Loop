@@ -17,9 +17,9 @@ var customizeWikiEditor = function () {
     wikiEditor.wikiEditor( 'addToToolbar', {
         sections: {
             'loop': {
-                type: 'toolbar', 
+                type: 'toolbar',
                 labelMsg: 'loopwikieditor-section-loop',
-                
+
                 groups: {
                     list: {
                         tools: {
@@ -32,7 +32,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_figure title="" description="" copyright="" show_copyright="false" index="true">',
+                                                pre: '<loop_figure title="" description="" copyright="" show_copyright="false" index="true" alt="">',
                                                 peri: "[[File:Filename.png]]",
                                                 post: '</loop_figure>'
                                             }
@@ -186,7 +186,7 @@ var customizeWikiEditor = function () {
                                 }
                             }, // end of objects
 
-                            
+
                             'loop-areas': {
                                 labelMsg: 'loopwikieditor-loop-areas',
                                 type: 'select',
@@ -469,8 +469,8 @@ var customizeWikiEditor = function () {
 
                                 }
                             }, // end of areas
-                            
-                            
+
+
                             'loop-contents': {
                                 labelMsg: 'loopwikieditor-loop-contents',
                                 type: 'select',
@@ -576,7 +576,7 @@ var customizeWikiEditor = function () {
                                     },
                                 }
                             },
-                            
+
                             'loop-snippets': {
                                 labelMsg: 'loopwikieditor-loop-snippets',
                                 type: 'select',
@@ -717,15 +717,15 @@ var customizeWikiEditor = function () {
                 }
             },
             'references': {
-                type: 'booklet', 
+                type: 'booklet',
                 labelMsg: 'loopwikieditor-section-references',
-                
+
             }
         }
     } );
 
     var wikiEditorElements = new Array();
-    
+
     // add all pages to references that are given in variable
     $.each( loop_elements, function( $index, $value ) {
         var tmp_characters = [];
@@ -736,26 +736,26 @@ var customizeWikiEditor = function () {
         }
         // add character button definitions
             $.each( $value, function( $key, $val ) {
-                
+
         if ( $index == "loop_literature" ) {
             $tmp = {
-                label: $key + " - " + $val, 
-                action: { 
-                    type: 'encapsulate', 
-                    options: { 
-                        pre: "<cite>" + $key + "</cite>" } 
-                    } 
+                label: $key + " - " + $val,
+                action: {
+                    type: 'encapsulate',
+                    options: {
+                        pre: "<cite>" + $key + "</cite>" }
+                    }
                 }
         }
         else {
             $refid = $key.substring($key.indexOf("::") + 2);
-            $tmp = { 
-                label: $val, 
-                action: { 
-                    type: 'encapsulate', 
-                    options: { 
-                        pre: "<loop_reference id='" + $refid + "'/>" } 
-                    } 
+            $tmp = {
+                label: $val,
+                action: {
+                    type: 'encapsulate',
+                    options: {
+                        pre: "<loop_reference id='" + $refid + "'/>" }
+                    }
                 }
         }
             tmp_characters.push( $tmp );
@@ -771,13 +771,13 @@ var customizeWikiEditor = function () {
         addGroupToReferences( wikiEditorElements[ $index ] );
 
     } );
-        
+
 }
 
 // adds given group to references in toolbar
 function addGroupToReferences( group ) {
     wikiEditor.wikiEditor( 'addToToolbar', {
         'section': 'references',
-        'pages': group 
+        'pages': group
     } );
 }
