@@ -1,37 +1,36 @@
-<?php 
-
+<?php
 /**
  * @description Screenshot tag. Content will have a screenshot taken to be displayed in PDF instead of the otherwise regularily rendered content
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopScreenshot {
-	
+
 	public static function onParserSetup( Parser $parser ) {
 		$parser->setHook( 'loop_screenshot', 'LoopScreenshot::renderLoopScreenshot' );
 		return true;
-	}	
-	
+	}
+
 	public static function onParserAfterTidy( &$parser, &$text ) { # for rendering when the screenshot is not present upon calling from PDF
 
 		$title = $parser->getTitle();
 		self::checkForScreenshots( $text, $title );
 		return true;
 
-	}	
-	
+	}
+
 	public static function onBeforePageDisplay( $out, $skin ) { # for rendering when the screenshot is not present upon opening the page
 
 		$title = $out->getTitle();
 		$text = $out->mBodytext;
 		self::checkForScreenshots( $text, $title );
 		return true;
-		
-	}	
+
+	}
 
 	public static function checkForScreenshots( $text, $title ) {
 
@@ -40,7 +39,7 @@ class LoopScreenshot {
 		$articleId = $title->getArticleID();
 
 		if ( !empty ( $matches[0] ) ) {
-			$c = count( $matches[0] ); 
+			$c = count( $matches[0] );
 			for ( $i = 0; $i < $c; $i++ ) {
 				$png = LoopScreenshot::html2png( $title, $matches[8][$i], $matches[2][$i], $articleId, $matches[4][$i], $matches[6][$i] );
 			}
@@ -48,14 +47,14 @@ class LoopScreenshot {
 
 		return true;
 	}
-	
+
 	public static function renderLoopScreenshot( $input, array $args, $parser, $frame ) {
-		
+
 		global $wgLoopScreenshotUrl;
 		$title = $parser->getTitle();
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRevId = $fwp->getStable();
-		
+
 		if ( !empty ( $wgLoopScreenshotUrl ) ) {
 
 			if ( array_key_exists( "width", $args ) ) {
@@ -78,38 +77,39 @@ class LoopScreenshot {
 
 			$user = $parser->getUser();
 			$articleId = $parser->getTitle()->getArticleID();
-			$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
+			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+			$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
 			$html .= '<div class="loop_screenshot_begin" id="'.$refId.'" data-width="'.$width.'" data-height="'.$height.'">';
 			$html .= $parser->recursiveTagParseFully( $input );
-			$html .= '</div><div class="loop_screenshot_end"></div>';		
+			$html .= '</div><div class="loop_screenshot_end"></div>';
 
-			if ( $loopeditmode ) {
+			if ( $editMode ) {
 				global $wgCanonicalServer, $wgUploadPath;
 
 				$screenshotUrl = $wgCanonicalServer . $wgUploadPath."/screenshots/$articleId/$refId.png";
-				
+
 				$btnId = uniqid();
 				$btnIcon = '<span class="ic ic-print-area float-none"></span>';
-				$editModeClass = $loopeditmode ? " loopeditmode-hint" : "";
-				
+				$editModeClass = $editMode ? " loopeditmode-hint" : "";
+
 				$html .= '<div class="loopprint-container loopprint-button">';
 				$html .= '<input id="'. $btnId .'" type="checkbox">';
 				$html .= '<label for="'. $btnId .'" class="mb-0"><span data-title="'.wfMessage('loopscreenshot')->text().'" class="loopprint-tag '. $btnId;
-				$html .= ( $loopeditmode ) ? ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"' : '"';
+				$html .= ( $editMode ) ? ' loopeditmode-hint" data-original-title="'.wfMessage('loop-editmode-hint')->text().'"' : '"';
 				$html .= '>' . $btnIcon . '<span class="loopprint-button-text pl-1">'.wfMessage('loopscreenshot')->text().'</span></span></label>';
 				$html .= '<div class="loopprint-content pb-1"><img class="responsive-image" src="'.$screenshotUrl.'"/></div>';
-				$html .= '</div>';	
+				$html .= '</div>';
 			}
 		} else {
 			$html = new LoopException( wfMessage( 'loopscreenshot-error-noservice', $input )->text() );
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 		}
-		
+
 		return $html;
 
 	}
-		
+
 	public static function html2png ( $title, $content, $id, $articleId, $width, $height ) {
 
 		global $wgLoopScreenshotUrl, $wgUploadDirectory, $wgCanonicalServer, $wgLanguageCode, $wgUploadPath, $wgScriptPath, $wgDefaultUserOptions;
@@ -124,8 +124,8 @@ class LoopScreenshot {
 
 				$wikiPage = WikiPage::factory( $title );
 				$fwp = new FlaggableWikiPage ( $title );
-				
-				$rev = $wikiPage->getRevision();
+
+				$rev = $wikiPage->getRevisionRecord();
 				$revId = $rev->getId();
 				$stableRevId = $fwp->getStable();
 
@@ -146,10 +146,10 @@ class LoopScreenshot {
 					if ( !is_dir( $screenshotPageDir ) ) {
 						@mkdir( $screenshotPageDir, 0774, true );
 					}
-					
+
 					$screenshotHtmlFile = $screenshotPageDir.'/'.$id.'.html';
 					$canonicalHtmlUrl = $wgCanonicalServer.$wgUploadPath.'/screenshots/'.$articleId."/".$id.'.html';
-					
+
 					if ( !file_exists( $screenshotPngFile ) ) {
 
 						$fh = fopen( $screenshotHtmlFile, 'w+' );
@@ -176,7 +176,7 @@ class LoopScreenshot {
 					}
 				}
 			}
-		} 
+		}
 
 		return true;
 	}

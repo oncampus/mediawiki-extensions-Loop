@@ -307,7 +307,7 @@
 			<xsl:attribute name="value"><xsl:value-of select="/loop/meta/title"></xsl:value-of></xsl:attribute>
 		</axf:document-info>
 
-		<!-- ToDo: add more infos, see https://www.antennahouse.com/product/ahf65/ahf-ext.html#axf.document-info -->
+		<!-- infos, see https://www.antennahouse.com/product/ahf65/ahf-ext.html#axf.document-info -->
 	</xsl:template>
 
 
@@ -2025,9 +2025,11 @@
 			<xsl:variable name="lang" select="@lang"/>
 			<xsl:variable name="scoreimg" select="php:function('LoopXsl::xsl_score', $score, $lang)"/>
 
+			<xsl:if test="php:function('LoopXsl::xsl_score', $score, $lang)!=''">
 			<fo:external-graphic scaling="uniform" content-width="scale-to-fit">
 				<xsl:attribute name="src"><xsl:value-of select="$scoreimg"></xsl:value-of></xsl:attribute>
 			</fo:external-graphic>
+			</xsl:if>
 		</fo:block>
 	</xsl:template>
 
@@ -2067,7 +2069,7 @@
 						<fo:block>
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
-							<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+							<xsl:choose>
 								<xsl:when test="@icon">
 									<xsl:variable name="iconfilename"><xsl:value-of select="@icon"></xsl:value-of></xsl:variable>
 

@@ -4,12 +4,8 @@
   * @ingroup Extensions
   * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
   */
-  
-  if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
 
-use MediaWiki\MediaWikiServices;
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class SpecialLoopRSS extends SpecialPage {
 
@@ -18,7 +14,7 @@ class SpecialLoopRSS extends SpecialPage {
 	}
 
 	function execute( $par ) {
-        
+
         global $wgLoopUnprotectedRSS;
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -26,8 +22,8 @@ class SpecialLoopRSS extends SpecialPage {
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$out->setPageTitle( $this->msg( "looprss" ) );
         $token = $request->getText( 't' );
-        
-        if ( $user->isLoggedIn() ) {
+
+        if ( $user->isRegistered() ) {
 
             $this->outputRecentChanges();
 
@@ -52,28 +48,29 @@ class SpecialLoopRSS extends SpecialPage {
         }
 
     }
-    
+
     function outputRecentChanges() {
         global $wgCanonicalServer, $wgScriptPath;
         $apiPath = $wgCanonicalServer . $wgScriptPath . "/api.php";
-        
+
         $params = "";
-        if ( class_exists( "LoopSessionProvider" ) ) { 
-            $params .= LoopSessionProvider::getApiPermission();
+        if ( class_exists( "LoopSessionProvider" ) ) {
+            $params .= LoopSessionProvider::getApiPermission(); # used by THL only. TODO?
         } else {
-            if ( !$this->getUser()->isLoggedIn() ) {
+            if ( !$this->getUser()->isRegistered() ) {
                 $this->setHeaders();
                 $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
                 return;
             }
         }
         $params .= "hidebots=1&namespace=2&invert=1&urlversion=1&days=30&limit=20&action=feedrecentchanges&feedformat=atom";
-        
+
         $url = $apiPath . "?" . $params;
-        $httpRequest = MWHttpRequest::factory( $url );
-        $status = $httpRequest->execute();
+
+		$httpRequest = MediaWiki\MediaWikiServices::getInstance()->getHttpRequestFactory()->create( $url, [], 'GET' );
+		$status = $httpRequest->execute();
         $result = $httpRequest->getContent();
-        
+
         $this->getOutput()->disable();
         wfResetOutputBuffers();
 

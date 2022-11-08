@@ -1,21 +1,17 @@
 <?php
-
 /**
  * Class representing a book structure and other meta information
  * @author Kevin Berg @bedoke <kevin-dominick.berg@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
 
 use MediaWiki\MediaWikiServices;
 
 class LoopStructure {
 
 	private $id = 0; // id of the structure
-	private $properties = array(); // array of structure properties
-	private $propertiesLoaded = false; // bool properties loaded from database
 	public $mainPage; // article id of the main page
 	public $structureItems = array(); // array of structure items
 
@@ -127,7 +123,12 @@ class LoopStructure {
 		if( $this->mainPage == 0 ) {
 			$newPage = WikiPage::factory( Title::newFromText( $rootTitleText ));
 			$newContent = new WikitextContent( wfMessage( 'loopstructure-default-newpage-content' )->inContentLanguage()->text() );
-			$newPage->doEditContent( $newContent, '', EDIT_NEW, false, $user );
+
+			$summary = CommentStoreComment::newUnsavedComment( "New root page" );
+			$newPageUpdater = $newPage->newPageUpdater( $user );
+			$newPageUpdater->setContent( "main", $newContent );
+			$newPageUpdater->saveRevision ( $summary, EDIT_NEW );
+
 			$newTitle = $newPage->getTitle();
 			$this->mainPage = $newTitle->getArticleId();
 		}
@@ -139,7 +140,11 @@ class LoopStructure {
 		$mwMainPageWP = WikiPage::factory( $mwMainPageTitle );
 		$content = $mainPageWP->getContent();
 		$newMainPageContent = $content->getContentHandler()->unserializeContent( $mainPage->mTextform );
-		$mwMainPageWP->doEditContent ( $newMainPageContent, "", 0, false, $user ); #TODO deprecated
+
+		$summary = CommentStoreComment::newUnsavedComment( "New main page" );
+		$mwMainPageUpdater = $mwMainPageWP->newPageUpdater( $user );
+		$mwMainPageUpdater->setContent( "main", $newMainPageContent );
+		$mwMainPageUpdater->saveRevision ( $summary, EDIT_UPDATE );
 
 		$parent_id = array();
 		$parent_id[0] = $this->mainPage;
@@ -165,60 +170,64 @@ class LoopStructure {
 		$regex = "/(<li class=\"toclevel-)(\\d)( tocsection-)(.*)(<span class=\"tocnumber\">)([\\d\\.]+)(<\\/span> <span class=\"toctext\">)(.*)(<\\/span)/";
 		preg_match_all( $regex, $wikiText, $matches );
 
-		for( $i=0; $i < count( $matches[0] ); $i++ ) {
+		if ( is_array( $matches[0] ) ) {
+			for( $i=0; $i < count( $matches[0] ); $i++ ) { # works even though it's marked red
 
-			$tocLevel = $matches[2][$i];
-			$tocNumber = $matches[6][$i];
-			$tocText = $matches[8][$i];
-			$tocArticleId = 0;
+				$tocLevel = $matches[2][$i];
+				$tocNumber = $matches[6][$i];
+				$tocText = $matches[8][$i];
+				$tocArticleId = 0;
 
-			$itemTitle = Title::newFromText($tocText);
-			$tocArticleId = $itemTitle->getArticleID();
+				$itemTitle = Title::newFromText($tocText);
+				$tocArticleId = $itemTitle->getArticleID();
 
-			# create new page for item
-			if( $tocArticleId == 0 ) {
-				$newPage = WikiPage::factory( Title::newFromText( $tocText ) );
-				$newContent = new WikitextContent( wfMessage( 'loopstructure-default-newpage-content' )->inContentLanguage()->text());
-				$newPage->doEditContent( $newContent, '', EDIT_NEW,	false, $user );
-				$newTitle = $newPage->getTitle();
-				$tocArticleId = $newTitle->getArticleId();
+				# create new page for item
+				if( $tocArticleId == 0 ) {
+					$newPage = WikiPage::factory( Title::newFromText( $tocText ) );
+					$newContent = new WikitextContent( wfMessage( 'loopstructure-default-newpage-content' )->inContentLanguage()->text());
+					$summary = CommentStoreComment::newUnsavedComment( "New from TOC" );
+					$newPageUpdater = $newPage->newPageUpdater( $user );
+					$newPageUpdater->setContent( "main", $newContent );
+					$newPageUpdater->saveRevision ( $summary, EDIT_NEW );
+					$newTitle = $newPage->getTitle();
+					$tocArticleId = $newTitle->getArticleId();
+				}
+
+				# get parent article
+				$parent_id[$tocLevel] = $tocArticleId;
+
+				if($tocLevel > $max_level) {
+					$max_level = $tocLevel;
+				}
+
+				for( $j = $tocLevel + 1; $j <= $max_level; $j++ ) {
+					$parent_id[$j] = 0;  # clear lower levels to prevent using an old value in case some intermediary levels are omitted
+				}
+
+				$parentArticleId = $parent_id[$tocLevel - 1];
+				$parentArticleId = intval($parentArticleId);
+
+				# set next item from the last structure item.
+				$previousItem = $this->structureItems[$sequence-1];
+				$previousArticleId = $previousItem->article;
+				$previousItem->nextArticle = $tocArticleId;
+
+				$loopStructureItem = new LoopStructureItem();
+				$loopStructureItem->structure = $this->id;
+				$loopStructureItem->article = $tocArticleId;
+				$loopStructureItem->previousArticle = $previousArticleId;
+				$loopStructureItem->nextArticle = 0; # next article will be set when building the next structure item.
+				$loopStructureItem->parentArticle = $parentArticleId;
+				$loopStructureItem->tocLevel = $tocLevel;
+				$loopStructureItem->sequence = $sequence;
+				$loopStructureItem->tocNumber = $tocNumber;
+				$loopStructureItem->tocText = $tocText;
+
+				$this->structureItems[$sequence] = $loopStructureItem;
+				$sequence++;
+
 			}
-
-			# get parent article
-			$parent_id[$tocLevel] = $tocArticleId;
-
-			if($tocLevel > $max_level) {
-				$max_level = $tocLevel;
-			}
-
-			for( $j = $tocLevel + 1; $j <= $max_level; $j++ ) {
-				$parent_id[$j] = 0;  # clear lower levels to prevent using an old value in case some intermediary levels are omitted
-			}
-
-			$parentArticleId = $parent_id[$tocLevel - 1];
-			$parentArticleId = intval($parentArticleId);
-
-			# set next item from the last structure item.
-			$previousItem = $this->structureItems[$sequence-1];
-			$previousArticleId = $previousItem->article;
-			$previousItem->nextArticle = $tocArticleId;
-
-			$loopStructureItem = new LoopStructureItem();
-			$loopStructureItem->structure = $this->id;
-			$loopStructureItem->article = $tocArticleId;
-			$loopStructureItem->previousArticle = $previousArticleId;
-			$loopStructureItem->nextArticle = 0; # next article will be set when building the next structure item.
-			$loopStructureItem->parentArticle = $parentArticleId;
-			$loopStructureItem->tocLevel = $tocLevel;
-			$loopStructureItem->sequence = $sequence;
-			$loopStructureItem->tocNumber = $tocNumber;
-			$loopStructureItem->tocText = $tocText;
-
-			$this->structureItems[$sequence] = $loopStructureItem;
-			$sequence++;
-
 		}
-
 		return true;
 
 	}
@@ -314,7 +323,7 @@ class LoopStructure {
 
 		LoopObject::updateStructurePageTouched(); # update page_touched on structure pages.
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->delete(
 			'loop_structure_items',
 			'*',
@@ -400,7 +409,7 @@ class LoopStructure {
 	public function setInitialStructure() {
 
 			global $wgSitename;
-			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => true ) );
+			$systemUser = User::newSystemUser( 'LOOP_SYSTEM', array( 'steal' => true, 'create'=> true, 'validate' => 'valid' ) );
 
 			$sitename = explode( ".", $wgSitename );
 
@@ -441,7 +450,7 @@ class LoopStructureItem {
 
 		if ($this->article!=0) {
 
-			$dbw = wfGetDB( DB_MASTER );
+			$dbw = wfGetDB( DB_PRIMARY );
 			$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
 			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase
 			$dbw->insert(
@@ -879,6 +888,8 @@ class SpecialLoopStructure extends SpecialPage {
 
 	public function execute( $sub ) {
 
+		global $wgDefaultUserOptions;
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
@@ -886,15 +897,16 @@ class SpecialLoopStructure extends SpecialPage {
 
 		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopstructure-specialpage-title' ) );
-		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
-		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+		$renderMode = $userOptionsLookup->getOption( $user, 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
 
-		$html = self::renderLoopStructureSpecialPage( $loopEditMode, $loopRenderMode, $user );
+		$html = self::renderLoopStructureSpecialPage( $editMode, $renderMode, $user );
 		$out->addHtml( $html );
 
 	}
 
-	public static function renderLoopStructureSpecialPage( $loopEditMode = false, $loopRenderMode = 'default', $user = null ) {
+	public static function renderLoopStructureSpecialPage( $editMode = false, $renderMode = 'default', $user = null ) {
 	    $html = '';
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
@@ -908,7 +920,7 @@ class SpecialLoopStructure extends SpecialPage {
 	        . wfMessage( 'loopstructure-specialpage-title' )->parse();
 
 	    if ( $user ) {
-    	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
+    	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $renderMode == 'default' && $editMode ) {
 
     	        # show link to the edit page if user is permitted
 
@@ -991,7 +1003,8 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		$newStructureContent = $request->getText( 'loopstructure-content' );
 		$requestToken = $request->getText( 't' );
 
-		$userIsPermitted = (! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ));
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		$userIsPermitted = (! $user->isAnon() && $permissionManager->userHasRight( $user,'loop-toc-edit' ));
 		$success = null;
 		$error = false;
 		$feedbackMessageClass = 'success';
@@ -1005,9 +1018,10 @@ class SpecialLoopStructureEdit extends SpecialPage {
 					$newStructureContent = '__FORCETOC__' . PHP_EOL . $newStructureContent;
 
 					# use local parser to get a default parsed result
-					$localParser = new Parser();
+					$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+					$parser = $parserFactory->create();
 					$tmpTitle = Title::newFromText( 'NO TITLE' );
-                    $parserOutput = $localParser->parse( $newStructureContent, $tmpTitle, new ParserOptions() );
+                    $parserOutput = $parser->parse( $newStructureContent, $tmpTitle, new ParserOptions() );
 
 					if( is_object( $parserOutput )) {
 

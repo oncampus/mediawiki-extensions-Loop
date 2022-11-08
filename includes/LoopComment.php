@@ -5,25 +5,26 @@
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopComment {
-    
+
     public static function onParserSetup( Parser $parser) {
         $parser->setHook( 'loop_comment', 'LoopComment::renderLoopComment' );
 
 		return true;
     }
-    
-	static function renderLoopComment( $input, array $args, Parser $parser, PPFrame $frame ) {		
-        
+
+	static function renderLoopComment( $input, array $args, Parser $parser, PPFrame $frame ) {
+
         global $wgOut;
 		$user = $wgOut->getUser();
-		$loopeditmode = $user->getOption( 'LoopEditMode', false, true );	
-        
-        if ( !$loopeditmode ) {
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+
+        if ( !$editMode ) {
             return "";
         }
 
@@ -32,7 +33,7 @@ class LoopComment {
         $html .= '</div>';
 
 		return $html;
-		
-	}	
+
+	}
 
 }

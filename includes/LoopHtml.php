@@ -4,9 +4,10 @@
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\SlotRecord;
 
 class LoopHtml{
 
@@ -51,12 +52,16 @@ class LoopHtml{
             //$articlePath = preg_replace('/(\/)/', '\/', $wgArticlePath);
             //LoopHtml::getInstance()->articlePathRegEx = preg_replace('/(\$1)/', '', $articlePath);
 
+			$user = $wgOut->getUser();
             # prepare global config
-            $editModeBefore = $wgOut->getUser()->getOption( 'LoopEditMode', $wgDefaultUserOptions['LoopEditMode'], true );
-            $renderModeBefore = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+			$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
+			$editModeBefore = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+			$renderModeBefore = $userOptionsLookup->getOption( $user, 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+
             $debugModeBefore = $wgResourceLoaderDebug;
-            $wgOut->getUser()->setOption( 'LoopRenderMode', 'offline' );
-            $wgOut->getUser()->setOption( 'LoopEditMode', false );
+            $userOptionsManager->setOption( $user, 'LoopRenderMode', 'offline' );
+            $userOptionsManager->setOption( $user, 'LoopEditMode', false );
             $wgResourceLoaderDebug = true;
 
             $exportSkin = clone $context->getSkin();
@@ -65,7 +70,7 @@ class LoopHtml{
             $mainPage = $context->getTitle()->newMainPage(); # Content of Mediawiki:Mainpage. Might not exist and cause error
 
             $wikiPage = WikiPage::factory( $mainPage );
-            $revision = $wikiPage->getRevision();
+            $revision = $wikiPage->getRevisionRecord();
             if ( $revision != null ) {
                 LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
             } else {
@@ -108,7 +113,7 @@ class LoopHtml{
                 $imprintTitle = Title::newFromText( $wgLoopImprintLink );
                 if ( ! empty ( $imprintTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $imprintTitle );
-                    $revision = $wikiPage->getRevision();
+                    $revision = $wikiPage->getRevisionRecord();
                     if ( $revision != null ) {
                         LoopHtml::writeArticleToFile( $imprintTitle, "", $exportSkin );
                     }
@@ -128,7 +133,7 @@ class LoopHtml{
                 $privacyTitle = Title::newFromText( $wgLoopPrivacyLink );
                 if ( ! empty ( $privacyTitle->mTextform ) ) {
                     $wikiPage = WikiPage::factory( $privacyTitle );
-                    $revision = $wikiPage->getRevision();
+                    $revision = $wikiPage->getRevisionRecord();
                     if ( $revision != null ) {
                         LoopHtml::writeArticleToFile( $privacyTitle, "", $exportSkin );
                     }
@@ -327,11 +332,12 @@ class LoopHtml{
             $title = Title::newFromId($title);
         }
         $wikiPage = WikiPage::factory( $title );
-        $revision = $wikiPage->getRevision();
-        $content = $revision->getContent( Revision::RAW );
+        $revision = $wikiPage->getRevisionRecord();
+        $content = $revision->getContent( SlotRecord::MAIN );
 
-        $localParser = new Parser();
-        $text = $localParser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
+        $text = $parser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
 
         # regular articles are in ZIP/files/ folder, start article in ZIP/
         if ( $prependHref == "" ) {
@@ -455,8 +461,8 @@ class LoopHtml{
                 "targetpath" => "resources/js/",
                 "link" => "script-btm"
             ),
-            "shared.css" => array(
-                "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/shared.css",
+            "mw.shared.css" => array(
+                "srcpath" => $wgServer . "/mediawiki/resources/src/mediawiki.legacy/oldshared.css",
                 "targetpath" => "resources/styles/",
                 "link" => "style"
             ),
@@ -510,20 +516,28 @@ class LoopHtml{
         $skinStyle = str_replace( "style-", "loop-", $wgDefaultUserOptions["LoopSkinStyle"]);
         $skinFolder = "resources/styles/less/skins/common/$skinStyle/img/";
         $folderPath = "skins/Loop/$skinFolder";
+        $addSkinFiles = true;
+
         if ( ! is_dir( $folderPath ) ) {
             $skinFolder = "resources/styles/less/skins/custom/$skinStyle/img/";
             $folderPath = "skins/Loop/$skinFolder";
+			if ( ! is_dir( $folderPath ) ) {
+				$addSkinFiles = false;
+			}
         }
-        $skinFiles = scandir("skins/Loop/$skinFolder");
-        $skinFiles = array_slice($skinFiles, 2);
+        if ($addSkinFiles) {
 
-        foreach( $skinFiles as $file => $data ) {
-            $resources[$data] = array(
-                "srcpath" => "skins/Loop/$skinFolder$data",
-                "targetpath" => $skinFolder
-            );
+			$skinFiles = scandir("skins/Loop/$skinFolder");
+			$skinFiles = array_slice($skinFiles, 2);
 
+			foreach( $skinFiles as $file => $data ) {
+				$resources[$data] = array(
+					"srcpath" => "skins/Loop/$skinFolder$data",
+					"targetpath" => $skinFolder
+				);
+			}
         }
+
         # load resourcemodules from skin and extension json
 
         $resourceModules = $wgResourceModules;

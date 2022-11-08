@@ -1,13 +1,13 @@
-<?php 
+<?php
 /**
-  * @description 
+  * @description
   * @ingroup Extensions
   * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>, Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
   */
-  
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class ApiLoopFeedbackSave extends ApiBase {
 	public function __construct( $main, $action ) {
@@ -15,10 +15,10 @@ class ApiLoopFeedbackSave extends ApiBase {
 	}
 
 	public function execute() {
-		
 
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$result   = $this->getResult();
-		
+
 		$user = $this->getUser();
 		if ( $user->getBlock() != null ) {
 			$this->dieWithError(
@@ -27,14 +27,14 @@ class ApiLoopFeedbackSave extends ApiBase {
 			);
 		}
 
-		if (!$user->isAllowed( 'loopfeedback-view' ) ) {
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
 			);
-		}		
-		
-		
+		}
+
+
 		$params = $this->extractRequestParams();
 
 		// get page object
@@ -44,8 +44,8 @@ class ApiLoopFeedbackSave extends ApiBase {
 				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
-		}		
-			
+		}
+
 		$feedback['lf_id'] = $this->generateId();
 		$feedback['lf_page'] = $pageObj->getId();
 		$feedback['lf_user'] = $user->getId();
@@ -54,8 +54,8 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$feedback['lf_comment'] = trim ($params['comment']);
 		$feedback['lf_timestamp'] = wfTimestampNow();
 		$feedback['lf_archive_timestamp'] = '00000000000000';
-		
-		$dbw = wfGetDB( DB_MASTER );
+
+		$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->insert(
 			'loop_feedback',
 			$feedback,
@@ -64,8 +64,8 @@ class ApiLoopFeedbackSave extends ApiBase {
 
 		$result->addValue( $this->getModuleName(), 'lf_id', $feedback['lf_id'] );
 
-		
-		
+
+
 	}
 
 	public function getAllowedParams() {
@@ -111,7 +111,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),
@@ -135,7 +135,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 	public function getVersion() {
 		return __CLASS__ . ': version 1.0';
 	}
-	
+
 	/**
 	 * Generate a new, unique id.
 	 *
@@ -150,9 +150,10 @@ class ApiLoopFeedbackSave extends ApiBase {
 		 * in a 32-character (at max) string of hexadecimal characters.
 		 * Pad the string to full 32-char length if the value is lower.
 		 */
-		$id = UIDGenerator::newTimestampedUID128( 16 );
+		$idGenerator = MediaWikiServices::getInstance()->getGlobalIdGenerator();
+		$id = $idGenerator->newTimestampedUID128( 16 );
 		return str_pad( $id, 32, 0, STR_PAD_LEFT );
-	}	
+	}
 }
 
 class ApiLoopFeedbackStructure extends ApiBase {
@@ -162,10 +163,10 @@ class ApiLoopFeedbackStructure extends ApiBase {
 	}
 
 	public function execute() {
-		
+
 
 		$result   = $this->getResult();
-		
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
 		$user = $this->getUser();
 		if ( $user->getBlock() != null ) {
@@ -174,13 +175,13 @@ class ApiLoopFeedbackStructure extends ApiBase {
 				'userblocked'
 			);
 		}
-		
-		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
 			);
-		}			
+		}
 		$loopStructure = new LoopStructure();
         $loopStructureItems = $loopStructure->getStructureItems();
 
@@ -190,19 +191,19 @@ class ApiLoopFeedbackStructure extends ApiBase {
 				$tl = ($lsi->tocLevel == '' ) ? 0 : $lsi->tocLevel;
 
 				#$result->addValue( $this->getModuleName(), 'structureitem_'.$row->Sequence , array ( 'tocnumber'=>$tn,'toctext'=>$row->tocText,'article'=>$row->article) );
-			
-				$structureitems[] = array ( 'toclevel' => $tl,'tocnumber' => $tn,'toctext'=> $lsi->tocText,'article'=>$lsi->article);
-			}	
-		}
-		
-		$result->addValue( $this->getModuleName(), 'structure', $structureitems);
-		
-		
-		// $result->addValue( $this->getModuleName(), 'structure', $resultData);
-		
 
-		
-		
+				$structureitems[] = array ( 'toclevel' => $tl,'tocnumber' => $tn,'toctext'=> $lsi->tocText,'article'=>$lsi->article);
+			}
+		}
+
+		$result->addValue( $this->getModuleName(), 'structure', $structureitems);
+
+
+		// $result->addValue( $this->getModuleName(), 'structure', $resultData);
+
+
+
+
 	}
 
 	public function getAllowedParams() {
@@ -222,7 +223,7 @@ class ApiLoopFeedbackStructure extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),
@@ -255,15 +256,15 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 	}
 
 	public function execute() {
-		
+
 
         // Tell squids to cache
         $this->getMain()->setCacheMode( 'public' );
         // Set the squid & private cache time in seconds
-        $this->getMain()->setCacheMaxAge( 0 );		
-		
+        $this->getMain()->setCacheMaxAge( 0 );
+
 		$result   = $this->getResult();
-		
+
 
 		$user = $this->getUser();
 		if ( $user->getBlock() != null ) {
@@ -272,32 +273,32 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 				'userblocked'
 			);
 		}
-
-		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
 			);
-		}		
-		
+		}
+
 		$params = $this->extractRequestParams();
 
 		if (isset($params['comments']) ) {
 			if ($params['comments'] == 1) {
-				$comments = true;	
+				$comments = true;
 			} else {
-				$comments = false;	
+				$comments = false;
 			}
 		} else {
 			$comments=false;
 		}
-		
+
 		if (isset($params['timestamp']) ) {
-			$timestamp = $params['timestamp'];	
+			$timestamp = $params['timestamp'];
 		} else {
 			$timestamp='00000000000000';
 		}
-		
+
 		// get page object
 		$pageObj = $this->getTitleOrPageId( $params, 'fromdb' );
 		if ( !$pageObj->exists() ) {
@@ -305,11 +306,11 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
-		}		
-				
+		}
+
 		$lfb = new LoopFeedback;
-		$feedback_detail = $lfb->getDetails($pageObj->getId(),$comments);	
-		
+		$feedback_detail = $lfb->getDetails($pageObj->getId(),$comments);
+
 		$result->addValue( null, $this->getModuleName(), array( 'pageDetails'=>array(
 			'average'=> $feedback_detail['average'],
 			'average_stars'=> $feedback_detail['average_stars'],
@@ -321,12 +322,12 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 			'count_4'=> $feedback_detail['count'][4],
 			'count_5'=> $feedback_detail['count'][5]
 		) ) );
-		
+
 		if ($comments) {
 			$result->addValue( null, $this->getModuleName(), array( 'comments'=> $feedback_detail['comments']) );
 		}
-		
-		
+
+
 	}
 
 	public function getAllowedParams() {
@@ -342,7 +343,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 			'timestamp' => array(
 				ApiBase::PARAM_TYPE     => 'string',
 				ApiBase::PARAM_REQUIRED => false,
-			),			
+			),
 		);
 
 		return $ret;
@@ -367,7 +368,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),
@@ -391,7 +392,7 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 	public function getVersion() {
 		return __CLASS__ . ': version 1.0';
     }
-    
+
 }
 
 class ApiLoopFeedbackOverview extends ApiBase {
@@ -401,10 +402,10 @@ class ApiLoopFeedbackOverview extends ApiBase {
 	}
 
 	public function execute() {
-		
 
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$result   = $this->getResult();
-		
+
 		$user = $this->getUser();
 		if ( $user->getBlock() != null ) {
 			$this->dieWithError(
@@ -412,13 +413,13 @@ class ApiLoopFeedbackOverview extends ApiBase {
 				'userblocked'
 			);
 		}
-		
-		if (!$user->isAllowed( 'loopfeedback-view-results' ) ) {
+
+		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
 				'nopermission'
 			);
-		}			
+		}
 
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
@@ -426,7 +427,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 				array(
 					'quantity' => 'COUNT(lf_id)',
 					'rating' => 'lf_rating'
-						
+
 				),
 				array( 'lf_archive_timestamp' => '00000000000000' ),
 				__METHOD__,
@@ -440,7 +441,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		foreach ($res as $row) {
 			$fr[$row->rating] = $row->quantity;
 		}
-		
+
 		$result_array = array();
 		for ( $i = 1; $i < 6; $i++ ) {
 			if ( array_key_exists( $i, $fr ) ) {
@@ -449,11 +450,11 @@ class ApiLoopFeedbackOverview extends ApiBase {
 				$result_array[$i] = 0;
 			}
 		}
-		
-		
+
+
 		$result->addValue( $this->getModuleName(), 'ratings', $result_array);
-		
-		
+
+
 	}
 
 	public function getAllowedParams() {
@@ -473,7 +474,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 
 
 	public function getPossibleErrors() {
-		return array_merge( parent::getPossibleErrors(), array(
+		return array_merge( $this->getPossibleErrors(), array(
 			array( 'missingparam', 'anontoken' ),
 			array( 'code' => 'invalidtoken', 'info' => 'The anontoken is not 32 characters' ),
 			array( 'code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page' ),

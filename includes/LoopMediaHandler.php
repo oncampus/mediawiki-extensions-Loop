@@ -6,6 +6,11 @@
  * @ingroup Extensions
  *
  */
+
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
+
 class LoopMediaHandler {
 
 	static function onParserSetup( Parser $parser ) {
@@ -18,13 +23,13 @@ class LoopMediaHandler {
         $html = '';
         $width = "100%";
         $height = "auto";
-        
+
 		if ( array_key_exists( 'width', $args ) ) {
 			if ( !empty ( $args["width"] ) ) {
 				$width = $args["width"];
 			}
 		}
-		
+
 		if ( array_key_exists( 'height', $args ) ) {
 			if ( !empty ( $args["height"] ) ) {
 				$height = $args["height"];
@@ -34,7 +39,7 @@ class LoopMediaHandler {
         try {
             if ( array_key_exists( 'source', $args ) ) {
                 if ( !empty ( $args["source"] ) ) {
-                    $file = wfLocalFile( $args["source"] );
+                    $file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $args["source"] );
                     if ( is_object( $file ) && $file->exists() ) {
                         $source = $file->getFullUrl();
                     } else {
@@ -49,7 +54,7 @@ class LoopMediaHandler {
 
             if ( array_key_exists('image', $args ) ) {
                 if ( !empty ( $args["image"] ) ) {
-                    $file = wfLocalFile( $args["image"] );
+                    $file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $args["image"] );
                     if ( is_object( $file ) && $file->exists() ) {
                         $image = $file->getFullUrl();
                     } else {
@@ -61,7 +66,7 @@ class LoopMediaHandler {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			$html = $e;
         }
-		
+
         if ( isset( $source ) ) {
             $html .= '<video controls class="responsive-video" width="' . $width . '" height="' . $height . '"';
             if ( isset ( $image ) ) {
@@ -76,13 +81,13 @@ class LoopMediaHandler {
         $html = '';
         $width = "100%";
         $height = "auto";
-        
+
 		if ( array_key_exists( 'width', $args ) ) {
 			if ( !empty ( $args["width"] ) ) {
 				$width = $args["width"];
 			}
 		}
-		
+
 		if ( array_key_exists( 'height', $args ) ) {
 			if ( !empty ( $args["height"] ) ) {
 				$height = $args["height"];
@@ -92,7 +97,7 @@ class LoopMediaHandler {
         try {
             if ( array_key_exists( 'source', $args ) ) {
                 if ( !empty ( $args["source"] ) ) {
-                    $file = wfLocalFile( $args["source"] );
+                    $file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $args["source"] );
                     if ( is_object( $file ) && $file->exists() ) {
                         $source = $file->getFullUrl();
                     } else {
@@ -108,7 +113,7 @@ class LoopMediaHandler {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 			$html = $e;
         }
-		
+
         if ( isset( $source ) ) {
             $html .= '<audio controls class="responsive-audio" width="' . $width . '" height="' . $height . '"';
             $html .= ' src="' . $source . '"></audio>';
@@ -116,34 +121,4 @@ class LoopMediaHandler {
 		return $html;
 	}
 
-}
-
-# WILL BE REMOVED UPON 02/2021
-# TEMPORARY SOLUTION ONLY
-class LoopSwfHandler  {
-    public static function onImageBeforeProduceHTML( DummyLinker &$linker, Title &$title, &$file, array &$frameParams, array &$handlerParams, &$time, &$result, Parser $parser, string &$query, &$widthOption ) {
-        if ( is_object( $file ) && $file->getMimeType() == "application/x-shockwave-flash" ) {
-            global $wgOut, $wgLanguageCode;
-            
-            $user = $wgOut->getUser();
-            $editMode = $user->getOption( 'LoopEditMode', false, true );
-            $error = "";
-            if ( $editMode ) {
-                $msg = $wgLanguageCode == "de" || $wgLanguageCode == "de-formal" ? "Achtung: Flash Elemente werden nur noch bis Februar 2021 unterstützt." : "Warning: Flash will no longer be supported after February 2021.";
-                $error = new LoopException( $msg ).'<br>';
-            }
-
-            $url = $file->getFullUrl();
-            $s = $error . '<object class="" style="min-width: 100%; min-height: 500px;">
-                <param name="wmode" value="transparent">
-                <param name="movie" value="'. $url .'">
-                <embed src="'. $url .'" type="application/x-shockwave-flash" style="min-width: 100%; min-height: 500px;">
-            </object>';
-        
-			$parser->addTrackingCategory( 'loop-tracking-category-error' );
-            $result = str_replace("\n", ' ', $s);
-            return false;
-        }
-        return true;
-    }
 }

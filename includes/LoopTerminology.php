@@ -1,12 +1,9 @@
 <?php
-
 /**
  * Class for Lingo extension implementation https://www.mediawiki.org/wiki/Extension:Lingo
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -16,9 +13,11 @@ class LoopTerminology {
 
         global $wgOut;
 
+
         $contentText = LoopTerminology::getTerminologyWikiText();
 		$user = $wgOut->getUser();
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'editMode', false, true );
 
 		if ( !empty( $contentText ) ) {
 			return true;
@@ -56,9 +55,8 @@ class LoopTerminology {
 
     public static function getTerminologyPageContentText() {
 
-        global $wgParserConf;
-
-        $parser = new Parser( $wgParserConf );
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
         $tmpTitle = Title::newFromText( 'NO TITLE' );
         $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
         $output = $parserOutput->getText();
@@ -92,16 +90,15 @@ class LoopTerminology {
                 }
             }
         }
-		#dd($html);
+
         return $html;
 
     }
 
     public static function getTerminologyOutputForXML() {
 
-        global $wgParserConf;
-
-        $parser = new Parser( $wgParserConf );
+        $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
         $tmpTitle = Title::newFromText( 'NO TITLE' );
         $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
         $output = $parserOutput->getText();
@@ -136,14 +133,13 @@ class LoopTerminology {
 
     public static function getTerminologyWikiText() {
 
-        global $wgParserConf;
-
         $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
         $wikiPage = WikiPage::factory( $title );
-        $revision = $wikiPage->getRevision();
+        $revision = $wikiPage->getRevisionRecord();
         $contentWikitext = '';
         if ( $revision ) {
-            $contentWikitext = $revision->getContent()->getText();
+			$content = $wikiPage->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+			$contentWikitext = ContentHandler::getContentText( $content );
         }
 
         return $contentWikitext;
@@ -160,25 +156,31 @@ class SpecialLoopTerminology extends SpecialPage {
 
 	public function execute( $sub ) {
 
+		global $wgDefaultUserOptions;
+
 		$out = $this->getOutput();
 		$request = $this->getRequest();
         $user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-		$loopEditMode = $this->getSkin()->getUser()->getOption( 'LoopEditMode', false, true );
-		$loopRenderMode = $this->getSkin()->getUser()->getOption( 'LoopRenderMode' );
+
+		$mwService = MediaWikiServices::getInstance();
+		$userOptionsLookup = $mwService->getUserOptionsLookup();
+		$renderMode = $userOptionsLookup->getOption( $user, 'renderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+		$editMode = $userOptionsLookup->getOption( $user, 'editMode', false, true );
+
 		$this->setHeaders();
 		$out->setPageTitle( $this->msg( 'loopterminology' ) );
 
-		$html = self::renderLoopTerminologySpecialPage( $loopEditMode, $loopRenderMode, $user );
+		$html = self::renderLoopTerminologySpecialPage( $editMode, $renderMode, $user );
         $out->addHtml ( $html );
     }
 
-    public static function renderLoopTerminologySpecialPage( $loopEditMode = false, $loopRenderMode = 'default', $user = null ) {
+    public static function renderLoopTerminologySpecialPage( $editMode = false, $renderMode = 'default', $user = null ) {
 
         $html = '<h1>';
 	    $html .= wfMessage( 'loopterminology' )->text();
         if ( $user ) {
-    	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $loopRenderMode == 'default' && $loopEditMode ) {
+    	    if( ! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ) && $renderMode == 'default' && $editMode ) {
 
                 $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
                 $linkRenderer->setForceArticlePath(true);
@@ -211,6 +213,9 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
 
 		global $wgSecretKey;
 
+		$mws = MediaWikiServices::getInstance();
+		$permissionManager = $mws->getPermissionManager();
+		$userGroupManager = $mws->getUserGroupManager();
 		$out = $this->getOutput();
 		$request = $this->getRequest();
         $user = $this->getUser();
@@ -235,7 +240,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
         $newterminologyWikitext = $request->getText( 'loopterminology-content' );
 		$requestToken = $request->getText( 't' );
 
-		$userIsPermitted = (! $user->isAnon() && $user->isAllowed( 'loop-toc-edit' ));
+		$userIsPermitted = (! $user->isAnon() && $permissionManager->userHasRight( $user, 'loop-toc-edit' ));
         $terminologyWikitext = LoopTerminology::getTerminologyWikiText();
 
 		$success = null;
@@ -251,7 +256,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
 				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
 
                     $systemUser = User::newFromName( 'LOOP_SYSTEM' );
-                    $systemUser->addGroup("sysop");
+                    $userGroupManager->addUserToGroup ( $systemUser, "sysop" );
 
                     $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
                     $wikiPage = WikiPage::factory( $title );
@@ -261,7 +266,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
                     $wikiPageUpdater = $wikiPage->newPageUpdater( $systemUser ); # use system user to ensure editing of mediawiki namespace page is successful
                     $summary = CommentStoreComment::newUnsavedComment( $user->getName() ); #add user name to summary to ensure being able to trace back edits
 					$wikiPageUpdater->setContent( "main", $wikiPageContent );
-					if ( ! $wikiPage->getRevision() ) {
+					if ( ! $wikiPage->getRevisionRecord() ) {
 						$wikiPageUpdater->saveRevision ( $summary, EDIT_NEW );
 					} else {
 						$wikiPageUpdater->saveRevision ( $summary, EDIT_UPDATE );

@@ -26,9 +26,9 @@ class LoopExternalContent {
 		$parser->setHook ( 'slideshare', 'LoopExternalContent::renderSlideshare' );
 		$parser->setHook ( 'quizlet', 'LoopExternalContent::renderQuizlet' );
 		return true;
-    }	
-    
-    public static function renderH5P ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+    }
+
+    public static function renderH5P ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
         global $wgH5PHostUrl, $wgH5PHostUrlAppendix;
         $errors = '';
@@ -63,8 +63,8 @@ class LoopExternalContent {
         return $return;
     }
 
-    
-    public static function renderLearningApp ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+
+    public static function renderLearningApp ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
         global $wgLearningAppUrl;
         $errors = '';
@@ -75,12 +75,12 @@ class LoopExternalContent {
         $hostUrl = $wgLearningAppUrl;
         $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
-        
+
         if ( $scale ) {
             $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
         }
-        
+
         if ( array_key_exists( 'app', $args ) ) {
             $appId = "app=" . $args["app"];
         } elseif ( array_key_exists( 'privateapp', $args ) ) {
@@ -103,8 +103,8 @@ class LoopExternalContent {
                 ),
                 ''
             );
-        } 
-        
+        }
+
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
@@ -113,7 +113,7 @@ class LoopExternalContent {
         return $return;
     }
 
-    public static function renderPadlet ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+    public static function renderPadlet ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
         global $wgPadletUrl;
         $errors = '';
@@ -124,7 +124,7 @@ class LoopExternalContent {
         $hostUrl = $wgPadletUrl;
         $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
-        
+
         if ( $scale ) {
             $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
@@ -152,8 +152,8 @@ class LoopExternalContent {
                 ),
                 ''
             );
-        } 
-        
+        }
+
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
@@ -161,8 +161,8 @@ class LoopExternalContent {
 
         return $return;
     }
-    
-    public static function renderPrezi ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+
+    public static function renderPrezi ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
         global $wgPreziUrl;
         $errors = '';
@@ -175,7 +175,7 @@ class LoopExternalContent {
         $hostUrl = $wgPreziUrl;
         $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
-        
+
         if ( $scale ) {
             $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
@@ -202,16 +202,16 @@ class LoopExternalContent {
                 ),
                 ''
             );
-            $return .= Html::rawElement( 
-                'div', 
-                array( 
-                    'class' => 'prezi-player-links text-center' 
-                ), 
+            $return .= Html::rawElement(
+                'div',
+                array(
+                    'class' => 'prezi-player-links text-center'
+                ),
                 '<p style="width:'.$width.'px;"><a class="external-link" target="_blank" href="https://prezi.com/'.$id.'/">'.$title.'</a> '.wfMessage( "loopexternalcontent-prezi-on" )->text().' <a class="external-link" target="_blank" href="https://prezi.com">Prezi</a></p>'
             );
             $return .= Html::closeElement( 'div' );
-        } 
-        
+        }
+
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
@@ -220,8 +220,8 @@ class LoopExternalContent {
 
         return $return;
     }
-    
-    public static function renderSlideshare ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+
+    public static function renderSlideshare ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
         global $wgSlideshareUrl;
         $errors = '';
@@ -232,7 +232,7 @@ class LoopExternalContent {
         $hostUrl = $wgSlideshareUrl;
         $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
-        
+
         if ( $scale ) {
             $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
@@ -260,8 +260,8 @@ class LoopExternalContent {
                 ),
                 ''
             );
-        } 
-        
+        }
+
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
@@ -269,8 +269,8 @@ class LoopExternalContent {
 
         return $return;
     }
-    
-    public static function renderQuizlet ( $input, array $args, Parser $parser, PPFrame $frame ) { 
+
+    public static function renderQuizlet ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
         global $wgQuizletUrl;
         $errors = '';
@@ -283,7 +283,7 @@ class LoopExternalContent {
         $hostUrl = $wgQuizletUrl;
         $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
         $scaleClass = 'responsive-iframe';
-        
+
         if ( $scale ) {
             $parser->getOutput()->addModules("skins.loop-resizer.js");
             $scaleClass = "scale-frame";
@@ -311,8 +311,8 @@ class LoopExternalContent {
                 ),
                 ''
             );
-        } 
-        
+        }
+
         if ( !empty ( $errors ) ) {
             $return .= new LoopException( $errors );
             $parser->addTrackingCategory( 'loop-tracking-category-error' );

@@ -1,14 +1,11 @@
 
 <?php
-
 /**
  * @description Error renderings for loop_sidebar, as the tag itself does not need rendering.
  * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
  */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopSidebar {
 	public static function onParserSetup( Parser &$parser ) {
@@ -24,9 +21,9 @@ class LoopSidebar {
                     $sidebarWP = new WikiPage( $sidebarTitle );
                     if ( $sidebarWP->getID() == 0 ) {
                         $parser->addTrackingCategory( 'loop-tracking-category-error' );
-                    } 
+                    }
                 }
-               
+
             } else {
                 throw new LoopException( wfMessage("loopsidebar-error-nopage")->text() );
                 $parser->addTrackingCategory( 'loop-tracking-category-error' );

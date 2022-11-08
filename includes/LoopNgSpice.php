@@ -4,9 +4,9 @@
  * @ingroup Extensions
  * @author Kevin Berg <kevin.berg@th-luebeck.de>, Dennis Krohn <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopNgSpice {
 
@@ -64,7 +64,8 @@ class LoopNgSpice {
         global $wgLoopNgSpiceUrl, $wgOut, $wgDefaultUserOptions;
 		$parser->getOutput()->updateCacheExpiry( null );
 
-		$renderMode = $wgOut->getUser()->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$renderMode = $userOptionsLookup->getOption( $wgOut->getUser(), 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
 
         if ( empty( $wgLoopNgSpiceUrl ) || $renderMode == "offline" ) {
             return new LoopException( wfMessage ( "loopngspice-error-no-service" )->text() );
@@ -107,69 +108,78 @@ class LoopNgSpice {
 		// get all var configs (range)
 		$this->varConfs = $this->getVarconfigs ( $tagArray );
 
-		if(count($tagArray) != 0){
+		if ( is_array( $tagArray ) ) {
 
-			// Raw text and Table view (if ngspice outputs text as result)
-			$rawView = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->rawViewTagName )] ['tag_value'] . "";
-			$tableView = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->tableViewTagName )] ['tag_value'] . "";
+			if(count($tagArray) != 0){
 
-			if( ! ( $rawView === 'true' || $rawView === 'false' ) ) {
-				$rawView = true;
-			}
+				// Raw text and Table view (if ngspice outputs text as result)
+				$rawView = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->rawViewTagName )] ['tag_value'] . "";
+				$tableView = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->tableViewTagName )] ['tag_value'] . "";
 
-			if( ! ( $tableView === 'true' || $tableView === 'false' ) ) {
-				$tableView = true;
-			}
+				if( ! ( $rawView === 'true' || $rawView === 'false' ) ) {
+					$rawView = true;
+				}
 
-			if( isset( $rawView )) {
-				$this->rawView = $rawView;
+				if( ! ( $tableView === 'true' || $tableView === 'false' ) ) {
+					$tableView = true;
+				}
+
+				if( isset( $rawView )) {
+					$this->rawView = $rawView;
+				} else {
+					$this->rawView = true;
+				}
+
+				if( isset( $tableView )) {
+					$this->tableView = $tableView;
+				} else {
+					$this->tableView = true;
+				}
+
+				// NET AND PLOT (raw with vars)
+				$this->netlist = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->netlistTagName )] ['tag_value'] . "";
+				@$this->plotlist = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->plotlistTagName )] ['tag_value'] . ""; //supress warnings if no plotlist needed
+
+
+				// IMAGE
+				$this->img = trim ( $tagArray [$this->getTagIndex ( $tagArray, $this->imageTagName )] ['tag_value'] );
+
+				$image_name = $this->img;
+				$filetitle = Title::newFromText ( $image_name, NS_FILE );
+				$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $filetitle );
+				$this->img = $file->getFullUrl ();
+
+				# if loop is https, loop will set image urls to //loop.oncampus.de instead of https://...
+				if( strpos($this->img, 'http') === false && strpos($this->img, 'https') === false) {
+					$this->img = 'https:'.$this->img;
+				}
+
+				$file_headers = @get_headers($this->img);
+				if ( $file_headers[0] == 'HTTP/1.1 404 Not Found' ) {
+					$this->img_size = array(700,400, 3, 'width="700" height="400"');
+				} else {
+					$this->img_size = getimagesize ( $this->img );
+				}
+
+
+				// TITLE
+				if( $this->getTagIndex ( $tagArray, $this->titleTagName ) ){
+					$this->title = $tagArray [$this->getTagIndex ( $tagArray, $this->titleTagName )] ['tag_value'];
+				} else {
+					$this->title = "";
+				}
+
+				$this->enableSendButton = true;
+
+
+			// Handle XML Error!
 			} else {
-				$this->rawView = true;
+				$this->netlist = "";
+				$this->plotlist = "";
+				$this->img = "";
+				$this->img_size = array(700,500);
+				$this->title = $this->xml_error;
 			}
-
-			if( isset( $tableView )) {
-				$this->tableView = $tableView;
-			} else {
-				$this->tableView = true;
-			}
-
-			// NET AND PLOT (raw with vars)
-			$this->netlist = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->netlistTagName )] ['tag_value'] . "";
-			@$this->plotlist = "" . $tagArray [$this->getTagIndex ( $tagArray, $this->plotlistTagName )] ['tag_value'] . ""; //supress warnings if no plotlist needed
-
-
-			// IMAGE
-			$this->img = trim ( $tagArray [$this->getTagIndex ( $tagArray, $this->imageTagName )] ['tag_value'] );
-
-			$image_name = $this->img;
-			$filetitle = Title::newFromText ( $image_name, NS_FILE );
-			$file = wfLocalFile ( $filetitle );
-			$this->img = $file->getFullUrl ();
-
-			# if loop is https, loop will set image urls to //loop.oncampus.de instead of https://...
-			if( strpos($this->img, 'http') === false && strpos($this->img, 'https') === false) {
-				$this->img = 'https:'.$this->img;
-			}
-
-			$file_headers = @get_headers($this->img);
-			if ( $file_headers[0] == 'HTTP/1.1 404 Not Found' ) {
-				$this->img_size = array(700,400, 3, 'width="700" height="400"');
-			} else {
-				$this->img_size = getimagesize ( $this->img );
-			}
-
-
-			// TITLE
-			if( $this->getTagIndex ( $tagArray, $this->titleTagName ) ){
-				$this->title = $tagArray [$this->getTagIndex ( $tagArray, $this->titleTagName )] ['tag_value'];
-			} else {
-				$this->title = "";
-			}
-
-			$this->enableSendButton = true;
-
-
-		// Handle XML Error!
 		} else {
 			$this->netlist = "";
 			$this->plotlist = "";
@@ -177,7 +187,6 @@ class LoopNgSpice {
 			$this->img_size = array(700,500);
 			$this->title = $this->xml_error;
 		}
-
 
 		$this->netlist = str_replace ( "\n", "<br>", $this->netlist );
 		$this->plotlist = str_replace ( "\n", "<br>", $this->plotlist );

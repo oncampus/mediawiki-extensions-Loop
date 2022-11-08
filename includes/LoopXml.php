@@ -4,9 +4,10 @@
   * @author Dennis Krohn <dennis.krohn@th-luebeck.de>
   */
 
-if ( !defined( 'MEDIAWIKI' ) ) {
-	die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\SlotRecord;
 
 class LoopXml {
 
@@ -106,11 +107,17 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($title->mArticleID);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getText();
+			$content = $wp->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+			$contentText = ContentHandler::getContentText( $content );
+
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getText();
+			$revStore = MediaWikiServices::getInstance()->getRevisionStore();
+			$revision = $revStore->getRevisionById( $stableRev );
+
+			$pageContent = $revision->getContent( SlotRecord::MAIN );
+			$contentText = ContentHandler::getContentText( $pageContent );
 		}
-		$content = html_entity_decode($content);
+		$content = html_entity_decode($contentText);
 		$objectTypes = LoopObject::$mObjectTypes;
 
 		# modify content for resolving space issues with syntaxhighlight in pdf
@@ -124,6 +131,9 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
+
+		# remove score tags - these may cause the whole XML to fail
+		$content = preg_replace('/(<score.*>)(.*)(<\/score>)/msiU', "<score></score>", $content);
 
 		# modify content for mp3 export
 		if ( array_key_exists( "mp3", $modifiers ) && $modifiers["mp3"] ) {
@@ -221,11 +231,16 @@ class LoopXml {
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($articleId);
 			$wp = WikiPage::factory ( $title );
-			$content = $wp->getContent ()->getText();
+			$pageContent = $wp->getContent( MediaWiki\Revision\RevisionRecord::RAW );
+			$contentText = ContentHandler::getContentText( $pageContent );
 		} else {
-			$content = Revision::newFromId( $stableRev )->getContent ()->getText();
+			$revStore = MediaWikiServices::getInstance()->getRevisionStore();
+			$revision = $revStore->getRevisionById( $stableRev );
+
+			$pageContent = $revision->getContent( SlotRecord::MAIN );
+			$contentText = ContentHandler::getContentText( $pageContent );
 		}
-		$content = html_entity_decode($content);
+		$content = html_entity_decode($contentText);
 
 		$wiki2xml = new wiki2xml ();
 		$xml = "";
@@ -327,8 +342,8 @@ class LoopXml {
 				$child_value=$child->textContent;
 				$link_parts[$child_name] = $child_value;
 			}
-
-			$mf = new MagicWordFactory( $wgLang );
+			$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
+			$mf = new MagicWordFactory( $wgLang, $hookContainer );
 			$allowedAligns = [ 'right', 'left', 'center' ];
 			$allowedFormats = [ 'thumb', 'framed', 'frameless' ];
 
@@ -401,7 +416,7 @@ class LoopXml {
 					$target_ns = $target_title->getNamespace();
 
 					if ($target_ns == NS_FILE) {
-						$file = wfLocalFile($target_title);
+						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($target_title);
 						if (is_object($file)) {
 							$target_file=$file->getLocalRefPath();
 							$target_url=$file->getFullUrl();
@@ -965,7 +980,7 @@ class wiki2xml
 	function process_template_logic ( $title , $variables ) {
 
 		#echo("<br>w2x_15");
-		# TODO : Process title and variables for sub-template-replacements
+		# : Process title and variables for sub-template-replacements
 
 		if ( mb_substr ( $title , 0 , 4 ) == "#if:" ) {
 			$title = trim ( mb_substr ( $title , 4 ) ) ;
@@ -1433,7 +1448,7 @@ class wiki2xml
 			else
 			{
 				$xml .= "<defkey>" ;
-				$this->w[$b] = "\n" ; // Todo
+				$this->w[$b] = "\n" ; //
 				$this->p_restofline ( $a , $xml ) ;
 				$xml .= "</defkey>" ;
 				$xml .= "<defval>" ;
@@ -1492,7 +1507,7 @@ class wiki2xml
 		}
 
 		# Find the matching close tag
-		# TODO : The simple open/close counter should be replaced with a
+		#  : The simple open/close counter should be replaced with a
 		#        stack to allow for tolerating half-broken HTML,
 		#        such as unclosed <li> tags
 		$begin = $b ;
@@ -1893,9 +1908,9 @@ class wiki2xml
 		if ( (mb_substr ( $this->w , $b , 1 , 'UTF-8' )) != "|" && (mb_substr ( $this->w , $b , 1 , 'UTF-8' )) != "!" ) return "" ;
 		if ( $this->nextis ( $b , "||" , false ) ) return "" ; # Reached a ||, so return blank string
 		if ( $this->nextis ( $b , "!!" , false ) ) return "" ; # Reached a ||, so return blank string
-		$this->w[$b] = "\n" ; // ToDo
+		$this->w[$b] = "\n" ; //
 		$ret = $this->scanattributes ( $a ) ;
-		$this->w[$b] = "|" ; // ToDo
+		$this->w[$b] = "|" ; //
 		$a = $b + 1 ;
 		return $ret ;
 	}

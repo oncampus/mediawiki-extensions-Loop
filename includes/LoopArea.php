@@ -4,9 +4,9 @@
  * @ingroup Extensions
  * @author Dustin Neß <dustin.ness@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
 
 class LoopArea {
 
@@ -114,15 +114,17 @@ class LoopArea {
 
 		// Allow overwriting icon image when parameter 'icon' is used
 		if( array_key_exists( 'icon', $args ) ) { // array_key_exists() because code convention forbids isset()
-
+			$localRepo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
 			try {
-				$file = wfLocalFile( $args['icon'] );
+				$file = $localRepo->newFile( $args['icon'] );
 
 				if( $file !== null && file_exists( $file->getLocalRefPath() ) ) {
 
 				    global $wgOut, $wgDefaultUserOptions, $wgUploadDirectory;
 					$user = $wgOut->getUser();
-					$renderMode = $user->getOption( 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
+
+					$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+					$renderMode = $userOptionsLookup->getOption( $user, 'LoopRenderMode', $wgDefaultUserOptions['LoopRenderMode'], true );
 
 					if ( $renderMode == "offline" ) {
 					    $loopHtml = new LoopHtml();
@@ -130,13 +132,13 @@ class LoopArea {
 					    preg_match('/(.*)(\.{1})(.*)/', $args['icon'], $fileData);
 					    $fileName = $loopHtml->resolveUrl($fileData[1], '.'.$fileData[3]);
 					    $owniconurl = "resources/images/".$fileName;
-					    $fileUrl = wfLocalFile( $args['icon'] )->getCanonicalURL();;
+					    $fileUrl = $localRepo->newFile( $args['icon'] )->getCanonicalURL();;
 					    $fileContent = $loopHtml->requestContent(array($fileUrl));
 					    #dd($fileUrl, $fileName);
 					    $loopHtml->writeFile( $wgUploadDirectory . '/export/html/0/files/resources/images/', $fileName, $fileContent );
 
 					} else {
-					    $owniconurl = wfLocalFile( $args['icon'] )->getCanonicalURL();
+					    $owniconurl = $localRepo->newFile( $args['icon'] )->getCanonicalURL();
 					}
 					$cssicon = 'ownicon d-block';
 					$ownicon = 'style="background-image: url(' . $owniconurl . ')"';

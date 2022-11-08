@@ -19,8 +19,8 @@ class LoopConsent {
     }
 
 
-    public static function onParserBeforeStrip( &$parser ) {
-        global $wgH5PHostUrl, $wgH5PHostUrlAppendix;
+    public static function onParserBeforeInternalParse( &$parser, &$text, &$strip_state ) {
+        global $wgH5PHostUrl;
 
         if( !isset( $_COOKIE['LoopConsent'] )) {
             $parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
@@ -140,7 +140,7 @@ class LoopConsent {
 
             if( $service == 'youtube' ) {
                 $title = 'YouTube';
-                $bgColor = 'ff0000';
+                $bgColor = '181818';
             } else if ( $service == 'vimeo' ) {
                 $title = 'Vimeo';
                 $bgColor = '1ab7ea';

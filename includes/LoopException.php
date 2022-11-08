@@ -1,7 +1,11 @@
-<?php 
+<?php
 /**
  * Loop exception
  */
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+use MediaWiki\MediaWikiServices;
+
 class LoopException extends Exception {
 	/**
 	 * Constructor function
@@ -19,16 +23,24 @@ class LoopException extends Exception {
 	 * @return string Error message HTML.
 	 */
 	public function __toString() {
-		
+
 		global $wgOut;
 		$user = $wgOut->getUser();
-		
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+
 		if ( $editMode == true ) {
-			global $wgParser, $wgFrame;
-			
-			$parsedMsg = $wgParser->recursiveTagParse( $this->getMessage(), $wgFrame );
-			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg );
+			global $wgFrame;
+
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
+			$tmpTitle = Title::newFromText('NO_TITLE');
+			$parserOptions = ParserOptions::newFromUser ( $user );
+			$parser->getOptions ( $parserOptions );
+			$parsedMsg = $parser->parse( $this->getMessage(), $tmpTitle, $parserOptions );
+
+			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg->getText() );
 		} else {
 			return '';
 		}

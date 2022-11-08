@@ -5,9 +5,7 @@
  * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -141,10 +139,10 @@ class LoopFigure extends LoopObject{
 
 		$html = '<tr scope="row" class="ml-1 pb-3">';
 		$html .= '<td scope="col" class="pl-0 pr-0 loop-listofobjects-image">';
+		$localRepo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+		if ( $this->mFile && $localRepo->newFile( $this->mFile ) ) {
 
-		if ( $this->mFile && wfLocalFile( $this->mFile ) ) {
-
-			$file = wfLocalFile( $this->mFile );
+			$file = $localRepo->newFile( $this->mFile );
 			$thumb = $file->transform( array (
 					'width' => 120,
 					'height' => 100
@@ -233,15 +231,6 @@ class SpecialLoopFigures extends SpecialPage {
 	}
 
 	public function execute($sub) {
-		global $wgParserConf, $wgLoopNumberingType;
-
-		/*
-		$out->addModuleStyles( [ 'ext.math.styles' ] );
-		$mathmode = MathHooks::mathModeToString( $this->getUser()->getOption( 'math' ) );
-		if ( $mathmode == 'mathml' ) {
-			$out->addModuleStyles( [ 'ext.math.desktop.styles' ] );
-			$out->addModules( [ 'ext.math.scripts' ] );
-			}*/
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
@@ -253,7 +242,7 @@ class SpecialLoopFigures extends SpecialPage {
 	}
 
 	public static function renderLoopFigureSpecialPage() {
-	    global $wgParserConf, $wgLoopNumberingType;
+	    global $wgParserConf;
 
 	    $html = '<h1>';
 	    $html .= wfMessage( 'loopfigures-specialpage-title')->text();
@@ -262,14 +251,11 @@ class SpecialLoopFigures extends SpecialPage {
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
-	    $parser = new Parser ( $wgParserConf );
-	    $parserOptions = new ParserOptions();
-	    $parser->Options ( $parserOptions );
+	    $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+        $parser = $parserFactory->create();
 
-	    $figures = array ();
 	    $structureItems = $loopStructure->getStructureItems();
 	    $glossaryItems = LoopGlossary::getGlossaryPages();
-	    $figure_number = 1;
 	    $articleIds = array();
 	    $html .= '<table class="table table-hover list_of_figures list_of_objects">';
 	    $figure_tags = LoopObjectIndex::getObjectsOfType ( 'loop_figure' );

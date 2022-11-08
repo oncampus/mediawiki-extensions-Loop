@@ -344,6 +344,7 @@
 
 	"loopobject-error-unknown-id" : "The object's ID is not in the database ($1). Please check the object's syntax.",
 	"loopobject-error-dublicate-id" : "The object's ID is not unique ($1). On page '$2' is another object with that same ID. Please change the ID and save the pages again so the numbering will be correct.",
+	"loopobject-error-unknown" : "An unknown error has occurred.",
 	"loopreference-error-unknown-refid" : "The reference's given ID is unknown: '''$1'''.",
 	"loopreference-error-no-refid" : "The reference is missing a ID parameter (id).",
 
@@ -406,7 +407,7 @@
 	"loopsidebar-error-notfound": "The given page for the sidebar panel does not exist.",
 	"loopsidebar-error-nopage": "The sidebar-tag is missing a page parameter.",
 	"loopzip-error-nostartfile": "The given HTML file $1 (parameter start) was not found in the ZIP file $2.",
-
+	"loopzip-error-noextraction": "The ZIP file $1 was uploaded but not extracted. Zips that contain PHP files are not permitted in LOOP ZIP media. In case there is no PHP file in this ZIP, there is a permissions problem. In that case please contact the administrator.",
 	"loop-error-missingrequired": "The tag $1 is missing the required parameter $2. The element can not be displayed.",
 	"loop-error-missingfile": "The given file $2 in this $1 tag could not be found. Please upload it first. {{PLURAL:$3|The element is displayed without that file.|The element can not be displayed.}}",
 	"loop-error-unknown-param" : "The tag $1 contains a parameter $2 with an unknown value '''$3'''.<br/>\nValid values are '''$4'''. The element is rendered by default with value $5.",
@@ -494,5 +495,15 @@
 	"loopstructure-initial-chapter-1-2": "Second subchapter",
 	"loopstructure-initial-chapter-2": "Second chapter",
 
-	"looppagesnotinstructure": "Pages not in table of contents"
+	"looppagesnotinstructure": "Pages not in table of contents",
+
+	"loopupdater-description-update": "Executes CLI command /maintenance/update.php. WARNING: Only to be used by administrators. In case of errors this LOOP might cease to function.",
+	"loopupdater-warning-update": "I confirm that backups of the database and files of this LOOP have been made.",
+	"loopupdater-submit-update": "Execute MediaWiki update",
+
+	"loopsearch": "Wikitext search",
+	"loopsearch-description": "Use this page to search through wikitext. It also checks tags like 'cite' or 'loop_figure' and their parameters.",
+	"loopsearch-placeholder": "Term",
+	"loopsearch-results": "Results for \"$1\":",
+	"loop-maintenance": "LOOP is in maintenance mode. Please try again later. <br>$1"
 }

@@ -4,9 +4,7 @@
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -122,7 +120,7 @@ class LoopLiterature {
      */
     function addToDatabase() {
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 
 		$dbw->insert(
 			'loop_literature_items',
@@ -162,7 +160,7 @@ class LoopLiterature {
 
 	// deletes all literature references of a page
     public static function removeFromDatabase ( $key ) {
-		$dbr = wfGetDB( DB_MASTER );
+		$dbr = wfGetDB( DB_PRIMARY );
 		$dbr->delete(
 			'loop_literature_items',
 			'lit_itemkey = "' . $key .'"',
@@ -479,7 +477,8 @@ class LoopLiterature {
 
 		global $wgOut;
 		$user = $wgOut->getUser();
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 		$literatureItems = self::getAllItems();
 
 		if ( $literatureItems ) {
@@ -528,7 +527,7 @@ class LoopLiterature {
 				$loopStructure = new LoopStructure();
 				$loopStructure->loadStructureItems();
 				$allReferences = LoopLiteratureReference::getAllItems( $loopStructure );
-				$articleId = $parser->mTitle->mArticleID;
+				$articleId = $parser->getTitle()->mArticleID;
 				if ( isset( $args["id"] ) ) {
 					$refId = $args["id"];
 					if ( isset( $allReferences[$articleId][$refId]["objectnumber"] ) ) {
@@ -574,7 +573,8 @@ class LoopLiterature {
 		global $wgLoopLiteratureCiteType;
 
 		if ( $parser == null ) {
-			$parser = new Parser();
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
 		}
 
 		$matches = array();
@@ -644,7 +644,8 @@ class LoopLiterature {
 	        $stableRevId = $fwp->getStable();
 
 	        if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-	            self::handleLoopLiteratureReferences( $wikiPage, $title, $content->getText() );
+				$contentText = ContentHandler::getContentText( $content );
+	            self::handleLoopLiteratureReferences( $wikiPage, $title, $contentText );
 	        }
 	    }
 	    return true;
@@ -680,13 +681,14 @@ class LoopLiterature {
 
 		$content = $wikiPage->getContent();
 		if ($contentText == null) {
-			$contentText = $content->getText();
+			$contentText = ContentHandler::getContentText( $content );
 		}
 
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
 
-			$parser = new Parser();
-			$loopLiteratureReference = new LoopLiteratureReference();
+			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+			$parser = $parserFactory->create();
+			#$loopLiteratureReference = new LoopLiteratureReference();
 			$fwp = new FlaggableWikiPage ( $title );
 			$stableRevId = $fwp->getStable();
 			$latestRevId = $title->getLatestRevID();
@@ -873,7 +875,8 @@ class LoopLiterature {
 		global $wgOut, $wgLoopLiteratureCiteType;
 
 		$user = $wgOut->getUser();
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
 
@@ -1057,8 +1060,8 @@ class LoopLiterature {
 			$return .= '</span></span> ';
 		}
 		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
-
-			if ( $user->isAllowed('loop-edit-literature') ) {
+			$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+			if ( $permissionManager->userHasRight( $user, 'loop-edit-literature') ) {
 				$return .= $linkRenderer->makelink(
 					new TitleValue(
 						NS_SPECIAL,
@@ -1105,7 +1108,7 @@ class LoopLiteratureReference {
 		if ( $this->refId === null ) {
 			return false;
 		}
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 
         $dbw->insert(
             'loop_literature_references',
@@ -1127,7 +1130,7 @@ class LoopLiteratureReference {
 
 	// deletes all literature references of a page
     public static function removeAllPageItemsFromDb ( $article ) {
-		$dbr = wfGetDB( DB_MASTER );
+		$dbr = wfGetDB( DB_PRIMARY );
 		$dbr->delete(
 			'loop_literature_references',
 			'llr_pageid = ' . $article,
@@ -1288,7 +1291,7 @@ class LoopLiteratureReference {
 						if ( $itemdata["firstItemGlobal"] != $val )
 							if ( isset ( $itemdata["refId"] ) ) {
 								$item = self::getItemData( $itemdata["refId"], true );
-								$dbw = wfGetDB( DB_MASTER );
+								$dbw = wfGetDB( DB_PRIMARY );
 								$dbw->delete(
 									'loop_literature_references',
 									'llr_refid = "' . $itemdata["refId"] .'"',
@@ -1296,7 +1299,7 @@ class LoopLiteratureReference {
 								);
 								$item->firstItemGlobal = $val;
 								if ( $item->firstItemGlobal === null ) {
-									$item->firstItemGlobal = false;#todo?
+									$item->firstItemGlobal = false;
 								}
 								$item->addToDatabase();
 							} else {
@@ -1309,7 +1312,7 @@ class LoopLiteratureReference {
 				$this->firstItemGlobal = false;
 			}
 			if ( $this->firstItemGlobal === null ) {
-				$this->firstItemGlobal = false;#todo?
+				$this->firstItemGlobal = false;
 			}
 
 		return;
@@ -1413,7 +1416,9 @@ class SpecialLoopLiterature extends SpecialPage {
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
-		$editMode = $user->getOption( 'LoopEditMode', false, true );
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
+
 		$out->setPageTitle($this->msg('loopliterature'));
 		$deleteKey = $request->getText( 'delete' );
 
@@ -1571,8 +1576,8 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 		$request = $this->getRequest();
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
-
-		if ( $user->isAllowed('loop-edit-literature') ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $permissionManager->userHasRight( $user,'loop-edit-literature') ) {
 
 			$html = '';
 			$html .= '<h1>';
@@ -1797,8 +1802,8 @@ class SpecialLoopLiteratureImport extends SpecialPage {
         $html = '<h1>';
 		$html .= wfMessage( 'loopliteratureimport' )->text();
 		$html .= '</h1>';
-
-		if ( $user->isAllowed('loop-edit-literature') ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $permissionManager->userHasRight( $user,'loop-edit-literature') ) {
 
 			$contentToImport = $request->getText( 'loopliterature-import-input' );
 
@@ -1959,8 +1964,16 @@ class SpecialLoopLiteratureImport extends SpecialPage {
     				}
 				}
 			}
-		} catch ( RenanBr\BibTexParser\Exception\ExceptionInterface $exception) {
-			$errors[] = $exception->getMessage();
+			// https://github.com/renanbr/bibtex-parser
+		} catch (RenanBr\BibTexParser\Exception\ParserException $exception) {
+			// The BibTeX isn't valid
+			$errors[] = $exception;
+		} catch (RenanBr\BibTexParser\Exception\ProcessorException $exception) {
+			// Listener's processors aren't able to handle data found
+			$errors[] = $exception;
+		} catch (RenanBr\BibTexParser\Exception\ExceptionInterface $exception) {
+			// Alternatively, you can use this exception to catch all of them at once
+			$errors[] = $exception;
 		}
 		return array( "success" => $success, "errors" => $errors );
 	}
@@ -1991,8 +2004,8 @@ class SpecialLoopLiteratureExport extends SpecialPage {
         $html = '<h1>';
 		$html .= wfMessage( 'loopliteratureexport' )->text();
 		$html .= '</h1>';
-
-		if ( $user->isAllowed('loop-edit-literature') ) {
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $permissionManager->userHasRight( $user,'loop-edit-literature') ) {
 
 		    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		    $linkRenderer->setForceArticlePath(true); #required for readable links

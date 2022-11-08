@@ -343,6 +343,7 @@
 
 	"loopobject-error-unknown-id" : "Error Message rendered when Object has an ID that's not in DB: $1 -> given ID; ",
 	"loopobject-error-dublicate-id" : "Error Message rendered when Object has a dublicate ID: $1 -> given ID; $2 -> Page where the original ID is used",
+	"loopobject-error-unknown" : "Error message for unknown errors in the object numbering process",
 	"loopreference-error-unknown-refid" : "Error Message rendered when id option is unknown.\n\nParameters:\n* $1 - given id",
 	"loopreference-error-no-refid" : "Error Message rendered when no id is given",
 
@@ -405,7 +406,7 @@
 	"loopsidebar-error-notfound": "Error message for non-existent page given in loop_sidebar tag",
 	"loopsidebar-error-nopage": "Error message for non-existent page parameter.",
 	"loopzip-error-nostartfile": "Error message when loop_zip misses file given in the parameter start ($1) which is supposed to be in ZIP file ($2)",
-
+	"loopzip-error-noextraction": "Error message when loop_zip can't find the extracted zip folder. Zip extraction is blocked when a php file is detected within the zip.",
 	"loop-error-missingrequired": "General Error message for missing required parameters. $1 -> the tag that has a missing parameter; $2 -> The parameter that is missing. The element will not be displayed when this message is set.",
 	"loop-error-missingfile": "Error message for files that are not uploaded to the system. $1 -> the tag that has a missing file; $2 -> The given file name that could not be found; $3{{Plural|The element is displayed anyway.|The element can't be displayed without the file.}} ",
 	"loop-error-unknown-param" : "General Error message for unknown parameters entered in a tag. $1 -> the tag that has an unknown parameter; $2 -> The unknown parameter name; $3 -> The unknown value of that parameter; $4 -> Allowed values; $5 -> the given default for that tag;",
@@ -492,5 +493,15 @@
 	"loopstructure-initial-chapter-1-2": "Initial LoopStructure page name 1.2",
 	"loopstructure-initial-chapter-2": "Initial LoopStructure page name 2",
 
-	"looppagesnotinstructure": "Special page title for list of pages that are not in TOC"
+	"looppagesnotinstructure": "Special page title for list of pages that are not in TOC",
+
+	"loopupdater-description-update": "Descriptive message of MediaWiki Updates shown on special page to do so",
+	"loopupdater-warning-update": "A confirmation of the user that they made backups of the loop before executing the update",
+	"loopupdater-submit-update": "MediaWiki Update execution button label",
+
+	"loopsearch": "Special page title for wiki text search",
+	"loopsearch-description": "Description of Wikitext search special page",
+	"loopsearch-placeholder": "Placeholder for term input",
+	"loopsearch-results": "Result message for special page. $1 -> search term",
+	"loop-maintenance": "Maintenance mode message. $1 -> string given in wgReadOnly variable."
 }

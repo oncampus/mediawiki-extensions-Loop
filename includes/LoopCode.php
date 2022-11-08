@@ -1,7 +1,10 @@
-<?php class LoopCode {
+<?php
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
+
+class LoopCode {
 
     static function onParserSetup( Parser $parser ) {
-        $parser->setHook( 'code', 'LoopCode::renderCodeTag' ); 
+        $parser->setHook( 'code', 'LoopCode::renderCodeTag' );
         return true;
     }
 

@@ -128,7 +128,7 @@
 	"loopexport-audio-intro-url": "Das Loop ist online unter $1 zu finden. ",
 	"loopexport-audio-intro-date": "Es ist auf dem Stand von $1.",
 	"loopexportpdftest": "PDF seitenweise testen",
-	"loopexport-pdf-test-success": "Alle seiten funktionieren korrekt! Funktioniert die PDF dennoch nicht, [[Special:PurgeCache|löschen Sie den Cache]] und/oder kontaktieren Sie die/den AdministratorIn",
+	"loopexport-pdf-test-success": "Alle Seiten funktionieren korrekt! Funktioniert die PDF dennoch nicht, [[Special:PurgeCache|löschen Sie den Cache]] und/oder kontaktieren Sie die/den AdministratorIn",
 	"loopexport-pdf-test-failure": "Auf der/n Seite/n $1 ist ein Fehler aufgetreten. Sie können sich den Fehlerbericht unten ansehen.",
 	"loopexport-pdf-test-notice": "In der Trackingkategorie für $1 sind Seiten gelistet, die Fehler beinhalten. Sie können sich diese im Bearbeitungsmodus auf den jeweiligen Seiten ansehen.",
 	"loopexport-pdf-error": "Beim Erzeugen der PDF ist leider ein Fehler aufgetreten. ",
@@ -344,6 +344,7 @@
 
 	"loopobject-error-unknown-id" : "Die Objektauszeichnung mit der ID $1 konnte nicht in der Datenbank gespeichert werden. Bitte überprüfen Sie die Syntax.",
 	"loopobject-error-dublicate-id" : "Die Objektauszeichnung besitzt keine einzigartige ID ($1). Auf der Seite '$2' ist ein weiteres Objekt mit der ID vorhanden. Bitte ändern Sie die ID und speichern Sie die Seiten neu ab, um eine korrekte Zählung sicherzustellen.",
+	"loopobject-error-unknown" : "Es ist ein unbekannter Fehler bei der Nummerierung aufgetreten.",
 	"loopreference-error-unknown-refid" : "Die Referenz bezieht sich auf eine unbekannte ID: '''$1'''.\nDokumentation zu Referenzen: XXX",
 	"loopreference-error-no-refid" : "Die Referenz besitzt keinen ID-Parameter (id).\nDokumentation zu Referenzen: XXX",
 
@@ -406,7 +407,7 @@
 	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an.",
 	"loopsidebar-error-nopage": "In dem Sidebar-Tag wurde keine Seite (page) angegeben.",
 	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
-
+	"loopzip-error-noextraction": "Die ZIP-Datei $1 wurde zwar hochgeladen, jedoch nicht entpackt. Zips, die PHP-Dateien enthalten, sind für eine LOOP-ZIP-Interaktion nicht verfügbar. Ist keine PHP-Datei enthalten, liegt ein Berechtigungsproblem vor. In dem Fall kontaktieren Sie bitte den Administrator.",
 	"loop-error-missingrequired": "In dem Tag $1 fehlt der notwendige Parameter $2. Das Element kann nicht dargestellt werden.",
 	"loop-error-missingfile": "Die in dem Tag $1 angegebene Datei $2 ist nicht vorhanden. Bitte laden Sie sie hoch. {{PLURAL:$3|Das Element wird ohne die Datei dargestellt.|Das Element kann nicht dargestellt werden.}}",
 	"loop-error-unknown-param" : "Im Tag $1 enthält der Parameter $2 den unbekannten Wert '''$3'''.<br/>\nErlaubte Werte sind '''$4'''. Das Element wird nun standardmäßig mit dem Wert $5 dargestellt.",
@@ -494,5 +495,16 @@
 	"loopstructure-initial-chapter-1-2": "Zweites Unterkapitel",
 	"loopstructure-initial-chapter-2": "Zweites Kapitel",
 
-	"looppagesnotinstructure": "Seiten nicht im Inhaltsverzeichnis"
+	"looppagesnotinstructure": "Seiten nicht im Inhaltsverzeichnis",
+
+	"loopupdater-description-update": "Führt den CLI Befehl /maintenance/update.php durch. ACHTUNG: Darf nur von Administratoren benutzt werden. Im Fall eines Fehlers funktioniert das LOOP ggf. nicht mehr.",
+	"loopupdater-warning-update": "Ich bestätige, dass Backups der Datenbank des LOOPs und des Images-Ordners angefertigt wurden.",
+	"loopupdater-submit-update": "MediaWiki Update ausführen",
+
+	"loopsearch": "Wikitextsuche",
+	"loopsearch-description": "Diese Suche durchsucht den gesamten Wikitext. Auch Tags wie 'cite' oder 'loop_figure' und deren Parameter werden durchsucht.",
+	"loopsearch-placeholder": "Suchbegriff",
+	"loopsearch-results": "Ergebnisse für die Suche nach \"$1\":",
+	"loop-maintenance": "LOOP befindet sich im Wartungsmodus. Bitte versuchen Sie es später erneut. <br>$1"
+
 }

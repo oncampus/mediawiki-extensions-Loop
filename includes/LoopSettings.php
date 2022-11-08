@@ -4,9 +4,7 @@
  * @ingroup Extensions
  * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
  */
-if ( !defined( 'MEDIAWIKI' ) ) {
-    die( "This file cannot be run standalone.\n" );
-}
+if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 
@@ -105,12 +103,12 @@ class LoopSettings {
             'lset_objectrenderoption' => $this->objectRenderOption
         );
 
-        $dbw = wfGetDB( DB_MASTER );
+        $dbw = wfGetDB( DB_PRIMARY );
 
         try {
             $dbw->delete(
                 'loop_settings',
-                'lset_structure = 0', # TODO Structure support
+                'lset_structure = 0',
                 __METHOD__
             );
         } catch ( Exception $e ) {
@@ -121,7 +119,7 @@ class LoopSettings {
             $dbw->insert(
                 'loop_settings',
                 array(
-                    'lset_structure' => 0, # TODO Structure support
+                    'lset_structure' => 0,
                     'lset_property' => $dbk,
                     'lset_value' => $val,
                 )
@@ -147,7 +145,7 @@ class LoopSettings {
                 'lset_value',
             ),
             array(
-                 'lset_structure = "' . 0 .'"' # TODO Structure support
+                 'lset_structure = "' . 0 .'"'
             ),
             __METHOD__
         );
@@ -260,9 +258,10 @@ class LoopSettings {
 	 */
 	function parse( $input ) {
 
-		$localParser = new Parser();
+		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
+		$parser = $parserFactory->create();
 		$tmpTitle = Title::newFromText( 'NO TITLE' );
-	    $parserOutput = $localParser->parse( $input, $tmpTitle, new ParserOptions() );
+	    $parserOutput = $parser->parse( $input, $tmpTitle, new ParserOptions() );
 	    return $parserOutput->mText;
 
 	}
@@ -341,9 +340,10 @@ class LoopSettings {
         }
         if ( in_array( $request->getText( 'skin-style' ), $wgLoopAvailableSkinStyles ) ) {
             $this->skinStyle = $request->getText( 'skin-style' );
-            $user->setOption( 'LoopSkinStyle', $this->skinStyle );
-			$user->saveSettings();
-        } else {
+			$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
+			$userOptionsManager->setOption( $user, 'LoopSkinStyle', $this->skinStyle );
+			$userOptionsManager->saveOptions($user);
+		} else {
             array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
         }
 
@@ -579,11 +579,11 @@ class SpecialLoopSettings extends SpecialPage {
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 	    $linkRenderer->setForceArticlePath(true);
 		$html = '';
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if ( $permissionManager->userHasRight( $user, 'loop-settings-edit' ) ) {
 
-		if ( $user->isAllowed( 'loop-settings-edit' ) ) {
-
-			global $IP, $wgSecretKey, $wgLoopSocialIcons, $wgAvailableLicenses, $wgSpecialPages,
-			$wgLoopSkinStyles, $wgLoopAvailableSkinStyles, $wgLoopEditableSkinStyles, $wgDefaultUserOptions;
+			global $wgSecretKey, $wgLoopSocialIcons, $wgAvailableLicenses,
+			$wgLoopSkinStyles, $wgLoopAvailableSkinStyles, $wgLoopEditableSkinStyles;
 
 			$this->setHeaders();
 
@@ -913,7 +913,7 @@ class SpecialLoopSettings extends SpecialPage {
                         $html .= '</div>';
 
                     ### BUGREPORT ###
-                    if ( LoopBugReport::isAvailable() != "external" && false ) { # TODO 14.09.2020 remove
+                    if ( LoopBugReport::isAvailable() != "external" ) {
                         $html .= '<div class="col-6">';
                         $html .= '<h3>' . $this->msg( 'loopsettings-headline-bugreport' )->text() . '</h3>';
                         $html .= '<label for="ticket-email">'. $this->msg("loopsettings-bugreport-email-label")->text().'</label>';

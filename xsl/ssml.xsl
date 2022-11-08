@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	xmlns="http://www.w3.org/2001/10/synthesis" 
+	xmlns="http://www.w3.org/2001/10/synthesis"
 	-->
-<xsl:stylesheet version="1.0" 
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-	
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	 
-	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd" 
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-	xmlns:func="http://exslt.org/functions" 
-	extension-element-prefixes="func php str" 
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:func="http://exslt.org/functions"
+	extension-element-prefixes="func php str"
 	xmlns:functx="http://www.functx.com"
 	xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
 	xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions"
 	xmlns:xhtml="http://www.w3.org/1999/xhtml">
-	
-	<xsl:import href="terms.xsl"></xsl:import>	
-	
+
+	<xsl:import href="terms.xsl"></xsl:import>
+
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"	indent="yes"></xsl:output>
-	
+
 	<xsl:variable name="lang">
 		<xsl:value-of select="/article/meta/lang"></xsl:value-of>
-	</xsl:variable>	
+	</xsl:variable>
 
 	<xsl:template match="loop">
 		<xsl:call-template name="contentpages"></xsl:call-template>
 	</xsl:template>
-	
+
 	<xsl:template name="contentpages">
 		<xsl:apply-templates select="article"/>
-	</xsl:template>	
-	
+	</xsl:template>
+
 	<xsl:template match="article">
 		<xsl:element name="article">
 			<xsl:attribute name="id">
@@ -41,7 +41,7 @@
 				<xsl:attribute name="voice">
 					<xsl:text>2</xsl:text>
 				</xsl:attribute>
-			
+
 				<xsl:element name="p">
 					<xsl:if test="php:function('LoopXsl::xsl_showPageNumbering')">
 						<xsl:choose>
@@ -53,7 +53,7 @@
 								<xsl:value-of select="@tocnumber"></xsl:value-of>
 							</xsl:otherwise>
 						</xsl:choose>
-						
+
 						<xsl:element name="break">
 							<xsl:attribute name="strength">
 								<xsl:text>medium</xsl:text>
@@ -67,7 +67,7 @@
 					<xsl:if test="@title">
 						<xsl:value-of select="@title"></xsl:value-of>
 					</xsl:if>
-					
+
 					<xsl:element name="break">
 						<xsl:attribute name="time">
 							<xsl:text>700ms</xsl:text>
@@ -75,19 +75,19 @@
 					</xsl:element>
 
 				</xsl:element>
-						
+
 			</xsl:element>
 
 			<xsl:apply-templates/>
-			
+
 		</xsl:element>
-	
-	</xsl:template>	
+
+	</xsl:template>
 
 
 	<xsl:template match="loop_objects">
 	</xsl:template>
-	
+
 	<xsl:template match="link">
 	</xsl:template>
 	<xsl:template match="php_link">
@@ -96,7 +96,7 @@
 	</xsl:template>
 
 	<xsl:template match="extension">
-	
+
 		<xsl:choose>
 			<xsl:when test="@extension_name='loop_figure'">
 				<xsl:call-template name="loop_object">
@@ -148,17 +148,17 @@
 
 			<xsl:when test="@extension_name='loop_title'">
 				<xsl:apply-templates/>
-			</xsl:when>	
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_description'">
-				<xsl:apply-templates/>		
-			</xsl:when>	
+				<xsl:apply-templates/>
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_copyright'">
 				<xsl:apply-templates/>
-			</xsl:when>	
+			</xsl:when>
 
 			<xsl:when test="@extension_name='syntaxhighlight'">
 				<xsl:call-template name="syntaxhighlight"></xsl:call-template>
-			</xsl:when>	
+			</xsl:when>
 
 			<xsl:when test="@extension_name='loop_spoiler'">
 				<xsl:call-template name="loop_spoiler">
@@ -166,7 +166,7 @@
 						<xsl:copy-of select="."></xsl:copy-of>
 					</xsl:with-param>
 				</xsl:call-template>
-			</xsl:when>	
+			</xsl:when>
 
 			<xsl:when test="@extension_name='spoiler'">
 				<xsl:call-template name="loop_spoiler">
@@ -174,11 +174,11 @@
 						<xsl:copy-of select="."></xsl:copy-of>
 					</xsl:with-param>
 				</xsl:call-template>
-			</xsl:when>	
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_literature'">
 				<xsl:call-template name="loop_literature"/>
-				
-			</xsl:when>	
+
+			</xsl:when>
 
 			<xsl:when test="@extension_name='loop_paragraph'">
 				<xsl:apply-templates/>
@@ -190,8 +190,8 @@
 				<xsl:if test="@copyright!=''">
 					<xsl:value-of select="@copyright"></xsl:value-of>
 				</xsl:if>
-			</xsl:when>	
-			
+			</xsl:when>
+
 			<xsl:when test="@extension_name='loop_sidenote'">
 				<xsl:apply-templates/>
 				<xsl:element name="break">
@@ -199,16 +199,16 @@
 						<xsl:text>strong</xsl:text>
 					</xsl:attribute>
 				</xsl:element>
-			</xsl:when>	
-			
+			</xsl:when>
+
 			<xsl:when test="@extension_name='loop_accordion'">
 				<xsl:apply-templates/>
-			</xsl:when>	
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_row'">
 				<xsl:apply-templates/>
-			</xsl:when>	
+			</xsl:when>
 
-		</xsl:choose>	
+		</xsl:choose>
 		<!--
 				<xsl:element name="break">
 					<xsl:attribute name="strength">
@@ -217,12 +217,12 @@
 				</xsl:element>
 		-->
 	</xsl:template>
-	
-	
+
+
 	<xsl:template name="loop_area">
 
 		<xsl:variable name="looparea_type">
-		<xsl:choose> <!-- todo: trying to find a way to do this a much shorter way -->
+		<xsl:choose>
 			<xsl:when test="@type='task'"><xsl:value-of select="$word_looparea_task"></xsl:value-of></xsl:when>
 			<xsl:when test="@type='timerequirement'"><xsl:value-of select="$word_looparea_timerequirement"></xsl:value-of></xsl:when>
 			<xsl:when test="@type='learningobjectives'"><xsl:value-of select="$word_looparea_learningobjectives"></xsl:value-of></xsl:when>
@@ -252,7 +252,7 @@
 			</xsl:otherwise> <!-- todo: error msg? -->
 		</xsl:choose>
 	</xsl:variable>
-<!-- 			
+<!--
 	<xsl:value-of select="$phrase_looparea_start"></xsl:value-of>
 	<xsl:text> </xsl:text> -->
 	<xsl:element name="break">
@@ -316,7 +316,7 @@
 				</xsl:attribute>
 			</xsl:element>
 	</xsl:template>
-	
+
 	<xsl:template name="loop_spoiler">
 		<xsl:param name="object"></xsl:param>
 
@@ -325,7 +325,7 @@
 				<xsl:text>medium</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
-		
+
 		<xsl:choose>
 			<xsl:when test="./descendant::extension[@extension_name='loop_spoiler_text']">
 				<xsl:apply-templates select="./descendant::extension[@extension_name='loop_spoiler_text']" mode="loop_object"></xsl:apply-templates>
@@ -336,7 +336,7 @@
 			<xsl:otherwise>
 				<xsl:value-of select="$word_spoiler_defaulttitle"></xsl:value-of>
 			</xsl:otherwise>
-		</xsl:choose>	
+		</xsl:choose>
 
 		<xsl:element name="break">
 			<xsl:attribute name="strength">
@@ -373,7 +373,7 @@
 
 		<xsl:variable name="objectid">
 			<xsl:choose>
-				<xsl:when test="@id"> 
+				<xsl:when test="@id">
 					<xsl:value-of select="@id"></xsl:value-of>
 				</xsl:when>
 				<xsl:otherwise>
@@ -381,7 +381,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-			
+
 			<xsl:choose>
 				<xsl:when test="$object=''">
 					<xsl:choose>
@@ -431,7 +431,7 @@
 
 		<xsl:variable name="objectid">
 			<xsl:choose>
-				<xsl:when test="$object[@index='false']"> 
+				<xsl:when test="$object[@index='false']">
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="@id"></xsl:value-of>
@@ -449,7 +449,7 @@
 		</xsl:element>
 		<xsl:choose>
 			<xsl:when test="//*/loop_object[@refid = $objectid]/object_number">
-			
+
 				<xsl:element name="p">
 					<xsl:choose>
 						<xsl:when test="$object[@extension_name='loop_figure']">
@@ -502,7 +502,7 @@
 				</xsl:choose>
 				<xsl:text> </xsl:text>
 			</xsl:otherwise>
-		</xsl:choose>	
+		</xsl:choose>
 
 
 		<xsl:choose>
@@ -510,7 +510,7 @@
 				<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_title']" mode="loop_object"></xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="$object/@title"></xsl:value-of>	
+				<xsl:value-of select="$object/@title"></xsl:value-of>
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:if test="($object/@description) or ($object/descendant::extension[@extension_name='loop_description'])">
@@ -524,7 +524,7 @@
 					<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_description']" mode="loop_object"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="$object/@description"></xsl:value-of>	
+					<xsl:value-of select="$object/@description"></xsl:value-of>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:if>
@@ -543,7 +543,7 @@
 						<xsl:text>medium</xsl:text>
 					</xsl:attribute>
 				</xsl:element>
-				<xsl:value-of select="$object/@copyright"></xsl:value-of>	
+				<xsl:value-of select="$object/@copyright"></xsl:value-of>
 			</xsl:otherwise>
 		</xsl:choose>
 
@@ -555,7 +555,7 @@
 	</xsl:template>
 
 	<xsl:template match="heading">
-	
+
 		<xsl:element name="speak">
 			<xsl:attribute name="voice">
 				<xsl:text>2</xsl:text>
@@ -564,16 +564,16 @@
 			<xsl:apply-templates/>
 			<!--</xsl:element>-->
 		</xsl:element>
-		
+
 		<xsl:element name="break">
 			<xsl:attribute name="time">
 				<xsl:text>1200ms</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
-		
+
 	</xsl:template>
-	
-	
+
+
 	<xsl:template match="paragraph">
 		<xsl:choose>
 			<xsl:when test="ancestor::paragraph">
@@ -595,7 +595,7 @@
 						<xsl:value-of select="functx:select_voice()"/>
 					</xsl:attribute>
 					<xsl:apply-templates/>
-					
+
 					<xsl:element name="break">
 						<xsl:attribute name="strength">
 							<xsl:text>strong</xsl:text>
@@ -629,7 +629,7 @@
 	</xsl:template>
 
 	<func:function name="functx:select_voice">
-	
+
 		<xsl:choose>
 			<xsl:when test="extension[@extension_name='loop_figure']">
         		<func:result>2</func:result>
@@ -673,25 +673,25 @@
 			</xsl:otherwise>
 
 		</xsl:choose>
-		
+
 
 	</func:function>
-		
+
 	<xsl:template match="preblock">
-		
+
 	</xsl:template>
 
-	
+
 	<xsl:template match="space">
 		<!--<xsl:element name="break">
 			<xsl:attribute name="time">
 				<xsl:text>1200ms</xsl:text>
 			</xsl:attribute>
 		</xsl:element>-->
-	</xsl:template>		
+	</xsl:template>
 
 	<xsl:template match="meta">
 
-	</xsl:template>		
-	
+	</xsl:template>
+
 </xsl:stylesheet>

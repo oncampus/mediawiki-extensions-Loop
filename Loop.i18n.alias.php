@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Aliases for Loop special pages
  *
@@ -35,8 +35,9 @@ $specialPageAliases['en'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
-	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
+	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' ),
+	'LoopSearch' => array( 'Wikitext search' )
 	);
 
 $specialPageAliases['de'] = array(
@@ -66,10 +67,11 @@ $specialPageAliases['de'] = array(
 	'LoopPrivacy' => array( 'Datenschutz' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
-	'LoopPagesNotInStructure' => array( 'Seiten nicht im Inhaltsverzeichnis' )
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
+	'LoopPagesNotInStructure' => array( 'Seiten nicht im Inhaltsverzeichnis' ),
+	'LoopSearch' => array( 'Wikitextsuche' )
 	);
-	
+
 $specialPageAliases['sv'] = array(
 	'LoopStructure' => array( 'Innehåll' ),
 	'LoopStructureEdit' => array( 'Regidera innehåll' ),
@@ -97,8 +99,9 @@ $specialPageAliases['sv'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
-	'LoopPagesNotInStructure' => array( 'Sidor som inte finns i innehållförteckningen' )
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
+	'LoopPagesNotInStructure' => array( 'Sidor som inte finns i innehållförteckningen' ),
+	'LoopSearch' => array( 'Wikitext search' )
 	);
 
 $specialPageAliases['es'] = array(
@@ -127,8 +130,9 @@ $specialPageAliases['es'] = array(
 	'LoopPrivacy' => array( 'Privacy' ),
 	'LoopRSS' => array( 'LoopRSS' ),
 	'LoopNgSpice' => array( 'NgSpice' ),
-	'LoopManualUpdater' => array( 'LoopManualUpdater' ),
-	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' )
+	'SpecialLoopMediaWikiUpdater' => array( 'MWUpdate' ),
+	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' ),
+	'LoopSearch' => array( 'Wikitext search' )
 );
 
 
