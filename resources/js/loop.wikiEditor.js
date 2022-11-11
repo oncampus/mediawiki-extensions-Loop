@@ -32,8 +32,8 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_figure title="" description="" copyright="" show_copyright="false" index="true" alt="">',
-                                                peri: "[[File:Filename.png]]",
+                                                pre: '<loop_figure title="" description="" copyright="" show_copyright="false" index="true">',
+                                                peri: "[[File:Filename.png|alt=]]",
                                                 post: '</loop_figure>'
                                             }
                                         }
