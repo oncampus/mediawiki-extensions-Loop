@@ -141,7 +141,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$item = new LoopStructureItem();
 				$item->id = 1;
 				$item->article = $title->getArticleID();
-				$item->tocText = $title->mTextform;
+				$item->tocText = $title->getText();
 				$loopStructure->structureItems = array( $item );
 			} else {
 				$loopStructure->loadStructureItems();

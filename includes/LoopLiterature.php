@@ -7,6 +7,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
 
 class LoopLiterature {
 
@@ -539,7 +540,7 @@ class LoopLiterature {
 				if ( isset ( $allReferences[$articleId] ) && isset( $allReferences[$articleId][$refId] ) ) {
 					if ( $refId != $allReferences[$articleId][$refId]["refId"] || $articleId != $allReferences[$articleId][$refId]["articleId"] || $input != $allReferences[$articleId][$refId]["itemKey"] ) {
 						$otherTitle = Title::newFromId( $allReferences[$articleId][$refId]["articleId"] );
-						$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->mTextform, $allReferences[$articleId][$refId]["itemKey"] )->text() );
+						$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->getText(), $allReferences[$articleId][$refId]["itemKey"] )->text() );
 						$parser->addTrackingCategory( 'loop-tracking-category-error' );
 						$html .= $e;
 						$objectNumber = '';
@@ -637,7 +638,7 @@ class LoopLiterature {
 	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
 
 	    $latestRevId = $title->getLatestRevID();
-	    $wikiPage = WikiPage::factory($title);
+	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    $fwp = new FlaggableWikiPage ( $title );
 
 	    if ( isset($fwp) ) {
@@ -655,7 +656,7 @@ class LoopLiterature {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-	    $wikiPage = WikiPage::factory($title);
+	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    self::handleLoopLiteratureReferences( $wikiPage, $title );
 	    return true;
 	}
@@ -870,7 +871,7 @@ class LoopLiterature {
 	 * @param String $type 'html' or 'xml'
 	 * @param Mixed $tag 'loop_literature' or false for adding edit links
 	 */
-	public static function renderLiteratureElement( $li, $ref = null, $type = 'html', $tag = false,$allReferences = null, $linkablePageReferences = null ) {
+	public static function renderLiteratureElement( $li, $ref = null, $type = 'html', $tag = false, $allReferences = null, $linkablePageReferences = null ) {
 
 		global $wgOut, $wgLoopLiteratureCiteType;
 
@@ -878,48 +879,50 @@ class LoopLiterature {
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
-
-		# required for readable links
-		$linkRenderer->setForceArticlePath( true );
+		$linkRenderer->setForceArticlePath(true); #required for readable links
 
 		$return = '';
-
-		$italic = "";
-		$italicEnd = "";
-		if ( $type == "html" ) {
-			$italic = "<i>";
-			$italicEnd = "</i>";
+		if ($type == "html") {
+		    $italic = "<i>";
+		    $italicEnd = "</i>";
+		} elseif ($type == "xml") { #xml
+		    $italic = "";#"<italics>";
+		    $italicEnd = "";#"</italics>";
+		} else {
+		    $italic = "";
+		    $italicEnd = "";
 		}
 
-		if ( $wgLoopLiteratureCiteType == 'vancouver' && !empty( $ref["objectnumber"] ) ) {
-			if ( $type == 'html' ) {
-				$return .= "<span class='literature-vancouver-number'>" . $ref["objectnumber"] . ". </span>";
-			} else {
-				$return .= $ref["objectnumber"] . ". ";
-			}
+		if ( $wgLoopLiteratureCiteType == 'vancouver' && !empty ( $ref["objectnumber"] ) ) {
+		    if ( $type == 'html' ) {
+		        $return .= "<span class='literature-vancouver-number'>". $ref["objectnumber"].". </span>";
+		    } else {
+		        $return .= $ref["objectnumber"].". ";
+		    }
 		}
 		# Author/''Title''. (editor). (year). Series. ''Title'' (Type)(Volume). Publisher/Institution/school
 		if ( !empty( trim( $li->author ) ) && $li->itemType != "LOOP1" ) {
 			if ( $type == 'xml' ) {
-				$return .= $li->author;
+				$return .=  $li->author;
 			} else {
-				$return .= $li->author . " ";
+				$return .= $li->author." ";
 			}
 		} elseif ( !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "LOOP1" ) {
 				if ( $type == 'xml' ) {
-					$return .= $li->itemTitle;
+					$return .=  $li->itemTitle;
 				} else {
-					$return .= $li->itemTitle . " ";
+					$return .= $li->itemTitle." ";
 				}
 			} else {
-				$return .= $italic . $li->itemTitle . $italicEnd . ". ";
+				$return .= $italic. $li->itemTitle. $italicEnd . ". ";
 			}
 		}
 
-		# short, only (Hrsg.). if different from author, it will be mentioned later
-		if ( !empty( trim( $li->editor ) ) && $li->author == $li->editor ) {
-			$return .= "(" . wfMessage( "loopliterature-text-publisher" )->text() . "). ";
+		if ( !empty( trim( $li->editor ) ) ) { # short, only (Hrsg.). if different from author, it will be mentioned later
+			if ( $li->author == $li->editor ) {
+				$return .= "(".wfMessage("loopliterature-text-publisher")->text()."). ";
+			}
 		}
 
 		if ( !empty( trim( $li->year ) ) ) {
@@ -928,40 +931,32 @@ class LoopLiterature {
 				$monthText = $li->month . " ";
 			}
 			if ( $li->itemType == "unpublished" ) {
-				$return .= "(" . $monthText . $li->year . ", "
-							. wfMessage( "loopliterature-text-unpublished" )->text() . "). ";
+				$return .= "(". $monthText. $li->year.", ".wfMessage("loopliterature-text-unpublished")->text()."). ";
 			} else {
-				$return .= "(" . $monthText . $li->year . "). ";
+				$return .= "(". $monthText. $li->year."). ";
 			}
 		} elseif ( $li->itemType == "unpublished" ) {
-			$return .= "(" . wfMessage( "loopliterature-text-unpublished" )->text() . "). ";
-		} elseif ( $li->itemType != "LOOP1" ) {
-			# legacy loop 1
-			$return .= "(" . wfMessage( "loopliterature-text-noyear" )->text() . "). ";
+			$return .= "(".wfMessage("loopliterature-text-unpublished")->text()."). ";
+		} elseif ( $li->itemType != "LOOP1" ) { #legacy loop 1
+			$return .= "(".wfMessage("loopliterature-text-noyear")->text()."). ";
 		}
 
 		if ( !empty( trim( $li->chapter ) ) ) {
-			$return .= $li->chapter . ". ";
+			$return .= $li->chapter.". ";
 		}
-		if ( !empty( trim( $li->editor ) ) && $li->author != $li->editor ) {
-			$return .= wfMessage( "loopliterature-text-inpublisher", $li->editor )->text() . ", ";
+		if ( !empty( trim( $li->editor ) ) ) {
+			if ( $li->author != $li->editor ) {
+				$return .= wfMessage("loopliterature-text-inpublisher", $li->editor)->text() . ", ";
+			}
 		}
 
 		if ( !empty( trim( $li->author ) ) && !empty( trim( $li->itemTitle ) ) ) {
 			if ( $li->itemType == "article" ) {
 				$return .= $li->itemTitle;
 			} else {
-				$return .= $italic . $li->itemTitle . $italicEnd;
+				$return .= $italic. $li->itemTitle. $italicEnd;
 			}
-
-			if ( !empty( trim( $li->volume ) )
-					|| !empty( trim( $li->publisher ) )
-					|| !empty( trim( $li->type ) )
-					|| !empty( trim( $li->edition ) )
-					|| !empty( trim( $li->pages ) )
-					|| !empty( trim( $li->howpublished ) )
-					|| !empty( trim( $li->series ) )
-					|| !empty( trim( $li->url ) ) ) {
+			if ( !empty( trim( $li->volume ) ) || !empty( trim( $li->publisher ) ) || !empty( trim( $li->type ) ) || !empty( trim( $li->edition ) ) || !empty( trim( $li->pages ) ) || !empty( trim( $li->howpublished ) ) || !empty( trim( $li->series ) ) ) {
 				$return .= ". ";
 			} else {
 				$return .= " ";
@@ -973,129 +968,129 @@ class LoopLiterature {
 		}
 
 		if ( !empty( trim( $li->pages ) ) ) {
-			if ( !strpos( $li->pages,
-					',' ) && !strpos( $li->pages,
-					'-' ) && !strpos( $li->pages,
-					' ' ) ) {
+			if ( ! strpos( $li->pages , ',' ) && ! strpos( $li->pages , '-' )  && ! strpos( $li->pages , ' ' ) ) {
 				$plural = 2;
 			} else {
 				$plural = 1;
 			}
-			$return .= "(" . wfMessage( "loopliterature-text-pages",
-					$plural )->text() . " " . $li->pages . "). ";
+			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . " " . $li->pages."). ";
 		}
 
 		if ( !empty( trim( $li->journal ) ) ) {
-			$return .= $li->journal . ". ";
+			$return .= $li->journal. ". ";
 		}
 		if ( !empty( trim( $li->series ) ) ) {
-			$return .= "(" . $li->series . "). ";
+			$return .= "(". $li->series."). ";
 		}
 		if ( !empty( trim( $li->type ) ) && trim( $li->type ) != $li->itemType ) {
-			$return .= "(" . $li->type . "). ";
+			$return .= "(". $li->type."). ";
 		}
 		if ( !empty( trim( $li->volume ) ) ) {
-			$return .= "(" . $li->volume . "). ";
+			$return .= "(". $li->volume."). ";
 		}
 		if ( !empty( trim( $li->edition ) ) ) {
-			$return .= "(" . $li->edition . "). ";
+			$return .= "(". $li->edition."). ";
 		}
-		if ( !empty( trim( $li->howpublished ) ) ) {
-			$return .= "(" . $li->howpublished . "). ";
+		if (!empty( trim(  $li->howpublished ) ) ) {
+			$return .= "(". $li->howpublished."). ";
 		}
 		if ( !empty( trim( $li->number ) ) ) {
-			$return .= "(" . $li->number . "). ";
+			$return .= "(". $li->number."). ";
 		}
 
+
 		if ( !empty( trim( $li->publisher ) ) ) {
-			$return .= $li->publisher . ". ";
+			$return .= $li->publisher.". ";
 		} elseif ( !empty( trim( $li->journal ) ) ) {
-			$return .= $italic . $li->journal . "." . $italicEnd . " ";
+			$return .= $italic. $li->journal.".". $italicEnd." ";
 		}
 
 		if ( !empty( trim( $li->institution ) ) ) {
-			$return .= $li->institution . ". ";
+			$return .= $li->institution.". ";
 		}
 		if ( !empty( trim( $li->school ) ) ) {
-			$return .= $li->school . ". ";
+			$return .= $li->school.". ";
 		}
 		if ( !empty( trim( $li->isbn ) ) ) {
-			$return .= "ISBN: " . $li->isbn . ". ";
+			$return .= "ISBN: " . $li->isbn.". ";
 		}
 		if ( !empty( trim( $li->doi ) ) ) {
-			$return .= "DOI: " . $li->doi . ". ";
+			$return .= "DOI: " . $li->doi.". ";
 		}
 		if ( !empty( trim( $li->url ) ) ) {
-			$return .= wfMessage( "loopliterature-text-url" )->text() . " " . $li->url . ". ";
+			$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
 		}
 		if ( !empty( trim( $li->address ) ) ) {
-			$return .= $li->address . ". ";
+			$return .= $li->address.". ";
 		}
 
 		if ( $li->note && $editMode && $li->itemType != "LOOP1" && $type == 'html' ) {
-			$return .= '<span class="literature-itemkey font-italic text-black-50">';
-			$return .= wfMessage( "loopliterature-text-note" )->text() . ": " . $li->note;
-			$return .= '. </span>';
+			$return .= '<span class="literature-itemkey font-italic text-black-50">'.wfMessage("loopliterature-text-note")->text() . ": " . $li->note.'. </span>';
 		}
 
 		if ( $li->itemType == "LOOP1" && $li->note ) {
 			$return .= $li->note . " ";
 		}
 
-		if ( ( $editMode && $type == 'html' && !$tag ) ) {
-			$return .= '<span class="literature-itemkey font-italic text-black-50" title="';
-			$return .= wfMessage( "loopliterature-label-key" )->text() . '">' . $li->itemKey;
-			$return .= ' </span>';
+		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
+			$return .= '<span class="literature-itemkey font-italic text-black-50" title="'.wfMessage("loopliterature-label-key")->text().'">'. $li->itemKey.' </span>';
 		}
 
-		if ( !empty( $linkablePageReferences ) && !empty( $ref ) && !$tag && $type == 'html' ) {
-			$return .= '<span class="dropdown ml-1 cursor-pointer" title="';
-			$return .= wfMessage( "loopliterature-label-deleteentry" )->text() . '">';
-			$return .= '<span class="dropdown-toggle d-inline accent-color literature-ref-dropdown"'
-						. 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
+		if ( !empty( $linkablePageReferences ) && !empty( $ref ) && ! $tag && $type == 'html' ) {
+			$return .= '<span class="dropdown ml-1 cursor-pointer" title="'.wfMessage( "loopliterature-label-deleteentry" )->text().'">';
+			$return .= '<span class="dropdown-toggle d-inline accent-color literature-ref-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
 			$return .= '<span class="dropdown-menu">';
 
-			$linkedTitles = [];
+			$linkedTitles = array();
 			foreach ( $linkablePageReferences as $articleId => $pageRefs ) {
 				foreach ( $pageRefs as $pageRef ) {
-					if ( $pageRef["itemKey"] == $li->itemKey ) {
+					if ( $pageRef[ "itemKey" ] == $li->itemKey ) {
 						$title = Title::newFromId( $articleId );
-						if ( !in_array( $title->mArticleID, $linkedTitles ) ) {
+						if ( ! in_array( $title->mArticleID, $linkedTitles ) ) {
 							$linkedTitles[] = $title->mArticleID;
-							$return .= $linkRenderer->makelink( $title,
-								new HtmlArmor( $title->mTextform ),
-								[ 'title' => $title->mTextform, "class" => "dropdown-item literature-refs" ],
-								[] );
+							$return .= $linkRenderer->makelink(
+								$title,
+								new HtmlArmor( $title->getText() ),
+								array( 'title' => $title->getText(), "class" => "dropdown-item literature-refs" ),
+								array()
+							);
 						}
 					}
 				}
 			}
 			$return .= '</span></span> ';
 		}
-		if ( $editMode && $type == 'html' && !$tag ) {
+		if ( ( $editMode && $type == 'html' && ! $tag ) ) {
 			$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-			if ( $permissionManager->userHasRight( $user, 'loop-edit-literature' ) ) {
-				$return .= $linkRenderer->makelink( new TitleValue( NS_SPECIAL, 'LoopLiteratureEdit' ),
+			if ( $permissionManager->userHasRight( $user, 'loop-edit-literature') ) {
+				$return .= $linkRenderer->makelink(
+					new TitleValue(
+						NS_SPECIAL,
+						'LoopLiteratureEdit'
+					),
 					new HtmlArmor( '<span class="ic ic-edit"></span>' ),
-					[ 'title' => wfMessage( "loopliteratureedit" )->text(), "class" => "icon-link" ],
-					[ 'edit' => $li->itemKey ] );
-				$return .= '<span class="dropright ml-1 cursor-pointer" title="';
-				$return .= wfMessage( "loopliterature-label-deleteentry" )->text() . '">';
-				$return .= '<span class="ic ic-delete dropdown-toggle d-inline accent-color literature-dropdown"'
-							. 'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
+					array( 'title' => wfMessage( "loopliteratureedit" )->text(), "class" => "icon-link" ),
+					array( 'edit' => $li->itemKey )
+				);
+				$return .= '<span class="dropright ml-1 cursor-pointer" title="'.wfMessage( "loopliterature-label-deleteentry" )->text().'">';
+				$return .= '<span class="ic ic-delete dropdown-toggle d-inline accent-color literature-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>';
 				$return .= '<span class="dropdown-menu">';
-				$return .= $linkRenderer->makelink( new TitleValue( NS_SPECIAL,
-						'LoopLiterature' ),
+				$return .= $linkRenderer->makelink(
+					new TitleValue(
+						NS_SPECIAL,
+						'LoopLiterature'
+					),
 					new HtmlArmor( wfMessage( "loopliterature-warning-delete" )->text() ),
-					[ 'title' => wfMessage( "loopliterature-warning-delete" )->text(),
-						"class" => "dropdown-item text-danger literature-delete" ],
-					[ 'delete' => $li->itemKey ] );
+					array( 'title' => wfMessage( "loopliterature-warning-delete" )->text(), "class" => "dropdown-item text-danger literature-delete" ),
+					array( 'delete' => $li->itemKey )
+				);
 				$return .= '</span></span>';
 			}
 		}
-
 		return $return;
 	}
+
+
 }
 
 class LoopLiteratureReference {
@@ -1581,6 +1576,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		if ( $permissionManager->userHasRight( $user,'loop-edit-literature') ) {
@@ -1617,7 +1613,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				$html .= '<script>var editValues = new Array;</script>';
 			}
 
-			$saltedToken = $user->getEditToken( $wgSecretKey, $request );
+			$saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
 			$requestToken = $request->getText( 't' );
 
 			$out->setPageTitle($this->msg('loopliteratureedit')->text());
@@ -1625,7 +1621,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 			if ( ! empty( $requestToken ) ) {
 
-				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
+				if ( $csrfTokenSet->matchToken( $requestToken, $request->getSessionId()->__tostring() ) ) {
 
 					$loopLiterature = new LoopLiterature;
 					$loopLiterature->getLiteratureFromRequest( $request );
@@ -1800,10 +1796,11 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
-        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
+        $saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
 		$out->setPageTitle($this->msg('loopliteratureimport'));
         $html = '<h1>';
 		$html .= wfMessage( 'loopliteratureimport' )->text();

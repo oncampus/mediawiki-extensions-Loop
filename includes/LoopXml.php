@@ -106,7 +106,7 @@ class LoopXml {
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($title->mArticleID);
-			$wp = WikiPage::factory ( $title );
+			$wp = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle ( $title );
 			$content = $wp->getContent( MediaWiki\Revision\RevisionRecord::RAW );
 			$contentText = ContentHandler::getContentText( $content );
 
@@ -230,7 +230,7 @@ class LoopXml {
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($articleId);
-			$wp = WikiPage::factory ( $title );
+			$wp = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle ( $title );
 			$pageContent = $wp->getContent( MediaWiki\Revision\RevisionRecord::RAW );
 			$contentText = ContentHandler::getContentText( $pageContent );
 		} else {
@@ -248,7 +248,7 @@ class LoopXml {
 			if ( ! $modifiers["noarticle"] ) {
 				$xml = "<article ";
 				$xml .= "id=\"article" . $articleId . "\" ";
-				$xml .= "title=\"" . htmlspecialchars($title->mTextform, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
+				$xml .= "title=\"" . htmlspecialchars($title->getText(), ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
 				$xml .= ">\n";
 			}
 		}

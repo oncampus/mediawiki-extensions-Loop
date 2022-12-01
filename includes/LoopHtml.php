@@ -69,7 +69,7 @@ class LoopHtml{
             # Create start file
             $mainPage = $context->getTitle()->newMainPage(); # Content of Mediawiki:Mainpage. Might not exist and cause error
 
-            $wikiPage = WikiPage::factory( $mainPage );
+            $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $mainPage );
             $revision = $wikiPage->getRevisionRecord();
             if ( $revision != null ) {
                 LoopHtml::writeArticleToFile( $mainPage, "files/", $exportSkin );
@@ -111,8 +111,8 @@ class LoopHtml{
             }
             if ( $specialPageImprintContent == "" && filter_var( htmlspecialchars_decode( $wgLoopImprintLink ), FILTER_VALIDATE_URL ) == false ) {
                 $imprintTitle = Title::newFromText( $wgLoopImprintLink );
-                if ( ! empty ( $imprintTitle->mTextform ) ) {
-                    $wikiPage = WikiPage::factory( $imprintTitle );
+                if ( ! empty ( $imprintTitle->getText() ) ) {
+                    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $imprintTitle );
                     $revision = $wikiPage->getRevisionRecord();
                     if ( $revision != null ) {
                         LoopHtml::writeArticleToFile( $imprintTitle, "", $exportSkin );
@@ -131,8 +131,8 @@ class LoopHtml{
 
             if ( $specialPagePrivacyContent == "" && filter_var( htmlspecialchars_decode( $wgLoopPrivacyLink ), FILTER_VALIDATE_URL ) == false ) {
                 $privacyTitle = Title::newFromText( $wgLoopPrivacyLink );
-                if ( ! empty ( $privacyTitle->mTextform ) ) {
-                    $wikiPage = WikiPage::factory( $privacyTitle );
+                if ( ! empty ( $privacyTitle->getText() ) ) {
+                    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $privacyTitle );
                     $revision = $wikiPage->getRevisionRecord();
                     if ( $revision != null ) {
                         LoopHtml::writeArticleToFile( $privacyTitle, "", $exportSkin );
@@ -219,12 +219,12 @@ class LoopHtml{
             if ( $mode == "imprint" ) {
                 if ( !empty( SpecialLoopImprint::renderLoopImprintSpecialPage() ) ) {
                     $title = Title::newFromText( "LoopImprint", NS_SPECIAL );
-                    return wfMessage( strtolower( $title->mTextform ) )->text() . ".html";
+                    return wfMessage( strtolower( $title->getText() ) )->text() . ".html";
                 }
             } else {
                 if ( !empty( SpecialLoopPrivacy::renderLoopPrivacySpecialPage() ) ) {
                     $title = Title::newFromText( "LoopPrivacy", NS_SPECIAL );
-                    return wfMessage( strtolower( $title->mTextform ) )->text() . ".html";
+                    return wfMessage( strtolower( $title->getText() ) )->text() . ".html";
                 }
             }
         }
@@ -255,11 +255,11 @@ class LoopHtml{
 
        # global $wgExtensionMessagesFiles, $wgLanguageCode;
 
-        $tmpTextform = wfMessage( strtolower( $specialPage->mTextform ) )->text();
+        $tmpTextform = wfMessage( strtolower( $specialPage->getText() ) )->text();
         #dd($tmpTextform, $specialPage);
-        #$specialPage->mTextform = $tmpTextform;
+        #$specialPage->getText() = $tmpTextform;
         $tmpFileName = $tmpTextform.'.html';
-        switch ( $specialPage->mTextform ) {
+        switch ( $specialPage->getText() ) {
             case "LoopLiterature":
                 $content = SpecialLoopLiterature::renderLoopLiteratureSpecialPage();
                 break;
@@ -331,7 +331,7 @@ class LoopHtml{
         if ( getType( $title ) == "string" ) {
             $title = Title::newFromId($title);
         }
-        $wikiPage = WikiPage::factory( $title );
+        $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
         $revision = $wikiPage->getRevisionRecord();
         $content = $revision->getContent( SlotRecord::MAIN );
 
@@ -345,7 +345,7 @@ class LoopHtml{
                 $tmpFileName = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');
                 $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
             } elseif( $title->getNamespace() == NS_GLOSSARY ) {
-                $tmpFileName = LoopHtml::getInstance()->resolveUrl( wfMessage("loop-glossary-namespace")->text() . ":" . $title->mTextform, '.html');
+                $tmpFileName = LoopHtml::getInstance()->resolveUrl( wfMessage("loop-glossary-namespace")->text() . ":" . $title->getText(), '.html');
                 $htmlFileName = LoopHtml::getInstance()->exportDirectory.$tmpFileName;
             }
         } else {

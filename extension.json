@@ -9,23 +9,24 @@
 		"Marc Vorreiter",
 		"Kevin Berg"
 	],
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.35",
+		"MediaWiki": ">= 1.39",
 		"extensions": {
 			"Cite": "*",
 			"ConfirmEdit": ">= 1.6.0",
-			"EmbedVideo": ">= 2.8.0",
+			"EmbedVideo": ">= 3.1.0",
 			"FlaggedRevs": "*",
-			"Lingo": ">= 3.0.0",
-			"Math": "3.0.0",
-			"MsUpload": "*",
+			"Lingo": ">= 3.1.2",
+			"Math": ">= 3.0.0",
+			"MsUpload": ">= 13.5",
 			"Quiz": ">= 1.2.0",
 			"Score": ">= 0.3.0",
-			"WikiEditor": ">= 0.5.2"
+			"Widgets": ">= 1.4.1",
+			"WikiEditor": ">= 0.5.3"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -431,10 +432,7 @@
 			"createpage": true,
 			"loop-rendermode": true,
 			"purgecache": true,
-			"unreviewedpages": true,
 			"edit": true,
-			"review": true,
-			"autoreview": true,
 			"loop-view-special-pages": true,
 			"loop-edit-literature": true,
 			"editsitecss": true,
@@ -1054,6 +1052,10 @@
 		"LoopEditorHideReferences": {
 			"value": false,
 			"description" : "Hide References from LOOP WikiEditor for faster loading."
+		},
+		"LoopEnableConsent": {
+			"value": true,
+			"description": "Enable Loop's own consent banner before showing external content"
 		}
 	},
 	"LogTypes": [ "loopexport" ],

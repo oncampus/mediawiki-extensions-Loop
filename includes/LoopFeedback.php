@@ -8,6 +8,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
 
 class LoopFeedback {
 
@@ -434,11 +435,12 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 
 	function execute( $par ) {
-		global $wgLoopLegacyPageNumbering, $wgLoopFeedbackLevel;
+		global $wgLoopFeedbackLevel;
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		// $userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 		// $editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
@@ -459,7 +461,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		} else {
 			if ( $action == 'reset_page' )  {
 				if ( $page != '' ) {
-					if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
+					if ( $csrfTokenSet->matchToken( $token ,'reset-feedback' ) ) {
 						$this->resetPage( $page );
 						$view = 'all';
 						$period_begin = '00000000000000';
@@ -470,7 +472,7 @@ class SpecialLoopFeedback extends SpecialPage {
 				}
 			}
 			if ( $action == 'reset_all' )  {
-				if ( $this->getUser()->matchEditToken( $token ,'reset-feedback' ) ) {
+				if ( $csrfTokenSet->matchToken( $token ,'reset-feedback' ) ) {
 					$this->resetAll();
 					$view = 'all';
 					$period_begin = '00000000000000';
@@ -589,7 +591,9 @@ class SpecialLoopFeedback extends SpecialPage {
         $specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
         $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
-		$reset_token = $this->getUser()->getEditToken( 'reset-feedback' );
+
+		$csrfTokenSet = new CsrfTokenSet($this->getRequest());
+		$reset_token = $csrfTokenSet->getToken( 'reset-feedback' );
 
 		$return .= $linkRenderer->makeLink(
             $specialtitle,
@@ -637,7 +641,9 @@ class SpecialLoopFeedback extends SpecialPage {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
         $linkRenderer->setForceArticlePath(true); #required for readable links
 		$return .= ' ';
-		$reset_token = $this->getUser()->getEditToken( 'reset-feedback' );
+
+		$csrfTokenSet = new CsrfTokenSet( $this->getRequest() );
+		$reset_token = $csrfTokenSet->getToken( 'reset-feedback' );
         $return .= $linkRenderer->makeLink(
             $specialtitle,
 			new HtmlArmor( wfMessage( 'loopfeedback-specialpage-confirm-reset-all-link' )->text() ),

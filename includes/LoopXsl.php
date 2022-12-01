@@ -465,7 +465,7 @@ class LoopXsl {
 		$id = $id_input[0]->value;
 		$articleId = str_replace( "article", "", $articleId_input[0]->value );
 		$title = Title::newFromId( $articleId );
-		$wikiPage = WikiPage::factory( $title );
+		$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		$fwp = new FlaggableWikiPage ( $title );
 		$rev = $wikiPage->getRevisionRecord();
 		$revId = $rev->getId();

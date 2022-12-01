@@ -21,11 +21,13 @@ class Loop {
 	 */
 	public static function handleLoopRequest( $output, $request, $user ) {
 
+		LoopSettings::setupGlobalVariablesFromLoopSettings();
+
 		$mws = MediaWikiServices::getInstance();
 		$permissionManager = $mws->getPermissionManager();
 		$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
 
-		if ( $permissionManager->userHasRight( $user, 'edit' ) ) {
+		if ( $permissionManager->userHasRight( $user, 'edit' ) && $user->isAnon() == false ) {
 			$loopeditmodeRequestValue  = $request->getText( 'loopeditmode' );
 			if( isset( $loopeditmodeRequestValue ) && ( in_array( $loopeditmodeRequestValue, array( "0", "1" ) ) ) ) {
 				$userOptionsManager->setOption( $user, 'LoopEditMode', $loopeditmodeRequestValue );
@@ -33,7 +35,7 @@ class Loop {
 			}
 		}
 
-		if ( $permissionManager->userHasRight( $user, 'loop-rendermode' ) ) {
+		if ( $permissionManager->userHasRight( $user, 'loop-rendermode' ) && $user->isAnon() == false ) {
 			$looprendermodeRequestValue  = $request->getText( 'looprendermode' );
 			if( isset( $looprendermodeRequestValue ) && ( in_array( $looprendermodeRequestValue, array( 'offline', 'epub' ) ) ) ) {
 				$userOptionsManager->setOption( $user, 'LoopRenderMode', $looprendermodeRequestValue );
@@ -57,14 +59,10 @@ class Loop {
 		define('LOOPOBJECTNUMBER_MARKER_PREFIX', "\x7fUNIQ--loopobjectnumber-");
 		define('LOOPOBJECTNUMBER_MARKER_SUFFIX', "-QINU\x7f");
 
-		global $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon, $wgLanguageCode, $wgDefaultUserOptions, $wgLoopImprintLink,
-		$wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags, $wgFlaggedRevsTagsRestrictions,
-		$wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview, $wgFlaggedRevsNamespaces,
-		$wgLogRestrictions, $wgFileExtensions, $wgLoopObjectNumbering, $wgLoopNumberingType, $wgExtraNamespaces, $wgLoopLiteratureCiteType,
-		$wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce, $wgLoopCustomLogo, $wgLoopExtraFooter, $wgLoopExtraSidebar,
-		$wgLoopPrivacyLink, $wgLoopSocialIcons, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey,
-		$wgLoopBugReportEmail, $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopUnprotectedRSS, $wgLoopObjectDefaultRenderOption,
-		$wgExternalLinkTarget;
+		global $wgLanguageCode, $wgLoopImprintLink, $wgWhitelistRead, $wgFlaggedRevsExceptions, $wgFlaggedRevsLowProfile, $wgFlaggedRevsTags,
+		$wgFlaggedRevsTagsRestrictions, $wgFlaggedRevsAutopromote, $wgShowRevisionBlock, $wgSimpleFlaggedRevsUI, $wgFlaggedRevsAutoReview,
+		$wgFlaggedRevsNamespaces, $wgLogRestrictions, $wgFileExtensions, $wgExtraNamespaces, $wgContentHandlers, $wgexLingoPage, $wgexLingoDisplayOnce,
+		$wgLoopPrivacyLink, $wgCaptchaTriggers, $wgCaptchaClass, $wgReCaptchaSiteKey, $wgReCaptchaSecretKey, $wgExternalLinkTarget;
 
 		# external links to new tab
 		$wgExternalLinkTarget = '_blank';
@@ -75,62 +73,6 @@ class Loop {
 		# Captcha before settings configuration
 		$wgCaptchaTriggers["bugreport"] = ( !isset( $wgCaptchaTriggers["bugreport"] ) ? true : $wgCaptchaTriggers["bugreport"] );
 		$wgCaptchaClass = 'ReCaptchaNoCaptcha';
-
-		$dbr = wfGetDB( DB_REPLICA );
-		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
-		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
-		if ( $dbr->tableExists( 'loop_settings' ) ) {
-
-			$res = $dbr->select(
-				'loop_settings',
-				array(
-					'lset_structure',
-					'lset_property',
-					'lset_value',
-				),
-				array(
-					'lset_structure = "' . 0 .'"' # TODO Structure support
-				),
-				__METHOD__
-			);
-			foreach ( $res as $row ) {
-				$data[$row->lset_property] = $row->lset_value;
-			}
-
-			#set global variables to content from settings
-			if ( isset( $row->lset_structure ) ) {
-				$wgRightsText = ( !isset( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
-				$wgRightsUrl = ( !isset( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
-				$wgRightsIcon = ( !isset( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
-				$wgLoopRightsType = ( !isset( $data['lset_rightstype'] ) ? $wgLoopRightsType : $data['lset_rightstype'] );
-				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? $wgDefaultUserOptions['LoopSkinStyle'] : $data['lset_skinstyle'] );
-				$wgLoopImprintLink = ( !isset( $data['lset_imprintlink'] ) ? $wgLoopImprintLink : $data['lset_imprintlink'] );
-				$wgLoopPrivacyLink = ( !isset( $data['lset_privacylink'] ) ? $wgLoopPrivacyLink : $data['lset_privacylink'] );
-				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : boolval( $data['lset_numberingobjects'] ) );
-				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
-				$wgLoopLiteratureCiteType = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopLiteratureCiteType : $data['lset_citationstyle'] );
-				$wgLoopCustomLogo = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopCustomLogo : array( "useCustomLogo" => $data['lset_customlogo'], "customFileName" => $data['lset_customlogofilename'], "customFilePath" => $data['lset_customlogofilepath'] ) );
-				$wgLoopExtraFooter = ( !isset( $data['lset_extrafooter'] ) ? $wgLoopExtraFooter : $data['lset_extrafooter'] );
-				$wgLoopExtraSidebar = ( !isset( $data['lset_extrasidebar'] ) ? $wgLoopExtraSidebar : $data['lset_extrasidebar'] );
-				$wgLoopSocialIcons['Facebook'] = ( !isset( $data['lset_facebooklink'] ) ? $wgLoopSocialIcons['Facebook'] : array( "icon" => $data['lset_facebookicon'], "link" => $data['lset_facebooklink'] ) );
-				$wgLoopSocialIcons['Twitter'] = ( !isset( $data['lset_twitterlink'] ) ?$wgLoopSocialIcons['Twitter'] : array( "icon" => $data['lset_twittericon'], "link" => $data['lset_twitterlink'] ) );
-				$wgLoopSocialIcons['Youtube'] = ( !isset( $data['lset_youtubelink'] ) ? $wgLoopSocialIcons['Youtube'] : array( "icon" => $data['lset_youtubeicon'], "link" => $data['lset_youtubelink'] ) );
-				$wgLoopSocialIcons['Github'] = ( !isset( $data['lset_githublink'] ) ? $wgLoopSocialIcons['Github'] : array( "icon" => $data['lset_githubicon'], "link" => $data['lset_githublink'] ) );
-				$wgLoopSocialIcons['Instagram'] = ( !isset( $data['lset_instagramlink'] ) ? $wgLoopSocialIcons['Instagram'] : array( "icon" => $data['lset_instagramicon'], "link" => $data['lset_instagramlink'] ) );
-				$wgCaptchaTriggers["edit"] = ( !isset( $data['lset_captchaedit'] ) ?$wgCaptchaTriggers["edit"] : boolval( $data['lset_captchaedit'] ) );
-				$wgCaptchaTriggers["create"] = ( !isset( $data['lset_captchacreate'] ) ? $wgCaptchaTriggers["create"] : boolval( $data['lset_captchacreate'] ) );
-				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ? $wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
-				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ? $wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
-				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
-				$wgCaptchaTriggers["bugreport"] = ( !isset( $data['lset_captchabugreport'] ) ? $wgCaptchaTriggers["bugreport"] : boolval( $data['lset_captchabugreport'] ) );
-				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
-				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
-				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
-				$wgLoopUnprotectedRSS = ( !isset( $data['lset_rssunprotected'] ) ? $wgLoopUnprotectedRSS : $data['lset_rssunprotected'] );
-				$wgLoopObjectDefaultRenderOption = ( !isset( $data['lset_objectrenderoption'] ) ? $wgLoopObjectDefaultRenderOption : $data['lset_objectrenderoption'] );
-			}
-
-		}
 
 		# Define new name for glossary
 		$glossary = array( "de" => "Glossar", "de-formal" => "Glossar", "en" => "Glossary", "es" => "Glosario", "sv" => "Ordlista" );
@@ -215,20 +157,19 @@ class Loop {
 		}
 		$summary = CommentStoreComment::newUnsavedComment( "Created for LOOP2" );
 
-		$loopExceptionPage = WikiPage::factory( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
+		$loopExceptionPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( wfMessage( 'loop-tracking-category-error' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopExceptionPageContent = new WikitextContent( wfMessage( 'loop-tracking-category-error-desc' )->inContentLanguage()->text() );
 		$loopExceptionPageUpdater = $loopExceptionPage->newPageUpdater( $systemUser );
 		$loopExceptionPageUpdater->setContent( "main", $loopExceptionPageContent );
 		$loopExceptionPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
-
-		$loopLegacyPage = WikiPage::factory( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
+		$loopLegacyPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( wfMessage( 'looplegacy-tracking-category' )->inContentLanguage()->text(), NS_CATEGORY ));
 		$loopLegacyPageContent = new WikitextContent( wfMessage( 'looplegacy-tracking-category-desc' )->inContentLanguage()->text() );
 		$loopLegacyPageUpdater = $loopLegacyPage->newPageUpdater( $systemUser );
 		$loopLegacyPageUpdater->setContent( "main", $loopLegacyPageContent );
 		$loopLegacyPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
-		$loopTerminologyPage = WikiPage::factory( Title::newFromText( "LoopTerminologyPage", NS_MEDIAWIKI ));
+		$loopTerminologyPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( "LoopTerminologyPage", NS_MEDIAWIKI ));
 		$loopTerminologyPageContent = new WikitextContent( "" ); #empty
 		$loopTerminologyPageUpdater = $loopTerminologyPage->newPageUpdater( $systemUser );
 		$loopTerminologyPageUpdater->setContent( "main", $loopTerminologyPageContent );

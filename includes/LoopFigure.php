@@ -203,7 +203,7 @@ class LoopFigure extends LoopObject{
 				array()
 				) . '<br/>';
 		} elseif ( $ns == NS_GLOSSARY ) {
-			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
+			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->getText();
 			$html .= $linkRenderer->makeLink(
 				$linkTitle,
 				new HtmlArmor( $linktext ),

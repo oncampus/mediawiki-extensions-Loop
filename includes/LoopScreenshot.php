@@ -122,7 +122,7 @@ class LoopScreenshot {
 
 			if ( !file_exists( $screenshotPngFile ) ) {
 
-				$wikiPage = WikiPage::factory( $title );
+				$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 				$fwp = new FlaggableWikiPage ( $title );
 
 				$rev = $wikiPage->getRevisionRecord();

@@ -17,15 +17,15 @@ class LoopToc extends LoopStructure {
     }
 
 	static function renderLoopToc( $input, array $args, Parser $parser, PPFrame $frame ) {
-	
-		$result = self::outputLoopToc( $parser->getTitle()->mArticleID, "html" );
+
+		$result = self::outputLoopToc( $parser->getPage()->mArticleID, "html" );
 
         $return  = '<div class="looptoc">';
         $return .= $result;
         $return .= '</div>';
         return $return;
     }
-    
+
     public static function outputLoopToc( $rootArticleId, $output = "html" ) {
 
 		global $wgLoopLegacyPageNumbering;
@@ -41,13 +41,13 @@ class LoopToc extends LoopStructure {
 			$tocText = $lsi->getTocText();
 			$next = $lsi->getNextItem();
 			$tocNumber =  $lsi->getTocNumber();
-			
+
 			if ( $wgLoopLegacyPageNumbering ) {
 				$pageNumber = $tocNumber . ' ';
 			} else {
 				$pageNumber = '';
 			}
-			
+
 			$headLink = $linkRenderer->makeLink(
 				Title::newFromID( $lsi->article ),
 				new HtmlArmor( '<span class="loopstructure-number">' . $pageNumber .'</span>' . $tocText )
@@ -60,7 +60,7 @@ class LoopToc extends LoopStructure {
 				if ( $tmp_lsi->getTocLevel() == $level + 1 ) { # if next item toclevel is one higher than current level, add to output
 					if ( empty( $tocNumber ) || strpos ( $tmp_lsi->tocNumber, $tocNumber ) === 0 ) { # the root page's toc number must be inside the displayed toc number
 						$next = $tmp_lsi->getNextItem();
-						
+
 						if( $wgLoopLegacyPageNumbering ) {
 							$tmp_pageNumber = $tmp_lsi->tocNumber . ' ';
 						} else {
@@ -76,14 +76,14 @@ class LoopToc extends LoopStructure {
 							);
 							$html .= '<div class="loopstructure-listitem loopstructure-level-' . $tmp_lsi->tocLevel . '"><span class="loopstructure-title">' . $link . '</span></div>';
 							$xml .= '<loop_toc_list> <php_link_internal text-decoration="no-underline" href="article'.$tmp_lsi->article.'"><bold>'. $tmp_pageNumber .'</bold> '. $tmp_lsi->tocText . '</php_link_internal></loop_toc_list>';
-	
+
 						}
 					} else {
 						break;
 					}
 				} elseif ( $tmp_lsi->getTocLevel() >= $level + 1 ) {
 					$next = $tmp_lsi->getNextItem();
-					
+
 				} else {
 					$next = $tmp_lsi->getNextChapterItem();
 					break;

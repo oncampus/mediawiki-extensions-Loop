@@ -7,6 +7,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
 
 class LoopSettings {
 
@@ -261,7 +262,8 @@ class LoopSettings {
 		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 		$parser = $parserFactory->create();
 		$tmpTitle = Title::newFromText( 'NO TITLE' );
-	    $parserOutput = $parser->parse( $input, $tmpTitle, new ParserOptions() );
+		$tmpUser = new User();
+	    $parserOutput = $parser->parse( $input, $tmpTitle, new ParserOptions($tmpUser) );
 	    return $parserOutput->mText;
 
 	}
@@ -561,6 +563,70 @@ class LoopSettings {
         return true;
 
     }
+
+	public static function setupGlobalVariablesFromLoopSettings() {
+
+		global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon,
+        $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering,
+        $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
+        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption, $wgLoopUnprotectedRSS;
+
+		$dbr = wfGetDB( DB_REPLICA );
+		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
+		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
+		if ( $dbr->tableExists( 'loop_settings' ) ) {
+
+			$res = $dbr->select(
+				'loop_settings',
+				array(
+					'lset_structure',
+					'lset_property',
+					'lset_value',
+				),
+				array(
+					'lset_structure = "' . 0 .'"' # TODO Structure support
+				),
+				__METHOD__
+			);
+			foreach ( $res as $row ) {
+				$data[$row->lset_property] = $row->lset_value;
+			}
+
+			#set global variables to content from settings
+			if ( isset( $row->lset_structure ) ) {
+				$wgRightsText = ( !isset( $data['lset_rightstext'] ) ? $wgRightsText : $data['lset_rightstext'] );
+				$wgRightsUrl = ( !isset( $data['lset_rightsurl'] ) ? $wgRightsUrl : $data['lset_rightsurl'] );
+				$wgRightsIcon = ( !isset( $data['lset_rightsicon'] ) ? $wgRightsIcon : $data['lset_rightsicon'] );
+				$wgLoopRightsType = ( !isset( $data['lset_rightstype'] ) ? $wgLoopRightsType : $data['lset_rightstype'] );
+				$wgDefaultUserOptions['LoopSkinStyle'] = ( !isset( $data['lset_skinstyle'] ) ? $wgDefaultUserOptions['LoopSkinStyle'] : $data['lset_skinstyle'] );
+				$wgLoopImprintLink = ( !isset( $data['lset_imprintlink'] ) ? $wgLoopImprintLink : $data['lset_imprintlink'] );
+				$wgLoopPrivacyLink = ( !isset( $data['lset_privacylink'] ) ? $wgLoopPrivacyLink : $data['lset_privacylink'] );
+				$wgLoopObjectNumbering = ( !isset( $data['lset_numberingobjects'] ) ? $wgLoopObjectNumbering : boolval( $data['lset_numberingobjects'] ) );
+				$wgLoopNumberingType = ( !isset( $data['lset_numberingtype'] ) ? $wgLoopNumberingType : $data['lset_numberingtype'] );
+				$wgLoopLiteratureCiteType = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopLiteratureCiteType : $data['lset_citationstyle'] );
+				$wgLoopCustomLogo = ( !isset( $data['lset_citationstyle'] ) ? $wgLoopCustomLogo : array( "useCustomLogo" => $data['lset_customlogo'], "customFileName" => $data['lset_customlogofilename'], "customFilePath" => $data['lset_customlogofilepath'] ) );
+				$wgLoopExtraFooter = ( !isset( $data['lset_extrafooter'] ) ? $wgLoopExtraFooter : $data['lset_extrafooter'] );
+				$wgLoopExtraSidebar = ( !isset( $data['lset_extrasidebar'] ) ? $wgLoopExtraSidebar : $data['lset_extrasidebar'] );
+				$wgLoopSocialIcons['Facebook'] = ( !isset( $data['lset_facebooklink'] ) ? $wgLoopSocialIcons['Facebook'] : array( "icon" => $data['lset_facebookicon'], "link" => $data['lset_facebooklink'] ) );
+				$wgLoopSocialIcons['Twitter'] = ( !isset( $data['lset_twitterlink'] ) ?$wgLoopSocialIcons['Twitter'] : array( "icon" => $data['lset_twittericon'], "link" => $data['lset_twitterlink'] ) );
+				$wgLoopSocialIcons['Youtube'] = ( !isset( $data['lset_youtubelink'] ) ? $wgLoopSocialIcons['Youtube'] : array( "icon" => $data['lset_youtubeicon'], "link" => $data['lset_youtubelink'] ) );
+				$wgLoopSocialIcons['Github'] = ( !isset( $data['lset_githublink'] ) ? $wgLoopSocialIcons['Github'] : array( "icon" => $data['lset_githubicon'], "link" => $data['lset_githublink'] ) );
+				$wgLoopSocialIcons['Instagram'] = ( !isset( $data['lset_instagramlink'] ) ? $wgLoopSocialIcons['Instagram'] : array( "icon" => $data['lset_instagramicon'], "link" => $data['lset_instagramlink'] ) );
+				$wgCaptchaTriggers["edit"] = ( !isset( $data['lset_captchaedit'] ) ?$wgCaptchaTriggers["edit"] : boolval( $data['lset_captchaedit'] ) );
+				$wgCaptchaTriggers["create"] = ( !isset( $data['lset_captchacreate'] ) ? $wgCaptchaTriggers["create"] : boolval( $data['lset_captchacreate'] ) );
+				$wgCaptchaTriggers["addurl"] = ( !isset( $data['lset_captchaddurl'] ) ? $wgCaptchaTriggers["addurl"] : boolval( $data['lset_captchaddurl'] ) );
+				$wgCaptchaTriggers["createaccount"] = ( !isset( $data['lset_captchacreateaccount'] ) ? $wgCaptchaTriggers["createaccount"] : boolval( $data['lset_captchacreateaccount'] ) );
+				$wgCaptchaTriggers["badlogin"] = ( !isset( $data['lset_captchabadlogin'] ) ? $wgCaptchaTriggers["badlogin"] : boolval( $data['lset_captchabadlogin'] ) );
+				$wgCaptchaTriggers["bugreport"] = ( !isset( $data['lset_captchabugreport'] ) ? $wgCaptchaTriggers["bugreport"] : boolval( $data['lset_captchabugreport'] ) );
+				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
+				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
+				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
+				$wgLoopUnprotectedRSS = ( !isset( $data['lset_rssunprotected'] ) ? $wgLoopUnprotectedRSS : $data['lset_rssunprotected'] );
+				$wgLoopObjectDefaultRenderOption = ( !isset( $data['lset_objectrenderoption'] ) ? $wgLoopObjectDefaultRenderOption : $data['lset_objectrenderoption'] );
+			}
+
+		}
+	}
 }
 
 
@@ -574,6 +640,7 @@ class SpecialLoopSettings extends SpecialPage {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
 	    $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
@@ -602,7 +669,7 @@ class SpecialLoopSettings extends SpecialPage {
 
 			if ( ! empty( $requestToken ) ) {
 
-				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
+				if ( $csrfTokenSet->matchToken( $requestToken, $request->getSessionId()->__tostring() ) ) {
 
                     $currentLoopSettings->getLoopSettingsFromRequest( $request, $user );
 
@@ -626,7 +693,7 @@ class SpecialLoopSettings extends SpecialPage {
             } else {
                 $currentLoopSettings->loadSettings();
             }
-		$saltedToken = $user->getEditToken( $wgSecretKey, $request );
+		$saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
 
 			$html .= '<nav>
 				<div class="nav nav-tabs" id="nav-tab" role="tablist">

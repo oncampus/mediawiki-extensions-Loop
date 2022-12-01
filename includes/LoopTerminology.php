@@ -6,6 +6,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
 
 class LoopTerminology {
 
@@ -58,7 +59,8 @@ class LoopTerminology {
 		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
         $parser = $parserFactory->create();
         $tmpTitle = Title::newFromText( 'NO TITLE' );
-        $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
+		$tmpUser = new User();
+        $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions( $tmpUser ) );
         $output = $parserOutput->getText();
 
         return $output;
@@ -100,7 +102,8 @@ class LoopTerminology {
         $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 		$parser = $parserFactory->create();
         $tmpTitle = Title::newFromText( 'NO TITLE' );
-        $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions() );
+		$tmpUser = new User();
+        $parserOutput = $parser->parse("{{Mediawiki:LoopTerminologyPage}}", $tmpTitle, new ParserOptions($tmpUser) );
         $output = $parserOutput->getText();
 
         $items = self::getSortedTerminology( $output );
@@ -134,7 +137,7 @@ class LoopTerminology {
     public static function getTerminologyWikiText() {
 
         $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
-        $wikiPage = WikiPage::factory( $title );
+        $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
         $revision = $wikiPage->getRevisionRecord();
         $contentWikitext = '';
         if ( $revision ) {
@@ -219,6 +222,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
         $user = $this->getUser();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$tabindex = 0;
 
@@ -236,7 +240,7 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
             )
         );
 
-        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
+        $saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
         $newterminologyWikitext = $request->getText( 'loopterminology-content' );
 		$requestToken = $request->getText( 't' );
 
@@ -253,13 +257,13 @@ class SpecialLoopTerminologyEdit extends SpecialPage {
                 $feedbackMessageClass = 'warning';
             }
 			if ( $userIsPermitted ) {
-				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
+				if ( $csrfTokenSet->matchToken( $requestToken, $request->getSessionId()->__tostring() )) {
 
                     $systemUser = User::newFromName( 'LOOP_SYSTEM' );
                     $userGroupManager->addUserToGroup ( $systemUser, "sysop" );
 
                     $title = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
-                    $wikiPage = WikiPage::factory( $title );
+                    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 					$contentHandler = $wikiPage->getContentHandler();
 
                     $wikiPageContent = $contentHandler->unserializeContent( $newterminologyWikitext );

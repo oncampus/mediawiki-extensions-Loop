@@ -5,6 +5,8 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
+use Wikimedia\Rdbms\LoadBalancer;
 
 class LoopGlossary {
 
@@ -29,7 +31,8 @@ class LoopGlossary {
 	// returns all pages in glossary namespace.
 	// @param String $returnType if null, function will return all information. "idArray" only returns glossary article ids
 	public static function getGlossaryPages( $returnType = null ) {
-
+		#$loadBalancer = new LoadBalancer([]);
+		#$dbr = $loadBalancer->getConnection( DB_REPLICA );
 		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			array(
@@ -126,7 +129,9 @@ class SpecialLoopGlossary extends SpecialPage {
 
 		if ( isset( $request ) && isset( $user ) ) {
 			global $wgSecretKey;
-			$saltedToken = $user->getEditToken( $wgSecretKey, $request );
+
+			$csrfTokenSet = new CsrfTokenSet($request);
+			$saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
 
 			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 			$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
@@ -155,7 +160,7 @@ class SpecialLoopGlossary extends SpecialPage {
 
                 $html .= $linkRenderer->makeLink(
                     $titleObject,
-                    $titleObject->mTextform,
+                    $titleObject->getText(),
                     array( 'class' => 'list-group-item list-group-item-action' )
                     );
             }
@@ -170,22 +175,23 @@ class SpecialLoopGlossary extends SpecialPage {
 		global $wgSecretKey;
 		$requestToken = $request->getText( 't' );
 		$titleText = $request->getText( 'pagetitle' );
+		$csrfTokenSet = new CsrfTokenSet($request);
 
-		if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request )  ) {
+		if ( $csrfTokenSet->matchToken( $requestToken, $request->getSessionId()->__tostring() )  ) {
 			if ( !empty( $titleText ) ) {
 				$title = Title::newFromText($titleText, NS_GLOSSARY );
 
 				if ( $title->getArticleID() === 0 ) { // 0 when the page does not exist
-					$newGlossaryPage = WikiPage::factory( Title::newFromText( $title->mTextform, NS_GLOSSARY ));
+					$newGlossaryPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( $title->getText(), NS_GLOSSARY ));
 					$newGlossaryPageContent = new WikitextContent( wfMessage ("loopstructure-default-newpage-content" )->text() );
 					$newGlossaryPageUpdater = $newGlossaryPage->newPageUpdater( $user );
 					$summary = CommentStoreComment::newUnsavedComment( 'New Glossary page' );
 					$newGlossaryPageUpdater->setContent( "main", $newGlossaryPageContent );
 					$newGlossaryPageUpdater->saveRevision ( $summary, EDIT_NEW );
 
-					return '<div class="alert alert-success" role="alert">' . wfMessage( "loopglossary-alert-saved", $title->mTextform ) . '</div>';
+					return '<div class="alert alert-success" role="alert">' . wfMessage( "loopglossary-alert-saved", $title->getText() ) . '</div>';
 				} else {
-					return '<div class="alert alert-danger" role="alert">' . wfMessage( "loopglossary-alert-pageexists-error", $title->mTextform ) . '</div>';
+					return '<div class="alert alert-danger" role="alert">' . wfMessage( "loopglossary-alert-pageexists-error", $title->getText() ) . '</div>';
 				}
 			} else {
 				return "";

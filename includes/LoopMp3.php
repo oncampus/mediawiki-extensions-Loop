@@ -44,7 +44,7 @@ class LoopMp3 {
 
 		} else {
 
-			$wikiPage = WikiPage::factory( Title::newFromId( $articleId ));
+			$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromId( $articleId ));
 			$articleXml = LoopXml::articleFromId2xml( $articleId );
 			$lastChanged = $wikiPage->getTouched();
 
@@ -156,7 +156,7 @@ class LoopMp3 {
 				$tagData['track'] = array( $id3tag_track );
 			} else {
 				$title = Title::newFromId($articleId);
-				$tagData['title'] = array( $title->mTextform );
+				$tagData['title'] = array( $title->getText() );
 			}
 
 			$tagwriter->tag_data = $tagData;

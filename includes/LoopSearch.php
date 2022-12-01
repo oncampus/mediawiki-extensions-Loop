@@ -70,7 +70,7 @@ class SpecialLoopSearch extends SpecialPage {
 					}
 
 					$latestRevId = $title->getLatestRevID();
-					$wikiPage = WikiPage::factory( $title );
+					$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 					$fwp = new FlaggableWikiPage ( $title );
 
 
@@ -93,7 +93,7 @@ class SpecialLoopSearch extends SpecialPage {
 
 							$html .= $linkRenderer->makelink(
 								$title,
-								new HtmlArmor( $title->mTextform ),
+								new HtmlArmor( $title->getText() ),
 								array(),
 								array("action"=>"edit")
 							)."<br>";
