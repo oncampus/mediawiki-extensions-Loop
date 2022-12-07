@@ -107,7 +107,6 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
-		$parser->getOptions()->optionUsed( 'LoopEditMode' ); #TODO check
 
 		if ( is_object( $file ) ) {
 			$mediaType = $file->getMediaType();
