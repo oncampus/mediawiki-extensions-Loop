@@ -484,7 +484,8 @@ class LoopXsl {
 			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 			$parser = $parserFactory->create();
 
-			$parser->parse( $contentText, $title, new ParserOptions() );
+			$tmpUser = new User();
+			$parser->parse( $contentText, $title, new ParserOptions( $tmpUser ) );
 			if ( file_exists( $screenshotPath ) ) {
 				return $publicScreenshotPath;
 			}

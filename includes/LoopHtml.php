@@ -337,7 +337,8 @@ class LoopHtml{
 
 		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
         $parser = $parserFactory->create();
-        $text = $parser->parse(ContentHandler::getContentText( $content ), $title, new ParserOptions())->mText;
+		$tmpUser = new User();
+        $text = $parser->parse( ContentHandler::getContentText( $content ), $title, new ParserOptions( $tmpUser ) )->mText;
 
         # regular articles are in ZIP/files/ folder, start article in ZIP/
         if ( $prependHref == "" ) {
