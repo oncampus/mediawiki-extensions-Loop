@@ -499,7 +499,7 @@ class LoopXml {
 		libxml_use_internal_errors(true);
 
 		try {
-			$return->loadXml($return_xml);
+			$return->loadXml('<?xml version="1.0" encoding="UTF−8"?>'.$return_xml);
 		} catch ( Exception $e ) {
 		}
 		restore_error_handler();
