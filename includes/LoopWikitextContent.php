@@ -13,6 +13,7 @@ class LoopWikitextContentHandler extends WikitextContentHandler {
 
 /*
 	* Copied from WikitextContent.php, overriding it with our own content and a custom Hook
+	* Used for adding LOOP reference IDs
 	*
 	* Returns a Content object with pre-save transformations applied using
 	* Parser::preSaveTransform().
@@ -23,7 +24,8 @@ class LoopWikitextContentHandler extends WikitextContentHandler {
 	*
 	* @return Content
 	*/
-	public function preSaveTransform( Content $content,	PreSaveTransformParams $pstParams) : Content {#Title $title, User $user, ParserOptions $popts ) {
+	public function preSaveTransform( Content $content,	PreSaveTransformParams $pstParams) : Content {
+
 		$text = $content->getText();
 
 		$parser = MediaWikiServices::getInstance()->getParserFactory()->getInstance();
@@ -45,26 +47,8 @@ class LoopWikitextContentHandler extends WikitextContentHandler {
 		$contentClass = $this->getContentClass();
 		$ret = new $contentClass( $pst );
 		$ret->setPreSaveTransformFlags( $parser->getOutput()->getAllFlags() );
+
 		return $ret;
 
-		/*
-	   	$text = $content->getText();
-		$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
-		$parser = $parserFactory->create();
-	   	$pst = $parser->preSaveTransform( $text, $title, $user, $popts );
-
-		# Custom Hook for changing content before it's saved
-	   	$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
-		$hookContainer->run( 'PreSaveTransformComplete', [ &$pst, $title, $user ] );
-
-		if ( $text === $pst ) {
-			return $this;
-		}
-		$ret = new static( $pst );
-		if ( $parser->getOutput()->getFlag( 'user-signature' ) ) {
-			$ret->hadSignature = true;
-		}
-		return $ret;
-		*/
    	}
 }
