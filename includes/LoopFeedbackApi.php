@@ -8,6 +8,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiLoopFeedbackSave extends ApiBase {
 	public function __construct( $main, $action ) {
@@ -72,19 +73,19 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$ret = array(
 			'title' => null,
 			'pageid' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_TYPE     => 'integer',
 			),
 			'anontoken' => array(
-				ApiBase::PARAM_TYPE     => 'string',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
 			),
 			'rating' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
-				ApiBase::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_REQUIRED => true,
 			),
 			'comment' => array(
-				ApiBase::PARAM_TYPE     => 'string',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
 			)
 		);
 
@@ -334,15 +335,15 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 		$ret = array(
 			'title' => null,
 			'pageid' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_TYPE     => 'integer',
 			),
 			'comments' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_REQUIRED => false,
 			),
 			'timestamp' => array(
-				ApiBase::PARAM_TYPE     => 'string',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
 			),
 		);
 

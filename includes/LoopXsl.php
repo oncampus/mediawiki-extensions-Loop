@@ -8,6 +8,9 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\Shell\Shell;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Extension\Math\MathMathML;
+use MediaWiki\SyntaxHighlight\SyntaxHighlightGeSHiCompat;
+use MediaWiki\Extension\Score\Score;
 
 class LoopXsl {
 
@@ -129,13 +132,16 @@ class LoopXsl {
 		$math->render();
 		$host = $wgMathMathMLUrl."speech/";
 		$post = 'q=' . rawurlencode( $mathcontent );
+		#todo; fn changed in 1.39
+		/*
 		$math->makeRequest($host, $post, $return, $er);
 
 		if (empty($er)) {
 			return $return;
 		} else {
 			return '';
-		}
+		}*/
+		return '';
 	}
 
 	public static function xsl_error_handler($errno, $errstr, $errfile, $errline) {

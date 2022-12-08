@@ -2,8 +2,9 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
-class LoopMp3 {
+use MediaWiki\MediaWikiServices;
 
+class LoopMp3 {
 
 	/**
 	 * Get page by id downloaded as mp3
