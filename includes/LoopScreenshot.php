@@ -75,7 +75,7 @@ class LoopScreenshot {
 			$refId = $stableRevId ."_". $args["id"];
 			$html = '';
 
-			$user = $parser->getUser();
+			$user = $parser->getUserIdentity();
 			$articleId = $parser->getTitle()->getArticleID();
 			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 			$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
