@@ -494,7 +494,9 @@ class LoopXml {
 			}
 		}
 		$return = new DOMDocument;
-
+		if ( empty( $return_xml ) ) {
+			return $return;
+		}
 		$old_error_handler = set_error_handler("LoopXml::error_handler");
 		libxml_use_internal_errors(true);
 
