@@ -404,7 +404,7 @@
 	"loopwikieditor-loop-content-prezi": "Prezi",
 	"loopwikieditor-loop-content-slideshare": "SlideShare",
 	"loopwikieditor-loop-content-quizlet": "Quizlet",
-	"loopsidebar-error-notfound": "Die angegebene Seite (page) existiert nicht. Legen Sie sie [[$1|hier]] an.",
+	"loopsidebar-error-notfound": "Die angegebene Seite $1 (page=\"$1\") existiert nicht. Legen Sie sie [[$1|hier]] an.",
 	"loopsidebar-error-nopage": "In dem Sidebar-Tag wurde keine Seite (page) angegeben.",
 	"loopzip-error-nostartfile": "Die angegebene HTML-Datei $1 (Parameter start) konnte in der ZIP-Datei $2 nicht gefunden werden.",
 	"loopzip-error-noextraction": "Die ZIP-Datei $1 wurde zwar hochgeladen, jedoch nicht entpackt. Zips, die PHP-Dateien enthalten, sind für eine LOOP-ZIP-Interaktion nicht verfügbar. Ist keine PHP-Datei enthalten, liegt ein Berechtigungsproblem vor. In dem Fall kontaktieren Sie bitte den Administrator.",
