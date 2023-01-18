@@ -79,8 +79,16 @@ class LoopReference {
 
 						$pageData = array( "structure", $lsi, $loopStructure );
 						$linkTitle .= LoopObject::getObjectNumberingOutput($refId, $pageData, null, $objectData );
+					} else { # glossary
+						$title = Title::newFromId($objectData["articleId"]);
+						if ( $title->getNamespace() === NS_GLOSSARY ) {
+							$pageData = array( "glossary", $objectData["articleId"] );
+							$previousObjects = LoopObjectIndex::getObjectNumberingsForGlossaryPage ( $objectData["articleId"] );
+							$linkTitle .= LoopObject::getObjectNumberingOutput( $refId, $pageData, $previousObjects, $objectData);
+						}
 					}
 				}
+
 				if ( $showTitle ) {
 					$linkTitle .= " ".$objectData["title"];
 				}
