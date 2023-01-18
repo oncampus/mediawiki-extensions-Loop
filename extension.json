@@ -1074,6 +1074,12 @@
 			"constant": "NS_GLOSSARY",
 			"name": "loop-glossary-namespace",
 			"protection": "edit"
+		},
+		{
+			"id": 3001,
+			"constant": "NS_GLOSSARY_TALK",
+			"name": "loop-glossary-namespace",
+			"protection": "edittalk"
 		}
 	],
 	"APIModules": {
