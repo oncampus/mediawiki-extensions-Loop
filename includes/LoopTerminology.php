@@ -18,7 +18,7 @@ class LoopTerminology {
         $contentText = LoopTerminology::getTerminologyWikiText();
 		$user = $wgOut->getUser();
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
-		$editMode = $userOptionsLookup->getOption( $user, 'editMode', false, true );
+		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
 		if ( !empty( $contentText ) ) {
 			return true;
