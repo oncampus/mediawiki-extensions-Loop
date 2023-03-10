@@ -1804,6 +1804,22 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- Taskcard -->
+	<xsl:template match="extension[@extension_name='taskcard']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_taskcard"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
+		</fo:block>
+	</xsl:template>
+
 	<!-- Prezi -->
 	<xsl:template match="extension[@extension_name='prezi']">
 		<fo:block>

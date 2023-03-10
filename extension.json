@@ -339,6 +339,7 @@
 				"loopwikieditor-loop-content-h5p",
 				"loopwikieditor-loop-content-learningapps",
 				"loopwikieditor-loop-content-padlet",
+				"loopwikieditor-loop-content-taskcard",
 				"loopwikieditor-loop-content-prezi",
 				"loopwikieditor-loop-content-slideshare",
 				"loopwikieditor-loop-content-quizlet",
@@ -432,7 +433,10 @@
 			"createpage": true,
 			"loop-rendermode": true,
 			"purgecache": true,
+			"unreviewedpages": true,
 			"edit": true,
+			"review": true,
+			"autoreview": true,
 			"loop-view-special-pages": true,
 			"loop-edit-literature": true,
 			"editsitecss": true,
@@ -826,6 +830,10 @@
 		"PadletUrl": {
 			"value" : "https://www.padlet.com/embed/",
 			"description" : "URL for Padlet elements"
+		},
+		"TaskcardUrl": {
+			"value" : "https://www.taskcards.de/#/board/",
+			"description" : "URL for Taskcard elements"
 		},
 		"PreziUrl": {
 			"value" : "https://prezi.com/embed/",

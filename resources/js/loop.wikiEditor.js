@@ -530,17 +530,28 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
-                                    'loopmedia-padlet': {
-                                        labelMsg: 'loopwikieditor-loop-content-padlet',
-                                        action: {
-                                            type: 'encapsulate',
-                                            options: {
-                                                pre: '<padlet id="',
-                                                peri: 'ID',
-                                                post: '" width="800px" height="500px"/>'
-                                            }
-                                        }
-                                    },
+									'loopmedia-padlet': {
+										labelMsg: 'loopwikieditor-loop-content-padlet',
+										action: {
+											type: 'encapsulate',
+											options: {
+												pre: '<padlet id="',
+												peri: 'ID',
+												post: '" width="800px" height="500px"/>'
+											}
+										}
+									},
+									'loopmedia-taskcard': {
+										labelMsg: 'loopwikieditor-loop-content-taskcard',
+										action: {
+											type: 'encapsulate',
+											options: {
+												pre: '<taskcard id="',
+												peri: 'ID',
+												post: '" width="800px" height="500px"/>'
+											}
+										}
+									},
                                     'loopmedia-prezi': {
                                         labelMsg: 'loopwikieditor-loop-content-prezi',
                                         action: {
