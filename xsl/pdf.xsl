@@ -2059,7 +2059,7 @@
 
 	<!-- Loop Area -->
 	<xsl:template match="extension[@extension_name='loop_area']" name="looparea">
-		<fo:table keep-together.within-page="auto" table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
+		<fo:table keep-together.within-page="always" table-layout="auto" margin-left="-12.5mm" border-style="solid" border-width="0pt" border-color="black" border-collapse="collapse"  padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt"  padding-right="0pt" >
 			<fo:table-column column-number="1" column-width="10mm" />
 			<fo:table-column column-number="2" column-width="6mm" margin-right="-10mm"/>
 			<fo:table-column column-number="3" column-width="146mm"/>
