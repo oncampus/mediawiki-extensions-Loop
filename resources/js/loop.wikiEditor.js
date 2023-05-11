@@ -546,8 +546,8 @@ var customizeWikiEditor = function () {
 										action: {
 											type: 'encapsulate',
 											options: {
-												pre: '<taskcard id="',
-												peri: 'ID',
+												pre: '<taskcard id="ID" token="',
+												peri: 'TOKEN',
 												post: '" width="800px" height="500px"/>'
 											}
 										}

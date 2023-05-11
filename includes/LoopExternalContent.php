@@ -169,6 +169,7 @@ class LoopExternalContent {
 	$errors = '';
 	$return = '';
 	$key = '';
+	$token = '';
 	$width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
 	$height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
 	$hostUrl = $wgTaskcardUrl;
@@ -188,12 +189,18 @@ class LoopExternalContent {
 	} else {
 		$errors .= wfMessage( "loop-error-missingrequired", "Taskcard", "id")->text() . "<br>";
 	}
+	//Added token functionality
+	if ( array_key_exists( 'token', $args ) ) {
+		$token = "?token=" . $args["token"];
+	}else {
+		$errors .= wfMessage( "loop-error-missingrequired", "Taskcard", "id")->text() . "<br>";
+	}
 
 	if ( !empty( $key ) ) {
 		$return = Html::rawElement(
 			'iframe',
 			array(
-				'src' => $hostUrl . $key,
+				'src' => $hostUrl . $key .$token,
 				'width' => $width,
 				'height' => $height,
 				'data-height' => $height,
