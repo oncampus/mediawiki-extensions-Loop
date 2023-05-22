@@ -485,9 +485,9 @@ class LoopXml {
 							$target_url = $file->getFullUrl();
 						}
 
-						$return_xml = '<php_link_external href="'.$target_url.'">';
+						$return_xml = '<php_link_media href="'.$target_url.'">';
 						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : " ";
-						$return_xml .= '</php_link_external>' ;
+						$return_xml .= '</php_link_media>' ;
 					} else {
 						// internal link
 						if (!array_key_exists('text', $link_parts)) {

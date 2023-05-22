@@ -2238,6 +2238,14 @@
 		</fo:basic-link>
 	</xsl:template>
 
+	<xsl:template match="php_link_media">
+		<fo:basic-link>
+			<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
+			<fo:inline text-decoration="underline"><xsl:value-of select="."></xsl:value-of></fo:inline>
+			<xsl:text> </xsl:text>
+ 		</fo:basic-link>
+	</xsl:template>
+
 	<xsl:template match="php_link_image">
 		<xsl:variable name="align">
 			<xsl:choose>
