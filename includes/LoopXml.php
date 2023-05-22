@@ -472,24 +472,20 @@ class LoopXml {
 						// Kategorie-Link nicht ausgeben
 
 					} elseif ($target_ns == NS_MEDIA) {
-						// TODO
 						if (!array_key_exists('href', $link_parts)) {
-							$link_parts['href']=$link_parts['target'];
+							$link_parts['href'] = Title::newFromText($link_parts['target']);;
 						}
 						if(array_key_exists('part',$link_parts)) {
-							$link_parts['text']=$link_parts['part'];
+							$link_parts['text'] = $link_parts['part'];
 						}
-						$medialink = '[[' . $link_parts['href'] . '|' . $link_parts['text'] . ']]';
-						$services = MediaWikiServices::getInstance();
-						$parser = $services->getParserFactory()->getInstance();
-						global $wgOut;
-						$user = $wgOut->getUser();
-						$parserOptions = ParserOptions::newFromUser( $user );
-//						$parser->setOptions( $parserOptions );
-//						$options = $parser->getOptions();
-//						$medialink = $parser->internalParse( $medialink, false );
-						$medialink = $parser->parse( $medialink, null, $parserOptions );
-						$return_xml = '<php_link_external href="'.$link_parts['href'].'">';
+
+						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($link_parts['href']);
+						$target_url = '';
+						if (is_object($file)) {
+							$target_url = $file->getFullUrl();
+						}
+
+						$return_xml = '<php_link_external href="'.$target_url.'">';
 						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : " ";
 						$return_xml .= '</php_link_external>' ;
 					} else {
