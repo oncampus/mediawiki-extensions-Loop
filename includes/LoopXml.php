@@ -475,7 +475,7 @@ class LoopXml {
 						if (!array_key_exists('href', $link_parts)) {
 							$link_parts['href'] = Title::newFromText($link_parts['target']);;
 						}
-						if(array_key_exists('part',$link_parts)) {
+						if (array_key_exists('part',$link_parts)) {
 							$link_parts['text'] = $link_parts['part'];
 						}
 
@@ -486,7 +486,7 @@ class LoopXml {
 						}
 
 						$return_xml = '<php_link_media href="'.$target_url.'">';
-						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : " ";
+						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? 'Datei: ' . $link_parts['text'] : "Datei: Name nicht gefunden";
 						$return_xml .= '</php_link_media>' ;
 					} else {
 						// internal link
