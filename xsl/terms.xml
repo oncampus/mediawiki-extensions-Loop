@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <terms>
-	
+
 	<msg name="icon_figure">&#xe912;</msg>
 	<msg name="icon_formula">&#xe91b;</msg>
 	<msg name="icon_listing">&#xe96a;</msg>
@@ -39,7 +39,8 @@
 	<msg name="icon_websource">&#xe925;</msg>
 	<msg name="icon_experiment">&#xe911;</msg>
 	<msg name="icon_citation">&#xe906;</msg>
-	
+	<msg name="icon_toc">&#xe911;</msg>
+
 	<msg name="icon_h5p">&#xe91c;</msg>
 	<msg name="icon_quizlet">&#xe938;</msg>
 	<msg name="icon_slideshare">&#xe940;</msg>
@@ -72,17 +73,17 @@
 	<msg name="word_media_short" lang="en">Med.</msg>
 	<msg name="phrase_media" lang="en">Here is a media.</msg>
 	<msg name="phrase_media_number" lang="en">Here is the media </msg>
-	<msg name="word_list_of_media" lang="en">List of media</msg>		
+	<msg name="word_list_of_media" lang="en">List of media</msg>
 	<msg name="word_task" lang="en">Task</msg>
 	<msg name="word_task_short" lang="en">Task</msg>
 	<msg name="phrase_task" lang="en">Here is a task.</msg>
 	<msg name="phrase_task_number" lang="en">Here is the task </msg>
-	<msg name="word_list_of_tasks" lang="en">List of tasks</msg>	
+	<msg name="word_list_of_tasks" lang="en">List of tasks</msg>
 	<msg name="word_table" lang="en">Table</msg>
 	<msg name="word_table_short" lang="en">Tab.</msg>
 	<msg name="phrase_table" lang="en">Here is a table.</msg>
 	<msg name="phrase_table_number" lang="en">Here is the table </msg>
-	<msg name="word_list_of_tables" lang="en">List of tables</msg>	
+	<msg name="word_list_of_tables" lang="en">List of tables</msg>
 	<msg name="word_appendix" lang="en">Appendix</msg>
 	<msg name="word_terminology" lang="en">List of abbreviations</msg>
 	<msg name="word_looparea_task" lang="en">task</msg>
@@ -129,37 +130,37 @@
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
 	<msg name="word_state" lang="de">Stand</msg>
-	<msg name="word_content" lang="de">Inhalt</msg>	
+	<msg name="word_content" lang="de">Inhalt</msg>
 	<msg name="word_figure" lang="de">Abbildung</msg>
 	<msg name="word_figure_short" lang="de">Abb.</msg>
 	<msg name="phrase_figure" lang="de">Hier befindet sich eine Abbildung.</msg>
 	<msg name="phrase_figure_number" lang="de">Hier befindet sich die Abbildung </msg>
-	<msg name="word_list_of_figures" lang="de">Abbildungsverzeichnis</msg>	
+	<msg name="word_list_of_figures" lang="de">Abbildungsverzeichnis</msg>
 	<msg name="word_formula" lang="de">Formel</msg>
 	<msg name="word_formula_short" lang="de">Form.</msg>
-	<msg name="phrase_formula" lang="de">Hier befindet sich eine Formel.</msg>	
+	<msg name="phrase_formula" lang="de">Hier befindet sich eine Formel.</msg>
 	<msg name="phrase_formula_number" lang="de">Hier befindet sich die Formel </msg>
-	<msg name="word_list_of_formulas" lang="de">Formelverzeichnis</msg>	
+	<msg name="word_list_of_formulas" lang="de">Formelverzeichnis</msg>
 	<msg name="word_listing" lang="de">Listing</msg>
 	<msg name="word_listing_short" lang="de">List.</msg>
-	<msg name="phrase_listing" lang="de">Hier befindet sich ein Listing.</msg>	
+	<msg name="phrase_listing" lang="de">Hier befindet sich ein Listing.</msg>
 	<msg name="phrase_listing_number" lang="de">Hier befindet sich das Listing </msg>
 	<msg name="word_list_of_listings" lang="de">Listingverzeichnis</msg>
 	<msg name="word_media" lang="de">Medienelement</msg>
 	<msg name="word_media_short" lang="de">Med.</msg>
-	<msg name="phrase_media" lang="de">Hier befindet sich ein Medienelement.</msg>	
-	<msg name="phrase_media_number" lang="de">Hier befindet sich das Medienelement </msg>	
+	<msg name="phrase_media" lang="de">Hier befindet sich ein Medienelement.</msg>
+	<msg name="phrase_media_number" lang="de">Hier befindet sich das Medienelement </msg>
 	<msg name="word_list_of_media" lang="de">Medienverzeichnis</msg>
 	<msg name="word_task" lang="de">Aufgabe</msg>
 	<msg name="word_task_short" lang="de">Aufg.</msg>
 	<msg name="phrase_task" lang="de">Hier befindet sich eine Aufgabe.</msg>
-	<msg name="phrase_task_number" lang="de">Hier befindet sich die Tabelle </msg>	
-	<msg name="word_list_of_tasks" lang="de">Aufgabenverzeichnis</msg>	
+	<msg name="phrase_task_number" lang="de">Hier befindet sich die Tabelle </msg>
+	<msg name="word_list_of_tasks" lang="de">Aufgabenverzeichnis</msg>
 	<msg name="word_table" lang="de">Tabelle</msg>
 	<msg name="word_table_short" lang="de">Tab.</msg>
-	<msg name="phrase_table" lang="de">Hier befindet sich eine Tabelle.</msg>	
-	<msg name="phrase_table_number" lang="de">Hier befindet sich die Tabelle </msg>	
-	<msg name="word_list_of_tables" lang="de">Tabellenverzeichnis</msg>	
+	<msg name="phrase_table" lang="de">Hier befindet sich eine Tabelle.</msg>
+	<msg name="phrase_table_number" lang="de">Hier befindet sich die Tabelle </msg>
+	<msg name="word_list_of_tables" lang="de">Tabellenverzeichnis</msg>
 	<msg name="word_appendix" lang="de">Anhang</msg>
 	<msg name="word_terminology" lang="de">Abkürzungsverzeichnis</msg>
 	<msg name="word_looparea_task" lang="de">Aufgabe</msg>
@@ -175,7 +176,7 @@
 	<msg name="word_looparea_formula" lang="de">Formel</msg>
 	<msg name="word_looparea_markedsentence" lang="de">Merksatz</msg>
 	<msg name="word_looparea_sourcecode" lang="de">Code</msg>
-	<msg name="word_looparea_summary" lang="de">Zusammen- 
+	<msg name="word_looparea_summary" lang="de">Zusammen-
 	fassung</msg>
 	<msg name="word_looparea_indentation" lang="de">Vertiefung</msg>
 	<msg name="word_looparea_norm" lang="de">Norm</msg>
@@ -185,7 +186,7 @@
 	<msg name="word_looparea_exercise" lang="de">Übung</msg>
 	<msg name="word_looparea_websource" lang="de">Quelle im Web</msg>
 	<msg name="word_looparea_experiment" lang="de">Experiment</msg>
-	<msg name="word_looparea_citation" lang="de">Zitat</msg>	
+	<msg name="word_looparea_citation" lang="de">Zitat</msg>
 	<msg name="word_spoiler_defaulttitle" lang="de">Lösung</msg>
 	<msg name="phrase_syntaxhighlight" lang="de">An dieser Stelle befindet sich Sourcecode mit Syntaxhighlights. </msg>
 	<msg name="phrase_looparea_start" lang="de"></msg> <!--Hier beginnt der Seitenbereich</msg>-->
@@ -210,34 +211,34 @@
 	<msg name="word_content" lang="sv">Innehåll</msg>
 	<msg name="word_figure" lang="sv">Figur</msg>
 	<msg name="word_figure_short" lang="sv">Fig.</msg>
-	<msg name="phrase_figure" lang="sv">Här är en figur.</msg>	
-	<msg name="phrase_figure_number" lang="sv">Här är figuren </msg>	
+	<msg name="phrase_figure" lang="sv">Här är en figur.</msg>
+	<msg name="phrase_figure_number" lang="sv">Här är figuren </msg>
 	<msg name="word_list_of_figures" lang="sv">Figurförteckning</msg>
 	<msg name="word_formula" lang="sv">Formel</msg>
 	<msg name="word_formula_short" lang="sv">Form.</msg>
-	<msg name="phrase_formula" lang="sv">Här är en formel.</msg>	
-	<msg name="phrase_formula_number" lang="sv">Här är formeln </msg>	
-	<msg name="word_list_of_formulas" lang="sv">Formelförteckning</msg>	
+	<msg name="phrase_formula" lang="sv">Här är en formel.</msg>
+	<msg name="phrase_formula_number" lang="sv">Här är formeln </msg>
+	<msg name="word_list_of_formulas" lang="sv">Formelförteckning</msg>
 	<msg name="word_listing" lang="sv">Listning</msg>
 	<msg name="word_listing_short" lang="sv">List.</msg>
-	<msg name="phrase_listing" lang="sv">Här är en listning.</msg>	
+	<msg name="phrase_listing" lang="sv">Här är en listning.</msg>
 	<msg name="phrase_listing_number" lang="sv">Här är listningen </msg>
-	<msg name="word_list_of_listings" lang="sv">Listningförteckning</msg>	
+	<msg name="word_list_of_listings" lang="sv">Listningförteckning</msg>
 	<msg name="word_media" lang="sv">Media</msg>
 	<msg name="word_media_short" lang="sv">Med.</msg>
-	<msg name="phrase_media" lang="sv">Här är en media.</msg>	
-	<msg name="phrase_media_number" lang="sv">Här är mediet </msg>	
-	<msg name="word_list_of_media" lang="sv">Medieförteckning</msg>	
-	<msg name="word_task" lang="sv">Uppgift</msg>	
+	<msg name="phrase_media" lang="sv">Här är en media.</msg>
+	<msg name="phrase_media_number" lang="sv">Här är mediet </msg>
+	<msg name="word_list_of_media" lang="sv">Medieförteckning</msg>
+	<msg name="word_task" lang="sv">Uppgift</msg>
 	<msg name="word_task_short" lang="sv">Uppg.</msg>
-	<msg name="phrase_task" lang="sv">Här är ett uppgift.</msg>	
-	<msg name="phrase_task_number" lang="sv">Här är uppgiftet </msg>	
-	<msg name="word_list_of_tasks" lang="sv">Uppgiftförteckning</msg>	
+	<msg name="phrase_task" lang="sv">Här är ett uppgift.</msg>
+	<msg name="phrase_task_number" lang="sv">Här är uppgiftet </msg>
+	<msg name="word_list_of_tasks" lang="sv">Uppgiftförteckning</msg>
 	<msg name="word_table" lang="sv">Tabell</msg>
-	<msg name="word_table_short" lang="sv">Tab.</msg>	
-	<msg name="phrase_table" lang="sv">Här är en tabell.</msg>	
-	<msg name="phrase_table_number" lang="sv">Här är tabellen </msg>	
-	<msg name="word_list_of_tables" lang="sv">Tabellförteckning</msg>	
+	<msg name="word_table_short" lang="sv">Tab.</msg>
+	<msg name="phrase_table" lang="sv">Här är en tabell.</msg>
+	<msg name="phrase_table_number" lang="sv">Här är tabellen </msg>
+	<msg name="word_list_of_tables" lang="sv">Tabellförteckning</msg>
 	<msg name="word_appendix" lang="sv">Appendix</msg>
 	<msg name="word_terminology" lang="sv">Förkortningar</msg>
 	<msg name="word_looparea_task" lang="sv">Uppgift</msg>
@@ -262,8 +263,8 @@
 	<msg name="word_looparea_exercise" lang="sv">Övning</msg>
 	<msg name="word_looparea_websource" lang="sv">Websource</msg>
 	<msg name="word_looparea_experiment" lang="sv">Experiment</msg>
-	<msg name="word_looparea_citation" lang="sv">Citat</msg>	
-	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg> 
+	<msg name="word_looparea_citation" lang="sv">Citat</msg>
+	<msg name="word_spoiler_defaulttitle" lang="sv">Lösning</msg>
 	<msg name="phrase_syntaxhighlight" lang="sv">Här är source code med syntaxhighlights. </msg>
 	<msg name="phrase_looparea_start" lang="sv"></msg> <!-- Här börjar sidintervallet</msg>-->
 	<msg name="phrase_looparea_end" lang="sv"></msg> <!--Här slutar sidintervallet</msg>-->
@@ -280,8 +281,8 @@
 	<msg name="phrase_youtube_video" lang="sv">På webbsidan finns det en YouTube video här.</msg>
 	<msg name="phrase_audio" lang="sv">På webbsidan finns det en audio fil här.</msg>
 	<msg name="phrase_quiz" lang="sv">På webbsidan finns det frågor här.</msg>
-	
-	
+
+
 	<msg name="word_chapter" lang="es">Capítulo</msg>
 	<msg name="word_state" lang="es">Estado</msg>
 	<msg name="word_content" lang="es">Contenido</msg>
@@ -304,17 +305,17 @@
 	<msg name="word_media_short" lang="es">Med.</msg>
 	<msg name="phrase_media" lang="es">Aquí se encuentra un elemento multimedia.</msg>
 	<msg name="phrase_media_number" lang="es">Aquí está el elemento multimedia</msg>
-	<msg name="word_list_of_media" lang="es">Lista de multimedia</msg>		
+	<msg name="word_list_of_media" lang="es">Lista de multimedia</msg>
 	<msg name="word_task" lang="es">Tarea</msg>
 	<msg name="word_task_short" lang="es">Tarea</msg>
 	<msg name="phrase_task" lang="es">Aquí se encuentra una tarea.</msg>
 	<msg name="phrase_task_number" lang="es">Aquí está la tarea</msg>
-	<msg name="word_list_of_tasks" lang="es">Lista de tareas</msg>	
+	<msg name="word_list_of_tasks" lang="es">Lista de tareas</msg>
 	<msg name="word_table" lang="es">Tabla</msg>
 	<msg name="word_table_short" lang="es">Tab.</msg>
 	<msg name="phrase_table" lang="es">Aquí se encuentra una tabla.</msg>
 	<msg name="phrase_table_number" lang="es">Aquí está la tabla</msg>
-	<msg name="word_list_of_tables" lang="es">Lista de tablas</msg>	
+	<msg name="word_list_of_tables" lang="es">Lista de tablas</msg>
 	<msg name="word_appendix" lang="es">Apéndice</msg>
 	<msg name="word_terminology" lang="es">Lista de abreviaciones</msg>
 	<msg name="word_looparea_task" lang="es">tarea</msg>
@@ -329,7 +330,7 @@
 	<msg name="word_looparea_annotation" lang="es">anotación</msg>
 	<msg name="word_looparea_definition" lang="es">definición</msg>
 	<msg name="word_looparea_formula" lang="es">fórmula</msg>
-	<msg name="word_looparea_markedsentence" lang="es">cláusula 
+	<msg name="word_looparea_markedsentence" lang="es">cláusula
 	mnemotécnica</msg>
 	<msg name="word_looparea_sourcecode" lang="es">código fuente</msg>
 	<msg name="word_looparea_summary" lang="es">resumen</msg>
@@ -340,7 +341,7 @@
 	<msg name="word_looparea_practice" lang="es">práctica</msg>
 	<msg name="word_looparea_exercise" lang="es">ejercicio</msg>
 	<msg name="word_looparea_experiment" lang="es">experimento</msg>
-	<msg name="word_looparea_websource" lang="es">fuente de 
+	<msg name="word_looparea_websource" lang="es">fuente de
 	internet</msg>
 	<msg name="word_looparea_citation" lang="es">cita</msg>
 	<msg name="word_spoiler_defaulttitle" lang="es">Solución</msg>
@@ -361,4 +362,4 @@
 	<msg name="phrase_audio" lang="es">En este punto de la página Web existe un archivo de audio.</msg>
 	<msg name="phrase_quiz" lang="es">En este punto de la página Web existe una prueba rápida.</msg>
 
-</terms> 
+</terms>

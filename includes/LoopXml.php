@@ -486,7 +486,7 @@ class LoopXml {
 						}
 
 						$return_xml = '<php_link_media href="'.$target_url.'">';
-						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? 'Datei: ' . $link_parts['text'] : "Datei: Name nicht gefunden";
+						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : "Datei: Name nicht gefunden";
 						$return_xml .= '</php_link_media>' ;
 					} else {
 						// internal link

@@ -2239,6 +2239,9 @@
 	</xsl:template>
 
 	<xsl:template match="php_link_media">
+		<fo:block font-family="{$font_family}" color="{$accent_color}" font-size="6mm" text-align="left" padding-top="1mm">
+			<xsl:value-of select="$icon_toc"></xsl:value-of>
+		</fo:block>
 		<fo:basic-link>
 			<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
 			<fo:inline text-decoration="underline"><xsl:value-of select="."></xsl:value-of></fo:inline>
