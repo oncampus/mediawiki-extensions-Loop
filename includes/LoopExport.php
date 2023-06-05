@@ -508,18 +508,18 @@ class SpecialLoopExport extends SpecialPage {
 			if ( ! in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) ) {
 				error_reporting(E_ERROR | E_PARSE); # no error reports for non-admins
 			}
-//			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
-//					$export->getExistingExportFile();
-//					$logMsg = wfMessage("log-export-reused")->text();
-//
-//			} else {
+			if ( $export->getExistingExportFile() && $export->fileExtension != "mp3" ) {
+					$export->getExistingExportFile();
+					$logMsg = wfMessage("log-export-reused")->text();
+
+			} else {
 				$export->generateExportContent();
 
 				if ( $export->exportDirectory != "/export/html" && $export->fileExtension != "mp3" && !is_array( $export->getExportContent() ) ) { # don't cache html exports
 					$export->saveExportFile();
 					$logMsg = wfMessage("log-export-generated")->text();
 				}
-//			}
+			}
 			if ( is_array( $export->getExportContent() ) ) {
 				$msg = $this->msg( "loopexport-pdf-error" );
 
