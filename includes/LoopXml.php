@@ -400,55 +400,74 @@ class LoopXml {
 
 		$return_xml = '';
 
-		if ($link_parts['type']=='external' ) {
+		if ( $link_parts['type'] == 'external' ) {
 			if ( array_key_exists( "href", $link_parts ) ) {
-				$return_xml = '<php_link_external href="'.$link_parts['href'].'">';
+				$return_xml = '<php_link_external href="' . $link_parts['href'] . '">';
 				$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : " ";
-				$return_xml .= '</php_link_external>' ;
-			} else {
-				$return_xml = "";
+				$return_xml .= '</php_link_external>';
 			}
 		} else {
-			if (isset($link_parts['target'])) {
-				$target_title = Title::newFromText($link_parts['target']);
+			if ( isset( $link_parts['target'] ) ) {
+				$target_title = Title::newFromText( $link_parts['target'] );
 				if ( is_object( $target_title ) ) {
 
 					$target_ns = $target_title->getNamespace();
 
-					if ($target_ns == NS_FILE) {
-						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($target_title);
-						if (is_object($file)) {
-							$target_file=$file->getLocalRefPath();
-							$target_url=$file->getFullUrl();
-							if (is_file($target_file)) {
-								$allowed_extensions = array('jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm');
-								if (in_array($file->getExtension(), $allowed_extensions)) {
+					if ( $target_ns == NS_FILE ) {
+						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $target_title );
+						if ( is_object( $file ) ) {
+							$target_file = $file->getLocalRefPath();
+							$target_url = $file->getFullUrl();
+							if ( is_file( $target_file ) ) {
+								$allowed_extensions = array( 'jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm' );
+								if ( in_array( $file->getExtension(), $allowed_extensions ) ) {
 
-									if (array_key_exists('width', $link_parts)) {
-										$width=0.214*intval($link_parts['width']);
-										if ($width>150) {
-											$imagewidth='150mm';
+									$issvg = false;
+									if ( $file->getExtension() === 'svg' ) {
+										$issvg = true;
+										$iconfile = new DOMDocument();
+										$iconfile->load( $file->getLocalRefPath() );
+										$svg = $iconfile->getElementsByTagName( 'svg' )[0];
+										$viewbox = $svg->getAttribute( 'viewBox' );
+										if ( $viewbox ) {
+											$svgheight = explode( ' ', $viewbox )[3];
+											$svgwidth = explode( ' ', $viewbox )[2];
 										} else {
-											$imagewidth=round($width,0).'mm';
+											$svgheight = $svg->getAttribute( 'height' );
+											$svgwidth = $svg->getAttribute( 'width' );
 										}
+										if ( $svgwidth && $svgheight && intval( $svgwidth ) > 0 ) {
+											$resolutionscale = $svgheight / $svgwidth;
+										}
+									}
+
+									if ( array_key_exists( 'width', $link_parts ) ) {
+										$width = 0.214 * intval( $link_parts['width'] );
 									} else {
-										$size=getimagesize($target_file);
-										$width=0.214*intval($size[0]);
-										if ($width>150) {
-											$imagewidth='150mm';
-										} else {
-											$imagewidth=round($width,0).'mm';
-										}
+										$size = getimagesize( $target_file );
+										$width = 0.214 * intval( $size[0] );
 									}
 
-									$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
-									if (isset($link_parts['align'])) {
-										$return_xml .= ' align="'.$link_parts['align'].'" ';
+									if ( $width > 150 ) {
+										$width = 150;
+										$imagewidth = '150mm';
+									} else {
+										$imagewidth = round( $width ) . 'mm';
 									}
-									if (isset($link_parts['format'])) {
-										$return_xml .= ' format="'.$link_parts['format'].'" ';
+
+									$return_xml =  '<php_link_image imagepath="' . $target_url . '" imagewidth="' . $imagewidth . '"';
+									if ( $issvg && isset( $resolutionscale ) ) {
+										$imageheight = round( $width * $resolutionscale ) . 'mm';
+										$return_xml .= ' imageheight="' . $imageheight . '"';
 									}
-									$return_xml .=  '></php_link_image>';
+
+									if ( isset( $link_parts['align'] ) ) {
+										$return_xml .= ' align="' . $link_parts['align'] . '" ';
+									}
+									if ( isset( $link_parts['format'] ) ) {
+										$return_xml .= ' format="' . $link_parts['format'] . '" ';
+									}
+									$return_xml .= '></php_link_image>';
 
 
 								} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video

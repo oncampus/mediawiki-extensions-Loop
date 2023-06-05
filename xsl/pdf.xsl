@@ -2283,7 +2283,7 @@
 				<xsl:if test="@imagepath">
 					<fo:block font-size="0pt" line-height="0pt" padding-start="0pt" padding-end="0pt" padding-top="0pt" padding-bottom="0pt" padding-left="0pt" padding-right="0pt">
 
-						<fo:external-graphic scaling="uniform" content-height="scale-to-fit"  dominant-baseline="reset-size">
+						<fo:external-graphic scaling="uniform" content-height="scale-up-to-fit"  dominant-baseline="reset-size">
 
 							<xsl:choose>
 								<xsl:when test="$align='start'">
@@ -2318,6 +2318,12 @@
 								<xsl:otherwise>
 									<xsl:attribute name="max-width">145mm</xsl:attribute>
 								</xsl:otherwise>
+							</xsl:choose>
+
+							<xsl:choose>
+								<xsl:when test="@imageheight">
+									<xsl:attribute name="height"><xsl:value-of select="@imageheight"></xsl:value-of></xsl:attribute>
+								</xsl:when>
 							</xsl:choose>
 
 						</fo:external-graphic>
