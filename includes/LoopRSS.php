@@ -52,6 +52,8 @@ class SpecialLoopRSS extends SpecialPage {
     function outputRecentChanges() {
         global $wgCanonicalServer, $wgScriptPath;
         $apiPath = $wgCanonicalServer . $wgScriptPath . "/api.php";
+		var_dump($wgCanonicalServer);
+		var_dump($wgScriptPath);
 
         $params = "";
         if ( class_exists( "LoopSessionProvider" ) ) {
