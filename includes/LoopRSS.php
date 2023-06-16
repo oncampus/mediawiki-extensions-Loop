@@ -52,19 +52,20 @@ class SpecialLoopRSS extends SpecialPage {
     function outputRecentChanges() {
         global $wgCanonicalServer, $wgScriptPath;
         $apiPath = $wgCanonicalServer . $wgScriptPath . "/api.php";
-		var_dump($wgCanonicalServer);
-		var_dump($wgScriptPath);
 
         $params = "";
         if ( class_exists( "LoopSessionProvider" ) ) {
             $params .= LoopSessionProvider::getApiPermission(); # used by THL only. TODO?
-        } else {
+        }
+		/*
+		 else {
             if ( !$this->getUser()->isRegistered() ) {
                 $this->setHeaders();
                 $this->getOutput()->addHTML($this->msg("specialpage-no-permission"));
                 return;
             }
         }
+		*/
         $params .= "hidebots=1&namespace=2&invert=1&urlversion=1&days=30&limit=20&action=feedrecentchanges&feedformat=atom";
 
         $url = $apiPath . "?" . $params;
@@ -84,4 +85,5 @@ class SpecialLoopRSS extends SpecialPage {
 	protected function getGroupName() {
 		return 'loop';
 	}
+
 }
