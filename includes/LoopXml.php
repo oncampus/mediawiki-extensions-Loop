@@ -471,6 +471,23 @@ class LoopXml {
 					} elseif ($target_ns == NS_CATEGORY) {
 						// Kategorie-Link nicht ausgeben
 
+					} elseif ($target_ns == NS_MEDIA) {
+						if (!array_key_exists('href', $link_parts)) {
+							$link_parts['href'] = Title::newFromText($link_parts['target']);;
+						}
+						if (array_key_exists('part',$link_parts)) {
+							$link_parts['text'] = $link_parts['part'];
+						}
+
+						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($link_parts['href']);
+						$target_url = '';
+						if (is_object($file)) {
+							$target_url = $file->getFullUrl();
+						}
+
+						$return_xml = '<php_link_media href="'.$target_url.'">';
+						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : "Datei: Name nicht gefunden";
+						$return_xml .= '</php_link_media>' ;
 					} else {
 						// internal link
 						if (!array_key_exists('text', $link_parts)) {

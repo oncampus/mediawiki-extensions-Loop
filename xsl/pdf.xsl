@@ -2238,6 +2238,17 @@
 		</fo:basic-link>
 	</xsl:template>
 
+	<xsl:template match="php_link_media">
+		<fo:inline font-family="{$font_family}" color="{$accent_color}" font-size="4mm" text-align="left" padding-top="1mm">
+			<xsl:value-of select="$icon_toc"></xsl:value-of>
+			<fo:basic-link>
+				<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
+				<fo:inline text-decoration="underline"><xsl:value-of select="."></xsl:value-of></fo:inline>
+				<xsl:text> </xsl:text>
+			</fo:basic-link>
+		</fo:inline>
+	</xsl:template>
+
 	<xsl:template match="php_link_image">
 		<xsl:variable name="align">
 			<xsl:choose>
