@@ -39,6 +39,8 @@
 	<msg name="icon_websource">&#xe925;</msg>
 	<msg name="icon_experiment">&#xe911;</msg>
 	<msg name="icon_citation">&#xe906;</msg>
+	<msg name="icon_toc">&#x1f4d1;</msg>
+
 
 	<msg name="icon_h5p">&#xe91c;</msg>
 	<msg name="icon_quizlet">&#xe938;</msg>

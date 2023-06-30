@@ -51,6 +51,7 @@
 	<xsl:variable name="icon_websource" select="functx:get_icon('icon_websource')"/>
 	<xsl:variable name="icon_experiment" select="functx:get_icon('icon_experiment')"/>
 	<xsl:variable name="icon_citation" select="functx:get_icon('icon_citation')"/>
+	<xsl:variable name="icon_toc" select="functx:get_icon('icon_toc')"/>
 
 	<xsl:variable name="icon_h5p" select="functx:get_icon('icon_h5p')"/>
 	<xsl:variable name="icon_quizlet" select="functx:get_icon('icon_quizlet')"/>
