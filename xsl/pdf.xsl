@@ -2301,7 +2301,7 @@
 									<xsl:attribute name="padding-right">6mm</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$align='end'">
-									<xsl:attribute name="padding-left">6mm</xsl:attribute>
+									<xsl:attribute name="padding-left">10mm</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$align='center'">
 									<!-- <xsl:attribute name="padding-bottom">7mm</xsl:attribute>				 -->
