@@ -171,7 +171,7 @@ class LoopXml {
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
-		$contentTags = array( 'h5p', 'learningapp', 'padlet', 'prezi', 'slideshare', 'quizlet', 'youtube' );
+		$contentTags = array( 'h5p', 'learningapp', 'padlet','taskcard', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
 		$selector = new DOMXPath( $dom );

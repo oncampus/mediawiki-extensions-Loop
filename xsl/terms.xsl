@@ -58,6 +58,7 @@
 	<xsl:variable name="icon_slideshare" select="functx:get_icon('icon_slideshare')"/>
 	<xsl:variable name="icon_prezi" select="functx:get_icon('icon_prezi')"/>
 	<xsl:variable name="icon_padlet" select="functx:get_icon('icon_padlet')"/>
+	<xsl:variable name="icon_taskcard" select="functx:get_icon('icon_taskcard')"/>
 	<xsl:variable name="icon_learningapps" select="functx:get_icon('icon_learningapps')"/>
 	<xsl:variable name="icon_ngspice" select="functx:get_icon('icon_ngspice')"/>
 	<xsl:variable name="icon_zip" select="functx:get_icon('icon_zip')"/>
