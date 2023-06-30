@@ -976,9 +976,11 @@ class LoopLiterature {
 			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . " " . $li->pages."). ";
 		}
 
+		
 		if ( !empty( trim( $li->journal ) ) ) {
 			$return .= $li->journal. ". ";
 		}
+		
 		if ( !empty( trim( $li->series ) ) ) {
 			$return .= "(". $li->series."). ";
 		}
@@ -998,11 +1000,8 @@ class LoopLiterature {
 			$return .= "(". $li->number."). ";
 		}
 
-
 		if ( !empty( trim( $li->publisher ) ) ) {
 			$return .= $li->publisher.". ";
-		} elseif ( !empty( trim( $li->journal ) ) ) {
-			$return .= $italic. $li->journal.".". $italicEnd." ";
 		}
 
 		if ( !empty( trim( $li->institution ) ) ) {
