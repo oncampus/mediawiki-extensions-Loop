@@ -2331,6 +2331,12 @@
 								</xsl:otherwise>
 							</xsl:choose>
 
+							<xsl:choose>
+								<xsl:when test="@imageheight">
+									<xsl:attribute name="height"><xsl:value-of select="@imageheight"></xsl:value-of></xsl:attribute>
+								</xsl:when>
+							</xsl:choose>
+
 						</fo:external-graphic>
 					</fo:block>
 				</xsl:if>
