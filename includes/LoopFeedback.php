@@ -178,7 +178,7 @@ class LoopFeedback {
 			$user = $out->getUser();
 			$return = '';
 
-			// ermitteln welches Feeback auf der Seite angezeigt werden soll
+			// ermitteln welches Feedback auf der Seite angezeigt werden soll
 
 			$tempItem = LoopStructureItem::newFromIds( $articleId );
 			$akt_tl = $tempItem->tocLevel;
@@ -211,8 +211,14 @@ class LoopFeedback {
 			if ( $lf_articleid != 0 ) {
 
 				# ermitteln, ob bereits ein Feedback abgegeben wurde
-
-				$dbr = wfGetDB( DB_REPLICA );
+				$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+				$dbr = $dbProvider->getConnectionRef(DB_REPLICA);
+				$lf = $dbr->newSelectQueryBuilder()
+					->select([ 'lf_id', 'lf_page'])
+					->from('loop_feedback')
+					->caller(__METHOD__)
+					->fetchRow();
+				/*
 				$lf = $dbr->selectRow(
 					'loop_feedback',
 					array( 'lf_id','lf_page'  ),
@@ -223,7 +229,7 @@ class LoopFeedback {
 					),
 					__METHOD__
 				);
-
+				*/
 				if ( !isset( $lf->lf_id ) ) {
 					$lf_title = Title::newFromID( $lf_articleid );
 					$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
@@ -273,10 +279,19 @@ class LoopFeedback {
     function getPeriods( $page = false ) {
 
 		$periods = array();
-
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$dbr = $dbProvider->$dbProvider();
 
 		if ( !$page ) {
+			$lfs = $dbr->newSelectQueryBuilder()
+				->select(['lf_archive_timestamp'])
+				->distinct()
+				->from('loop_feedback')
+				->where('lf_archive_timestamp <> 00000000000000')
+				->orderBy('lf_archive_timestamp', \Wikimedia\Rdbms\SelectQueryBuilder::SORT_DESC)
+				->caller(__METHOD__)
+				->fetchResultSet();
+			/*
 			$lfs = $dbr->select(
 				'loop_feedback',
 				array(
@@ -290,7 +305,18 @@ class LoopFeedback {
 					'ORDER BY' => 'lf_archive_timestamp DESC'
 				)
 			);
+			*/
 		} else {
+			$lfs = $dbr->newSelectQueryBuilder()
+				->select(['lf_archive_timestamp'])
+				->distinct()
+				->from('loop_feedback')
+				->where(['lf_archive_timestamp <> 00000000000000',
+						'lf_page = $page'])
+				->orderBy('lf_archive_timestamp', \Wikimedia\Rdbms\SelectQueryBuilder::SORT_DESC)
+				->caller(__METHOD__)
+				->fetchResultSet();
+			/*
 			$lfs = $dbr->select(
 				'loop_feedback',
 				array(
@@ -304,7 +330,8 @@ class LoopFeedback {
 				array(
 					'ORDER BY' => 'lf_archive_timestamp DESC'
 				)
-			);
+
+			);*/
 		}
 
 		$timestamps = array();
@@ -360,7 +387,18 @@ class LoopFeedback {
 	}
 
 	function getDetails( $pageid, $comments = false, $timestamp='00000000000000' ) {
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$dbr = $dbProvider->$dbProvider();
+		//$dbr = wfGetDB( DB_REPLICA );
+		$lfs = $dbr->newSelectQueryBuilder()
+			->select('lf_id', 'lf_user', 'lf_user_text', 'lf_rating', 'lf_comment', 'lf_timestamp')
+			->from('loop_feedback')
+			->where(['lf_archive_timestamp = $timestamp',
+				'lf_page = $page'])
+			->orderBy('lf_timestamp', \Wikimedia\Rdbms\SelectQueryBuilder::SORT_DESC)
+			->caller(__METHOD__)
+			->fetchResultSet();
+		/*
 		$lfs = $dbr->select(
 			'loop_feedback',
 			array(
@@ -380,6 +418,7 @@ class LoopFeedback {
 				'ORDER BY' => 'lf_timestamp DESC'
 			)
 		);
+		*/
 		$return = array(
 			'pageid' => $pageid,
 			'count' => array (
@@ -977,8 +1016,9 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 
 	function resetPage ( $page ) {
-
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$dbw = $dbProvider->getPrimaryDatabase();
+		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(
@@ -991,8 +1031,9 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 
 	function resetAll () {
-
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$dbw = $dbProvider->getPrimaryDatabase();
+		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(
