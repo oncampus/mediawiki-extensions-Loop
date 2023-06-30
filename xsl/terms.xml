@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <terms>
-	
+
 	<msg name="icon_figure">&#xe912;</msg>
 	<msg name="icon_formula">&#xe91b;</msg>
 	<msg name="icon_listing">&#xe96a;</msg>
@@ -39,13 +39,13 @@
 	<msg name="icon_websource">&#xe925;</msg>
 	<msg name="icon_experiment">&#xe911;</msg>
 	<msg name="icon_citation">&#xe906;</msg>
-	
+
 	<msg name="icon_h5p">&#xe91c;</msg>
 	<msg name="icon_quizlet">&#xe938;</msg>
 	<msg name="icon_slideshare">&#xe940;</msg>
 	<msg name="icon_prezi">&#xe934;</msg>
 	<msg name="icon_padlet">&#xe92e;</msg>
-	<msg name="icon_taskcard">&#xe92e;</msg>
+	<msg name="icon_taskcard">&#xe978;</msg>
 	<msg name="icon_learningapps">&#xe923;</msg>
 	<msg name="icon_ngspice">&#xe92b;</msg>
 	<msg name="icon_zip">&#xe91a;</msg>
