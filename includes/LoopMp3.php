@@ -438,6 +438,7 @@ class LoopMp3 {
 		global $wgText2SpeechServiceUrl;
 		#dd($content);
 		$params = "srctext=".urlencode ($content)."&language=".$language."&type=".$type;
+		print_r($params);
 		$mp3Response = LoopMp3::httpRequest( $wgText2SpeechServiceUrl, $params );
 
 		return $mp3Response ;
@@ -460,6 +461,7 @@ class LoopMp3 {
 		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
 		if ( ! empty( $params ) ) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		$return = curl_exec( $ch );
+
 		if ( empty( $return ) ) {
 			throw new Exception( "Error getting data from server ($url): " . curl_error( $ch ) );
 		}

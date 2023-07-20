@@ -9,6 +9,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Session\CsrfTokenSet;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 class LoopFeedback {
 
@@ -212,7 +213,7 @@ class LoopFeedback {
 
 				# ermitteln, ob bereits ein Feedback abgegeben wurde
 				$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-				$dbr = $dbProvider->getConnectionRef(DB_REPLICA);
+				$dbr = $dbProvider->getReplicaDatabase();
 				$lf = $dbr->newSelectQueryBuilder()
 					->select([ 'lf_id', 'lf_page'])
 					->from('loop_feedback')
@@ -280,7 +281,7 @@ class LoopFeedback {
 
 		$periods = array();
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbr = $dbProvider->$dbProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
 		if ( !$page ) {
 			$lfs = $dbr->newSelectQueryBuilder()
@@ -288,7 +289,7 @@ class LoopFeedback {
 				->distinct()
 				->from('loop_feedback')
 				->where('lf_archive_timestamp <> 00000000000000')
-				->orderBy('lf_archive_timestamp', \Wikimedia\Rdbms\SelectQueryBuilder::SORT_DESC)
+				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
 				->caller(__METHOD__)
 				->fetchResultSet();
 			/*
@@ -313,9 +314,8 @@ class LoopFeedback {
 				->from('loop_feedback')
 				->where(['lf_archive_timestamp <> 00000000000000',
 						'lf_page = $page'])
-				->orderBy('lf_archive_timestamp', \Wikimedia\Rdbms\SelectQueryBuilder::SORT_DESC)
-				->caller(__METHOD__)
-				->fetchResultSet();
+				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
+				->caller(__METHOD__)->fetchResultSet();
 			/*
 			$lfs = $dbr->select(
 				'loop_feedback',
@@ -388,16 +388,15 @@ class LoopFeedback {
 
 	function getDetails( $pageid, $comments = false, $timestamp='00000000000000' ) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbr = $dbProvider->$dbProvider();
+		$dbr = $dbProvider->getPrimaryDatabase();
 		//$dbr = wfGetDB( DB_REPLICA );
 		$lfs = $dbr->newSelectQueryBuilder()
 			->select('lf_id', 'lf_user', 'lf_user_text', 'lf_rating', 'lf_comment', 'lf_timestamp')
 			->from('loop_feedback')
 			->where(['lf_archive_timestamp = $timestamp',
 				'lf_page = $page'])
-			->orderBy('lf_timestamp', \Wikimedia\Rdbms\SelectQueryBuilder::SORT_DESC)
-			->caller(__METHOD__)
-			->fetchResultSet();
+			->orderBy('lf_timestamp', SelectQueryBuilder::SORT_DESC)
+			->caller(__METHOD__)->fetchResultSet();
 		/*
 		$lfs = $dbr->select(
 			'loop_feedback',
@@ -1016,7 +1015,7 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 
 	function resetPage ( $page ) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$dbProvider = LoadBalancer::getConnection(DB_PRIMARY);
 		$dbw = $dbProvider->getPrimaryDatabase();
 		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
