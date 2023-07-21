@@ -56,8 +56,8 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$feedback['lf_timestamp'] = wfTimestampNow();
 		$feedback['lf_archive_timestamp'] = '00000000000000';
 
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbw = $dbProvider->getPrimaryDatabase();
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbw = $dbProvider->getConnection(DB_PRIMARY);
 		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->insert(
 			'loop_feedback',

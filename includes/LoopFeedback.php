@@ -212,25 +212,19 @@ class LoopFeedback {
 			if ( $lf_articleid != 0 ) {
 
 				# ermitteln, ob bereits ein Feedback abgegeben wurde
-				$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-				$dbr = $dbProvider->getReplicaDatabase();
+				$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+				$dbr = $dbProvider->getConnection(DB_REPLICA);
 				$lf = $dbr->newSelectQueryBuilder()
 					->select([ 'lf_id', 'lf_page'])
 					->from('loop_feedback')
-					->caller(__METHOD__)
-					->fetchRow();
-				/*
-				$lf = $dbr->selectRow(
-					'loop_feedback',
-					array( 'lf_id','lf_page'  ),
-					array(
-						'lf_page = "' . $lf_articleid .'"',
-						'lf_user = "' . $user->getId() .'"',
-						'lf_archive_timestamp = "00000000000000"'
-					),
-					__METHOD__
-				);
-				*/
+					->where([
+							'lf_page = "' . $lf_articleid . '"',
+							'lf_user = "' . $user->getId() . '"',
+							'lf_archive_timestamp = "00000000000000"',
+						]
+					)
+					->caller(__METHOD__)->fetchRow();
+
 				if ( !isset( $lf->lf_id ) ) {
 					$lf_title = Title::newFromID( $lf_articleid );
 					$specialtitle = Title::newFromText( 'LoopFeedback', NS_SPECIAL );
@@ -280,62 +274,30 @@ class LoopFeedback {
     function getPeriods( $page = false ) {
 
 		$periods = array();
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbr = $dbProvider->getReplicaDatabase();
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
 
 		if ( !$page ) {
 			$lfs = $dbr->newSelectQueryBuilder()
-				->select(['lf_archive_timestamp'])
-				->distinct()
+				->select('lf_archive_timestamp')
 				->from('loop_feedback')
 				->where('lf_archive_timestamp <> 00000000000000')
 				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
 				->caller(__METHOD__)
 				->fetchResultSet();
-			/*
-			$lfs = $dbr->select(
-				'loop_feedback',
-				array(
-					"DISTINCT (lf_archive_timestamp)"
-				),
-				array(
-					0 => "lf_archive_timestamp <> '00000000000000'"
-				),
-				__METHOD__,
-				array(
-					'ORDER BY' => 'lf_archive_timestamp DESC'
-				)
-			);
-			*/
+
 		} else {
 			$lfs = $dbr->newSelectQueryBuilder()
-				->select(['lf_archive_timestamp'])
-				->distinct()
+				->select('lf_archive_timestamp')
 				->from('loop_feedback')
 				->where(['lf_archive_timestamp <> 00000000000000',
-						'lf_page = $page'])
+						'lf_page' => $page])
 				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
 				->caller(__METHOD__)->fetchResultSet();
-			/*
-			$lfs = $dbr->select(
-				'loop_feedback',
-				array(
-					"DISTINCT (lf_archive_timestamp)"
-				),
-				array(
-					0 => "lf_archive_timestamp <> '00000000000000'",
-					1 => "lf_page = '$page'",
-				),
-				__METHOD__,
-				array(
-					'ORDER BY' => 'lf_archive_timestamp DESC'
-				)
-
-			);*/
 		}
-
 		$timestamps = array();
-		while ( $row = $dbr->fetchRow( $lfs ) ) {
+
+		foreach ($lfs as $row){
 			$timestamps[] = $row[ 'lf_archive_timestamp' ];
 		}
 
@@ -386,38 +348,20 @@ class LoopFeedback {
 		return $periods;
 	}
 
-	function getDetails( $pageid, $comments = false, $timestamp='00000000000000' ) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbr = $dbProvider->getPrimaryDatabase();
-		//$dbr = wfGetDB( DB_REPLICA );
+	function getDetails( $pageid, $comments = false, $timestamp='00000000000000', $dbDomain = false ): array {
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $dbDomain );
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$lfs = $dbr->newSelectQueryBuilder()
-			->select('lf_id', 'lf_user', 'lf_user_text', 'lf_rating', 'lf_comment', 'lf_timestamp')
+			->select( [
+				'lf_id', 'lf_user', 'lf_user_text', 'lf_rating', 'lf_comment', 'lf_timestamp',
+				])
 			->from('loop_feedback')
-			->where(['lf_archive_timestamp = $timestamp',
-				'lf_page = $page'])
+			->where(['lf_page' => $pageid])
 			->orderBy('lf_timestamp', SelectQueryBuilder::SORT_DESC)
 			->caller(__METHOD__)->fetchResultSet();
-		/*
-		$lfs = $dbr->select(
-			'loop_feedback',
-			array(
-				'lf_id',
-				'lf_user',
-				'lf_user_text',
-				'lf_rating',
-				'lf_comment',
-				'lf_timestamp'
-			),
-			array(
-				'lf_page' => $pageid,
-				'lf_archive_timestamp' => $timestamp
-			),
-			__METHOD__,
-			array(
-				'ORDER BY' => 'lf_timestamp DESC'
-			)
-		);
-		*/
+		// second where clause 'lf_archive_timestamp' => $timestamp, ->where('lf_page = ' . $pageid)
+			var_dump($lfs);
+
 		$return = array(
 			'pageid' => $pageid,
 			'count' => array (
@@ -434,19 +378,20 @@ class LoopFeedback {
 			'average_stars' => 0,
 			'comments' => array()
 			);
-		while ( $row = $dbr->fetchRow( $lfs ) ) {
+
+		foreach($lfs as $row){
 			$rating = $row[ 'lf_rating' ];
 			$return[ 'count' ][ 'all' ]++;
 			$return[ 'count' ][$rating]++;
 			$return[ 'sum' ] = $return[ 'sum' ]+$rating;
 			if ( $row[ 'lf_comment' ] != '' ) {
-				$return[ 'count' ][ 'comments' ]++;
-				if ( $comments == true) {
-					$return[ 'comments' ][] = array (
-						'timestamp' => $row[ 'lf_timestamp' ],
-						'timestamp_text' => $this->formatTimestamp( $row[ 'lf_timestamp' ]),
-						'comment' => $row[ 'lf_comment' ]
-						);
+				$return['count']['comments']++;
+				if ($comments) {
+					$return['comments'][] = array(
+						'timestamp' => $row['lf_timestamp'],
+						'timestamp_text' => $this->formatTimestamp($row['lf_timestamp']),
+						'comment' => $row['lf_comment']
+					);
 				}
 			}
 		}
@@ -1015,8 +960,8 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 
 	function resetPage ( $page ) {
-		$dbProvider = LoadBalancer::getConnection(DB_PRIMARY);
-		$dbw = $dbProvider->getPrimaryDatabase();
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbw = $dbProvider->getConnection(DB_PRIMARY);
 		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
@@ -1025,13 +970,12 @@ class SpecialLoopFeedback extends SpecialPage {
 			'lf_archive_timestamp' => '00000000000000'
 			),
 		__METHOD__ );
-
 		return true;
 	}
 
 	function resetAll () {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbw = $dbProvider->getPrimaryDatabase();
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbw = $dbProvider->getConnection(DB_PRIMARY);
 		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
