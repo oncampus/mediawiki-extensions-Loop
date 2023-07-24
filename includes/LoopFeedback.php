@@ -349,7 +349,7 @@ class LoopFeedback {
 	}
 
 	function getDetails( $pageid, $comments = false, $timestamp='00000000000000', $dbDomain = false ): array {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $dbDomain );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$res = $dbr->newSelectQueryBuilder()
 			->select( [
