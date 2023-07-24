@@ -351,16 +351,17 @@ class LoopFeedback {
 	function getDetails( $pageid, $comments = false, $timestamp='00000000000000', $dbDomain = false ): array {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->getMainLB( $dbDomain );
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$lfs = $dbr->newSelectQueryBuilder()
+		$res = $dbr->newSelectQueryBuilder()
 			->select( [
 				'lf_id', 'lf_user', 'lf_user_text', 'lf_rating', 'lf_comment', 'lf_timestamp',
-				])
+			])
 			->from('loop_feedback')
-			->where(['lf_page' => $pageid])
-			->orderBy('lf_timestamp', SelectQueryBuilder::SORT_DESC)
+			->where([
+				'lf_page' => $pageid,
+				'lf_archive_timestamp' => $timestamp,
+			])
+			->orderBy('lf_id', SelectQueryBuilder::SORT_DESC)
 			->caller(__METHOD__)->fetchResultSet();
-		// second where clause 'lf_archive_timestamp' => $timestamp, ->where('lf_page = ' . $pageid)
-			var_dump($lfs);
 
 		$return = array(
 			'pageid' => $pageid,
@@ -379,18 +380,18 @@ class LoopFeedback {
 			'comments' => array()
 			);
 
-		foreach($lfs as $row){
-			$rating = $row[ 'lf_rating' ];
+		foreach($res as $row){
+			$rating = $row->lf_rating;
 			$return[ 'count' ][ 'all' ]++;
 			$return[ 'count' ][$rating]++;
 			$return[ 'sum' ] = $return[ 'sum' ]+$rating;
-			if ( $row[ 'lf_comment' ] != '' ) {
+			if ( $row->lf_comment != '' ) {
 				$return['count']['comments']++;
 				if ($comments) {
 					$return['comments'][] = array(
-						'timestamp' => $row['lf_timestamp'],
-						'timestamp_text' => $this->formatTimestamp($row['lf_timestamp']),
-						'comment' => $row['lf_comment']
+						'timestamp' => $row->lf_timestamp,
+						'timestamp_text' => $this->formatTimestamp($row->lf_timestamp),
+						'comment' => $row->lf_comment
 					);
 				}
 			}
