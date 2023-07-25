@@ -172,6 +172,7 @@ class LoopFeedback {
 
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		if ( self::getShowFeedback() ) {
+
 			global $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
 			$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
