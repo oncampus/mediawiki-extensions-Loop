@@ -780,7 +780,6 @@ var customizeWikiEditor = function () {
       var normalText = mw.msg("wikieditor-toolbar-tool-table-example");
       var table = "";
       for (var r = 0; r < rows + header; r++) {
-        table += "|-\n";
         for (var c = 0; c < cols; c++) {
           var isHeader = header && r === 0;
           var delim = isHeader ? "!" : "|";
