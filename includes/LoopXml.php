@@ -133,7 +133,7 @@ class LoopXml {
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
 		
 		# remove table headlines - these make the process crash otherwise!
-		$content = substr_replace($content, '', strpos($content, '|+'), (strpos($content, '|-', strpos($content, '|+')) - strpos($content, '|+')));
+		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
 		# remove score tags - these may cause the whole XML to fail
 		$content = preg_replace('/(<score.*>)(.*)(<\/score>)/msiU', "<score></score>", $content);
