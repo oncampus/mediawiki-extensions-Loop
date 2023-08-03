@@ -181,7 +181,6 @@ class LoopFeedback {
 			$return = '';
 
 			// ermitteln welches Feedback auf der Seite angezeigt werden soll
-
 			$tempItem = LoopStructureItem::newFromIds( $articleId );
 			$akt_tl = $tempItem->tocLevel;
 
@@ -349,7 +348,7 @@ class LoopFeedback {
 		return $periods;
 	}
 
-	function getDetails( $pageid, $comments = false, $timestamp='00000000000000', $dbDomain = false ): array {
+	function getDetails( $pageid, $comments = false, $timestamp='00000000000000'): array {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$res = $dbr->newSelectQueryBuilder()
@@ -756,10 +755,13 @@ class SpecialLoopFeedback extends SpecialPage {
 		$return .= '<div class="row">';
 		if ( $feedback_detail[ 'count' ][ 'comments' ] > 0) {
 			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-count-comments', $feedback_detail[ 'count' ][ 'comments' ])->text().'</p>';
+			$return .= '</div>';
 		} else {
 			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-no-comments' )->text().'</p>';
+			$return .= '</div>';
 		}
 
+		$return .= '<div class="text-left">';
 		if ( $permissionManager->userHasRight( $this->getUser(),'loopfeedback-view-comments' ) ) {
 			foreach ( $feedback_detail[ 'comments' ] as $comment) {
 				$return .= '<p><strong>'.$comment[ 'timestamp_text' ].'</strong><br/>'.$comment[ 'comment' ].'</p>';
