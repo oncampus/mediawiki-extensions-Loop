@@ -108,17 +108,21 @@ class LoopStructure {
 		}
 
 		# Title objects has to start with a letter else an error will occur.
-		$pattern = '/^[a-zA-ZäöüÄÖÜ]$/';
-		if( preg_match($pattern, substr($rootTitleText, 0, 1 )) !== 0 ) {
+		$pattern = '/^[^0-9][*]+$/';
+		$t = Title::newFromText( "5. " . $rootTitleText );
+		#dd($t);
+		#if( preg_match($pattern, substr($rootTitleText, 0, 1 )) !== 0 ) {
             $rootTitle = Title::newFromText( $rootTitleText );
             if( is_object( $rootTitle )) {
                 $this->mainPage = $rootTitle->getArticleID();
             } else {
-                return false;
+				dd(1);
+                #eturn false;
             }
-        } else {
-		    return false;
-        }
+        #} else {
+			dd(3, $rootTitleText);
+		    #return false;
+        #}
 
 		# create new root page
 		if( $this->mainPage == 0 ) {
@@ -1042,7 +1046,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 								$error = $this->msg( 'loopstructure-save-dublicates-error' )->parse();
 								$feedbackMessageClass = 'danger';
 							} else {
-
+								dd($parseResult);
 								if( $parseResult !== false ) {
 
 									$newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();

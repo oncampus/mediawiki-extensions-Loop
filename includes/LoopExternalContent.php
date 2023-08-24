@@ -26,6 +26,7 @@ class LoopExternalContent {
 		$parser->setHook ( 'prezi', 'LoopExternalContent::renderPrezi' );
 		$parser->setHook ( 'slideshare', 'LoopExternalContent::renderSlideshare' );
 		$parser->setHook ( 'quizlet', 'LoopExternalContent::renderQuizlet' );
+		$parser->setHook ( 'panopto', 'LoopExternalContent::panopto' );
 		return true;
     }
 
@@ -64,6 +65,39 @@ class LoopExternalContent {
         return $return;
     }
 
+    public static function renderPanopto ( $input, array $args, Parser $parser, PPFrame $frame ) {
+
+        global $wgPanoptoHostUrl;
+        $errors = '';
+        $return = '';
+        $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
+        $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
+
+        if ( !empty( $id ) ) {
+            $return = Html::rawElement(
+                'iframe',
+                array(
+                    'src' => $wgPanoptoHostUrl . $id,
+                    'width' => $width,
+                    'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
+                    'allowfullscreen' => 'allowfullscreen',
+                    'class' => 'ext-panopto panopto-iframe'
+                ),
+                ''
+            );
+        } else {
+            $errors .= wfMessage( "loop-error-missingrequired", "Panopto", "id")->text() . "<br>";
+        }
+        if ( !empty ( $errors ) ) {
+            $return .= new LoopException( $errors );
+            $parser->addTrackingCategory( 'loop-tracking-category-error' );
+        }
+
+        return $return;
+    }
 
     public static function renderLearningApp ( $input, array $args, Parser $parser, PPFrame $frame ) {
 

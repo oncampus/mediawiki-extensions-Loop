@@ -337,6 +337,7 @@
 				"loopwikieditor-loop-content-audio",
 				"loopwikieditor-loop-content-youtube",
 				"loopwikieditor-loop-content-h5p",
+				"loopwikieditor-loop-content-panopto",
 				"loopwikieditor-loop-content-learningapps",
 				"loopwikieditor-loop-content-padlet",
 				"loopwikieditor-loop-content-taskcard",
@@ -822,6 +823,10 @@
 		"H5PHostUrlAppendix": {
 			"value" : "",
 			"description" : "Some H5P Hosts require the ID before the end of the URL"
+		},
+		"PanoptoHostUrl": {
+			"value" : "",
+			"description" : "URL for Panopto hosted elements"
 		},
 		"LearningAppUrl": {
 			"value" : "https://LearningApps.org/watch?",

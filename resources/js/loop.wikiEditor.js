@@ -519,6 +519,17 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
+                                    'loopmedia-panopto': {
+                                        labelMsg: 'loopwikieditor-loop-content-panopto',
+                                        action: {
+                                            type: 'encapsulate',
+                                            options: {
+                                                pre: '<panopto id="',
+                                                peri: 'ID',
+                                                post: '" width="800px" height="500px"/>'
+                                            }
+                                        }
+                                    },
                                     'loopmedia-learningapps': {
                                         labelMsg: 'loopwikieditor-loop-content-learningapps',
                                         action: {
