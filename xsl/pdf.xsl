@@ -2096,7 +2096,7 @@
 			<fo:table-column column-number="3" column-width="146mm"/>
 			<fo:table-body>
 				<fo:table-row>
-					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" >
+					<fo:table-cell keep-together.within-page="always" width="10mm" text-align="center" color="{$accent_color}" >
 						<fo:block>
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
@@ -2269,6 +2269,17 @@
 		</fo:basic-link>
 	</xsl:template>
 
+	<xsl:template match="php_link_media">
+		<fo:inline font-family="{$font_family}" color="{$accent_color}" font-size="4mm" text-align="left" padding-top="1mm">
+			<xsl:value-of select="$icon_toc"></xsl:value-of>
+			<fo:basic-link>
+				<xsl:attribute name="external-destination"><xsl:value-of select="@href"></xsl:value-of></xsl:attribute>
+				<fo:inline text-decoration="underline"><xsl:value-of select="."></xsl:value-of></fo:inline>
+				<xsl:text> </xsl:text>
+			</fo:basic-link>
+		</fo:inline>
+	</xsl:template>
+
 	<xsl:template match="php_link_image">
 		<xsl:variable name="align">
 			<xsl:choose>
@@ -2321,7 +2332,7 @@
 									<xsl:attribute name="padding-right">6mm</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$align='end'">
-									<xsl:attribute name="padding-left">6mm</xsl:attribute>
+									<xsl:attribute name="padding-left">10mm</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$align='center'">
 									<!-- <xsl:attribute name="padding-bottom">7mm</xsl:attribute>				 -->
@@ -2349,6 +2360,12 @@
 								<xsl:otherwise>
 									<xsl:attribute name="max-width">145mm</xsl:attribute>
 								</xsl:otherwise>
+							</xsl:choose>
+
+							<xsl:choose>
+								<xsl:when test="@imageheight">
+									<xsl:attribute name="height"><xsl:value-of select="@imageheight"></xsl:value-of></xsl:attribute>
+								</xsl:when>
 							</xsl:choose>
 
 						</fo:external-graphic>

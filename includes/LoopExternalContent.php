@@ -207,7 +207,7 @@ class LoopExternalContent {
 	$width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
 	$height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
 	$hostUrl = $wgTaskcardUrl;
-	print_r($hostUrl);
+
 	$scale = array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true";
 	$scaleClass = 'responsive-iframe';
 

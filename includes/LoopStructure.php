@@ -107,23 +107,10 @@ class LoopStructure {
 			#dd();
 		}
 
-		# Title objects has to start with a letter else an error will occur.
-		$pattern = '/^[^0-9][*]+$/';
-		$t = Title::newFromText( "5. " . $rootTitleText );
-		#dd($t);
-		#if( preg_match($pattern, substr($rootTitleText, 0, 1 )) !== 0 ) {
-            $rootTitle = Title::newFromText( $rootTitleText );
-            if( is_object( $rootTitle )) {
-                $this->mainPage = $rootTitle->getArticleID();
-            } else {
-				dd(1);
-                #eturn false;
-            }
-        #} else {
-			dd(3, $rootTitleText);
-		    #return false;
-        #}
-
+		$rootTitle = Title::newFromText( $rootTitleText );
+		if( is_object( $rootTitle )) {
+			$this->mainPage = $rootTitle->getArticleID();
+		}
 		# create new root page
 		if( $this->mainPage == 0 ) {
 			$newPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( $rootTitleText ));
