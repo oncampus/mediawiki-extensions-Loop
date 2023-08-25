@@ -131,6 +131,9 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
+		
+		# remove table headlines - these make the process crash otherwise!
+		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
 		# remove score tags - these may cause the whole XML to fail
 		$content = preg_replace('/(<score.*>)(.*)(<\/score>)/msiU', "<score></score>", $content);
