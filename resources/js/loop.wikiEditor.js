@@ -526,7 +526,7 @@ var customizeWikiEditor = function () {
                                             options: {
                                                 pre: '<panopto id="',
                                                 peri: 'ID',
-                                                post: '" width="800px" height="500px"/>'
+                                                post: '" width="´720px" height="405px"/>'
                                             }
                                         }
                                     },

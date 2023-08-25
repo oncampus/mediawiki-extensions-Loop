@@ -26,7 +26,7 @@ class LoopExternalContent {
 		$parser->setHook ( 'prezi', 'LoopExternalContent::renderPrezi' );
 		$parser->setHook ( 'slideshare', 'LoopExternalContent::renderSlideshare' );
 		$parser->setHook ( 'quizlet', 'LoopExternalContent::renderQuizlet' );
-		$parser->setHook ( 'panopto', 'LoopExternalContent::panopto' );
+		$parser->setHook ( 'panopto', 'LoopExternalContent::renderPanopto' );
 		return true;
     }
 
@@ -71,14 +71,14 @@ class LoopExternalContent {
         $errors = '';
         $return = '';
         $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
-        $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '720';
+        $height = array_key_exists( 'height', $args ) ? $args['height'] : '405';
 
         if ( !empty( $id ) ) {
             $return = Html::rawElement(
                 'iframe',
                 array(
-                    'src' => $wgPanoptoHostUrl . $id,
+                    'src' => $wgPanoptoHostUrl . "?id=" . $id . '&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=none',
                     'width' => $width,
                     'height' => $height,
                     'data-height' => $height,
