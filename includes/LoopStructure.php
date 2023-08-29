@@ -1033,7 +1033,6 @@ class SpecialLoopStructureEdit extends SpecialPage {
 								$error = $this->msg( 'loopstructure-save-dublicates-error' )->parse();
 								$feedbackMessageClass = 'danger';
 							} else {
-								dd($parseResult);
 								if( $parseResult !== false ) {
 
 									$newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();
