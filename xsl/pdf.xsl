@@ -2081,7 +2081,7 @@
 			<fo:table-column column-number="3" column-width="146mm"/>
 			<fo:table-body>
 				<fo:table-row>
-					<fo:table-cell keep-together.within-page="always" width="10mm" text-align="center" color="{$accent_color}" >
+					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" > <!-- keep-together.within-page="always" -->
 						<fo:block>
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
