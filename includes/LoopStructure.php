@@ -107,10 +107,10 @@ class LoopStructure {
 			#dd();
 		}
 
-            $rootTitle = Title::newFromText( $rootTitleText );
-            if( is_object( $rootTitle )) {
-                $this->mainPage = $rootTitle->getArticleID();
-            }
+		$rootTitle = Title::newFromText( $rootTitleText );
+		if( is_object( $rootTitle )) {
+			$this->mainPage = $rootTitle->getArticleID();
+		}
 		# create new root page
 		if( $this->mainPage == 0 ) {
 			$newPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( $rootTitleText ));
@@ -1033,7 +1033,6 @@ class SpecialLoopStructureEdit extends SpecialPage {
 								$error = $this->msg( 'loopstructure-save-dublicates-error' )->parse();
 								$feedbackMessageClass = 'danger';
 							} else {
-
 								if( $parseResult !== false ) {
 
 									$newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();

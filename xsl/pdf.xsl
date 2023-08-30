@@ -1757,6 +1757,21 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- Panopto -->
+	<xsl:template match="extension[@extension_name='panopto']">
+		<fo:block>
+			<fo:inline>
+				<xsl:call-template name="font_icon"></xsl:call-template>
+				<xsl:value-of select="$icon_video"/>
+			</fo:inline>
+			<xsl:text> </xsl:text>
+			<xsl:value-of select="$phrase_interactive_element"/>
+			<xsl:call-template name="page-link">
+				<xsl:with-param name="destination-id"><xsl:value-of select="ancestor::article/@id"/></xsl:with-param>
+			</xsl:call-template>
+		</fo:block>
+	</xsl:template>
+
 	<!-- LearningApps -->
 	<xsl:template match="extension[@extension_name='learningapp']">
 		<fo:block>
