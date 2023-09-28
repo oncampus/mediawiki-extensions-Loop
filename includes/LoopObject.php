@@ -923,26 +923,42 @@ class LoopObject {
 								if ( $object[0] == "loop_media" && isset( $object[2]["type"] ) ) {
 									$tmpLoopObjectIndex->itemType = $object[2]["type"];
 								}
-								$title_tags = array ();
-								$parser->extractTagsAndParams( ["loop_title", "loop_figure_title"], $object[1], $title_tags );
-								if ( !empty( $title_tags ) ) {
-									foreach( $title_tags as $tag ) {
-										$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $tag[1] );
-										break;
-									}
-								} elseif ( isset( $object[2]["title"] ) ) {
-									$tmpLoopObjectIndex->itemTitle = htmlspecialchars( $object[2]["title"] );
+								
+								// parse title
+								// backwards compability is granted, but has priority
+								$tempTitle = '';
+								$title_tags = array();
+								$parser->extractTagsAndParams(["loop_title", "loop_figure_title"], $object[1], $title_tags);
+								if (isset($object[2]["title"])) {
+									$tempTitle = htmlspecialchars($object[2]["title"]);
 								}
-								$desc_tags = array ();
-								$parser->extractTagsAndParams( ["loop_description", "loop_figure_description"], $object[1], $desc_tags );
-								if ( !empty( $desc_tags ) ) {
-									foreach( $desc_tags as $tag ) {
-										$tmpLoopObjectIndex->itemDescription =  htmlspecialchars( $tag[1] );
-										break;
+								if (!empty($title_tags)) {
+									foreach ($title_tags as $tag) {
+										if (!str_contains($tag[0], '!--')) {
+											$tempTitle = htmlspecialchars($tag[1]);
+											break;
+										}
 									}
-								} elseif ( isset( $object[2]["description"] ) ) {
-									$tmpLoopObjectIndex->itemDescription = htmlspecialchars(  $object[2]["description"] );
 								}
+								$tmpLoopObjectIndex->itemTitle = $tempTitle;
+
+								// parse description
+								// backwards compability is granted, but has priority
+								$tempDesc = '';
+								$desc_tags = array();
+								$parser->extractTagsAndParams(["loop_description", "loop_figure_description"], $object[1], $desc_tags);
+								if (isset($object[2]["description"])) {
+									$tempDesc = htmlspecialchars($object[2]["description"]);
+								}
+								if (!empty($desc_tags)) {
+									foreach ($desc_tags as $tag) {
+										if (!str_contains($tag[0], '!--')) {
+											$tempDesc =  htmlspecialchars($tag[1]);
+											break;
+										}
+									}
+								} 
+								$tmpLoopObjectIndex->itemDescription = $tempDesc;
 								if ( isset( $object[2]["id"] ) ) {
 									if ( $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ) {
 										$tmpLoopObjectIndex->refId = $object[2]["id"];
@@ -954,9 +970,6 @@ class LoopObject {
 								} else {
 									$valid = false;
 								}
-
-								#dd($tmpLoopObjectIndex, $valid, $tmpLoopObjectIndex->checkDublicates( $object[2]["id"] ) ); #debug, wird öfter mal gebraucht
-
 								if ( $valid && $stable ) {
 									# page is valid and stable
 									if ( ! isset ( $object[2]["index"] ) ) {
