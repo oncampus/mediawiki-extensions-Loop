@@ -1,1105 +1,1084 @@
 {
-	"name": "Loop",
-	"namemsg": "loop-extensionname",
-	"type": "other",
-	"author": [
-		"Technische Hochschule Lübeck, Institut für Interaktive Systeme",
-		"Dennis Krohn",
-    	"Dustin Neß",
-		"Marc Vorreiter",
-		"Kevin Berg"
-	],
-	"version": "2.2.0",
-	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
-	"descriptionmsg": "loop-desc",
-	"licence-name": "GPL-3.0-or-later",
-	"requires": {
-		"MediaWiki": ">= 1.39",
-		"extensions": {
-			"Cite": "*",
-			"ConfirmEdit": ">= 1.6.0",
-			"EmbedVideo": ">= 3.1.0",
-			"FlaggedRevs": "*",
-			"Lingo": ">= 3.1.2",
-			"Math": ">= 3.0.0",
-			"MsUpload": ">= 13.5",
-			"Quiz": ">= 1.2.0",
-			"Score": ">= 0.3.0",
-			"Widgets": ">= 1.4.1",
-			"WikiEditor": ">= 0.5.3"
-		}
-	},
-	"callback": "Loop::onExtensionLoad",
-	"AutoloadClasses": {
-		"Loop": "includes/Loop.php",
-		"LoopHooks": "includes/Loop.hooks.php",
-		"LoopSpoiler": "includes/LoopSpoiler.php",
-		"LoopUpdater": "includes/LoopUpdater.php",
-		"SpecialLoopMediaWikiUpdater": "includes/LoopUpdater.php",
-		"LoopStructure": "includes/LoopStructure.php",
-		"LoopStructureItem": "includes/LoopStructure.php",
-		"SpecialLoopStructure": "includes/LoopStructure.php",
-		"SpecialLoopStructureEdit": "includes/LoopStructure.php",
-		"LoopXsl": "includes/LoopXsl.php",
-		"LoopXml": "includes/LoopXml.php",
-		"LoopPdf": "includes/LoopPdf.php",
-		"LoopMp3": "includes/LoopMp3.php",
-		"LoopHtml": "includes/LoopHtml.php",
-		"LoopConsent": "includes/LoopConsent.php",
-		"LoopArea": "includes/LoopArea.php",
-		"LoopPrint": "includes/LoopPrint.php",
-		"LoopParagraph": "includes/LoopParagraph.php",
-		"LoopSidenote": "includes/LoopSidenote.php",
-		"LoopToc": "includes/LoopToc.php",
-		"LoopNoprint": "includes/LoopNoprint.php",
-		"LoopExport": "includes/LoopExport.php",
-		"LoopExportPdf": "includes/LoopExport.php",
-		"LoopExportXml": "includes/LoopExport.php",
-		"LoopExportMp3": "includes/LoopExport.php",
-		"LoopExportPageMp3": "includes/LoopExport.php",
-		"LoopExportEpub": "includes/LoopExport.php",
-		"LoopExportHtml": "includes/LoopExport.php",
-		"LoopExportScorm": "includes/LoopExport.php",
-		"SpecialLoopExport": "includes/LoopExport.php",
-		"LoopSettings": "includes/LoopSettings.php",
-		"SpecialLoopSettings": "includes/LoopSettings.php",
-		"SpecialPurgeCache": "includes/PurgeCache.php",
-		"LoopException": "includes/LoopException.php",
-		"LoopObjectIndex": "includes/LoopObjectIndex.php",
-		"LoopObject": "includes/LoopObject.php",
-		"LoopFigure": "includes/LoopFigure.php",
-		"SpecialLoopFigures": "includes/LoopFigure.php",
-		"LoopFormula": "includes/LoopFormula.php",
-		"SpecialLoopFormulas": "includes/LoopFormula.php",
-		"LoopListing": "includes/LoopListing.php",
-		"SpecialLoopListings": "includes/LoopListing.php",
-		"LoopMedia": "includes/LoopMedia.php",
-		"SpecialLoopMedia": "includes/LoopMedia.php",
-		"LoopTable": "includes/LoopTable.php",
-		"SpecialLoopTables": "includes/LoopTable.php",
-		"LoopTask": "includes/LoopTask.php",
-		"SpecialLoopTasks": "includes/LoopTask.php",
-		"LoopReference": "includes/LoopReference.php",
-		"LoopCode": "includes/LoopCode.php",
-		"LoopLiterature": "includes/LoopLiterature.php",
-		"LoopLiteratureReference": "includes/LoopLiterature.php",
-		"SpecialLoopLiterature": "includes/LoopLiterature.php",
-		"SpecialLoopLiteratureEdit": "includes/LoopLiterature.php",
-		"SpecialLoopLiteratureImport": "includes/LoopLiterature.php",
-		"SpecialLoopLiteratureExport": "includes/LoopLiterature.php",
-		"LoopGlossary": "includes/LoopGlossary.php",
-		"SpecialLoopGlossary": "includes/LoopGlossary.php",
-		"LoopExternalContent": "includes/LoopExternalContent.php",
-		"LoopLegacy": "includes/LoopLegacy.php",
-		"LoopZoom": "includes/LoopZoom.php",
-		"LoopIndex": "includes/LoopIndex.php",
-		"SpecialLoopIndex": "includes/LoopIndex.php",
-		"LoopWikiEditor": "includes/LoopWikiEditor.php",
-		"LoopZip": "includes/LoopZip.php",
-		"LoopSidebar": "includes/LoopSidebar.php",
-		"LoopMediaHandler": "includes/LoopMediaHandler.php",
-		"LoopWikitextContentHandler": "includes/LoopWikitextContent.php",
-		"LoopWikitextContent": "includes/LoopWikitextContent.php",
-		"LoopTerminology": "includes/LoopTerminology.php",
-		"SpecialLoopTerminology": "includes/LoopTerminology.php",
-		"SpecialLoopTerminologyEdit": "includes/LoopTerminology.php",
-		"LoopScreenshot": "includes/LoopScreenshot.php",
-		"SpecialLoopExportPdfTest": "includes/LoopPdf.php",
-		"LoopBugReport": "includes/LoopBugReport.php",
-		"SpecialLoopBugReport": "includes/LoopBugReport.php",
-		"LoopFeedback": "includes/LoopFeedback.php",
-		"SpecialLoopFeedback": "includes/LoopFeedback.php",
-		"ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
-		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
-		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
-		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
-		"LoopAccordion": "includes/LoopAccordion.php",
-		"SpecialLoopImprint": "includes/Loop.php",
-		"SpecialLoopPrivacy": "includes/Loop.php",
-		"SpecialLoopRSS": "includes/LoopRSS.php",
-		"LoopNgSpice": "includes/LoopNgSpice.php",
-		"SpecialLoopNgSpice": "includes/LoopNgSpice.php",
-		"LoopComment": "includes/LoopComment.php",
-		"SpecialLoopPagesNotInStructure": "includes/LoopStructure.php",
-		"SpecialLoopSearch": "includes/LoopSearch.php"
-	},
-	"Hooks": {
-		"LoadExtensionSchemaUpdates":[
-			"LoopUpdater::onLoadExtensionSchemaUpdates"
-		],
-		"MediaWikiPerformAction":[
-			"LoopHooks::onMediaWikiPerformAction"
-		],
-		"PageRenderingHash":[
-			"LoopHooks::onPageRenderingHash",
-			"LoopConsent::onPageRenderingHash"
-		],
-		"ParserFirstCallInit": [
-			"LoopObject::onParserSetup",
-			"LoopArea::onParserSetup",
-			"LoopParagraph::onParserSetup",
-			"LoopSidenote::onParserSetup",
-			"LoopToc::onParserSetup",
-			"LoopPrint::onParserSetup",
-			"LoopNoprint::onParserSetup",
-			"LoopReference::onParserSetup",
-			"LoopSpoiler::onParserSetup",
-			"LoopCode::onParserSetup",
-			"LoopLiterature::onParserSetup",
-			"LoopExternalContent::onParserSetup",
-			"LoopLegacy::onParserSetup",
-			"LoopZoom::onParserSetup",
-			"LoopIndex::onParserSetup",
-			"LoopSidebar::onParserSetup",
-			"LoopZip::onParserSetup",
-			"LoopMediaHandler::onParserSetup",
-			"LoopScreenshot::onParserSetup",
-			"LoopAccordion::onParserSetup",
-			"LoopNgSpice::onParserSetup",
-			"LoopComment::onParserSetup"
-		],
-		"ParserAfterTidy": [
-			"LoopObject::onParserAfterTidy",
-			"LoopScreenshot::onParserAfterTidy"
-		],
-		"SpecialPage_initList": [
-			"LoopHooks::onSpecialPageinitList"
-		],
-		"ParserMakeImageParams":[
-			"LoopHooks::onParserMakeImageParams"
-		],
-		"ArticleDeleteComplete": [
-			"LoopObject::onArticleDeleteComplete",
-			"LoopLiterature::onArticleDeleteComplete",
-			"LoopIndex::onArticleDeleteComplete"
-		],
-		"AfterStabilizeChange": [
-			"LoopObject::onAfterStabilizeChange",
-			"LoopLiterature::onAfterStabilizeChange",
-			"LoopIndex::onAfterStabilizeChange"
-		],
-		"AfterClearStable": [
-			"LoopObject::onAfterClearStable",
-			"LoopLiterature::onAfterClearStable",
-			"LoopIndex::onAfterClearStable"
-		],
-		"BeforePageDisplay": [
-			"LoopFeedback::onBeforePageDisplay",
-			"LoopScreenshot::onBeforePageDisplay"
-		],
-		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
-		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
-		"UploadComplete": "LoopZip::onUploadComplete",
-		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
-		"PageContentSave": "LoopConsent::onPageContentSave",
-		"ParserBeforeInternalParse": "LoopConsent::onParserBeforeInternalParse",
-		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
-	},
-	"SpecialPages": {
-		"LoopStructure": "SpecialLoopStructure",
-		"LoopStructureEdit": "SpecialLoopStructureEdit",
-		"LoopExport": "SpecialLoopExport",
-		"LoopSettings": "SpecialLoopSettings",
-		"PurgeCache": "SpecialPurgeCache",
-		"LoopFigures": "SpecialLoopFigures",
-		"LoopFormulas": "SpecialLoopFormulas",
-		"LoopListings": "SpecialLoopListings",
-		"LoopMedia": "SpecialLoopMedia",
-		"LoopTables": "SpecialLoopTables",
-		"LoopTasks": "SpecialLoopTasks",
-		"LoopLiterature": "SpecialLoopLiterature",
-		"LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
-		"LoopLiteratureImport": "SpecialLoopLiteratureImport",
-		"LoopLiteratureExport": "SpecialLoopLiteratureExport",
-		"LoopGlossary": "SpecialLoopGlossary",
-		"LoopIndex": "SpecialLoopIndex",
-		"LoopTerminology": "SpecialLoopTerminology",
-		"LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
-		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
-		"LoopBugReport": "SpecialLoopBugReport",
-		"LoopFeedback": "SpecialLoopFeedback",
-		"LoopImprint": "SpecialLoopImprint",
-		"LoopPrivacy": "SpecialLoopPrivacy",
-		"LoopRSS": "SpecialLoopRSS",
-		"LoopNgSpice": "SpecialLoopNgSpice",
-		"SpecialLoopMediaWikiUpdater": "SpecialLoopMediaWikiUpdater",
-		"LoopPagesNotInStructure": "SpecialLoopPagesNotInStructure",
-		"LoopSearch": "SpecialLoopSearch"
-	},
-	"ResourceFileModulePaths": {
-		"localBasePath": "",
-		"remoteExtPath": "Loop"
-	},
-	"ResourceModules": {
-		"loop.special.settings.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.special.settings.js"
-			],
-			"dependencies": [
-				"oojs-ui-core",
-				"oojs-ui-widgets",
-				"mediawiki.Upload.Dialog"
-			]
-		},
-		"loop.special.literature-edit.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.special.literatureedit.js"
-			]
-		},
-		"loop.print.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.printtag.js"
-			],
-			"messages": [
-				"loopprint-printingarea"
-			]
-		},
-		"loop.spoiler.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.spoiler.js"
-			],
-			"messages": [
-				"loopspoiler-default-title"
-			]
-		},
-		"loop.wikiEditor.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.wikiEditor.js"
-			],
-			"messages": [
-				"loopwikieditor-section-loop",
-				"loopwikieditor-section-references",
-				"loopwikieditor-references-loop_literature",
-				"loopwikieditor-references-loop_figure",
-				"loopwikieditor-references-loop_formula",
-				"loopwikieditor-references-loop_media",
-				"loopwikieditor-references-loop_listing",
-				"loopwikieditor-references-loop_task",
-				"loopwikieditor-references-loop_table",
-				"loopwikieditor-loop-object",
-				"loop_figure-name",
-				"loop_table-name",
-				"loop_media-name",
-				"loop_listing-name",
-				"loop_formula-name",
-				"loop_task-name",
-				"loopwikieditor-loop-object-media-rollover",
-				"loopwikieditor-loop-object-media-video",
-				"loopwikieditor-loop-object-media-interaction",
-				"loopwikieditor-loop-object-media-click",
-				"loopwikieditor-loop-object-media-audio",
-				"loopwikieditor-loop-object-media-animation",
-				"loopwikieditor-loop-object-media-simulation",
-				"loopwikieditor-loop-object-media-dragdrop",
-				"loopwikieditor-loop-areas",
-				"looparea-name-annotation",
-				"loopwikieditor-loop-area-area",
-				"loopwikieditor-loop-area-custom",
-				"looparea-name-arrangement",
-				"looparea-name-citation",
-				"looparea-name-definition",
-				"looparea-name-example",
-				"looparea-name-exercise",
-				"looparea-name-experiment",
-				"looparea-name-formula",
-				"looparea-name-important",
-				"looparea-name-indentation",
-				"looparea-name-law",
-				"looparea-name-learningobjectives",
-				"looparea-name-markedsentence",
-				"looparea-name-norm",
-				"looparea-name-notice",
-				"looparea-name-practice" ,
-				"looparea-name-question",
-				"looparea-name-reflection",
-				"looparea-name-sourcecode",
-				"looparea-name-summary",
-				"looparea-name-task",
-				"looparea-name-timerequirement",
-				"looparea-name-websource",
-				"loopwikieditor-loop-snippets",
-				"loopwikieditor-loop-snippets-spoiler",
-				"loopwikieditor-loop-snippets-zip",
-				"loopwikieditor-loop-snippets-paragraph",
-				"loopwikieditor-loop-snippets-toc",
-				"loopwikieditor-loop-snippets-literature",
-				"loopwikieditor-loop-snippets-math",
-				"loopwikieditor-loop-snippets-sidenote",
-				"loopwikieditor-loop-snippets-print",
-				"loopwikieditor-loop-snippets-noprint",
-				"loopwikieditor-loop-contents",
-				"loopwikieditor-loop-content-video",
-				"loopwikieditor-loop-content-audio",
-				"loopwikieditor-loop-content-youtube",
-				"loopwikieditor-loop-content-h5p",
-				"loopwikieditor-loop-content-panopto",
-				"loopwikieditor-loop-content-learningapps",
-				"loopwikieditor-loop-content-padlet",
-				"loopwikieditor-loop-content-taskcard",
-				"loopwikieditor-loop-content-prezi",
-				"loopwikieditor-loop-content-slideshare",
-				"loopwikieditor-loop-content-quizlet",
-				"loopscreenshot",
-				"loopwikieditor-loop-snippets-accordion",
-				"loopwikieditor-loop-snippets-syntaxhighlight"
-			]
-		},
-		"loop.feedback.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.feedback.js"
-			],
-			"messages": [
-				"loopfeedback-thanks-after-submit",
-				"loopfeedback-specialpage-feedback-info-sum-all",
-				"loopfeedback-specialpage-feedback-info-average-stars",
-				"loopfeedback-specialpage-feedback-info-count-comments",
-				"loopfeedback-specialpage-feedback-info-no-comments"
-			]
-		},
-		"loop.ngspice.js": {
-			"position": "bottom",
-			"scripts": [
-				"resources/js/loop.ngspice.js"
-			],
-			"messages": [
-				"loopngspice-error-min-value"
-			]
-		}
-
-	},
-	"TrackingCategories": [
-		"loop-tracking-category-error",
-		"looplegacy-tracking-category"
-	],
-	"GroupPermissions": {
-		"*": {
-			"editmyoptions": true,
-			"viewmyprivateinfo": true,
-			"editmyprivateinfo": true,
-			"loop-toc-edit": false,
-			"loop-export-pdf": false,
-			"loop-export-xml": false,
-			"loop-export-mp3": false,
-			"loop-export-epub": false,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": false,
-			"loop-view-export-log": false,
-			"createtalk": false,
-			"createpage": false,
-			"writeapi": false,
-			"loop-view-special-pages": false,
-			"loop-edit-literature": false,
-			"loop-pdf-test": false,
-			"loopfeedback-view": false,
-			"loopfeedback-view-results": false,
-			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
-		},
-		"user" : {
-			"read": true,
-			"loopfeedback-view": true
-		},
-		"bot": {
-			"loop-toc-edit": true,
-			"loop-export-pdf": true,
-			"loop-export-xml": true,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-settings-edit": false,
-			"loop-pageaudio": true,
-			"createpage": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": false
-		},
-		"sysop": {
-			"loop-toc-edit": true,
-			"loop-export-pdf": true,
-			"loop-export-xml": true,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": true,
-			"loop-export-scorm": true,
-			"loop-pageaudio": true,
-			"loop-settings-edit": true,
-			"loop-view-export-log": true,
-			"createpage": true,
-			"loop-rendermode": true,
-			"purgecache": true,
-			"unreviewedpages": true,
-			"edit": true,
-			"review": true,
-			"autoreview": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": true,
-			"editsitecss": true,
-			"editsitejs": true,
-			"editinterface": true,
-			"writeapi": true,
-			"loop-pdf-test": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": true,
-			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": true
-		},
-		"author": {
-			"loop-toc-edit": true,
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": true,
-			"loop-export-scorm": true,
-			"loop-pageaudio": true,
-			"loop-settings-edit": true,
-			"loop-view-export-log": true,
-			"unreviewedpages": true,
-			"upload": true,
-			"autoreview": true,
-			"noratelimit": true,
-			"edit": true,
-			"createpage": true,
-			"purge": true,
-			"review": true,
-			"purgecache": true,
-			"reupload": true,
-			"move": true,
-			"movefile": true,
-			"deletedtext": true,
-			"deletedhistory": true,
-			"browsearchive": true,
-			"rollback": true,
-			"delete": true,
-			"undelete": true,
-			"protect": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": true,
-			"editsitecss": true,
-			"editsitejs": true,
-			"editinterface": true,
-			"writeapi": true,
-			"loop-pdf-test": true,
-			"skipcaptcha": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": true,
-			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": true
-		},
-		"teacher_approve": {
-			"loop-toc-edit": true,
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": true,
-			"loop-export-scorm": true,
-			"loop-pageaudio": true,
-			"loop-settings-edit": true,
-			"loop-view-export-log": true,
-			"unreviewedpages": true,
-			"upload": true,
-			"autoreview": true,
-			"noratelimit": true,
-			"edit": true,
-			"createpage": true,
-			"purge": true,
-			"review": true,
-			"purgecache": true,
-			"reupload": true,
-			"move": true,
-			"movefile": true,
-			"deletedtext": true,
-			"deletedhistory": true,
-			"browsearchive": true,
-			"rollback": true,
-			"delete": true,
-			"undelete": true,
-			"protect": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": true,
-			"editsitecss": true,
-			"editsitejs": true,
-			"editinterface": true,
-			"writeapi": true,
-			"loop-pdf-test": true,
-			"skipcaptcha": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": true,
-			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
-		},
-		"teacher_edit": {
-			"loop-toc-edit": true,
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": true,
-			"loop-settings-edit": false,
-			"unreviewedpages": true,
-			"upload": true,
-			"noratelimit": true,
-			"edit": true,
-			"createpage": true,
-			"purge": true,
-			"reupload": true,
-			"purgecache": true,
-			"move": true,
-			"movefile": true,
-			"deletedtext": true,
-			"deletedhistory": true,
-			"browsearchive": true,
-			"rollback": true,
-			"delete": true,
-			"undelete": true,
-			"protect": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": true,
-			"writeapi": true,
-			"loop-pdf-test": true,
-			"skipcaptcha": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": true,
-			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
-		},
-		"teacher_no_edit": {
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": true,
-			"loop-settings-edit": false,
-			"purge": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": false,
-			"skipcaptcha": true,
-			"writeapi": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": true,
-			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
-		},
-		"student_edit": {
-			"edit": true,
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": true,
-			"loop-settings-edit": false,
-			"reupload": true,
-			"upload": true,
-			"purge": true,
-			"createpage": true,
-			"deletedtext": true,
-			"deletedhistory": true,
-			"browsearchive": true,
-			"loop-view-special-pages": true,
-			"loop-edit-literature": true,
-			"writeapi": true,
-			"loop-pdf-test": true,
-			"skipcaptcha": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": false,
-			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
-		},
-		"student_no_edit": {
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": true,
-			"loop-settings-edit": false,
-			"loop-edit-literature": false,
-			"loop-view-special-pages": false,
-			"skipcaptcha": true,
-			"writeapi": true,
-			"loopfeedback-view": true,
-			"loopfeedback-view-results": false,
-			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
-		},
-		"shared": {
-			"editmyoptions": false,
-			"viewmyprivateinfo": false,
-			"editmyprivateinfo": false,
-			"loop-export-pdf": true,
-			"loop-export-xml": false,
-			"loop-export-mp3": true,
-			"loop-export-epub": true,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": true,
-			"loop-settings-edit": false,
-			"loop-edit-literature": false,
-			"loop-view-special-pages": false,
-			"skipcaptcha": true,
-			"loopfeedback-view": false,
-			"loopfeedback-view-results": false,
-			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
-		},
-		"shared_basic": {
-			"editmyoptions": false,
-			"viewmyprivateinfo": false,
-			"editmyprivateinfo": false,
-			"loop-export-pdf": false,
-			"loop-export-xml": false,
-			"loop-export-mp3": false,
-			"loop-export-epub": false,
-			"loop-export-html": false,
-			"loop-export-scorm": false,
-			"loop-pageaudio": false,
-			"loop-settings-edit": false,
-			"loop-edit-literature": false,
-			"loop-view-special-pages": false,
-			"skipcaptcha": true,
-			"loopfeedback-view": false,
-			"loopfeedback-view-results": false,
-			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
-		}
-	},
-	"DefaultUserOptions": {
-		"LoopEditMode": false,
-		"LoopRenderMode": "default"
-	},
-	"HiddenPrefs": [
-		"LoopRenderMode",
-		"language",
-		"fancysig",
-		"nickname",
-		"gender",
-		"skin",
-		"math",
-		"imagesize",
-		"thumbsize",
-		"date",
-		"diffonly",
-		"norollbackdiff",
-		"underline",
-		"stubthreshold",
-		"showhiddencats",
-		"numberheadings",
-		"showhiddencats",
-		"timecorrection",
-		"editsectiononrightclick",
-		"editondblclick",
-		"flaggedrevseditdiffs",
-		"editfont",
-		"forceeditsummary",
-		"useeditwarning",
-		"showtoolbar",
-		"usebetatoolbar",
-		"previewonfirst",
-		"previewontop",
-		"uselivepreview",
-		"rcdays",
-		"rclimit",
-		"usenewrc",
-		"hideminor",
-		"newpageshidepatrolled",
-		"flaggedrevssimpleui",
-		"flaggedrevsstable",
-		"flaggedrevsviewdiffs",
-		"watchlistdays",
-		"extendwatchlist",
-		"wllimit",
-		"watchlisthideown",
-		"watchlisthidebots",
-		"watchlisthideminor",
-		"watchcreations",
-		"watchrollback",
-		"watchlisthideanons",
-		"watchlisthideliu",
-		"watchlisttoken",
-		"watchlisthidepatrolled",
-		"watchlistreloadautomatically",
-		"watchlistunwatchlinks",
-		"watchlisthidecategorization",
-		"watchrollback",
-		"watchdefault",
-		"watchmoves",
-		"watchdeletion",
-		"watchuploads",
-		"flaggedrevswatch",
-		"rcenhancedfilters-disable",
-		"wlenhancedfilters-disable",
-		"showrollbackconfirmation",
-		"minordefault",
-		"hidepatrolled",
-		"oldsig"
-	],
-	"AvailableRights": [
-		"loop-toc-edit",
-		"loop-export-pdf",
-		"loop-export-xml",
-		"loop-export-mp3",
-		"loop-export-epub",
-		"loop-export-html",
-		"loop-export-scorm",
-		"loop-rendermode",
-		"loop-settings-edit",
-		"loop-view-export-log",
-		"loop-view-special-pages",
-		"loop-edit-literature",
-		"loopfeedback-view",
-		"loopfeedback-view-results",
-		"loopfeedback-view-comments",
-		"loopfeedback-reset"
-	],
-	"MessagesDirs": {
-		"Loop": [
-			"i18n"
-		]
-	},
-	"ExtensionMessagesFiles": {
-		"LoopAlias": "Loop.i18n.alias.php",
-		"LoopMagic": "Loop.i18n.magic.php"
-	},
-	"config": {
-		"Text2SpeechServiceUrl": {
-			"value" : "",
-			"description" : "URL of the Service to convert text to speech"
-		},
-		"Text2Speech": {
-			"value" : false,
-			"description" : "Possibility to enable text to speech feature from LocalSettings."
-		},
-		"PdfExport": {
-			"value" : false,
-			"description" : "Possibility to enable pdf export feature from LocalSettings."
-		},
-		"EpubExport": {
-			"value" : false,
-			"description" : "Possibility to enable ePub export feature from LocalSettings."
-		},
-		"HtmlExport": {
-			"value" : false,
-			"description" : "Possibility to enable html export feature from LocalSettings."
-		},
-		"XmlExport": {
-			"value" : false,
-			"description" : "Possibility to enable xml export feature from LocalSettings."
-		},
-		"ScormExport": {
-			"value" : false,
-			"description" : "Possibility to enable scorm export feature from LocalSettings."
-		},
-		"AudioExport": {
-			"value" : false,
-			"description" : "Possibility to enable audiobook export feature from LocalSettings."
-		},
-		"Xmlfo2PdfServiceUrl": {
-			"value" : "",
-			"description" : "URL of the Service to convert XMLFO to PDF"
-		},
-		"Xmlfo2PdfServiceToken": {
-			"value" : "",
-			"description" : "Token for the Service to convert XMLFO to PDF"
-		},
-		"H5PHostUrl": {
-			"value" : "https://h5p.com/h5p/embed/",
-			"description" : "URL for H5P hosted elements"
-		},
-		"H5PHostUrlAppendix": {
-			"value" : "",
-			"description" : "Some H5P Hosts require the ID before the end of the URL"
-		},
-		"PanoptoHostUrl": {
-			"value" : "",
-			"description" : "URL for Panopto hosted elements"
-		},
-		"LearningAppUrl": {
-			"value" : "https://LearningApps.org/watch?",
-			"description" : "URL for LearningApps elements"
-		},
-		"PadletUrl": {
-			"value" : "https://www.padlet.com/embed/",
-			"description" : "URL for Padlet elements"
-		},
-		"TaskcardUrl": {
-			"value" : "https://www.taskcards.de/#/board/",
-			"description" : "URL for Taskcard elements"
-		},
-		"PreziUrl": {
-			"value" : "https://prezi.com/embed/",
-			"description" : "URL for Prezi elements"
-		},
-		"SlideshareUrl": {
-			"value" : "//www.slideshare.net/slideshow/embed_code/key/",
-			"description" : "URL for Slideshare elements"
-		},
-		"QuizletUrl": {
-			"value" : "https://www.quizlet.com/",
-			"description" : "URL for Quizlet elements"
-		},
-		"LoopSocialIcons": {
-			"value" : {
-				"Facebook": {
-					"icon": "",
-					"link": ""
-				},
-				  "Twitter": {
-					"icon": "",
-					"link": ""
-				},
-				  "Youtube": {
-					"icon": "",
-					"link": ""
-				},
-				  "Github": {
-					"icon": "",
-					"link": ""
-				},
-				  "Instagram": {
-					"icon": "",
-					"link": ""
-				}
-			},
-			"description" : "Array of settings to configure social icons in footer area"
-		},
-		"LoopImprintLink": {
-			"value": "Impressum",
-			"description": "Link to imprint page; required"
-		},
-		"LoopPrivacyLink": {
-			"value": "Datenschutz",
-			"description": "Link to privacy policy page; required"
-		},
-		"LoopRightsType": {
-			"value": "",
-			"description": "Type of CC-Licenses to use"
-		},
-		"LoopExtraFooter": {
-			"value" : false,
-			"description": "Whether extra footer with content from MediaWiki:ExtraFooter should be shown or not"
-		},
-		"LoopExtraSidebar": {
-			"value" : false,
-			"description": "Whether a sidebar with content from MediaWiki:ExtraSidebar should be shown or not"
-		},
-		"AvailableLicenses": {
-			"value" : {
-				"": {
-					"icon": "",
-					"url": ""
-				},
-				  "Public Domain": {
-					"url": "https://creativecommons.org/publicdomain/mark/1.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-pd'></span>"
-				},
-				  "CC-0": {
-					"url": "https://creativecommons.org/publicdomain/zero/1.0",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-zero'></span>"
-				},
-				  "CC-BY-3.0": {
-					"url": "https://creativecommons.org/licenses/by/3.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span>"
-				},
-				  "CC-BY-4.0": {
-					"url": "https://creativecommons.org/licenses/by/4.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span>"
-				},
-				  "CC-BY-SA-3.0": {
-					"url": "https://creativecommons.org/licenses/by-sa/3.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-sa'></span>"
-				},
-				  "CC-BY-SA-4.0": {
-					"url": "https://creativecommons.org/licenses/by-sa/4.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-sa'></span>"
-				},
-				  "CC-BY-NC-3.0": {
-					"url": "https://creativecommons.org/licenses/by-nc/3.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span>"
-				},
-				  "CC-BY-NC-4.0": {
-					"url": "https://creativecommons.org/licenses/by-nc/4.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span>"
-				},
-				  "CC-BY-ND-3.0": {
-					"url": "https://creativecommons.org/licenses/by-nd/3.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nd'></span>"
-				},
-				  "CC-BY-ND-4.0": {
-					"url": "https://creativecommons.org/licenses/by-nd/4.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nd'></span>"
-				},
-				  "CC-BY-NC-SA-3.0": {
-					"url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-sa'></span>"
-				},
-				  "CC-BY-NC-SA-4.0": {
-					"url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-sa'></span>"
-				},
-				  "CC-BY-NC-ND-3.0": {
-					"url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-nd'></span>"
-				},
-				  "CC-BY-NC-ND-4.0": {
-					"url": "https://creativecommons.org/licenses/by-nd-nd/4.0/",
-					"icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-nd'></span>"
-				}
-			},
-			"description" : "Array of available Creative Commons licenses to apply"
-		},
-		"LoopCustomLogo": {
-			"value" : {
-				"useCustomLogo": false,
-				"customFileName": "",
-				"customFilePath": ""
-			},
-			"description" : "Array of information about a custom logo for header"
-		},
-		"LoopObjectDefaultRenderOption": {
-			"value": "marked",
-			"description" : ""
-		},
-		"LoopObjectNumbering": {
-			"value": true,
-			"description" : "Default value for activating object numberings"
-		},
-		"LoopLegacyPageNumbering": {
-			"value": true,
-			"description" : "Default value for activating page numberings. Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
-		},
-		"LoopLegacyShowTitles": {
-			"value": true,
-			"description" : "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
-		},
-		"LoopNumberingType": {
-			"value": "ongoing",
-			"description" : "Setting default type for numbering of objects [ongoing|chapter]"
-		},
-		"LoopMediaDefaultType": {
-			"value": "media",
-			"description" : ""
-		},
-		"LoopSpoilerDefaultType": {
-			"value": "default",
-			"description" : "Setting default type for loop spoiler"
-		},
-		"LoopLiteratureCiteType": {
-			"value": "harvard",
-			"description" : "Setting default type citiations of literature"
-		},
-		"LoopScreenshotUrl": {
-			"value": "",
-			"description" : "URL for rendering screenshots service"
-		},
-		"LoopExternalServiceBugReportUrl": {
-			"value": "",
-			"description" : "URL for external ticket handling service. Overrides LoopBugReportEmail."
-		},
-		"LoopExternalServiceUser": {
-			"value": "",
-			"description" : "External service user"
-		},
-		"LoopExternalServicePw": {
-			"value": "",
-			"description" : "Password for external service user"
-		},
-		"LoopBugReportEmail": {
-			"value": "",
-			"description" : "E-Mail address for ticket handling. Will be ignored if LoopExternalTicketsServiceUrl is set."
-		},
-		"LoopBugReportEnabled": {
-			"value": true,
-			"description" : "Enable bug reports for users."
-		},
-		"LoopFeedbackLevel": {
-			"value": "none",
-			"description" : "[none|module|chapter]"
-		},
-		"LoopFeedbackMode": {
-			"value": "second_half",
-			"description" : "[always|last_sublevel|second_half]"
-		},
-		"LoopExternalImprintPrivacy": {
-			"value": false,
-			"description" : "Activate external download of imprint and privacy texts"
-		},
-		"LoopExternalPrivacyUrl": {
-			"value": "",
-			"description" : "Url for fetching privacy data"
-		},
-		"LoopExternalImprintUrl": {
-			"value": "",
-			"description" : "Url for fetching imprint data"
-		},
-		"LoopRSSToken": {
-			"value": "",
-			"description" : "Token for viewing RSS without logging in"
-		},
-		"LoopUnprotectedRSS": {
-			"value": false,
-			"description" : "Enable RSS feed page without login"
-		},
-		"LoopExportDebug": {
-			"value": false,
-			"description" : "Enable debug mode for export - files are always newly created."
-		},
-		"LoopNgSpiceUrl": {
-			"value": "",
-			"description" : "Service Url for NgSpice."
-		},
-		"LoopEditorHideReferences": {
-			"value": false,
-			"description" : "Hide References from LOOP WikiEditor for faster loading."
-		},
-		"LoopEnableConsent": {
-			"value": true,
-			"description": "Enable Loop's own consent banner before showing external content"
-		}
-	},
-	"LogTypes": [ "loopexport" ],
-    "LogNames": {
-        "loopexport": "log-name-loopexport"
+  "name": "Loop",
+  "namemsg": "loop-extensionname",
+  "type": "other",
+  "author": [
+    "Technische Hochschule Lübeck, Institut für Interaktive Systeme",
+    "Dennis Krohn",
+    "Dustin Neß",
+    "Marc Vorreiter",
+    "Kevin Berg"
+  ],
+  "version": "2.2.0",
+  "url": "https://github.com/oncampus/mediawiki-extensions-Loop",
+  "descriptionmsg": "loop-desc",
+  "licence-name": "GPL-3.0-or-later",
+  "requires": {
+    "MediaWiki": ">= 1.39",
+    "extensions": {
+      "Cite": "*",
+      "ConfirmEdit": ">= 1.6.0",
+      "EmbedVideo": ">= 3.1.0",
+      "FlaggedRevs": "*",
+      "Lingo": ">= 3.1.2",
+      "Math": ">= 3.0.0",
+      "MsUpload": ">= 13.5",
+      "Quiz": ">= 1.2.0",
+      "Score": ">= 0.3.0",
+      "Widgets": ">= 1.4.1",
+      "WikiEditor": ">= 0.5.3"
+    }
+  },
+  "callback": "Loop::onExtensionLoad",
+  "AutoloadClasses": {
+    "Loop": "includes/Loop.php",
+    "LoopHooks": "includes/Loop.hooks.php",
+    "LoopSpoiler": "includes/LoopSpoiler.php",
+    "LoopUpdater": "includes/LoopUpdater.php",
+    "SpecialLoopMediaWikiUpdater": "includes/LoopUpdater.php",
+    "LoopStructure": "includes/LoopStructure.php",
+    "LoopStructureItem": "includes/LoopStructure.php",
+    "SpecialLoopStructure": "includes/LoopStructure.php",
+    "SpecialLoopStructureEdit": "includes/LoopStructure.php",
+    "LoopXsl": "includes/LoopXsl.php",
+    "LoopXml": "includes/LoopXml.php",
+    "LoopPdf": "includes/LoopPdf.php",
+    "LoopMp3": "includes/LoopMp3.php",
+    "LoopHtml": "includes/LoopHtml.php",
+    "LoopConsent": "includes/LoopConsent.php",
+    "LoopArea": "includes/LoopArea.php",
+    "LoopPrint": "includes/LoopPrint.php",
+    "LoopParagraph": "includes/LoopParagraph.php",
+    "LoopSidenote": "includes/LoopSidenote.php",
+    "LoopToc": "includes/LoopToc.php",
+    "LoopNoprint": "includes/LoopNoprint.php",
+    "LoopExport": "includes/LoopExport.php",
+    "LoopExportPdf": "includes/LoopExport.php",
+    "LoopExportXml": "includes/LoopExport.php",
+    "LoopExportMp3": "includes/LoopExport.php",
+    "LoopExportPageMp3": "includes/LoopExport.php",
+    "LoopExportEpub": "includes/LoopExport.php",
+    "LoopExportHtml": "includes/LoopExport.php",
+    "LoopExportScorm": "includes/LoopExport.php",
+    "SpecialLoopExport": "includes/LoopExport.php",
+    "LoopSettings": "includes/LoopSettings.php",
+    "SpecialLoopSettings": "includes/LoopSettings.php",
+    "SpecialPurgeCache": "includes/PurgeCache.php",
+    "LoopException": "includes/LoopException.php",
+    "LoopObjectIndex": "includes/LoopObjectIndex.php",
+    "LoopObject": "includes/LoopObject.php",
+    "LoopFigure": "includes/LoopFigure.php",
+    "SpecialLoopFigures": "includes/LoopFigure.php",
+    "LoopFormula": "includes/LoopFormula.php",
+    "SpecialLoopFormulas": "includes/LoopFormula.php",
+    "LoopListing": "includes/LoopListing.php",
+    "SpecialLoopListings": "includes/LoopListing.php",
+    "LoopMedia": "includes/LoopMedia.php",
+    "SpecialLoopMedia": "includes/LoopMedia.php",
+    "LoopTable": "includes/LoopTable.php",
+    "SpecialLoopTables": "includes/LoopTable.php",
+    "LoopTask": "includes/LoopTask.php",
+    "SpecialLoopTasks": "includes/LoopTask.php",
+    "LoopReference": "includes/LoopReference.php",
+    "LoopCode": "includes/LoopCode.php",
+    "LoopLiterature": "includes/LoopLiterature.php",
+    "LoopLiteratureReference": "includes/LoopLiterature.php",
+    "SpecialLoopLiterature": "includes/LoopLiterature.php",
+    "SpecialLoopLiteratureEdit": "includes/LoopLiterature.php",
+    "SpecialLoopLiteratureImport": "includes/LoopLiterature.php",
+    "SpecialLoopLiteratureExport": "includes/LoopLiterature.php",
+    "LoopGlossary": "includes/LoopGlossary.php",
+    "SpecialLoopGlossary": "includes/LoopGlossary.php",
+    "LoopExternalContent": "includes/LoopExternalContent.php",
+    "LoopLegacy": "includes/LoopLegacy.php",
+    "LoopZoom": "includes/LoopZoom.php",
+    "LoopIndex": "includes/LoopIndex.php",
+    "SpecialLoopIndex": "includes/LoopIndex.php",
+    "LoopWikiEditor": "includes/LoopWikiEditor.php",
+    "LoopZip": "includes/LoopZip.php",
+    "LoopSidebar": "includes/LoopSidebar.php",
+    "LoopMediaHandler": "includes/LoopMediaHandler.php",
+    "LoopWikitextContentHandler": "includes/LoopWikitextContent.php",
+    "LoopWikitextContent": "includes/LoopWikitextContent.php",
+    "LoopTerminology": "includes/LoopTerminology.php",
+    "SpecialLoopTerminology": "includes/LoopTerminology.php",
+    "SpecialLoopTerminologyEdit": "includes/LoopTerminology.php",
+    "LoopScreenshot": "includes/LoopScreenshot.php",
+    "SpecialLoopExportPdfTest": "includes/LoopPdf.php",
+    "LoopBugReport": "includes/LoopBugReport.php",
+    "SpecialLoopBugReport": "includes/LoopBugReport.php",
+    "LoopFeedback": "includes/LoopFeedback.php",
+    "SpecialLoopFeedback": "includes/LoopFeedback.php",
+    "ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
+    "ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
+    "ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
+    "ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
+    "LoopAccordion": "includes/LoopAccordion.php",
+    "SpecialLoopImprint": "includes/Loop.php",
+    "SpecialLoopPrivacy": "includes/Loop.php",
+    "SpecialLoopRSS": "includes/LoopRSS.php",
+    "LoopNgSpice": "includes/LoopNgSpice.php",
+    "SpecialLoopNgSpice": "includes/LoopNgSpice.php",
+    "LoopComment": "includes/LoopComment.php",
+    "SpecialLoopPagesNotInStructure": "includes/LoopStructure.php",
+    "SpecialLoopSearch": "includes/LoopSearch.php",
+    "SpecialLoopTags": "includes/LoopTags.php",
+    "LoopTags": "includes/LoopTags.php"
+  },
+  "Hooks": {
+    "LoadExtensionSchemaUpdates": ["LoopUpdater::onLoadExtensionSchemaUpdates"],
+    "MediaWikiPerformAction": ["LoopHooks::onMediaWikiPerformAction"],
+    "PageRenderingHash": [
+      "LoopHooks::onPageRenderingHash",
+      "LoopConsent::onPageRenderingHash"
+    ],
+    "ParserFirstCallInit": [
+      "LoopObject::onParserSetup",
+      "LoopArea::onParserSetup",
+      "LoopParagraph::onParserSetup",
+      "LoopSidenote::onParserSetup",
+      "LoopToc::onParserSetup",
+      "LoopPrint::onParserSetup",
+      "LoopNoprint::onParserSetup",
+      "LoopReference::onParserSetup",
+      "LoopSpoiler::onParserSetup",
+      "LoopCode::onParserSetup",
+      "LoopLiterature::onParserSetup",
+      "LoopExternalContent::onParserSetup",
+      "LoopLegacy::onParserSetup",
+      "LoopZoom::onParserSetup",
+      "LoopIndex::onParserSetup",
+      "LoopSidebar::onParserSetup",
+      "LoopZip::onParserSetup",
+      "LoopMediaHandler::onParserSetup",
+      "LoopScreenshot::onParserSetup",
+      "LoopAccordion::onParserSetup",
+      "LoopNgSpice::onParserSetup",
+      "LoopComment::onParserSetup"
+    ],
+    "ParserAfterTidy": [
+      "LoopObject::onParserAfterTidy",
+      "LoopScreenshot::onParserAfterTidy"
+    ],
+    "SpecialPage_initList": ["LoopHooks::onSpecialPageinitList"],
+    "ParserMakeImageParams": ["LoopHooks::onParserMakeImageParams"],
+    "ArticleDeleteComplete": [
+      "LoopObject::onArticleDeleteComplete",
+      "LoopLiterature::onArticleDeleteComplete",
+      "LoopIndex::onArticleDeleteComplete",
+      "LoopTags::onArticleDeleteComplete"
+    ],
+    "AfterStabilizeChange": [
+      "LoopObject::onAfterStabilizeChange",
+      "LoopLiterature::onAfterStabilizeChange",
+      "LoopIndex::onAfterStabilizeChange",
+      "LoopTags::onAfterStabilizeChange"
+    ],
+    "AfterClearStable": [
+      "LoopObject::onAfterClearStable",
+      "LoopLiterature::onAfterClearStable",
+      "LoopIndex::onAfterClearStable",
+      "LoopTags::onAfterClearStable"
+    ],
+    "BeforePageDisplay": [
+      "LoopFeedback::onBeforePageDisplay",
+      "LoopScreenshot::onBeforePageDisplay"
+    ],
+    "LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
+    "EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
+    "UploadComplete": "LoopZip::onUploadComplete",
+    "PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
+    "PageContentSave": "LoopConsent::onPageContentSave",
+    "ParserBeforeInternalParse": "LoopConsent::onParserBeforeInternalParse",
+    "ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
+  },
+  "SpecialPages": {
+    "LoopStructure": "SpecialLoopStructure",
+    "LoopStructureEdit": "SpecialLoopStructureEdit",
+    "LoopExport": "SpecialLoopExport",
+    "LoopSettings": "SpecialLoopSettings",
+    "PurgeCache": "SpecialPurgeCache",
+    "LoopFigures": "SpecialLoopFigures",
+    "LoopFormulas": "SpecialLoopFormulas",
+    "LoopListings": "SpecialLoopListings",
+    "LoopMedia": "SpecialLoopMedia",
+    "LoopTables": "SpecialLoopTables",
+    "LoopTasks": "SpecialLoopTasks",
+    "LoopLiterature": "SpecialLoopLiterature",
+    "LoopLiteratureEdit": "SpecialLoopLiteratureEdit",
+    "LoopLiteratureImport": "SpecialLoopLiteratureImport",
+    "LoopLiteratureExport": "SpecialLoopLiteratureExport",
+    "LoopGlossary": "SpecialLoopGlossary",
+    "LoopIndex": "SpecialLoopIndex",
+    "LoopTerminology": "SpecialLoopTerminology",
+    "LoopTerminologyEdit": "SpecialLoopTerminologyEdit",
+    "LoopExportPdfTest": "SpecialLoopExportPdfTest",
+    "LoopBugReport": "SpecialLoopBugReport",
+    "LoopFeedback": "SpecialLoopFeedback",
+    "LoopImprint": "SpecialLoopImprint",
+    "LoopPrivacy": "SpecialLoopPrivacy",
+    "LoopRSS": "SpecialLoopRSS",
+    "LoopNgSpice": "SpecialLoopNgSpice",
+    "SpecialLoopMediaWikiUpdater": "SpecialLoopMediaWikiUpdater",
+    "LoopPagesNotInStructure": "SpecialLoopPagesNotInStructure",
+    "LoopSearch": "SpecialLoopSearch",
+    "LoopTags": "SpecialLoopTags"
+  },
+  "ResourceFileModulePaths": {
+    "localBasePath": "",
+    "remoteExtPath": "Loop"
+  },
+  "ResourceModules": {
+    "loop.special.settings.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.special.settings.js"],
+      "dependencies": [
+        "oojs-ui-core",
+        "oojs-ui-widgets",
+        "mediawiki.Upload.Dialog"
+      ]
     },
-    "LogHeaders": {
-        "loopexport": "log-name-loopexport"
+    "loop.special.literature-edit.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.special.literatureedit.js"]
     },
-    "LogActionsHandlers": {
-        "loopexport/*": "LogFormatter"
-	},
-	"namespaces": [
-		{
-			"id": 3000,
-			"constant": "NS_GLOSSARY",
-			"name": "loop-glossary-namespace",
-			"protection": "edit"
-		},
-		{
-			"id": 3001,
-			"constant": "NS_GLOSSARY_TALK",
-			"name": "loop-glossary-namespace",
-			"protection": "edittalk"
-		}
-	],
-	"APIModules": {
-		"loopfeedback-save": "ApiLoopFeedbackSave",
-		"loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
-		"loopfeedback-structure": "ApiLoopFeedbackStructure",
-		"loopfeedback-overview": "ApiLoopFeedbackOverview"
-	},
-	"manifest_version": 2
+    "loop.special.tags.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.special.tags.js"]
+    },
+    "loop.print.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.printtag.js"],
+      "messages": ["loopprint-printingarea"]
+    },
+    "loop.spoiler.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.spoiler.js"],
+      "messages": ["loopspoiler-default-title"]
+    },
+    "loop.wikiEditor.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.wikiEditor.js"],
+      "messages": [
+        "loopwikieditor-section-loop",
+        "loopwikieditor-section-references",
+        "loopwikieditor-references-loop_literature",
+        "loopwikieditor-references-loop_figure",
+        "loopwikieditor-references-loop_formula",
+        "loopwikieditor-references-loop_media",
+        "loopwikieditor-references-loop_listing",
+        "loopwikieditor-references-loop_task",
+        "loopwikieditor-references-loop_table",
+        "loopwikieditor-loop-object",
+        "loop_figure-name",
+        "loop_table-name",
+        "loop_media-name",
+        "loop_listing-name",
+        "loop_formula-name",
+        "loop_task-name",
+        "loopwikieditor-loop-object-media-rollover",
+        "loopwikieditor-loop-object-media-video",
+        "loopwikieditor-loop-object-media-interaction",
+        "loopwikieditor-loop-object-media-click",
+        "loopwikieditor-loop-object-media-audio",
+        "loopwikieditor-loop-object-media-animation",
+        "loopwikieditor-loop-object-media-simulation",
+        "loopwikieditor-loop-object-media-dragdrop",
+        "loopwikieditor-loop-areas",
+        "looparea-name-annotation",
+        "loopwikieditor-loop-area-area",
+        "loopwikieditor-loop-area-custom",
+        "looparea-name-arrangement",
+        "looparea-name-citation",
+        "looparea-name-definition",
+        "looparea-name-example",
+        "looparea-name-exercise",
+        "looparea-name-experiment",
+        "looparea-name-formula",
+        "looparea-name-important",
+        "looparea-name-indentation",
+        "looparea-name-law",
+        "looparea-name-learningobjectives",
+        "looparea-name-markedsentence",
+        "looparea-name-norm",
+        "looparea-name-notice",
+        "looparea-name-practice",
+        "looparea-name-question",
+        "looparea-name-reflection",
+        "looparea-name-sourcecode",
+        "looparea-name-summary",
+        "looparea-name-task",
+        "looparea-name-timerequirement",
+        "looparea-name-websource",
+        "loopwikieditor-loop-snippets",
+        "loopwikieditor-loop-snippets-spoiler",
+        "loopwikieditor-loop-snippets-zip",
+        "loopwikieditor-loop-snippets-paragraph",
+        "loopwikieditor-loop-snippets-toc",
+        "loopwikieditor-loop-snippets-literature",
+        "loopwikieditor-loop-snippets-math",
+        "loopwikieditor-loop-snippets-sidenote",
+        "loopwikieditor-loop-snippets-print",
+        "loopwikieditor-loop-snippets-noprint",
+        "loopwikieditor-loop-contents",
+        "loopwikieditor-loop-content-video",
+        "loopwikieditor-loop-content-audio",
+        "loopwikieditor-loop-content-youtube",
+        "loopwikieditor-loop-content-h5p",
+        "loopwikieditor-loop-content-panopto",
+        "loopwikieditor-loop-content-learningapps",
+        "loopwikieditor-loop-content-padlet",
+        "loopwikieditor-loop-content-taskcard",
+        "loopwikieditor-loop-content-prezi",
+        "loopwikieditor-loop-content-slideshare",
+        "loopwikieditor-loop-content-quizlet",
+        "loopscreenshot",
+        "loopwikieditor-loop-snippets-accordion",
+        "loopwikieditor-loop-snippets-syntaxhighlight"
+      ]
+    },
+    "loop.feedback.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.feedback.js"],
+      "messages": [
+        "loopfeedback-thanks-after-submit",
+        "loopfeedback-specialpage-feedback-info-sum-all",
+        "loopfeedback-specialpage-feedback-info-average-stars",
+        "loopfeedback-specialpage-feedback-info-count-comments",
+        "loopfeedback-specialpage-feedback-info-no-comments"
+      ]
+    },
+    "loop.ngspice.js": {
+      "position": "bottom",
+      "scripts": ["resources/js/loop.ngspice.js"],
+      "messages": ["loopngspice-error-min-value"]
+    }
+  },
+  "TrackingCategories": [
+    "loop-tracking-category-error",
+    "looplegacy-tracking-category"
+  ],
+  "GroupPermissions": {
+    "*": {
+      "editmyoptions": true,
+      "viewmyprivateinfo": true,
+      "editmyprivateinfo": true,
+      "loop-toc-edit": false,
+      "loop-export-pdf": false,
+      "loop-export-xml": false,
+      "loop-export-mp3": false,
+      "loop-export-epub": false,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": false,
+      "loop-view-export-log": false,
+      "createtalk": false,
+      "createpage": false,
+      "writeapi": false,
+      "loop-view-special-pages": false,
+      "loop-edit-literature": false,
+      "loop-pdf-test": false,
+      "loopfeedback-view": false,
+      "loopfeedback-view-results": false,
+      "loopfeedback-view-comments": false,
+      "loopfeedback-reset": false
+    },
+    "user": {
+      "read": true,
+      "loopfeedback-view": true
+    },
+    "bot": {
+      "loop-toc-edit": true,
+      "loop-export-pdf": true,
+      "loop-export-xml": true,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-settings-edit": false,
+      "loop-pageaudio": true,
+      "createpage": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": false
+    },
+    "sysop": {
+      "loop-toc-edit": true,
+      "loop-export-pdf": true,
+      "loop-export-xml": true,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": true,
+      "loop-export-scorm": true,
+      "loop-pageaudio": true,
+      "loop-settings-edit": true,
+      "loop-view-export-log": true,
+      "createpage": true,
+      "loop-rendermode": true,
+      "purgecache": true,
+      "unreviewedpages": true,
+      "edit": true,
+      "review": true,
+      "autoreview": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": true,
+      "editsitecss": true,
+      "editsitejs": true,
+      "editinterface": true,
+      "writeapi": true,
+      "loop-pdf-test": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": true,
+      "loopfeedback-view-comments": true,
+      "loopfeedback-reset": true
+    },
+    "author": {
+      "loop-toc-edit": true,
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": true,
+      "loop-export-scorm": true,
+      "loop-pageaudio": true,
+      "loop-settings-edit": true,
+      "loop-view-export-log": true,
+      "unreviewedpages": true,
+      "upload": true,
+      "autoreview": true,
+      "noratelimit": true,
+      "edit": true,
+      "createpage": true,
+      "purge": true,
+      "review": true,
+      "purgecache": true,
+      "reupload": true,
+      "move": true,
+      "movefile": true,
+      "deletedtext": true,
+      "deletedhistory": true,
+      "browsearchive": true,
+      "rollback": true,
+      "delete": true,
+      "undelete": true,
+      "protect": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": true,
+      "editsitecss": true,
+      "editsitejs": true,
+      "editinterface": true,
+      "writeapi": true,
+      "loop-pdf-test": true,
+      "skipcaptcha": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": true,
+      "loopfeedback-view-comments": true,
+      "loopfeedback-reset": true
+    },
+    "teacher_approve": {
+      "loop-toc-edit": true,
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": true,
+      "loop-export-scorm": true,
+      "loop-pageaudio": true,
+      "loop-settings-edit": true,
+      "loop-view-export-log": true,
+      "unreviewedpages": true,
+      "upload": true,
+      "autoreview": true,
+      "noratelimit": true,
+      "edit": true,
+      "createpage": true,
+      "purge": true,
+      "review": true,
+      "purgecache": true,
+      "reupload": true,
+      "move": true,
+      "movefile": true,
+      "deletedtext": true,
+      "deletedhistory": true,
+      "browsearchive": true,
+      "rollback": true,
+      "delete": true,
+      "undelete": true,
+      "protect": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": true,
+      "editsitecss": true,
+      "editsitejs": true,
+      "editinterface": true,
+      "writeapi": true,
+      "loop-pdf-test": true,
+      "skipcaptcha": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": true,
+      "loopfeedback-view-comments": true,
+      "loopfeedback-reset": false
+    },
+    "teacher_edit": {
+      "loop-toc-edit": true,
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": true,
+      "loop-settings-edit": false,
+      "unreviewedpages": true,
+      "upload": true,
+      "noratelimit": true,
+      "edit": true,
+      "createpage": true,
+      "purge": true,
+      "reupload": true,
+      "purgecache": true,
+      "move": true,
+      "movefile": true,
+      "deletedtext": true,
+      "deletedhistory": true,
+      "browsearchive": true,
+      "rollback": true,
+      "delete": true,
+      "undelete": true,
+      "protect": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": true,
+      "writeapi": true,
+      "loop-pdf-test": true,
+      "skipcaptcha": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": true,
+      "loopfeedback-view-comments": true,
+      "loopfeedback-reset": false
+    },
+    "teacher_no_edit": {
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": true,
+      "loop-settings-edit": false,
+      "purge": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": false,
+      "skipcaptcha": true,
+      "writeapi": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": true,
+      "loopfeedback-view-comments": true,
+      "loopfeedback-reset": false
+    },
+    "student_edit": {
+      "edit": true,
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": true,
+      "loop-settings-edit": false,
+      "reupload": true,
+      "upload": true,
+      "purge": true,
+      "createpage": true,
+      "deletedtext": true,
+      "deletedhistory": true,
+      "browsearchive": true,
+      "loop-view-special-pages": true,
+      "loop-edit-literature": true,
+      "writeapi": true,
+      "loop-pdf-test": true,
+      "skipcaptcha": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": false,
+      "loopfeedback-view-comments": false,
+      "loopfeedback-reset": false
+    },
+    "student_no_edit": {
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": true,
+      "loop-settings-edit": false,
+      "loop-edit-literature": false,
+      "loop-view-special-pages": false,
+      "skipcaptcha": true,
+      "writeapi": true,
+      "loopfeedback-view": true,
+      "loopfeedback-view-results": false,
+      "loopfeedback-view-comments": false,
+      "loopfeedback-reset": false
+    },
+    "shared": {
+      "editmyoptions": false,
+      "viewmyprivateinfo": false,
+      "editmyprivateinfo": false,
+      "loop-export-pdf": true,
+      "loop-export-xml": false,
+      "loop-export-mp3": true,
+      "loop-export-epub": true,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": true,
+      "loop-settings-edit": false,
+      "loop-edit-literature": false,
+      "loop-view-special-pages": false,
+      "skipcaptcha": true,
+      "loopfeedback-view": false,
+      "loopfeedback-view-results": false,
+      "loopfeedback-view-comments": false,
+      "loopfeedback-reset": false
+    },
+    "shared_basic": {
+      "editmyoptions": false,
+      "viewmyprivateinfo": false,
+      "editmyprivateinfo": false,
+      "loop-export-pdf": false,
+      "loop-export-xml": false,
+      "loop-export-mp3": false,
+      "loop-export-epub": false,
+      "loop-export-html": false,
+      "loop-export-scorm": false,
+      "loop-pageaudio": false,
+      "loop-settings-edit": false,
+      "loop-edit-literature": false,
+      "loop-view-special-pages": false,
+      "skipcaptcha": true,
+      "loopfeedback-view": false,
+      "loopfeedback-view-results": false,
+      "loopfeedback-view-comments": false,
+      "loopfeedback-reset": false
+    }
+  },
+  "DefaultUserOptions": {
+    "LoopEditMode": false,
+    "LoopRenderMode": "default"
+  },
+  "HiddenPrefs": [
+    "LoopRenderMode",
+    "language",
+    "fancysig",
+    "nickname",
+    "gender",
+    "skin",
+    "math",
+    "imagesize",
+    "thumbsize",
+    "date",
+    "diffonly",
+    "norollbackdiff",
+    "underline",
+    "stubthreshold",
+    "showhiddencats",
+    "numberheadings",
+    "showhiddencats",
+    "timecorrection",
+    "editsectiononrightclick",
+    "editondblclick",
+    "flaggedrevseditdiffs",
+    "editfont",
+    "forceeditsummary",
+    "useeditwarning",
+    "showtoolbar",
+    "usebetatoolbar",
+    "previewonfirst",
+    "previewontop",
+    "uselivepreview",
+    "rcdays",
+    "rclimit",
+    "usenewrc",
+    "hideminor",
+    "newpageshidepatrolled",
+    "flaggedrevssimpleui",
+    "flaggedrevsstable",
+    "flaggedrevsviewdiffs",
+    "watchlistdays",
+    "extendwatchlist",
+    "wllimit",
+    "watchlisthideown",
+    "watchlisthidebots",
+    "watchlisthideminor",
+    "watchcreations",
+    "watchrollback",
+    "watchlisthideanons",
+    "watchlisthideliu",
+    "watchlisttoken",
+    "watchlisthidepatrolled",
+    "watchlistreloadautomatically",
+    "watchlistunwatchlinks",
+    "watchlisthidecategorization",
+    "watchrollback",
+    "watchdefault",
+    "watchmoves",
+    "watchdeletion",
+    "watchuploads",
+    "flaggedrevswatch",
+    "rcenhancedfilters-disable",
+    "wlenhancedfilters-disable",
+    "showrollbackconfirmation",
+    "minordefault",
+    "hidepatrolled",
+    "oldsig"
+  ],
+  "AvailableRights": [
+    "loop-toc-edit",
+    "loop-export-pdf",
+    "loop-export-xml",
+    "loop-export-mp3",
+    "loop-export-epub",
+    "loop-export-html",
+    "loop-export-scorm",
+    "loop-rendermode",
+    "loop-settings-edit",
+    "loop-view-export-log",
+    "loop-view-special-pages",
+    "loop-edit-literature",
+    "loopfeedback-view",
+    "loopfeedback-view-results",
+    "loopfeedback-view-comments",
+    "loopfeedback-reset"
+  ],
+  "MessagesDirs": {
+    "Loop": ["i18n"]
+  },
+  "ExtensionMessagesFiles": {
+    "LoopAlias": "Loop.i18n.alias.php",
+    "LoopMagic": "Loop.i18n.magic.php"
+  },
+  "config": {
+    "Text2SpeechServiceUrl": {
+      "value": "",
+      "description": "URL of the Service to convert text to speech"
+    },
+    "Text2Speech": {
+      "value": false,
+      "description": "Possibility to enable text to speech feature from LocalSettings."
+    },
+    "PdfExport": {
+      "value": false,
+      "description": "Possibility to enable pdf export feature from LocalSettings."
+    },
+    "EpubExport": {
+      "value": false,
+      "description": "Possibility to enable ePub export feature from LocalSettings."
+    },
+    "HtmlExport": {
+      "value": false,
+      "description": "Possibility to enable html export feature from LocalSettings."
+    },
+    "XmlExport": {
+      "value": false,
+      "description": "Possibility to enable xml export feature from LocalSettings."
+    },
+    "ScormExport": {
+      "value": false,
+      "description": "Possibility to enable scorm export feature from LocalSettings."
+    },
+    "AudioExport": {
+      "value": false,
+      "description": "Possibility to enable audiobook export feature from LocalSettings."
+    },
+    "Xmlfo2PdfServiceUrl": {
+      "value": "",
+      "description": "URL of the Service to convert XMLFO to PDF"
+    },
+    "Xmlfo2PdfServiceToken": {
+      "value": "",
+      "description": "Token for the Service to convert XMLFO to PDF"
+    },
+    "H5PHostUrl": {
+      "value": "https://h5p.com/h5p/embed/",
+      "description": "URL for H5P hosted elements"
+    },
+    "H5PHostUrlAppendix": {
+      "value": "",
+      "description": "Some H5P Hosts require the ID before the end of the URL"
+    },
+    "PanoptoHostUrl": {
+      "value": "",
+      "description": "URL for Panopto hosted elements"
+    },
+    "LearningAppUrl": {
+      "value": "https://LearningApps.org/watch?",
+      "description": "URL for LearningApps elements"
+    },
+    "PadletUrl": {
+      "value": "https://www.padlet.com/embed/",
+      "description": "URL for Padlet elements"
+    },
+    "TaskcardUrl": {
+      "value": "https://www.taskcards.de/#/board/",
+      "description": "URL for Taskcard elements"
+    },
+    "PreziUrl": {
+      "value": "https://prezi.com/embed/",
+      "description": "URL for Prezi elements"
+    },
+    "SlideshareUrl": {
+      "value": "//www.slideshare.net/slideshow/embed_code/key/",
+      "description": "URL for Slideshare elements"
+    },
+    "QuizletUrl": {
+      "value": "https://www.quizlet.com/",
+      "description": "URL for Quizlet elements"
+    },
+    "LoopSocialIcons": {
+      "value": {
+        "Facebook": {
+          "icon": "",
+          "link": ""
+        },
+        "Twitter": {
+          "icon": "",
+          "link": ""
+        },
+        "Youtube": {
+          "icon": "",
+          "link": ""
+        },
+        "Github": {
+          "icon": "",
+          "link": ""
+        },
+        "Instagram": {
+          "icon": "",
+          "link": ""
+        }
+      },
+      "description": "Array of settings to configure social icons in footer area"
+    },
+    "LoopImprintLink": {
+      "value": "Impressum",
+      "description": "Link to imprint page; required"
+    },
+    "LoopPrivacyLink": {
+      "value": "Datenschutz",
+      "description": "Link to privacy policy page; required"
+    },
+    "LoopRightsType": {
+      "value": "",
+      "description": "Type of CC-Licenses to use"
+    },
+    "LoopExtraFooter": {
+      "value": false,
+      "description": "Whether extra footer with content from MediaWiki:ExtraFooter should be shown or not"
+    },
+    "LoopExtraSidebar": {
+      "value": false,
+      "description": "Whether a sidebar with content from MediaWiki:ExtraSidebar should be shown or not"
+    },
+    "AvailableLicenses": {
+      "value": {
+        "": {
+          "icon": "",
+          "url": ""
+        },
+        "Public Domain": {
+          "url": "https://creativecommons.org/publicdomain/mark/1.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-pd'></span>"
+        },
+        "CC-0": {
+          "url": "https://creativecommons.org/publicdomain/zero/1.0",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-zero'></span>"
+        },
+        "CC-BY-3.0": {
+          "url": "https://creativecommons.org/licenses/by/3.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span>"
+        },
+        "CC-BY-4.0": {
+          "url": "https://creativecommons.org/licenses/by/4.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span>"
+        },
+        "CC-BY-SA-3.0": {
+          "url": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-sa'></span>"
+        },
+        "CC-BY-SA-4.0": {
+          "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-sa'></span>"
+        },
+        "CC-BY-NC-3.0": {
+          "url": "https://creativecommons.org/licenses/by-nc/3.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span>"
+        },
+        "CC-BY-NC-4.0": {
+          "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span>"
+        },
+        "CC-BY-ND-3.0": {
+          "url": "https://creativecommons.org/licenses/by-nd/3.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nd'></span>"
+        },
+        "CC-BY-ND-4.0": {
+          "url": "https://creativecommons.org/licenses/by-nd/4.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nd'></span>"
+        },
+        "CC-BY-NC-SA-3.0": {
+          "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-sa'></span>"
+        },
+        "CC-BY-NC-SA-4.0": {
+          "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-sa'></span>"
+        },
+        "CC-BY-NC-ND-3.0": {
+          "url": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-nd'></span>"
+        },
+        "CC-BY-NC-ND-4.0": {
+          "url": "https://creativecommons.org/licenses/by-nd-nd/4.0/",
+          "icon": "<span class='ic-cc'></span><span class='ic-cc-by'></span><span class='ic-cc-nc'></span><span class='ic-cc-nd'></span>"
+        }
+      },
+      "description": "Array of available Creative Commons licenses to apply"
+    },
+    "LoopCustomLogo": {
+      "value": {
+        "useCustomLogo": false,
+        "customFileName": "",
+        "customFilePath": ""
+      },
+      "description": "Array of information about a custom logo for header"
+    },
+    "LoopObjectDefaultRenderOption": {
+      "value": "marked",
+      "description": ""
+    },
+    "LoopObjectNumbering": {
+      "value": true,
+      "description": "Default value for activating object numberings"
+    },
+    "LoopLegacyPageNumbering": {
+      "value": true,
+      "description": "Default value for activating page numberings. Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
+    },
+    "LoopLegacyShowTitles": {
+      "value": true,
+      "description": "Legacy configuration for migrated LOOP1 instances - Do not use for new LOOPs!"
+    },
+    "LoopNumberingType": {
+      "value": "ongoing",
+      "description": "Setting default type for numbering of objects [ongoing|chapter]"
+    },
+    "LoopMediaDefaultType": {
+      "value": "media",
+      "description": ""
+    },
+    "LoopSpoilerDefaultType": {
+      "value": "default",
+      "description": "Setting default type for loop spoiler"
+    },
+    "LoopLiteratureCiteType": {
+      "value": "harvard",
+      "description": "Setting default type citiations of literature"
+    },
+    "LoopScreenshotUrl": {
+      "value": "",
+      "description": "URL for rendering screenshots service"
+    },
+    "LoopExternalServiceBugReportUrl": {
+      "value": "",
+      "description": "URL for external ticket handling service. Overrides LoopBugReportEmail."
+    },
+    "LoopExternalServiceUser": {
+      "value": "",
+      "description": "External service user"
+    },
+    "LoopExternalServicePw": {
+      "value": "",
+      "description": "Password for external service user"
+    },
+    "LoopBugReportEmail": {
+      "value": "",
+      "description": "E-Mail address for ticket handling. Will be ignored if LoopExternalTicketsServiceUrl is set."
+    },
+    "LoopBugReportEnabled": {
+      "value": true,
+      "description": "Enable bug reports for users."
+    },
+    "LoopFeedbackLevel": {
+      "value": "none",
+      "description": "[none|module|chapter]"
+    },
+    "LoopFeedbackMode": {
+      "value": "second_half",
+      "description": "[always|last_sublevel|second_half]"
+    },
+    "LoopExternalImprintPrivacy": {
+      "value": false,
+      "description": "Activate external download of imprint and privacy texts"
+    },
+    "LoopExternalPrivacyUrl": {
+      "value": "",
+      "description": "Url for fetching privacy data"
+    },
+    "LoopExternalImprintUrl": {
+      "value": "",
+      "description": "Url for fetching imprint data"
+    },
+    "LoopRSSToken": {
+      "value": "",
+      "description": "Token for viewing RSS without logging in"
+    },
+    "LoopUnprotectedRSS": {
+      "value": false,
+      "description": "Enable RSS feed page without login"
+    },
+    "LoopExportDebug": {
+      "value": false,
+      "description": "Enable debug mode for export - files are always newly created."
+    },
+    "LoopNgSpiceUrl": {
+      "value": "",
+      "description": "Service Url for NgSpice."
+    },
+    "LoopEditorHideReferences": {
+      "value": false,
+      "description": "Hide References from LOOP WikiEditor for faster loading."
+    },
+    "LoopEnableConsent": {
+      "value": true,
+      "description": "Enable Loop's own consent banner before showing external content"
+    }
+  },
+  "LogTypes": ["loopexport"],
+  "LogNames": {
+    "loopexport": "log-name-loopexport"
+  },
+  "LogHeaders": {
+    "loopexport": "log-name-loopexport"
+  },
+  "LogActionsHandlers": {
+    "loopexport/*": "LogFormatter"
+  },
+  "namespaces": [
+    {
+      "id": 3000,
+      "constant": "NS_GLOSSARY",
+      "name": "loop-glossary-namespace",
+      "protection": "edit"
+    },
+    {
+      "id": 3001,
+      "constant": "NS_GLOSSARY_TALK",
+      "name": "loop-glossary-namespace",
+      "protection": "edittalk"
+    }
+  ],
+  "APIModules": {
+    "loopfeedback-save": "ApiLoopFeedbackSave",
+    "loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
+    "loopfeedback-structure": "ApiLoopFeedbackStructure",
+    "loopfeedback-overview": "ApiLoopFeedbackOverview"
+  },
+  "manifest_version": 2
 }

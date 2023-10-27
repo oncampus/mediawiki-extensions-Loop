@@ -20,6 +20,7 @@ $specialPageAliases['en'] = array(
 	'LoopMedia' => array( 'List of media' ),
 	'LoopTables' => array( 'List of tables' ),
 	'LoopTasks' => array( 'List of tasks' ),
+	'LoopTags' => array( 'List of tags' ),
 	'LoopLiterature' => array( 'Bibliography' ),
 	'LoopLiteratureEdit' => array( 'Edit literature' ),
 	'LoopLiteratureImport' => array( 'Import literature' ),
@@ -134,6 +135,3 @@ $specialPageAliases['es'] = array(
 	'LoopPagesNotInStructure' => array( 'Pages not in table of contents' ),
 	'LoopSearch' => array( 'Wikitext search' )
 );
-
-
-?>
