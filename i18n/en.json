@@ -497,6 +497,8 @@
   "looptags-specialpage-overview-list": "List of all used tags",
   "looptags-specialpage-get-all-button": "Search all of Loop for tags",
   "looptags-specialpage-filter-tags-desc": "Filter Tags",
+  "looptags-specialpage-refresh-text": "Searching for tags",
+  "looptags-specialpage-refresh-back": "Return To Page",
   "looptags-specialpage-all": "All",
   "looptags-specialpage-none": "None",
 

@@ -185,6 +185,7 @@
       "LoopScreenshot::onBeforePageDisplay"
     ],
     "LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
+    "PageSaveComplete": "LoopTags::onPageSaveComplete",
     "EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
     "UploadComplete": "LoopZip::onUploadComplete",
     "PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",

@@ -495,6 +495,8 @@
 
   "looptags-specialpage-overview-list": "Liste aller genutzten Tags",
   "looptags-specialpage-get-all-button": "Dursuche Loop nach genutzten Tags",
+  "looptags-specialpage-refresh-text": "Suche nach Tags",
+  "looptags-specialpage-refresh-back": "Zurück zur Seite",
   "looptags-specialpage-filter-tags-desc": "Tags filtern",
   "looptags-specialpage-all": "Alle",
   "looptags-specialpage-none": "Keine",

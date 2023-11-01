@@ -12,31 +12,10 @@ use MediaWiki\MediaWikiServices;
 
 class LoopTags
 {
-
-    /**
-     * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
-     * @param Title $title
-     * @param Content $content
-     */
-
-
-    public static function onAfterStabilizeChange($title, $content, $userId)
+    public static function onPageSaveComplete($wikiPage)
     {
-        if (!self::checkIfEmpty()) {
-            $latestRevId = $title->getLatestRevID();
-            $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
-            $fwp = new FlaggableWikiPage($title);
-
-            if (isset($fwp)) {
-                $stableRevId = $fwp->getStable();
-
-                if ($latestRevId == $stableRevId || $stableRevId == null) {
-                    $contentText = ContentHandler::getContentText($content);
-                    return self::extractUsedTags($contentText, $title);
-                }
-            }
-        }
-        return true;
+        $contentText = ContentHandler::getContentText($wikiPage->getContent());
+        return self::extractUsedTags($contentText, $wikiPage->getTitle());
     }
 
 
@@ -44,31 +23,12 @@ class LoopTags
      * Call to be used, when the page just needs to be scanned manually
      * @param Title title the title object, from which one can get the content
      */
-
     public static function savePageUsingTitle($title)
     {
         $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
         $contentText = ContentHandler::getContentText($wikiPage->getContent());
         return self::extractUsedTags($contentText, $title);
     }
-
-    /**
-     * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion()
-     * @param Title $title
-     */
-
-    public static function onAfterClearStable($title)
-    {
-        if (!self::checkIfEmpty()) {
-            $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
-            $contentText = ContentHandler::getContentText($wikiPage->getContent());
-            return self::extractUsedTags($contentText, $title);
-        }
-        return true;
-    }
-
-
-
 
     /**
      * Extracts used tags and saves them in the db
@@ -118,12 +78,12 @@ class LoopTags
             __METHOD__
         );
         // If one already exists, we update the entry
-        if (count($result) != 0) {
+        if (count($result) > 0) {
             // simplest way to get the entry:
             foreach ($result as $res) {
                 // we also check, if the value is the same one
                 if ($res->ltu_tags_used != implode("##", $tagArray)) {
-                    // get a write connection
+                    // we found something, so establish a connection
                     $dbw = wfGetDB(DB_PRIMARY);
                     $dbw->update(
                         'loop_used_tags',
@@ -234,17 +194,23 @@ class SpecialLoopTags extends SpecialPage
 
         $tagArray = LoopTags::getAllUsedTags();
 
-        if (isset($_POST['getAll']) && empty($tagArray)) {
+        if (isset($_POST['getAll'])) {
             LoopUpdater::saveAllWikiPages();
-            $html .= '<h2>Es lädt...</h2>';
-        } elseif (!empty($tagArray)) {
+            $html .= wfMessage('looptags-specialpage-refresh-text');
+            $html .= ' <form method="post"><input type="submit" value="' . wfMessage('looptags-specialpage-refresh-back') . '"/></form>';
+            return $html;
+        }
+
+        // Updatebutton
+        $html .= ' <form method="post"><input type="submit" name="getAll" value="' . wfMessage('looptags-specialpage-get-all-button') . '"/></form>';
+
+        if (!empty($tagArray)) {
             $filteredTags = $tagArray;
             // Get used tags
             $html .= self::renderTagOccurenceList($tagArray);
             $html .= self::renderTagFilters($filteredTags);
-        } else {
-            $html .= ' <form method="post"><input type="submit" name="getAll" value="' . wfMessage('looptags-specialpage-get-all-button') . '"/></form>';
         }
+
         return $html;
     }
 
