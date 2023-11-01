@@ -178,7 +178,7 @@ class SpecialLoopTags extends SpecialPage
         Loop::handleLoopRequest($out, $request, $user); #handle editmode
         $out->addModules('loop.special.tags.js');
 
-        $out->setPageTitle($this->msg('looptags-specialpage-title'));
+        $out->setPageTitle($this->msg('looptags'));
         $html = self::renderLoopTagSpecialPage();
         $out->addHtml($html);
     }
@@ -202,7 +202,7 @@ class SpecialLoopTags extends SpecialPage
         }
 
         // Updatebutton
-        $html .= ' <form method="post"><input type="submit" name="getAll" value="' . wfMessage('looptags-specialpage-get-all-button') . '"/></form>';
+        $html .= '<br/><form method="post"><input type="submit" name="getAll" value="' . wfMessage('looptags-specialpage-get-all-button') . '"/></form>';
 
         if (!empty($tagArray)) {
             $filteredTags = $tagArray;
@@ -220,7 +220,7 @@ class SpecialLoopTags extends SpecialPage
      */
     private static function renderTagOccurenceList($tagArray)
     {
-        $out = '<div id="tag_overview">';
+        $out = '<br/><div id="tag_overview">';
         // create link-renderer
         $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
         //create table
