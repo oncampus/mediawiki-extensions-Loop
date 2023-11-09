@@ -172,10 +172,33 @@ class LoopTags
                     $returnTags[$id] = $tempTags;
                 }
             }
-            return $returnTags;
+            return self::castIDsToText($returnTags);
         } else {
-            return self::getAllUsedTags();
+            return self::castIDsToText(self::getAllUsedTags());
         }
+    }
+
+    private static function castIDsToText($tagArray)
+    {
+        $returnArray = [];
+        foreach ($tagArray as $id => $tags) {
+            $title = Title::newFromID($id);
+            $returnArray[$title->getText()] = $tags;
+        }
+        return $returnArray;
+    }
+
+    private static function castIDsToLink($tagArray)
+    {
+        $returnArray = [];
+        foreach ($tagArray as $id => $tags) {
+            $title = Title::newFromID($id);
+            $returnArray[$title->getFullURL()] = $tags;
+            /* Alternatives to getFullURL():
+            getLinkURL(), getCanonicalURL()
+            */
+        }
+        return $returnArray;
     }
 }
 
