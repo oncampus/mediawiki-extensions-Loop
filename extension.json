@@ -123,7 +123,8 @@
     "SpecialLoopPagesNotInStructure": "includes/LoopStructure.php",
     "SpecialLoopSearch": "includes/LoopSearch.php",
     "SpecialLoopTags": "includes/LoopTags.php",
-    "LoopTags": "includes/LoopTags.php"
+    "LoopTags": "includes/LoopTags.php",
+    "ApiLoopTags": "includes/LoopTagsApi.php"
   },
   "Hooks": {
     "LoadExtensionSchemaUpdates": ["LoopUpdater::onLoadExtensionSchemaUpdates"],
@@ -171,14 +172,12 @@
     "AfterStabilizeChange": [
       "LoopObject::onAfterStabilizeChange",
       "LoopLiterature::onAfterStabilizeChange",
-      "LoopIndex::onAfterStabilizeChange",
-      "LoopTags::onAfterStabilizeChange"
+      "LoopIndex::onAfterStabilizeChange"
     ],
     "AfterClearStable": [
       "LoopObject::onAfterClearStable",
       "LoopLiterature::onAfterClearStable",
-      "LoopIndex::onAfterClearStable",
-      "LoopTags::onAfterClearStable"
+      "LoopIndex::onAfterClearStable"
     ],
     "BeforePageDisplay": [
       "LoopFeedback::onBeforePageDisplay",
@@ -1079,7 +1078,8 @@
     "loopfeedback-save": "ApiLoopFeedbackSave",
     "loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
     "loopfeedback-structure": "ApiLoopFeedbackStructure",
-    "loopfeedback-overview": "ApiLoopFeedbackOverview"
+    "loopfeedback-overview": "ApiLoopFeedbackOverview",
+    "looptags-request": "ApiLoopTags"
   },
   "manifest_version": 2
 }

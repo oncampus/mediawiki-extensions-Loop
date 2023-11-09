@@ -1,10 +1,9 @@
 <?php
 
 /**
- * @description A parser extension that adds the tag <loop_task> to mark content as task and provide a table of tasks
+ * @description A whole lot of Functions around the usage of (html-)tags in a loop-system 
  * @ingroup Extensions
- * @author Marc Vorreiter @vorreiter <marc.vorreiter@th-luebeck.de>
- * @author Dennis Krohn @krohnden <dennis.krohn@th-luebeck.de>
+ * @author Daniel Waage <danielwaage@hotmail.de>
  */
 if (!defined('MEDIAWIKI')) die("This file cannot be run standalone.\n");
 
@@ -154,11 +153,29 @@ class LoopTags
     }
 
     /**
-     * Returns true, if the DB is empty
+     * Returns just the Pages, on which a certain tag is used
+     * If none are given, will return all
+     * @param array $tag A singular tag to be searched for
      */
-    private static function checkIfEmpty()
+    public static function getCertainUsedTag($tag)
     {
-        return empty(self::getAllUsedTags());
+        if (!empty($tag)) {
+            $allTags = self::getAllUsedTags();
+            $returnTags = [];
+
+            foreach ($allTags as $id => $tagArr) {
+                $tempTags = [];
+                if (in_array($tag, $tagArr)) {
+                    array_push($tempTags, $tag);
+                }
+                if (!empty($tempTags)) {
+                    $returnTags[$id] = $tempTags;
+                }
+            }
+            return $returnTags;
+        } else {
+            return self::getAllUsedTags();
+        }
     }
 }
 
@@ -175,12 +192,14 @@ class SpecialLoopTags extends SpecialPage
         $out = $this->getOutput();
         $request = $this->getRequest();
         $user = $this->getUser();
+        $permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
         Loop::handleLoopRequest($out, $request, $user); #handle editmode
         $out->addModules('loop.special.tags.js');
-
-        $out->setPageTitle($this->msg('looptags'));
-        $html = self::renderLoopTagSpecialPage();
-        $out->addHtml($html);
+        if ($permissionManager->userHasRight($user, 'loop-view-special-pages')) {
+            $out->setPageTitle($this->msg('looptags'));
+            $html = self::renderLoopTagSpecialPage();
+            $out->addHtml($html);
+        }
     }
 
     /**
@@ -224,9 +243,9 @@ class SpecialLoopTags extends SpecialPage
         // create link-renderer
         $linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
         //create table
-        $out .= '<h2>';
+        $out .= '<h3>';
         $out .= wfMessage('looptags-specialpage-overview-list')->text() . ':';
-        $out .= '</h2>';
+        $out .= '</h3>';
 
         $out .= '<table class="table table-hover list_of_objects"><tbody id="tag_table">';
         //fill table
@@ -265,9 +284,9 @@ class SpecialLoopTags extends SpecialPage
             }
         }
         $tags = array_unique($tags);
-        $out = '<div class="p-3 bg-light border"><form id="tag-filter">';
+        $out = '<br/><div class="p-3 bg-light border"><form id="tag-filter">';
         $out .= '<div id="filter-table">';
-        $out .= '<h4 class="float-left">' . wfMessage('looptags-specialpage-filter-tags-desc')->text() . '</h4>';
+        $out .= '<h3 class="float-left">' . wfMessage('looptags-specialpage-filter-tags-desc')->text() . '</h3>';
         $out .= '<div class="float-right">';
         $out .= '<input id="tag-filter-toggle-all" type="button" value="' . wfMessage('looptags-specialpage-all')->text() . '"/>';
         $out .= '<input id="tag-filter-toggle-none" class="ml-1" type="button" value="' . wfMessage('looptags-specialpage-none')->text() . '"/>';
@@ -277,7 +296,10 @@ class SpecialLoopTags extends SpecialPage
         $counter = 0;
         $out .= '<div class="container pt-2 pb-2"><div class="row">';
         foreach ($tags as $tag) {
-            $out .= '<div class="col"><input class="filter-check" type="checkbox" id="' . $tag . '" name="filter" value="1"/><lable class="ml-2" for="' . $tag . '">' . $tag . '</label></div>';
+            $out .= '<div class="col">';
+            $out .= '<input class="filter-check mr-1" type="checkbox" id="' . $tag . '" name="filter" value="1"/>';
+            $out .= '<lable class="ml-2" for="' . $tag . '">' . $tag . '</label>';
+            $out .= '</div>';
             $counter++;
             if ($counter >= $amountInRow) {
                 $out .= '</div><div class="row">';
