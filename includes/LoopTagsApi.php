@@ -20,6 +20,23 @@ class ApiLoopTags extends ApiBase
 
     public function execute()
     {
+        $permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+        $user = $this->getUser();
+        if ($user->getBlock() != null) {
+            $this->dieWithError(
+                $this->msg('loopfeedback-error-blocked')->escaped(),
+                'userblocked'
+            );
+        }
+
+        if (!$permissionManager->userHasRight($user, 'loopfeedback-view')) {
+            $this->dieWithError(
+                $this->msg('loopfeedback-error-nopermission')->escaped(),
+                'nopermission'
+            );
+        }
+
+
         $result = $this->getResult();
         $params = $this->extractRequestParams();
         $searchedTag = '';
