@@ -40,10 +40,14 @@ class ApiLoopTags extends ApiBase
         $result = $this->getResult();
         $params = $this->extractRequestParams();
         $searchedTag = '';
+        $format = '';
         if (isset($params['tags'])) {
             $searchedTag = $params['tags'];
         }
-        $resultArray = LoopTags::getCertainUsedTag($searchedTag);
+        if (isset($params['formatting'])) {
+            $format = $params['formatting'];
+        }
+        $resultArray = LoopTags::getCertainUsedTag($searchedTag, $format);
 
         $result->addValue(null, $this->getModuleName(), $resultArray);
     }
@@ -56,6 +60,10 @@ class ApiLoopTags extends ApiBase
     {
         $ret = array(
             'tags' => array(
+                ParamValidator::PARAM_TYPE     => 'string',
+                ParamValidator::PARAM_REQUIRED => false,
+            ),
+            'formatting' => array(
                 ParamValidator::PARAM_TYPE     => 'string',
                 ParamValidator::PARAM_REQUIRED => false,
             )
@@ -75,7 +83,8 @@ class ApiLoopTags extends ApiBase
     public function getParamDescription()
     {
         return array(
-            'tags'      => "Multiple (html-)tags to look for in this Loop cluster."
+            'tags'      => "(HTML-)Tag to look for in this Loop cluster. If left empty, request will get ALL the tags.",
+            'formatting'      => "Can either be \"text\", \"link\" or none. This parameter will only affect the keys in the response."
         );
     }
 

@@ -155,9 +155,10 @@ class LoopTags
     /**
      * Returns just the Pages, on which a certain tag is used
      * If none are given, will return all
-     * @param array $tag A singular tag to be searched for
+     * @param string $tag A singular tag to be searched for
+     * @param string $format Can be "text", "link" or none. Will only affect the keys of the array
      */
-    public static function getCertainUsedTag($tag)
+    public static function getCertainUsedTag($tag = '', $format = '')
     {
         if (!empty($tag)) {
             $allTags = self::getAllUsedTags();
@@ -172,9 +173,21 @@ class LoopTags
                     $returnTags[$id] = $tempTags;
                 }
             }
-            return self::castIDsToText($returnTags);
+            if (strcasecmp($format, 'text')) {
+                return self::castIDsToText($returnTags);
+            } elseif (strcasecmp($format, 'link')) {
+                return self::castIDsToLink($returnTags);
+            } else {
+                return $returnTags;
+            }
         } else {
-            return self::castIDsToText(self::getAllUsedTags());
+            if (strcasecmp($format, 'text')) {
+                return self::castIDsToText(self::getAllUsedTags());
+            } elseif (strcasecmp($format, 'link')) {
+                return self::castIDsToLink(self::getAllUsedTags());
+            } else {
+                return self::getAllUsedTags();
+            }
         }
     }
 
