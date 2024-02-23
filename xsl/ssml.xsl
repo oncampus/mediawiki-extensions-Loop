@@ -3,18 +3,16 @@
 	xmlns="http://www.w3.org/2001/10/synthesis"
 	-->
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
-	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:func="http://exslt.org/functions"
-	extension-element-prefixes="func php str"
-	xmlns:functx="http://www.functx.com"
-	xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
-	xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions"
-	xmlns:xhtml="http://www.w3.org/1999/xhtml">
+				xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+				xmlns:fo="http://www.w3.org/1999/XSL/Format"
+				xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
+				xmlns:xs="http://www.w3.org/2001/XMLSchema"
+				xmlns:func="http://exslt.org/functions"
+				extension-element-prefixes="func php str"
+				xmlns:functx="http://www.functx.com"
+				xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
+				xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions"
+				xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 	<xsl:import href="terms.xsl"></xsl:import>
 
@@ -93,6 +91,88 @@
 	<xsl:template match="php_link">
 	</xsl:template>
 	<xsl:template match="php_link_image">
+	</xsl:template>
+
+	<xsl:template match="list">
+		<xsl:variable name="listlevel">
+			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
+		</xsl:variable>
+		<fo:list-block
+			start-indent="inherited-property-value(&apos;start-indent&apos;) + 2mm"
+			provisional-label-separation="2mm" space-before="4pt" space-after="4pt"
+			display-align="before">
+			<xsl:choose>
+				<xsl:when test="@type='numbered'">
+					<xsl:choose>
+						<xsl:when test="$listlevel=0">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'6mm'"></xsl:value-of></xsl:attribute>
+						</xsl:when>
+						<xsl:when test="$listlevel=1">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'8mm'"></xsl:value-of></xsl:attribute>
+						</xsl:when>
+						<xsl:when test="$listlevel=2">
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'10mm'"></xsl:value-of></xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'12mm'"></xsl:value-of></xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="provisional-distance-between-starts"><xsl:value-of select="'6mm'"></xsl:value-of></xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:list-block>
+	</xsl:template>
+
+	<xsl:template match="listitem">
+		<xsl:variable name="listlevel">
+			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
+		</xsl:variable>
+		<fo:list-item>
+			<fo:list-item-label keep-together.within-line="always" end-indent="label-end()">
+				<xsl:choose>
+					<xsl:when test="../@type='numbered'">
+
+						<xsl:choose>
+							<xsl:when test="$listlevel=1">
+								<fo:block><xsl:number level="single" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
+							</xsl:when>
+							<xsl:when test="$listlevel=2">
+								<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
+							</xsl:when>
+							<xsl:when test="$listlevel=3">
+								<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
+							</xsl:when>
+							<xsl:otherwise>
+								<fo:block><xsl:number level="multiple" count="listitem" format="1" /><xsl:text>.</xsl:text></fo:block>
+							</xsl:otherwise>
+						</xsl:choose>
+
+					</xsl:when>
+					<xsl:when test="../@type='ident'">
+						<fo:block padding-before="2pt"></fo:block>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:block padding-before="2pt">
+							<xsl:choose>
+								<xsl:when test="$listlevel=1">&#x2022;</xsl:when>
+								<xsl:when test="$listlevel=2">&#x20D8;</xsl:when>
+								<xsl:when test="$listlevel=3">&#x220E;</xsl:when>
+								<xsl:otherwise>&#x220E;</xsl:otherwise>
+							</xsl:choose>
+						</fo:block>
+					</xsl:otherwise>
+				</xsl:choose>
+			</fo:list-item-label>
+			<fo:list-item-body start-indent="body-start()">
+				<fo:block>
+					<xsl:apply-templates select="*[not(name()='list')] | text()"></xsl:apply-templates>
+				</fo:block>
+				<xsl:apply-templates select="list"></xsl:apply-templates>
+			</fo:list-item-body>
+		</fo:list-item>
 	</xsl:template>
 
 	<xsl:template match="extension">
@@ -293,7 +373,7 @@
 
 			<xsl:element name="lang">
                 <xsl:attribute name="xml:lang">
-					<xsl:text>en-GB</xsl:text><!-- todo add language support in mathoid -->
+					<xsl:text>de-DE</xsl:text><!-- todo add language support in mathoid -->
 				</xsl:attribute>
 				<xsl:value-of select="$object"></xsl:value-of>
 			</xsl:element>
