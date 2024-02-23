@@ -4,9 +4,7 @@
 	-->
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
 	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:func="http://exslt.org/functions"
@@ -30,6 +28,17 @@
 
 	<xsl:template name="contentpages">
 		<xsl:apply-templates select="article"/>
+	</xsl:template>
+	<xsl:template match="ul">
+		<xsl:text></xsl:text>
+	</xsl:template>
+
+	<xsl:template match="ol">
+		<xsl:text></xsl:text>
+	</xsl:template>
+
+	<xsl:template match="li">
+		<xsl:text></xsl:text>
 	</xsl:template>
 
 	<xsl:template match="article">

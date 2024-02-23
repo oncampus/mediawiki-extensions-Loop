@@ -141,7 +141,7 @@ class LoopXsl {
 		} else {
 			return '';
 		}*/
-		return '';
+		return $mathcontent;
 	}
 
 	public static function xsl_error_handler($errno, $errstr, $errfile, $errline) {
