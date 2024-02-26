@@ -956,7 +956,7 @@ class LoopLiterature {
 			} else {
 				$return .= $italic. $li->itemTitle. $italicEnd;
 			}
-			if ( !empty( trim( $li->volume ) ) || !empty( trim( $li->publisher ) ) || !empty( trim( $li->type ) ) || !empty( trim( $li->edition ) ) || !empty( trim( $li->pages ) ) || !empty( trim( $li->howpublished ) ) || !empty( trim( $li->series ) ) ) {
+			if ( !empty( trim( $li->volume ) ) || !empty( trim( $li->publisher ) ) || !empty( trim( $li->type ) ) || !empty( trim( $li->edition ) ) || !empty( trim( $li->pages ) ) || !empty( trim( $li->howpublished ) ) || !empty( trim( $li->series ) ) || !empty( trim($li->url) ) ) {
 				$return .= ". ";
 			} else {
 				$return .= " ";
@@ -976,11 +976,11 @@ class LoopLiterature {
 			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . " " . $li->pages."). ";
 		}
 
-		
+
 		if ( !empty( trim( $li->journal ) ) ) {
 			$return .= $li->journal. ". ";
 		}
-		
+
 		if ( !empty( trim( $li->series ) ) ) {
 			$return .= "(". $li->series."). ";
 		}
