@@ -29,17 +29,6 @@
 	<xsl:template name="contentpages">
 		<xsl:apply-templates select="article"/>
 	</xsl:template>
-	<xsl:template match="ul">
-		<xsl:text></xsl:text>
-	</xsl:template>
-
-	<xsl:template match="ol">
-		<xsl:text></xsl:text>
-	</xsl:template>
-
-	<xsl:template match="li">
-		<xsl:text></xsl:text>
-	</xsl:template>
 
 	<xsl:template match="article">
 		<xsl:element name="article">
@@ -755,6 +744,36 @@
 
 	<xsl:template match="meta">
 
+	</xsl:template>
+
+	<xsl:template match="ul">
+		<xsl:for-each select="li">
+			<xsl:if test="position() != 1">
+				<!-- Add a break before each item except the first -->
+				<xsl:element name="break">
+					<xsl:attribute name="time">
+						<xsl:text>700ms</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
+			</xsl:if>
+			<xsl:value-of select="."/>
+		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template match="ol">
+		<xsl:for-each select="li">
+			<xsl:if test="position() != 1">
+				<!-- Add a break before each item except the first -->
+				<xsl:element name="break">
+					<xsl:attribute name="time">
+						<xsl:text>700ms</xsl:text>
+					</xsl:attribute>
+				</xsl:element>
+			</xsl:if>
+			<xsl:value-of select="position()"/>
+			<xsl:text>. </xsl:text>
+			<xsl:value-of select="."/>
+		</xsl:for-each>
 	</xsl:template>
 
 	<xsl:template match="list">
