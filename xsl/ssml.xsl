@@ -754,32 +754,15 @@
 			<xsl:if test="@toctext">
 				<xsl:value-of select="@toctext"></xsl:value-of>
 			</xsl:if>
-			<xsl:element name="break">
-				<xsl:attribute name="time">
-					<xsl:text>700ms</xsl:text>
-				</xsl:attribute>
-			</xsl:element>
 		</xsl:element>
 		<xsl:apply-templates/>
 	</xsl:template>
 
 
 	<xsl:template match="listitem">
-		<xsl:element name="speak">
-			<xsl:attribute name="voice">
-				<xsl:text>4</xsl:text>
-			</xsl:attribute>
 			<xsl:if test="@toctext">
 				<xsl:value-of select="@toctext"></xsl:value-of>
 			</xsl:if>
-			<xsl:element name="break">
-				<xsl:attribute name="time">
-					<xsl:text>700ms</xsl:text>
-				</xsl:attribute>
-			</xsl:element>
-		</xsl:element>
-
 		<xsl:apply-templates/>
 	</xsl:template>
-
 </xsl:stylesheet>
