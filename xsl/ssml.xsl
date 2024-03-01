@@ -751,15 +751,14 @@
 			<xsl:attribute name="voice">
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
-			<xsl:for-each select="@toctext">
-				<xsl:value-of select="@toctext"></xsl:value-of>
-			</xsl:for-each>
+			<xsl:text> </xsl:text>
 			<xsl:element name="break">
 				<xsl:attribute name="time">
 					<xsl:text>500ms</xsl:text>
 				</xsl:attribute>
 			</xsl:element>
 		</xsl:element>
+		<xsl:apply-templates/>
 	</xsl:template>
 
 </xsl:stylesheet>
