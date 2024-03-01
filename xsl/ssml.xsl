@@ -777,7 +777,14 @@
 	</xsl:template>
 
 	<xsl:template match="list">
-		<xsl:apply-templates></xsl:apply-templates>
+		<xsl:element name="speak">
+			<xsl:attribute name="voice">
+				<xsl:text>2</xsl:text>
+			</xsl:attribute>
+			<!--<xsl:element name="amazon:autobreaths">-->
+			<xsl:apply-templates/>
+			<!--</xsl:element>-->
+		</xsl:element>
 	</xsl:template>
 
 	<xsl:template match="listitem">
