@@ -754,22 +754,22 @@
 			<xsl:for-each select="@toctext">
 				<xsl:value-of select="@toctext"></xsl:value-of>
 			</xsl:for-each>
-		</xsl:element>
+			<xsl:element name="break">
+				<xsl:attribute name="time">
+					<xsl:text>500ms</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
+
 		<xsl:apply-templates/>
-
-		<xsl:element name="break">
-			<xsl:attribute name="time">
-				<xsl:text>500ms</xsl:text>
-			</xsl:attribute>
-		</xsl:element>
-
 	</xsl:template>
 
 
 	<xsl:template match="listitem">
-			<xsl:for-each select="@toctext">
-				<xsl:value-of select="@toctext"></xsl:value-of>
-			</xsl:for-each>
+		<xsl:element name="speak">
+		<xsl:for-each select="@toctext">
+			<xsl:value-of select="@toctext"></xsl:value-of>
+		</xsl:for-each>
+		</xsl:element>
 		<xsl:apply-templates/>
 	</xsl:template>
 </xsl:stylesheet>
