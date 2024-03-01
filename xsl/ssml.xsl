@@ -751,14 +751,6 @@
 			<xsl:attribute name="voice">
 				<xsl:text>3</xsl:text>
 			</xsl:attribute>
-			<xsl:variable name="listlevel">
-				<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
-			</xsl:variable>
-			<xsl:choose>
-				<xsl:when test="@type='numbered'">
-					<xsl:when test="$listlevel=0"></xsl:when>
-				</xsl:when>
-			</xsl:choose>
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
