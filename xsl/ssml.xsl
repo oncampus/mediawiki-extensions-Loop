@@ -752,7 +752,21 @@
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
-		<xsl:call-template name="listitem"></xsl:call-template>
+		<xsl:variable name="listlevel">
+			<xsl:value-of select="count(ancestor::list)"></xsl:value-of>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="@type='numbered'">
+				<xsl:when test="$listlevel=1"> Listlevel 1
+				</xsl:when>
+				<xsl:otherwise>Listenlevel anders
+				</xsl:otherwise>
+			</xsl:when>
+			<xsl:otherwise>	Nicht nummeriert
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:apply-templates></xsl:apply-templates>
+
 		<xsl:element name="break">
 			<xsl:attribute name="time">
 				<xsl:text>7000ms</xsl:text>
