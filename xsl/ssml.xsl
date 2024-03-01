@@ -759,17 +759,8 @@
 					<xsl:text>500ms</xsl:text>
 				</xsl:attribute>
 			</xsl:element>
-
-		<xsl:apply-templates/>
-	</xsl:template>
-
-
-	<xsl:template match="listitem">
-		<xsl:element name="speak">
-		<xsl:for-each select="@toctext">
-			<xsl:value-of select="@toctext"></xsl:value-of>
-		</xsl:for-each>
 		</xsl:element>
 		<xsl:apply-templates/>
 	</xsl:template>
+
 </xsl:stylesheet>
