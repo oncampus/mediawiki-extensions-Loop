@@ -760,7 +760,6 @@
 				</xsl:attribute>
 			</xsl:element>
 		</xsl:element>
-		<xsl:apply-templates/>
 	</xsl:template>
 
 </xsl:stylesheet>
