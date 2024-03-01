@@ -752,6 +752,7 @@
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
+		<xsl:call-template name="listitem"></xsl:call-template>
 		<xsl:element name="break">
 			<xsl:attribute name="time">
 				<xsl:text>7000ms</xsl:text>
@@ -759,4 +760,7 @@
 		</xsl:element>
 	</xsl:template>
 
+	<xsl:template name="listitem">
+		Hier steht ein listitem!
+	</xsl:template>
 </xsl:stylesheet>
