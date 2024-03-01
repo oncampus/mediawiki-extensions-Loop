@@ -751,14 +751,16 @@
 			<xsl:attribute name="voice">
 				<xsl:text>2</xsl:text>
 			</xsl:attribute>
-			<xsl:text> </xsl:text>
+
+			<xsl:apply-templates/>
+
 			<xsl:element name="break">
 				<xsl:attribute name="time">
 					<xsl:text>500ms</xsl:text>
 				</xsl:attribute>
 			</xsl:element>
+
 		</xsl:element>
-		<xsl:apply-templates/>
 	</xsl:template>
 
 </xsl:stylesheet>
