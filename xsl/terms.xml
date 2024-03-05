@@ -128,6 +128,7 @@
 	<msg name="phrase_youtube_video" lang="en">There is a YouTube video at this point on the website.</msg>
 	<msg name="phrase_audio" lang="en">There is an audio file at this point on the website.</msg>
 	<msg name="phrase_quiz" lang="en">There is a quiz at this point on the website.</msg>
+	<msg name="phrase_math" lang="en">There is a math text at this point on the website.</msg>
 
 
 	<msg name="word_chapter" lang="de">Kapitel</msg>
@@ -206,7 +207,7 @@
 	<msg name="phrase_youtube_video" lang="de">An dieser Stelle befindet sich online ein YouTube-Video.</msg>
 	<msg name="phrase_audio" lang="de">An dieser Stelle befindet sich online eine Audiodatei.</msg>
 	<msg name="phrase_quiz" lang="de">An dieser Stelle befindet sich online ein Quiz.</msg>
-
+	<msg name="phrase_math" lang="de">An dieser Stelle befindet sich online ein Mathe Text.</msg>
 
 	<msg name="word_chapter" lang="sv">kapitel</msg>
 	<msg name="word_state" lang="sv">Nivå</msg>

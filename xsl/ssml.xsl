@@ -140,9 +140,11 @@
 
 			<xsl:when test="@extension_name='math'">
 				<xsl:call-template name="math">
+					<!--
                 	<xsl:with-param name="object">
 						<xsl:copy-of select="php:function('xsl_transform_math_ssml', .)"></xsl:copy-of>
 					</xsl:with-param>
+					-->
 				</xsl:call-template>
 			</xsl:when>
 
@@ -291,12 +293,16 @@
 				</xsl:attribute>
 			</xsl:element>
 
+			<!--
 			<xsl:element name="lang">
                 <xsl:attribute name="xml:lang">
-					<xsl:text>en-GB</xsl:text><!-- todo add language support in mathoid -->
+					<xsl:text>en-GB</xsl:text> todo add language support in mathoid
 				</xsl:attribute>
 				<xsl:value-of select="$object"></xsl:value-of>
 			</xsl:element>
+			-->
+			<xsl:value-of select="$phrase_math"></xsl:value-of>
+
 
 			<xsl:element name="break">
 				<xsl:attribute name="strength">
