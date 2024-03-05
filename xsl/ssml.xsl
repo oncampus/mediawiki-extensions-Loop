@@ -694,4 +694,25 @@
 
 	</xsl:template>
 
+	<xsl:template match="list">
+		<xsl:apply-templates></xsl:apply-templates>
+	</xsl:template>
+
+	<xsl:template match="listitem">
+		<xsl:element name="speak">
+			<xsl:attribute name="voice">
+				<xsl:value-of select="functx:select_voice()"/>
+			</xsl:attribute>
+			<xsl:apply-templates select="*[not(name()='list')] | text()"></xsl:apply-templates>
+
+			<xsl:element name="break">
+				<xsl:attribute name="strength">
+					<xsl:text>strong</xsl:text>
+				</xsl:attribute>
+			</xsl:element>
+
+		</xsl:element>
+		<xsl:apply-templates select="list"></xsl:apply-templates>
+	</xsl:template>
+
 </xsl:stylesheet>
