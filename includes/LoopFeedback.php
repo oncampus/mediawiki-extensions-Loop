@@ -9,6 +9,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Session\CsrfTokenSet;
+use Wikimedia\Rdbms\SelectQueryBuilder;
 
 class LoopFeedback {
 
@@ -171,6 +172,7 @@ class LoopFeedback {
 
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		if ( self::getShowFeedback() ) {
+
 			global $wgLoopFeedbackLevel, $wgLoopFeedbackMode;
 			$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
@@ -178,8 +180,7 @@ class LoopFeedback {
 			$user = $out->getUser();
 			$return = '';
 
-			// ermitteln welches Feeback auf der Seite angezeigt werden soll
-
+			// ermitteln welches Feedback auf der Seite angezeigt werden soll
 			$tempItem = LoopStructureItem::newFromIds( $articleId );
 			$akt_tl = $tempItem->tocLevel;
 
@@ -211,18 +212,18 @@ class LoopFeedback {
 			if ( $lf_articleid != 0 ) {
 
 				# ermitteln, ob bereits ein Feedback abgegeben wurde
-
-				$dbr = wfGetDB( DB_REPLICA );
-				$lf = $dbr->selectRow(
-					'loop_feedback',
-					array( 'lf_id','lf_page'  ),
-					array(
-						'lf_page = "' . $lf_articleid .'"',
-						'lf_user = "' . $user->getId() .'"',
-						'lf_archive_timestamp = "00000000000000"'
-					),
-					__METHOD__
-				);
+				$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+				$dbr = $dbProvider->getConnection(DB_REPLICA);
+				$lf = $dbr->newSelectQueryBuilder()
+					->select([ 'lf_id', 'lf_page'])
+					->from('loop_feedback')
+					->where([
+							'lf_page = "' . $lf_articleid . '"',
+							'lf_user = "' . $user->getId() . '"',
+							'lf_archive_timestamp = "00000000000000"',
+						]
+					)
+					->caller(__METHOD__)->fetchRow();
 
 				if ( !isset( $lf->lf_id ) ) {
 					$lf_title = Title::newFromID( $lf_articleid );
@@ -273,42 +274,30 @@ class LoopFeedback {
     function getPeriods( $page = false ) {
 
 		$periods = array();
-
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
 
 		if ( !$page ) {
-			$lfs = $dbr->select(
-				'loop_feedback',
-				array(
-					"DISTINCT (lf_archive_timestamp)"
-				),
-				array(
-					0 => "lf_archive_timestamp <> '00000000000000'"
-				),
-				__METHOD__,
-				array(
-					'ORDER BY' => 'lf_archive_timestamp DESC'
-				)
-			);
-		} else {
-			$lfs = $dbr->select(
-				'loop_feedback',
-				array(
-					"DISTINCT (lf_archive_timestamp)"
-				),
-				array(
-					0 => "lf_archive_timestamp <> '00000000000000'",
-					1 => "lf_page = '$page'",
-				),
-				__METHOD__,
-				array(
-					'ORDER BY' => 'lf_archive_timestamp DESC'
-				)
-			);
-		}
+			$lfs = $dbr->newSelectQueryBuilder()
+				->select('lf_archive_timestamp')
+				->from('loop_feedback')
+				->where('lf_archive_timestamp <> 00000000000000')
+				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
+				->caller(__METHOD__)
+				->fetchResultSet();
 
+		} else {
+			$lfs = $dbr->newSelectQueryBuilder()
+				->select('lf_archive_timestamp')
+				->from('loop_feedback')
+				->where(['lf_archive_timestamp <> 00000000000000',
+						'lf_page' => $page])
+				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
+				->caller(__METHOD__)->fetchResultSet();
+		}
 		$timestamps = array();
-		while ( $row = $dbr->fetchRow( $lfs ) ) {
+
+		foreach ($lfs as $row){
 			$timestamps[] = $row[ 'lf_archive_timestamp' ];
 		}
 
@@ -359,27 +348,21 @@ class LoopFeedback {
 		return $periods;
 	}
 
-	function getDetails( $pageid, $comments = false, $timestamp='00000000000000' ) {
-		$dbr = wfGetDB( DB_REPLICA );
-		$lfs = $dbr->select(
-			'loop_feedback',
-			array(
-				'lf_id',
-				'lf_user',
-				'lf_user_text',
-				'lf_rating',
-				'lf_comment',
-				'lf_timestamp'
-			),
-			array(
+	function getDetails( $pageid, $comments = false, $timestamp='00000000000000'): array {
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$res = $dbr->newSelectQueryBuilder()
+			->select( [
+				'lf_id', 'lf_user', 'lf_user_text', 'lf_rating', 'lf_comment', 'lf_timestamp',
+			])
+			->from('loop_feedback')
+			->where([
 				'lf_page' => $pageid,
-				'lf_archive_timestamp' => $timestamp
-			),
-			__METHOD__,
-			array(
-				'ORDER BY' => 'lf_timestamp DESC'
-			)
-		);
+				'lf_archive_timestamp' => $timestamp,
+			])
+			->orderBy('lf_id', SelectQueryBuilder::SORT_DESC)
+			->caller(__METHOD__)->fetchResultSet();
+
 		$return = array(
 			'pageid' => $pageid,
 			'count' => array (
@@ -396,19 +379,20 @@ class LoopFeedback {
 			'average_stars' => 0,
 			'comments' => array()
 			);
-		while ( $row = $dbr->fetchRow( $lfs ) ) {
-			$rating = $row[ 'lf_rating' ];
+
+		foreach($res as $row){
+			$rating = $row->lf_rating;
 			$return[ 'count' ][ 'all' ]++;
 			$return[ 'count' ][$rating]++;
 			$return[ 'sum' ] = $return[ 'sum' ]+$rating;
-			if ( $row[ 'lf_comment' ] != '' ) {
-				$return[ 'count' ][ 'comments' ]++;
-				if ( $comments == true) {
-					$return[ 'comments' ][] = array (
-						'timestamp' => $row[ 'lf_timestamp' ],
-						'timestamp_text' => $this->formatTimestamp( $row[ 'lf_timestamp' ]),
-						'comment' => $row[ 'lf_comment' ]
-						);
+			if ( $row->lf_comment != '' ) {
+				$return['count']['comments']++;
+				if ($comments) {
+					$return['comments'][] = array(
+						'timestamp' => $row->lf_timestamp,
+						'timestamp_text' => $this->formatTimestamp($row->lf_timestamp),
+						'comment' => $row->lf_comment
+					);
 				}
 			}
 		}
@@ -771,10 +755,13 @@ class SpecialLoopFeedback extends SpecialPage {
 		$return .= '<div class="row">';
 		if ( $feedback_detail[ 'count' ][ 'comments' ] > 0) {
 			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-count-comments', $feedback_detail[ 'count' ][ 'comments' ])->text().'</p>';
+			$return .= '</div>';
 		} else {
 			$return .= '<p class="pl-0">' . wfMessage( 'loopfeedback-specialpage-feedback-info-no-comments' )->text().'</p>';
+			$return .= '</div>';
 		}
 
+		$return .= '<div class="text-left">';
 		if ( $permissionManager->userHasRight( $this->getUser(),'loopfeedback-view-comments' ) ) {
 			foreach ( $feedback_detail[ 'comments' ] as $comment) {
 				$return .= '<p><strong>'.$comment[ 'timestamp_text' ].'</strong><br/>'.$comment[ 'comment' ].'</p>';
@@ -977,8 +964,9 @@ class SpecialLoopFeedback extends SpecialPage {
 	}
 
 	function resetPage ( $page ) {
-
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbw = $dbProvider->getConnection(DB_PRIMARY);
+		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(
@@ -986,13 +974,13 @@ class SpecialLoopFeedback extends SpecialPage {
 			'lf_archive_timestamp' => '00000000000000'
 			),
 		__METHOD__ );
-
 		return true;
 	}
 
 	function resetAll () {
-
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbw = $dbProvider->getConnection(DB_PRIMARY);
+		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(

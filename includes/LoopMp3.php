@@ -460,6 +460,7 @@ class LoopMp3 {
 		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
 		if ( ! empty( $params ) ) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		$return = curl_exec( $ch );
+
 		if ( empty( $return ) ) {
 			throw new Exception( "Error getting data from server ($url): " . curl_error( $ch ) );
 		}
