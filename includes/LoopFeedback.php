@@ -299,7 +299,7 @@ class LoopFeedback {
 		$timestamps = array();
 
 		foreach ($lfs as $row){
-			$timestamps[] = $row->'lf_archive_timestamp';
+			$timestamps[] = $row->lf_archive_timestamp;
 		}
 
 		if ( count( $timestamps) > 0 ) {
