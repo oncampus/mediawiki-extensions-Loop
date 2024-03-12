@@ -293,12 +293,13 @@ class LoopFeedback {
 				->where(['lf_archive_timestamp <> 00000000000000',
 						'lf_page' => $page])
 				->orderBy('lf_archive_timestamp', SelectQueryBuilder::SORT_DESC)
-				->caller(__METHOD__)->fetchResultSet();
+				->caller(__METHOD__)
+				->fetchResultSet();
 		}
 		$timestamps = array();
 
 		foreach ($lfs as $row){
-			$timestamps[] = $row[ 'lf_archive_timestamp' ];
+			$timestamps[] = $row->'lf_archive_timestamp';
 		}
 
 		if ( count( $timestamps) > 0 ) {
@@ -361,7 +362,8 @@ class LoopFeedback {
 				'lf_archive_timestamp' => $timestamp,
 			])
 			->orderBy('lf_id', SelectQueryBuilder::SORT_DESC)
-			->caller(__METHOD__)->fetchResultSet();
+			->caller(__METHOD__)
+			->fetchResultSet();
 
 		$return = array(
 			'pageid' => $pageid,
