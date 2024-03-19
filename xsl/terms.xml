@@ -56,6 +56,7 @@
 	<msg name="word_chapter" lang="en">Chapter</msg>
 	<msg name="word_state" lang="en">state</msg>
 	<msg name="word_content" lang="en">Content</msg>
+	<msg name="word_h5p_element" lang="en">Here is a media element</msg>
 	<msg name="word_figure" lang="en">Figure</msg>
 	<msg name="word_figure_short" lang="en">Fig.</msg>
 	<msg name="phrase_figure" lang="en">Here is a figure.</msg>
@@ -134,6 +135,7 @@
 	<msg name="word_chapter" lang="de">Kapitel</msg>
 	<msg name="word_state" lang="de">Stand</msg>
 	<msg name="word_content" lang="de">Inhalt</msg>
+	<msg name="word_h5p_element" lang="de">Hier befindet sich ein Medienelement</msg>
 	<msg name="word_figure" lang="de">Abbildung</msg>
 	<msg name="word_figure_short" lang="de">Abb.</msg>
 	<msg name="phrase_figure" lang="de">Hier befindet sich eine Abbildung.</msg>
@@ -157,7 +159,7 @@
 	<msg name="word_task" lang="de">Aufgabe</msg>
 	<msg name="word_task_short" lang="de">Aufg.</msg>
 	<msg name="phrase_task" lang="de">Hier befindet sich eine Aufgabe.</msg>
-	<msg name="phrase_task_number" lang="de">Hier befindet sich die Tabelle </msg>
+	<msg name="phrase_task_number" lang="de">Hier befindet sich die Aufgabe </msg>
 	<msg name="word_list_of_tasks" lang="de">Aufgabenverzeichnis</msg>
 	<msg name="word_table" lang="de">Tabelle</msg>
 	<msg name="word_table_short" lang="de">Tab.</msg>
