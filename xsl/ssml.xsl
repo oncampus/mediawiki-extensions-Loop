@@ -243,7 +243,7 @@
 
 
 	<xsl:template name="h5p">
-		<xsl:value-of select="$word_h5p_element"/>
+		<xsl:value-of select="$phrase_h5p_element"/>
 	</xsl:template>
 
 
