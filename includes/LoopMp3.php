@@ -437,6 +437,7 @@ class LoopMp3 {
 
 		global $wgText2SpeechServiceUrl;
 		#dd($content);
+
 		$params = "srctext=".urlencode ($content)."&language=".$language."&type=".$type;
 		$mp3Response = LoopMp3::httpRequest( $wgText2SpeechServiceUrl, $params );
 
