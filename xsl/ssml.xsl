@@ -152,6 +152,10 @@
 				</xsl:call-template>
 			</xsl:when>
 
+			<xsl:when test="@extension_name='loop_audio'">
+				<xsl:call-template name="loop_audio"></xsl:call-template>
+			</xsl:when>
+
 			<xsl:when test="@extension_name='loop_title'">
 				<xsl:apply-templates/>
 			</xsl:when>
@@ -338,6 +342,11 @@
 
 		<xsl:text> </xsl:text>
 
+	</xsl:template>
+
+
+	<xsl:template name="loop_audio">
+		<xsl:value-of select="$phrase_audio_element"></xsl:value-of>
 	</xsl:template>
 
 	<xsl:template name="syntaxhighlight">
