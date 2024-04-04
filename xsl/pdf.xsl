@@ -2025,6 +2025,12 @@
 		</fo:block>
 	</xsl:template>
 
+	<xsl:template match="extension[@extension_name='loop_nospeech']">
+		<fo:block >
+			<xsl:apply-templates></xsl:apply-templates>
+		</fo:block>
+	</xsl:template>
+
 	<!-- Loop NoPrint-->
 	<xsl:template match="extension[@extension_name='loop_noprint']">
 		<xsl:call-template name="noprint_id_handling"></xsl:call-template>
