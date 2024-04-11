@@ -392,6 +392,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Marginalie",
 	"loopwikieditor-loop-snippets-print": "Druckbereich",
 	"loopwikieditor-loop-snippets-noprint": "Nicht-Druckbereich",
+	"loopwikieditor-loop-snippets-nospeech": "Nicht-Sprechbereich",
+	"loopwikieditor-loop-snippets-speech": "Nur Sprechbereich",
 	"loopwikieditor-loop-snippets-accordion": "Akkordeon",
 	"loopwikieditor-loop-snippets-syntaxhighlight": "Syntaxhighlighted Code",
 	"loopwikieditor-loop-contents": "Medien",

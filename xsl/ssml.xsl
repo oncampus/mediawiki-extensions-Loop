@@ -98,6 +98,9 @@
 	<xsl:template match="extension">
 
 		<xsl:choose>
+			<xsl:when test="@extension_name='loop_speech'">
+				<xsl:apply-templates/>
+			</xsl:when>
 			<xsl:when test="@extension_name='loop_figure'">
 				<xsl:call-template name="loop_object">
                 	<xsl:with-param name="object" select="."></xsl:with-param>
