@@ -128,7 +128,7 @@ class LoopUpdater {
 			foreach ( $glossaryItems as $title ) {
 
 
-				$oldWikiPage = WikiPage::factory ( $title );
+				$oldWikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle ( $title );
 				$oldFlaggableWikiPage = new FlaggableWikiPage ( $title );
 				$stableRev = $oldFlaggableWikiPage->getStable();
 				if ( $stableRev == 0 ) {
@@ -145,7 +145,7 @@ class LoopUpdater {
 				}
 
 				# Fill a new page in NS_GLOSSARY with the same title as before with the old content
-				$newGlossaryPage = WikiPage::factory( Title::newFromText( $title->mTextform, NS_GLOSSARY ));
+				$newGlossaryPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( $title->getText(), NS_GLOSSARY ));
 				$newGlossaryPageContent = new WikitextContent( preg_replace( '/(\[\[)(Kategorie){0,1}(Category){0,1}(:Glossar\]\])/i', '', $content ) ); // removes [[Kategorie:Glossar]] and [[Category:Glossar]]
 				$newGlossaryPageUpdater = $newGlossaryPage->newPageUpdater( $user );
 				$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 glossary migration' );
@@ -155,7 +155,7 @@ class LoopUpdater {
 				$lsi = LoopStructureItem::newFromIds( $title->mArticleID );
 				if ( !$lsi ) {
 					# Redirecting the old page to the new glossary namespace page, if it is not in structure
-					$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "loop-glossary-namespace" )->inContentLanguage()->text() . ":" . $title->mTextform . "]]" );
+					$newRedirectContent = new WikitextContent( "#REDIRECT [[" . wfMessage( "loop-glossary-namespace" )->inContentLanguage()->text() . ":" . $title->getText() . "]]" );
 					$oldWikiPageUpdater = $oldWikiPage->newPageUpdater( $user );
 					$summary = CommentStoreComment::newUnsavedComment( 'LOOP2 glossary migration' );
 					$oldWikiPageUpdater->setContent( "main", $newRedirectContent );
@@ -168,7 +168,7 @@ class LoopUpdater {
 			}
 		}
 
-		$glossaryCategoryWikiPage = WikiPage::factory( Title::newFromText( "Glossar", NS_CATEGORY ));
+		$glossaryCategoryWikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( "Glossar", NS_CATEGORY ));
 		$glossaryCategoryWikiPage->doDeleteArticle( 'Moved to Special:Glossary / Spezial:Glossar' );
 		*/
 	}
@@ -184,7 +184,7 @@ class LoopUpdater {
 
 		$userGroupManager = MediaWikiServices::getInstance()->getUserGroupManager();
 		$latestRevId = $title->getLatestRevID();
-		$wikiPage = WikiPage::factory($title);
+		$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 		$fwp = new FlaggableWikiPage ( $title );
 		$systemUser = User::newSystemUser( 'LOOP_SYSTEM', [ 'steal' => true, 'create'=> true, 'validate' => 'valid' ] );
 		$userGroupManager->addUserToGroup ( $systemUser, "sysop" );
@@ -210,7 +210,7 @@ class LoopUpdater {
 
 			LoopObject::handleObjectItems( $wikiPage, $title, $contentText );
 			#self::migrateLiterature( $wikiPage, $title, $contentText, $systemUser );
-			#self::migrateLoopZip( $wikiPage, $title, $contentText, $systemUser );
+			#self::migrateLoopZip( $wikiPage, $title, $systemUser, $contentText );
 			#self::replaceCommonWikitext( $wikiPage, $title, $contentText, $systemUser );
 		}
 		return true;
@@ -271,11 +271,11 @@ class LoopUpdater {
 		/*
 		$literaturePage = false;
 		$bibliographyPageTitle = Title::newFromText( "Bibliographypage", NS_MEDIAWIKI);
-		$bibliographyPageWP = WikiPage::factory( $bibliographyPageTitle );
+		$bibliographyPageWP = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $bibliographyPageTitle );
 		$bibliographyPageRev = $bibliographyPageWP->getRevisionRecord();
 		if ( $bibliographyPageRev ) {
 			$bibliographyPageContentText = $bibliographyPageRev->getContent()->getText();
-			if ( $title->mTextform == $bibliographyPageContentText ) {
+			if ( $title->getText() == $bibliographyPageContentText ) {
 				$literaturePage = true; #this is the bibliography page and will get a redirect
 			}
 		}
@@ -344,7 +344,7 @@ class LoopUpdater {
 	 * Adds scale="true" to loop_zip tags upon update
 	 * Used in LOOP 1 update process only #LOOP1UPGRADE
 	 */
-	public static function migrateLoopZip( $wikiPage, $title, $contentText = null, $systemUser ) {
+	public static function migrateLoopZip( $wikiPage, $title, $systemUser, $contentText = null ) {
 		/*
 		$revision = $wikiPage->getRevisionRecord();
 
@@ -385,12 +385,12 @@ class LoopUpdater {
 		$systemUser->addGroup("sysop");
 
         $terminologyPage = Title::newFromText( "Abkuerzungen" );
-		$wikiPage = WikiPage::factory( $terminologyPage );
+		$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $terminologyPage );
 		$oldPageContent = $wikiPage->getContent();
 
 		if ( !empty ( $oldPageContent ) ) {
 			$newTerminologyPage = Title::newFromText( 'LoopTerminologyPage', NS_MEDIAWIKI );
-			$newWikiPage = WikiPage::factory( $newTerminologyPage );
+			$newWikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $newTerminologyPage );
 
 			# Add old content to new page
 			$newWikiPageUpdater = $newWikiPage->newPageUpdater( $systemUser );

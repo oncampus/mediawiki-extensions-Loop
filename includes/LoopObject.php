@@ -193,7 +193,7 @@ class LoopObject {
 					}
 					$textform = "-";
 					if ( !is_null( $otherTitle ) && $otherTitle->getArticleId() != $articleId ) {
-						$textform = $otherTitle->mTextform;
+						$textform = $otherTitle->getText();
 						$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
 						$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 						$this->error .= $e . "\n";
@@ -361,7 +361,7 @@ class LoopObject {
 				array()
 				) . '<br/>';
 		} elseif ( $ns == NS_GLOSSARY ) {
-			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->mTextform;
+			$linktext = wfMessage( 'loop-glossary-namespace' )->text() . ': ' . $linkTitle->getText();
 
 			$html .= $linkRenderer->makeLink(
 				$linkTitle,
@@ -395,7 +395,6 @@ class LoopObject {
 			$t = Title::newFromText ( 'NO TITLE' );
 			$parser->setTitle ( $t );
 			$parser->clearState ();
-			$parser->mStripState = new StripState( $parser );
 			$frame = $parser->getPreprocessor ()->newFrame ();
 		}
 
@@ -815,7 +814,7 @@ class LoopObject {
 	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
 
 		$latestRevId = $title->getLatestRevID();
-		$wikiPage = WikiPage::factory($title);
+		$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 		$fwp = new FlaggableWikiPage ( $title );
 
 		if ( isset($fwp) ) {
@@ -835,7 +834,7 @@ class LoopObject {
 	 */
 	public static function onAfterClearStable( $title ) {
 
-		$wikiPage = WikiPage::factory( $title );
+		$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		self::handleObjectItems( $wikiPage, $title );
 		return true;
 	}

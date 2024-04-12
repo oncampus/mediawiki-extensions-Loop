@@ -2,8 +2,9 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
-class LoopMp3 {
+use MediaWiki\MediaWikiServices;
 
+class LoopMp3 {
 
 	/**
 	 * Get page by id downloaded as mp3
@@ -44,7 +45,7 @@ class LoopMp3 {
 
 		} else {
 
-			$wikiPage = WikiPage::factory( Title::newFromId( $articleId ));
+			$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromId( $articleId ));
 			$articleXml = LoopXml::articleFromId2xml( $articleId );
 			$lastChanged = $wikiPage->getTouched();
 
@@ -156,7 +157,7 @@ class LoopMp3 {
 				$tagData['track'] = array( $id3tag_track );
 			} else {
 				$title = Title::newFromId($articleId);
-				$tagData['title'] = array( $title->mTextform );
+				$tagData['title'] = array( $title->getText() );
 			}
 
 			$tagwriter->tag_data = $tagData;
@@ -436,6 +437,7 @@ class LoopMp3 {
 
 		global $wgText2SpeechServiceUrl;
 		#dd($content);
+
 		$params = "srctext=".urlencode ($content)."&language=".$language."&type=".$type;
 		$mp3Response = LoopMp3::httpRequest( $wgText2SpeechServiceUrl, $params );
 
@@ -459,6 +461,7 @@ class LoopMp3 {
 		curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
 		if ( ! empty( $params ) ) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		$return = curl_exec( $ch );
+
 		if ( empty( $return ) ) {
 			throw new Exception( "Error getting data from server ($url): " . curl_error( $ch ) );
 		}

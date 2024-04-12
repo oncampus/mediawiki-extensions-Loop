@@ -531,9 +531,9 @@ class SpecialLoopExport extends SpecialPage {
 				$html = Html::rawElement( 'div', array( 'class' => 'errorbox' ), $msg );
 				if ( in_array( "sysop", $userGroupManager->getUserGroups( $user ) ) ) {
 					$errors = $export->getExportContent();
-					$html .= '<pre class="d-none1"><b>Error:</b> <br>'.implode("\n", array_slice(explode("\n", $errors[0]), 1)) .'</pre>';
-					$html .= '<pre class="d-none1"><b>XML</b>: <br>'.htmlspecialchars($errors[2]).'</pre>';
-					$html .= '<pre class="d-none1"><b>XMLFO:</b> <br>'.htmlspecialchars($errors[1]["xmlfo"]) .'</pre><br>';
+					$html .= '<pre class=""><b>Error:</b> <br>'.implode("\n", array_slice(explode("\n", $errors[0]), 1)) .'</pre>';
+					$html .= '<pre class="d-none"><b>XML</b>: <br>'.htmlspecialchars($errors[2]).'</pre>';
+					$html .= '<pre class="d-none"><b>XMLFO:</b> <br>'.htmlspecialchars($errors[1]["xmlfo"]) .'</pre><br>';
 				}
 				$this->getOutput()->addHTML( $html );
 

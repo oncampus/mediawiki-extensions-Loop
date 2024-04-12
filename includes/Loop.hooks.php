@@ -78,23 +78,7 @@ class LoopHooks {
 		}
 
 		if ( $hideSpecialPages ) {
-			$hidePages = array( 'Recentchangeslinked', 'Recentchanges', 'Listredirects', 'Mostlinkedcategories', 'Export', 'Uncategorizedtemplates',
-				'DoubleRedirects', 'DeletedContributions', 'Mostcategories', 'Block', 'Movepage', 'Mostrevisions', 'Unusedimages', 'Log',
-				'Mostlinkedtemplates', 'Deadendpages', 'JavaScriptTest', 'Userrights', 'Import', 'Ancientpages', 'Uncategorizedcategories', 'Activeusers',
-				'MergeHistory', 'Randompage', 'Protectedpages', 'Wantedfiles', 'Listgrouprights', 'EditWatchlist', 'Blockme', 'FileDuplicateSearch',
-				'Withoutinterwiki', 'Randomredirect', 'BlockList', 'Popularpages', 'Emailuser', 'Booksources', 'Upload', 'Confirmemail', 'Watchlist',
-				'MIMEsearch', 'Allpages', 'Fewestrevisions', 'Unblock', 'ComparePages', 'Uncategorizedimages', 'Mostinterwikis', 'LoopExportPdfTest',
-				'Categories', 'Statistics', 'Version', 'UploadStash', 'Undelete', 'Whatlinkshere', 'Lockdb', 'Lonelypages', 'Mostimages',
-				'Unwatchedpages', 'Shortpages', 'Protectedtitles', 'Revisiondelete', 'Newpages', 'Unusedtemplates', 'Allmessages', 'CachedPage',
-				'Filepath', 'Wantedpages', 'LinkSearch', 'Prefixindex', 'BrokenRedirects', 'Mostlinked', 'Tags', 'LoopStructureEdit', 'LoopSettings',
-				'Longpages', 'Uncategorizedpages', 'Newimages', 'Blankpage', 'Disambiguations', 'Unusedcategories', 'Wantedcategories',
-				'Unlockdb', 'PagesWithProp', 'Listfiles', 'Contributions', 'Listusers', 'Wantedtemplates', 'TrackingCategories', 'Stabilization',
-				'AutoblockList', 'ResetTokens', 'Listgrants', 'Listadmins', 'Listbots', 'PasswordPolicies', 'MediaStatistics', 'ListDuplicatedFiles',
-				'ApiSandbox', 'RandomInCategory', 'Randomrootpage', 'GoToInterwiki', 'ExpandTemplates', 'ApiHelp', 'Diff', 'EditTags', 'Mycontributions',
-				'MyLanguage', 'Mypage', 'Mytalk', 'Myuploads', 'AllMyUploads', 'PermanentLink', 'Redirect', 'RunJobs', 'PageData', 'ChangeContentModel',
-				'MathStatus', 'RevisionReview', 'ReviewedVersions', 'BotPasswords', 'LinkAccounts', 'UnlinkAccounts', 'RemoveCredentials',
-				'PendingChanges', 'ProblemChanges', 'ReviewedPages', 'UnreviewedPages', 'QualityOversight', 'ValidationStatistics', 'ConfiguredPages',
-				'LoopLiteratureEdit', 'LoopLiteratureImport', 'LoopLiteratureExport', 'LoopTerminologyEdit', 'NewSection', 'LoopFeedback'
+			$hidePages = array(
 			);
 			if ( isset( $hideExtended ) ) {
 				$hidePages = array_merge($hidePages, $hideExtended);
@@ -123,7 +107,6 @@ class LoopHooks {
 		$user = $wgOut->getUser();
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
-		$parser->getOptions()->optionUsed( 'LoopEditMode' );
 
 		if ( is_object( $file ) ) {
 			$mediaType = $file->getMediaType();

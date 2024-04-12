@@ -22,9 +22,11 @@ class LoopExternalContent {
 		$parser->setHook ( 'h5p', 'LoopExternalContent::renderH5P' );
 		$parser->setHook ( 'learningapp', 'LoopExternalContent::renderLearningApp' );
 		$parser->setHook ( 'padlet', 'LoopExternalContent::renderPadlet' );
+		$parser->setHook ( 'taskcard', 'LoopExternalContent::renderTaskcard' );
 		$parser->setHook ( 'prezi', 'LoopExternalContent::renderPrezi' );
 		$parser->setHook ( 'slideshare', 'LoopExternalContent::renderSlideshare' );
 		$parser->setHook ( 'quizlet', 'LoopExternalContent::renderQuizlet' );
+		$parser->setHook ( 'panopto', 'LoopExternalContent::renderPanopto' );
 		return true;
     }
 
@@ -63,6 +65,39 @@ class LoopExternalContent {
         return $return;
     }
 
+    public static function renderPanopto ( $input, array $args, Parser $parser, PPFrame $frame ) {
+
+        global $wgPanoptoHostUrl;
+        $errors = '';
+        $return = '';
+        $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
+        $width = array_key_exists( 'width', $args ) ? $args['width'] : '720';
+        $height = array_key_exists( 'height', $args ) ? $args['height'] : '405';
+
+        if ( !empty( $id ) ) {
+            $return = Html::rawElement(
+                'iframe',
+                array(
+                    'src' => $wgPanoptoHostUrl . "?id=" . $id . '&autoplay=false&offerviewer=true&showtitle=true&showbrand=true&captions=false&interactivity=none',
+                    'width' => $width,
+                    'height' => $height,
+                    'data-height' => $height,
+                    'data-width' => $width,
+                    'allowfullscreen' => 'allowfullscreen',
+                    'class' => 'ext-panopto panopto-iframe'
+                ),
+                ''
+            );
+        } else {
+            $errors .= wfMessage( "loop-error-missingrequired", "Panopto", "id")->text() . "<br>";
+        }
+        if ( !empty ( $errors ) ) {
+            $return .= new LoopException( $errors );
+            $parser->addTrackingCategory( 'loop-tracking-category-error' );
+        }
+
+        return $return;
+    }
 
     public static function renderLearningApp ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
@@ -113,54 +148,111 @@ class LoopExternalContent {
         return $return;
     }
 
-    public static function renderPadlet ( $input, array $args, Parser $parser, PPFrame $frame ) {
+	public static function renderPadlet ( $input, array $args, Parser $parser, PPFrame $frame ) {
 
-        global $wgPadletUrl;
-        $errors = '';
-        $return = '';
-        $key = '';
-        $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
-        $height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
-        $hostUrl = $wgPadletUrl;
-        $scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
-        $scaleClass = 'responsive-iframe';
+		global $wgPadletUrl;
+		$errors = '';
+		$return = '';
+		$key = '';
+		$width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
+		$height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
+		$hostUrl = $wgPadletUrl;
+		$scale = ( array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true" ) ? true : false;
+		$scaleClass = 'responsive-iframe';
 
-        if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop-resizer.js");
-            $scaleClass = "scale-frame";
-        }
+		if ( $scale ) {
+			$parser->getOutput()->addModules("skins.loop-resizer.js");
+			$scaleClass = "scale-frame";
+		}
 
-        if ( array_key_exists( 'key', $args ) ) {
-            $key = $args["key"];
-        } elseif ( array_key_exists( 'id', $args ) ) {
-            $key = $args["id"];
-        } else {
-            $errors .= wfMessage( "loop-error-missingrequired", "Padlet", "id")->text() . "<br>";
-        }
+		if ( array_key_exists( 'key', $args ) ) {
+			$key = $args["key"];
+		} elseif ( array_key_exists( 'id', $args ) ) {
+			$key = $args["id"];
+		} else {
+			$errors .= wfMessage( "loop-error-missingrequired", "Padlet", "id")->text() . "<br>";
+		}
 
-        if ( !empty( $key ) ) {
-            $return = Html::rawElement(
-                'iframe',
-                array(
-                    'src' => $hostUrl . $key,
-                    'width' => $width,
-                    'height' => $height,
-                    'data-height' => $height,
-                    'data-width' => $width,
-                    'allowfullscreen' => 'allowfullscreen',
-                    'class' => 'ext-padlet ' . $scaleClass
-                ),
-                ''
-            );
-        }
+		if ( !empty( $key ) ) {
+			$return = Html::rawElement(
+				'iframe',
+				array(
+					'src' => $hostUrl . $key,
+					'width' => $width,
+					'height' => $height,
+					'data-height' => $height,
+					'data-width' => $width,
+					'allowfullscreen' => 'allowfullscreen',
+					'class' => 'ext-padlet ' . $scaleClass
+				),
+				''
+			);
+		}
 
-        if ( !empty ( $errors ) ) {
-            $return .= new LoopException( $errors );
-            $parser->addTrackingCategory( 'loop-tracking-category-error' );
-        }
+		if ( !empty ( $errors ) ) {
+			$return .= new LoopException( $errors );
+			$parser->addTrackingCategory( 'loop-tracking-category-error' );
+		}
 
-        return $return;
-    }
+		return $return;
+	}
+
+	public static function renderTaskcard ( $input, array $args, Parser $parser, PPFrame $frame ) {
+
+	global $wgTaskcardUrl;
+	$errors = '';
+	$return = '';
+	$key = '';
+	$token = '';
+	$width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
+	$height = array_key_exists( 'height', $args ) ? $args['height'] : '500';
+	$hostUrl = $wgTaskcardUrl;
+
+	$scale = array_key_exists( 'scale', $args ) && strtolower( $args['scale'] ) === "true";
+	$scaleClass = 'responsive-iframe';
+
+	if ( $scale ) {
+		$parser->getOutput()->addModules("skins.loop-resizer.js");
+		$scaleClass = "scale-frame";
+	}
+
+	if ( array_key_exists( 'key', $args ) ) {
+		$key = $args["key"];
+	} elseif ( array_key_exists( 'id', $args ) ) {
+		$key = $args["id"];
+	} else {
+		$errors .= wfMessage( "loop-error-missingrequired", "Taskcard", "id")->text() . "<br>";
+	}
+	//Added token functionality
+	if ( array_key_exists( 'token', $args ) ) {
+		$token = "?token=" . $args["token"];
+	}else {
+		$errors .= wfMessage( "loop-error-missingrequired", "Taskcard", "id")->text() . "<br>";
+	}
+
+	if ( !empty( $key ) ) {
+		$return = Html::rawElement(
+			'iframe',
+			array(
+				'src' => $hostUrl . $key .$token,
+				'width' => $width,
+				'height' => $height,
+				'data-height' => $height,
+				'data-width' => $width,
+				'allowfullscreen' => 'allowfullscreen',
+				'class' => 'ext-taskcard ' . $scaleClass
+			),
+			''
+		);
+	}
+
+	if ( !empty ( $errors ) ) {
+		$return .= new LoopException( $errors );
+		$parser->addTrackingCategory( 'loop-tracking-category-error' );
+	}
+
+	return $return;
+}
 
     public static function renderPrezi ( $input, array $args, Parser $parser, PPFrame $frame ) {
 

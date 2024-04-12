@@ -8,6 +8,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
 
 class LoopStructure {
 
@@ -106,22 +107,13 @@ class LoopStructure {
 			#dd();
 		}
 
-		# Title objects has to start with a letter else an error will occur.
-		$pattern = '/^[a-zA-ZäöüÄÖÜ]$/';
-		if( preg_match($pattern, substr($rootTitleText, 0, 1 )) !== 0 ) {
-            $rootTitle = Title::newFromText( $rootTitleText );
-            if( is_object( $rootTitle )) {
-                $this->mainPage = $rootTitle->getArticleID();
-            } else {
-                return false;
-            }
-        } else {
-		    return false;
-        }
-
+		$rootTitle = Title::newFromText( $rootTitleText );
+		if( is_object( $rootTitle )) {
+			$this->mainPage = $rootTitle->getArticleID();
+		}
 		# create new root page
 		if( $this->mainPage == 0 ) {
-			$newPage = WikiPage::factory( Title::newFromText( $rootTitleText ));
+			$newPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( $rootTitleText ));
 			$newContent = new WikitextContent( wfMessage( 'loopstructure-default-newpage-content' )->inContentLanguage()->text() );
 
 			$summary = CommentStoreComment::newUnsavedComment( "New root page" );
@@ -135,11 +127,11 @@ class LoopStructure {
 
 		# Set new MW main page from LOOP main page
 		$mainPage = Title::newFromId( $this->mainPage );
-		$mainPageWP =  WikiPage::factory( $mainPage );
+		$mainPageWP =  MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $mainPage );
 		$mwMainPageTitle = Title::newFromText( "Mainpage", NS_MEDIAWIKI );
-		$mwMainPageWP = WikiPage::factory( $mwMainPageTitle );
+		$mwMainPageWP = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $mwMainPageTitle );
 		$content = $mainPageWP->getContent();
-		$newMainPageContent = $content->getContentHandler()->unserializeContent( $mainPage->mTextform );
+		$newMainPageContent = $content->getContentHandler()->unserializeContent( $mainPage->getText() );
 
 		$summary = CommentStoreComment::newUnsavedComment( "New main page" );
 		$mwMainPageUpdater = $mwMainPageWP->newPageUpdater( $user );
@@ -171,7 +163,8 @@ class LoopStructure {
 		preg_match_all( $regex, $wikiText, $matches );
 
 		if ( is_array( $matches[0] ) ) {
-			for( $i=0; $i < count( $matches[0] ); $i++ ) { # works even though it's marked red
+			$newMatches = $matches[0];
+			for( $i=0; $i < count( $newMatches ); $i++ ) { # works even though it's marked red
 
 				$tocLevel = $matches[2][$i];
 				$tocNumber = $matches[6][$i];
@@ -183,7 +176,7 @@ class LoopStructure {
 
 				# create new page for item
 				if( $tocArticleId == 0 ) {
-					$newPage = WikiPage::factory( Title::newFromText( $tocText ) );
+					$newPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( Title::newFromText( $tocText ) );
 					$newContent = new WikitextContent( wfMessage( 'loopstructure-default-newpage-content' )->inContentLanguage()->text());
 					$summary = CommentStoreComment::newUnsavedComment( "New from TOC" );
 					$newPageUpdater = $newPage->newPageUpdater( $user );
@@ -464,7 +457,7 @@ class LoopStructureItem {
 					'lsi_toc_level' => $this->tocLevel,
 					'lsi_sequence' => $this->sequence,
 					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => $tmpTocText->mTextform
+					'lsi_toc_text' => $tmpTocText->getText()
 				),
 				__METHOD__
 			);
@@ -976,6 +969,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
 		$this->setHeaders();
@@ -999,7 +993,8 @@ class SpecialLoopStructureEdit extends SpecialPage {
 		$currentStructureAsWikiText = $loopStructure->renderAsWikiText();
 
         $request = $this->getRequest();
-        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
+        $saltedToken = $csrfTokenSet->getToken($request->getSessionId()->__toString());
+		//dd($saltedToken, $request->getSessionId()->__toString());
 		$newStructureContent = $request->getText( 'loopstructure-content' );
 		$requestToken = $request->getText( 't' );
 
@@ -1011,7 +1006,7 @@ class SpecialLoopStructureEdit extends SpecialPage {
 
 		if( ! empty( $newStructureContent ) && ! empty( $requestToken )) {
 			if( $userIsPermitted ) {
-				if( $user->matchEditToken( $requestToken, $wgSecretKey, $request )) {
+				if( $csrfTokenSet->matchToken( $requestToken, $request->getSessionId()->__toString() )) {
 
 					# the content was changend
 					# force toc rendering for tocs with three or fewer headings.
@@ -1021,11 +1016,12 @@ class SpecialLoopStructureEdit extends SpecialPage {
 					$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 					$parser = $parserFactory->create();
 					$tmpTitle = Title::newFromText( 'NO TITLE' );
-                    $parserOutput = $parser->parse( $newStructureContent, $tmpTitle, new ParserOptions() );
+
+                    $parserOutput = $parser->parse( $newStructureContent, $tmpTitle, new ParserOptions($user) );
 
 					if( is_object( $parserOutput )) {
 
-						$parsedStructure = $parserOutput->mText;
+						$parsedStructure = $parserOutput->getText();
 
 						if( ! empty( $parsedStructure )) {
 
@@ -1037,7 +1033,6 @@ class SpecialLoopStructureEdit extends SpecialPage {
 								$error = $this->msg( 'loopstructure-save-dublicates-error' )->parse();
 								$feedbackMessageClass = 'danger';
 							} else {
-
 								if( $parseResult !== false ) {
 
 									$newStructureContentParsedWikiText = $tmpLoopStructure->renderAsWikiText();
@@ -1229,7 +1224,7 @@ class SpecialLoopPagesNotInStructure extends SpecialPage {
 		foreach( $res as $row ) {
 			if ( LoopStructureItem::newFromIds( $row->page_id ) == false ) {
 				$tmpTitle = Title::newFromID( $row->page_id, $row->page_namespace );
-				$links[$tmpTitle->mTextform] = $linkRenderer->makeLink(
+				$links[$tmpTitle->getText()] = $linkRenderer->makeLink(
 					$tmpTitle
 				) . "<br>";
 			}

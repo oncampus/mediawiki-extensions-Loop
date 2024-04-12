@@ -1,7 +1,7 @@
 <?php
 /**
   * @description Consent prompt for YouTube, Vimeo and H5P
-  * @author Dustin Neß <dustin.ness@th-luebeck.de>
+  * @author Dustin Neß <dustin.ness@th-luebeck.de>, Dennis Krohn @krohnden
   */
 
 if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); }
@@ -9,33 +9,42 @@ if( !defined( 'MEDIAWIKI' ) ) { die( "This file cannot be run standalone.\n" ); 
 class LoopConsent {
 
     public static function onPageContentSave( $wikiPage, $user, $content, &$summary, $isMinor, $isWatch, $section, $flags, $status ) {
-        $tags = [ '<youtube', 'service="youtube"', '#ev:youtube' ];
+        global $wgLoopEnableConsent;
 
-        foreach( $tags as $tag ) {
-            if( strpos( $content->getText(), $tag ) !== false ) {
-                LoopConsent::updateThumbnails( $content->getText(), $wikiPage->getTitle()->getArticleID() );
-            }
-        }
+		if ( $wgLoopEnableConsent ) {
+
+			$tags = [ '<youtube', 'service="youtube"', '#ev:youtube' ];
+
+			foreach( $tags as $tag ) {
+				if( strpos( $content->getText(), $tag ) !== false ) {
+					LoopConsent::updateThumbnails( $content->getText(), $wikiPage->getTitle()->getArticleID() );
+				}
+			}
+		}
+		return true;
     }
 
 
     public static function onParserBeforeInternalParse( &$parser, &$text, &$strip_state ) {
-        global $wgH5PHostUrl;
+        global $wgH5PHostUrl, $wgLoopEnableConsent;
 
-        if( !isset( $_COOKIE['LoopConsent'] )) {
-            $parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
-            $parser->setHook( 'embedvideo', 'LoopConsent::parseTag' );  // <embedvideo>
+		if ( $wgLoopEnableConsent ) {
 
-            if( strpos( $wgH5PHostUrl, 'h5p.com' ) != false ) {
-                $parser->setHook('h5p', 'LoopConsent::parseH5P');       // <h5p>
-            }
+			if ( !isset( $_COOKIE['LoopConsent'] )) {
+				$parser->setHook( 'youtube', 'LoopConsent::parseTag' );     // <youtube>
+				$parser->setHook( 'embedvideo', 'LoopConsent::parseTag' );  // <embedvideo>
 
-            $parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );   // {{#ev}}
-            $parser->setFunctionHook( 'evt', 'LoopConsent::parseEvt' ); // {{#evt}}
-            $parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' ); // {{#evu}}
+				if ( strpos( $wgH5PHostUrl, 'h5p.com' ) != false ) {
+					$parser->setHook('h5p', 'LoopConsent::parseH5P');       // <h5p>
+				}
 
-            return true;
-        }
+				$parser->setFunctionHook( 'ev', 'LoopConsent::parseEv' );   // {{#ev}}
+				#$parser->setFunctionHook( 'evt', 'LoopConsent::parseEvt' ); // {{#evt}}
+				#$parser->setFunctionHook( 'evu', 'LoopConsent::parseEvu' ); // {{#evu}}
+
+			}
+		}
+		return true;
     }
 
 
@@ -79,7 +88,7 @@ class LoopConsent {
         }
     }
 
-
+/*
     public static function parseEvt( $parser, $callback, $flags ) {
         $lc = new LoopConsent();
 
@@ -97,8 +106,8 @@ class LoopConsent {
             ];
         }
     }
-
-
+*/
+/*
     public static function parseEvu( $parser, $callback ) {
         $lc = new LoopConsent();
 
@@ -116,7 +125,7 @@ class LoopConsent {
             ];
         }
     }
-
+*/
 
     private function renderOutput( $id, $service = 'youtube' ) {
         global $wgCanonicalServer, $wgUploadPath;
@@ -176,19 +185,27 @@ class LoopConsent {
 
 
     public static function onPageRenderingHash( &$confstr, $user, &$optionsUsed ) {
-        if ( isset( $_COOKIE['LoopConsent'] ) ) {
-            $confstr .= "!loopconsent=true";
-        } else {
-            $confstr .= "!loopconsent=false";
-        }
+		global $wgLoopEnableConsent;
+		if ( $wgLoopEnableConsent ) {
 
+			if ( isset( $_COOKIE['LoopConsent'] ) ) {
+				$confstr .= "!loopconsent=true";
+			} else {
+				$confstr .= "!loopconsent=false";
+			}
+
+		}
         return true;
     }
 
 
     public static function onParserOptionsRegister( &$defaults, &$inCacheKey, &$lazyLoad ) {
-        $defaults["loopconsent"] = false;
-        $inCacheKey["loopconsent"] = isset( $_COOKIE['LoopConsent'] ) ? true : false;
+		global $wgLoopEnableConsent;
+		if ( $wgLoopEnableConsent ) {
+			$defaults["loopconsent"] = false;
+			$inCacheKey["loopconsent"] = isset( $_COOKIE['LoopConsent'] ) ? true : false;
+		}
+		return true;
     }
 
 
@@ -205,17 +222,17 @@ class LoopConsent {
 
             foreach( $curlyMatches as $match ) {
                 if( strpos( $match, 'youtube' ) ) {
-                    if( strpos($match, '#evt:') !== false ) {
+                    /*if( strpos($match, '#evt:') !== false ) {
                         $id = explode('|', $match)[1];
                         $id = preg_replace( "/[\n\r]/","", $id );
                         $return['youtube'][] = substr($id, strrpos($id, '=') + 1);
-                    } else if( strpos($match, '#ev:') !== false ) {
+                    } else */ if( strpos($match, '#ev:') !== false ) {
                         $id = explode( '|', $match )[1];
                         $return['youtube'][] = $id;
-                    } else { // evu
+                    } /*else { // evu
                         $lc = new LoopConsent();
                         $return['youtube'][] = $lc->getYouTubeId( $match );
-                    }
+                    }*/
                 }
             }
         }

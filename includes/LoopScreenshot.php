@@ -75,7 +75,7 @@ class LoopScreenshot {
 			$refId = $stableRevId ."_". $args["id"];
 			$html = '';
 
-			$user = $parser->getUser();
+			$user = $parser->getUserIdentity();
 			$articleId = $parser->getTitle()->getArticleID();
 			$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 			$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
@@ -122,7 +122,7 @@ class LoopScreenshot {
 
 			if ( !file_exists( $screenshotPngFile ) ) {
 
-				$wikiPage = WikiPage::factory( $title );
+				$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 				$fwp = new FlaggableWikiPage ( $title );
 
 				$rev = $wikiPage->getRevisionRecord();

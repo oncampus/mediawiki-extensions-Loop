@@ -8,6 +8,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiLoopFeedbackSave extends ApiBase {
 	public function __construct( $main, $action ) {
@@ -55,7 +56,9 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$feedback['lf_timestamp'] = wfTimestampNow();
 		$feedback['lf_archive_timestamp'] = '00000000000000';
 
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbw = $dbProvider->getConnection(DB_PRIMARY);
+		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->insert(
 			'loop_feedback',
 			$feedback,
@@ -72,19 +75,19 @@ class ApiLoopFeedbackSave extends ApiBase {
 		$ret = array(
 			'title' => null,
 			'pageid' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_TYPE     => 'integer',
 			),
 			'anontoken' => array(
-				ApiBase::PARAM_TYPE     => 'string',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
 			),
 			'rating' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
-				ApiBase::PARAM_REQUIRED => true,
+				ParamValidator::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_REQUIRED => true,
 			),
 			'comment' => array(
-				ApiBase::PARAM_TYPE     => 'string',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
 			)
 		);
 
@@ -334,15 +337,15 @@ class ApiLoopFeedbackPageDetails extends ApiBase {
 		$ret = array(
 			'title' => null,
 			'pageid' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_TYPE     => 'integer',
 			),
 			'comments' => array(
-				ApiBase::PARAM_TYPE     => 'integer',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'integer',
+				ParamValidator::PARAM_REQUIRED => false,
 			),
 			'timestamp' => array(
-				ApiBase::PARAM_TYPE     => 'string',
-				ApiBase::PARAM_REQUIRED => false,
+				ParamValidator::PARAM_TYPE     => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
 			),
 		);
 
@@ -420,8 +423,9 @@ class ApiLoopFeedbackOverview extends ApiBase {
 				'nopermission'
 			);
 		}
-
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		$dbr = $dbProvider->$dbProvider();
+		//$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 				'loop_feedback',
 				array(

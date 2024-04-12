@@ -7,6 +7,7 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Session\CsrfTokenSet;
 
 class LoopLiterature {
 
@@ -539,7 +540,7 @@ class LoopLiterature {
 				if ( isset ( $allReferences[$articleId] ) && isset( $allReferences[$articleId][$refId] ) ) {
 					if ( $refId != $allReferences[$articleId][$refId]["refId"] || $articleId != $allReferences[$articleId][$refId]["articleId"] || $input != $allReferences[$articleId][$refId]["itemKey"] ) {
 						$otherTitle = Title::newFromId( $allReferences[$articleId][$refId]["articleId"] );
-						$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->mTextform, $allReferences[$articleId][$refId]["itemKey"] )->text() );
+						$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->getText(), $allReferences[$articleId][$refId]["itemKey"] )->text() );
 						$parser->addTrackingCategory( 'loop-tracking-category-error' );
 						$html .= $e;
 						$objectNumber = '';
@@ -637,7 +638,7 @@ class LoopLiterature {
 	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
 
 	    $latestRevId = $title->getLatestRevID();
-	    $wikiPage = WikiPage::factory($title);
+	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    $fwp = new FlaggableWikiPage ( $title );
 
 	    if ( isset($fwp) ) {
@@ -655,7 +656,7 @@ class LoopLiterature {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-	    $wikiPage = WikiPage::factory($title);
+	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    self::handleLoopLiteratureReferences( $wikiPage, $title );
 	    return true;
 	}
@@ -975,9 +976,11 @@ class LoopLiterature {
 			$return .= "(". wfMessage("loopliterature-text-pages", $plural)->text() . " " . $li->pages."). ";
 		}
 
+		
 		if ( !empty( trim( $li->journal ) ) ) {
 			$return .= $li->journal. ". ";
 		}
+		
 		if ( !empty( trim( $li->series ) ) ) {
 			$return .= "(". $li->series."). ";
 		}
@@ -997,11 +1000,8 @@ class LoopLiterature {
 			$return .= "(". $li->number."). ";
 		}
 
-
 		if ( !empty( trim( $li->publisher ) ) ) {
 			$return .= $li->publisher.". ";
-		} elseif ( !empty( trim( $li->journal ) ) ) {
-			$return .= $italic. $li->journal.".". $italicEnd." ";
 		}
 
 		if ( !empty( trim( $li->institution ) ) ) {
@@ -1016,8 +1016,12 @@ class LoopLiterature {
 		if ( !empty( trim( $li->doi ) ) ) {
 			$return .= "DOI: " . $li->doi.". ";
 		}
-		if ( !empty( trim( $li->url ) ) ) {
-			$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
+		if (!empty(trim($li->url))) {
+			if ($type == 'html') {
+				$return .= wfMessage("loopliterature-text-url")->text() . " <a href=" . $li->url . ">" . $li->url . "</a>. ";
+			} else {
+				$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url . ". ";
+			}
 		}
 		if ( !empty( trim( $li->address ) ) ) {
 			$return .= $li->address.". ";
@@ -1049,8 +1053,8 @@ class LoopLiterature {
 							$linkedTitles[] = $title->mArticleID;
 							$return .= $linkRenderer->makelink(
 								$title,
-								new HtmlArmor( $title->mTextform ),
-								array( 'title' => $title->mTextform, "class" => "dropdown-item literature-refs" ),
+								new HtmlArmor( $title->getText() ),
+								array( 'title' => $title->getText(), "class" => "dropdown-item literature-refs" ),
 								array()
 							);
 						}
@@ -1575,6 +1579,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		if ( $permissionManager->userHasRight( $user,'loop-edit-literature') ) {
@@ -1611,7 +1616,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				$html .= '<script>var editValues = new Array;</script>';
 			}
 
-			$saltedToken = $user->getEditToken( $wgSecretKey, $request );
+			$saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
 			$requestToken = $request->getText( 't' );
 
 			$out->setPageTitle($this->msg('loopliteratureedit')->text());
@@ -1619,7 +1624,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 
 			if ( ! empty( $requestToken ) ) {
 
-				if ( $user->matchEditToken( $requestToken, $wgSecretKey, $request ) ) {
+				if ( $csrfTokenSet->matchToken( $requestToken, $request->getSessionId()->__tostring() ) ) {
 
 					$loopLiterature = new LoopLiterature;
 					$loopLiterature->getLiteratureFromRequest( $request );
@@ -1794,10 +1799,11 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
+		$csrfTokenSet = new CsrfTokenSet($request);
 		$user = $this->getUser();
 		Loop::handleLoopRequest( $out, $request, $user ); #handle editmode
 
-        $saltedToken = $user->getEditToken( $wgSecretKey, $request );
+        $saltedToken = $csrfTokenSet->getToken( $request->getSessionId()->__tostring() );
 		$out->setPageTitle($this->msg('loopliteratureimport'));
         $html = '<h1>';
 		$html .= wfMessage( 'loopliteratureimport' )->text();

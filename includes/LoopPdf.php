@@ -102,6 +102,9 @@ class LoopPdf {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/xml'));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, "$xmlfo");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 0);
+
 		$pdf = curl_exec($ch);
 		curl_close($ch);
 
@@ -141,7 +144,7 @@ class SpecialLoopExportPdfTest extends SpecialPage {
 				$item = new LoopStructureItem();
 				$item->id = 1;
 				$item->article = $title->getArticleID();
-				$item->tocText = $title->mTextform;
+				$item->tocText = $title->getText();
 				$loopStructure->structureItems = array( $item );
 			} else {
 				$loopStructure->loadStructureItems();

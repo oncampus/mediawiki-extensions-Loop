@@ -106,7 +106,7 @@ class LoopXml {
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($title->mArticleID);
-			$wp = WikiPage::factory ( $title );
+			$wp = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle ( $title );
 			$content = $wp->getContent( MediaWiki\Revision\RevisionRecord::RAW );
 			$contentText = ContentHandler::getContentText( $content );
 
@@ -131,6 +131,9 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
+		
+		# remove table headlines - these make the process crash otherwise!
+		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
 		# remove score tags - these may cause the whole XML to fail
 		$content = preg_replace('/(<score.*>)(.*)(<\/score>)/msiU', "<score></score>", $content);
@@ -171,7 +174,7 @@ class LoopXml {
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
 		$objectTags = array( 'loop_figure', 'loop_formula', 'loop_listing', 'loop_media', 'loop_table', 'loop_task', 'cite', 'loop_index' ); # all tags with ids
-		$contentTags = array( 'h5p', 'learningapp', 'padlet', 'prezi', 'slideshare', 'quizlet', 'youtube' );
+		$contentTags = array( 'h5p', 'learningapp', 'padlet','taskcard', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
 		$selector = new DOMXPath( $dom );
@@ -230,7 +233,7 @@ class LoopXml {
 		$stableRev = $fwp->getStable();
 		if ( $stableRev == 0 ) {
 			$stableRev = intval($articleId);
-			$wp = WikiPage::factory ( $title );
+			$wp = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle ( $title );
 			$pageContent = $wp->getContent( MediaWiki\Revision\RevisionRecord::RAW );
 			$contentText = ContentHandler::getContentText( $pageContent );
 		} else {
@@ -248,7 +251,7 @@ class LoopXml {
 			if ( ! $modifiers["noarticle"] ) {
 				$xml = "<article ";
 				$xml .= "id=\"article" . $articleId . "\" ";
-				$xml .= "title=\"" . htmlspecialchars($title->mTextform, ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
+				$xml .= "title=\"" . htmlspecialchars($title->getText(), ENT_XML1 | ENT_COMPAT, 'UTF-8') . "\"";
 				$xml .= ">\n";
 			}
 		}
@@ -400,55 +403,74 @@ class LoopXml {
 
 		$return_xml = '';
 
-		if ($link_parts['type']=='external' ) {
+		if ( $link_parts['type'] == 'external' ) {
 			if ( array_key_exists( "href", $link_parts ) ) {
-				$return_xml = '<php_link_external href="'.$link_parts['href'].'">';
+				$return_xml = '<php_link_external href="' . $link_parts['href'] . '">';
 				$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : " ";
-				$return_xml .= '</php_link_external>' ;
-			} else {
-				$return_xml = "";
+				$return_xml .= '</php_link_external>';
 			}
 		} else {
-			if (isset($link_parts['target'])) {
-				$target_title = Title::newFromText($link_parts['target']);
+			if ( isset( $link_parts['target'] ) ) {
+				$target_title = Title::newFromText( $link_parts['target'] );
 				if ( is_object( $target_title ) ) {
 
 					$target_ns = $target_title->getNamespace();
 
-					if ($target_ns == NS_FILE) {
-						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($target_title);
-						if (is_object($file)) {
-							$target_file=$file->getLocalRefPath();
-							$target_url=$file->getFullUrl();
-							if (is_file($target_file)) {
-								$allowed_extensions = array('jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm');
-								if (in_array($file->getExtension(), $allowed_extensions)) {
+					if ( $target_ns == NS_FILE ) {
+						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile( $target_title );
+						if ( is_object( $file ) ) {
+							$target_file = $file->getLocalRefPath();
+							$target_url = $file->getFullUrl();
+							if ( is_file( $target_file ) ) {
+								$allowed_extensions = array( 'jpg','jpeg','gif','png','svg','tiff','bmp','eps','wmf','cgm' );
+								if ( in_array( $file->getExtension(), $allowed_extensions ) ) {
 
-									if (array_key_exists('width', $link_parts)) {
-										$width=0.214*intval($link_parts['width']);
-										if ($width>150) {
-											$imagewidth='150mm';
+									$issvg = false;
+									if ( $file->getExtension() === 'svg' ) {
+										$issvg = true;
+										$iconfile = new DOMDocument();
+										$iconfile->load( $file->getLocalRefPath() );
+										$svg = $iconfile->getElementsByTagName( 'svg' )[0];
+										$viewbox = $svg->getAttribute( 'viewBox' );
+										if ( $viewbox ) {
+											$svgheight = explode( ' ', $viewbox )[3];
+											$svgwidth = explode( ' ', $viewbox )[2];
 										} else {
-											$imagewidth=round($width,0).'mm';
+											$svgheight = $svg->getAttribute( 'height' );
+											$svgwidth = $svg->getAttribute( 'width' );
 										}
+										if ( $svgwidth && $svgheight && intval( $svgwidth ) > 0 ) {
+											$resolutionscale = $svgheight / $svgwidth;
+										}
+									}
+
+									if ( array_key_exists( 'width', $link_parts ) ) {
+										$width = 0.214 * intval( $link_parts['width'] );
 									} else {
-										$size=getimagesize($target_file);
-										$width=0.214*intval($size[0]);
-										if ($width>150) {
-											$imagewidth='150mm';
-										} else {
-											$imagewidth=round($width,0).'mm';
-										}
+										$size = getimagesize( $target_file );
+										$width = 0.214 * intval( $size[0] );
 									}
 
-									$return_xml =  '<php_link_image imagepath="'.$target_url.'" imagewidth="'.$imagewidth.'" ';
-									if (isset($link_parts['align'])) {
-										$return_xml .= ' align="'.$link_parts['align'].'" ';
+									if ( $width > 150 ) {
+										$width = 150;
+										$imagewidth = '150mm';
+									} else {
+										$imagewidth = round( $width ) . 'mm';
 									}
-									if (isset($link_parts['format'])) {
-										$return_xml .= ' format="'.$link_parts['format'].'" ';
+
+									$return_xml =  '<php_link_image imagepath="' . $target_url . '" imagewidth="' . $imagewidth . '"';
+									if ( $issvg && isset( $resolutionscale ) ) {
+										$imageheight = round( $width * $resolutionscale ) . 'mm';
+										$return_xml .= ' imageheight="' . $imageheight . '"';
 									}
-									$return_xml .=  '></php_link_image>';
+
+									if ( isset( $link_parts['align'] ) ) {
+										$return_xml .= ' align="' . $link_parts['align'] . '" ';
+									}
+									if ( isset( $link_parts['format'] ) ) {
+										$return_xml .= ' format="' . $link_parts['format'] . '" ';
+									}
+									$return_xml .= '></php_link_image>';
 
 
 								} elseif ( $file->getMediaType() == "VIDEO" ) { #render videos entered as [[File:Video.mp4]] like loop_video
@@ -471,6 +493,23 @@ class LoopXml {
 					} elseif ($target_ns == NS_CATEGORY) {
 						// Kategorie-Link nicht ausgeben
 
+					} elseif ($target_ns == NS_MEDIA) {
+						if (!array_key_exists('href', $link_parts)) {
+							$link_parts['href'] = Title::newFromText($link_parts['target']);;
+						}
+						if (array_key_exists('part',$link_parts)) {
+							$link_parts['text'] = $link_parts['part'];
+						}
+
+						$file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($link_parts['href']);
+						$target_url = '';
+						if (is_object($file)) {
+							$target_url = $file->getFullUrl();
+						}
+
+						$return_xml = '<php_link_media href="'.$target_url.'">';
+						$return_xml .= ( array_key_exists( "text", $link_parts ) ) ? $link_parts['text'] : "Datei: Name nicht gefunden";
+						$return_xml .= '</php_link_media>' ;
 					} else {
 						// internal link
 						if (!array_key_exists('text', $link_parts)) {
@@ -494,7 +533,9 @@ class LoopXml {
 			}
 		}
 		$return = new DOMDocument;
-
+		if ( empty( $return_xml ) ) {
+			return $return;
+		}
 		$old_error_handler = set_error_handler("LoopXml::error_handler");
 		libxml_use_internal_errors(true);
 

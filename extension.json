@@ -9,23 +9,24 @@
 		"Marc Vorreiter",
 		"Kevin Berg"
 	],
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.35",
+		"MediaWiki": ">= 1.39",
 		"extensions": {
 			"Cite": "*",
 			"ConfirmEdit": ">= 1.6.0",
-			"EmbedVideo": ">= 2.8.0",
+			"EmbedVideo": ">= 3.1.0",
 			"FlaggedRevs": "*",
-			"Lingo": ">= 3.0.0",
-			"Math": "3.0.0",
-			"MsUpload": "*",
+			"Lingo": ">= 3.1.2",
+			"Math": ">= 3.0.0",
+			"MsUpload": ">= 13.5",
 			"Quiz": ">= 1.2.0",
 			"Score": ">= 0.3.0",
-			"WikiEditor": ">= 0.5.2"
+			"Widgets": ">= 1.4.1",
+			"WikiEditor": ">= 0.5.3"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
@@ -336,8 +337,10 @@
 				"loopwikieditor-loop-content-audio",
 				"loopwikieditor-loop-content-youtube",
 				"loopwikieditor-loop-content-h5p",
+				"loopwikieditor-loop-content-panopto",
 				"loopwikieditor-loop-content-learningapps",
 				"loopwikieditor-loop-content-padlet",
+				"loopwikieditor-loop-content-taskcard",
 				"loopwikieditor-loop-content-prezi",
 				"loopwikieditor-loop-content-slideshare",
 				"loopwikieditor-loop-content-quizlet",
@@ -821,6 +824,10 @@
 			"value" : "",
 			"description" : "Some H5P Hosts require the ID before the end of the URL"
 		},
+		"PanoptoHostUrl": {
+			"value" : "",
+			"description" : "URL for Panopto hosted elements"
+		},
 		"LearningAppUrl": {
 			"value" : "https://LearningApps.org/watch?",
 			"description" : "URL for LearningApps elements"
@@ -828,6 +835,10 @@
 		"PadletUrl": {
 			"value" : "https://www.padlet.com/embed/",
 			"description" : "URL for Padlet elements"
+		},
+		"TaskcardUrl": {
+			"value" : "https://www.taskcards.de/#/board/",
+			"description" : "URL for Taskcard elements"
 		},
 		"PreziUrl": {
 			"value" : "https://prezi.com/embed/",
@@ -1054,6 +1065,10 @@
 		"LoopEditorHideReferences": {
 			"value": false,
 			"description" : "Hide References from LOOP WikiEditor for faster loading."
+		},
+		"LoopEnableConsent": {
+			"value": true,
+			"description": "Enable Loop's own consent banner before showing external content"
 		}
 	},
 	"LogTypes": [ "loopexport" ],
@@ -1072,6 +1087,12 @@
 			"constant": "NS_GLOSSARY",
 			"name": "loop-glossary-namespace",
 			"protection": "edit"
+		},
+		{
+			"id": 3001,
+			"constant": "NS_GLOSSARY_TALK",
+			"name": "loop-glossary-namespace",
+			"protection": "edittalk"
 		}
 	],
 	"APIModules": {

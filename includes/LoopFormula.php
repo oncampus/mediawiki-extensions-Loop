@@ -90,7 +90,8 @@ class SpecialLoopFormulas extends SpecialPage {
 
 	    $parserFactory = MediaWikiServices::getInstance()->getParserFactory();
         $parser = $parserFactory->create();
-	    $parserOptions = new ParserOptions();
+		$tmpUser = new User();
+	    $parserOptions = new ParserOptions( $tmpUser );
 	    $parser->getOptions ( $parserOptions );
 
 	    $formulas = array ();

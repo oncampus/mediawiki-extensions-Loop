@@ -4,7 +4,7 @@
 	<xsl:param name="terms_file">
 		<xsl:value-of select="'terms.xml'"/>
 	</xsl:param>
- 
+
 	<func:function name="functx:get_term_name">
 		<xsl:param name="term_name_key"/>
 		<func:result select="document($terms_file)/terms/msg[(@name=$term_name_key) and (@lang=$lang)]"/>
@@ -51,12 +51,14 @@
 	<xsl:variable name="icon_websource" select="functx:get_icon('icon_websource')"/>
 	<xsl:variable name="icon_experiment" select="functx:get_icon('icon_experiment')"/>
 	<xsl:variable name="icon_citation" select="functx:get_icon('icon_citation')"/>
+	<xsl:variable name="icon_toc" select="functx:get_icon('icon_toc')"/>
 
 	<xsl:variable name="icon_h5p" select="functx:get_icon('icon_h5p')"/>
 	<xsl:variable name="icon_quizlet" select="functx:get_icon('icon_quizlet')"/>
 	<xsl:variable name="icon_slideshare" select="functx:get_icon('icon_slideshare')"/>
 	<xsl:variable name="icon_prezi" select="functx:get_icon('icon_prezi')"/>
 	<xsl:variable name="icon_padlet" select="functx:get_icon('icon_padlet')"/>
+	<xsl:variable name="icon_taskcard" select="functx:get_icon('icon_taskcard')"/>
 	<xsl:variable name="icon_learningapps" select="functx:get_icon('icon_learningapps')"/>
 	<xsl:variable name="icon_ngspice" select="functx:get_icon('icon_ngspice')"/>
 	<xsl:variable name="icon_zip" select="functx:get_icon('icon_zip')"/>
@@ -65,46 +67,47 @@
 	<xsl:variable name="word_chapter" select="functx:get_term_name('word_chapter')"/>
 	<xsl:variable name="word_state" select="functx:get_term_name('word_state')"/>
 	<xsl:variable name="word_content" select="functx:get_term_name('word_content')"/>
-	
+	<xsl:variable name="phrase_h5p_element" select="functx:get_term_name('phrase_h5p_element')"/>
+
 	<xsl:variable name="word_figure" select="functx:get_term_name('word_figure')"/>
 	<xsl:variable name="word_figure_short" select="functx:get_term_name('word_figure_short')"/>
-	<xsl:variable name="phrase_figure" select="functx:get_term_name('phrase_figure')"/>	
-	<xsl:variable name="phrase_figure_number" select="functx:get_term_name('phrase_figure_number')"/>	
+	<xsl:variable name="phrase_figure" select="functx:get_term_name('phrase_figure')"/>
+	<xsl:variable name="phrase_figure_number" select="functx:get_term_name('phrase_figure_number')"/>
 	<xsl:variable name="word_list_of_figures" select="functx:get_term_name('word_list_of_figures')"/>
-	
+
 	<xsl:variable name="word_formula" select="functx:get_term_name('word_formula')"/>
 	<xsl:variable name="word_formula_short" select="functx:get_term_name('word_formula_short')"/>
-	<xsl:variable name="phrase_formula" select="functx:get_term_name('phrase_formula')"/>	
-	<xsl:variable name="phrase_formula_number" select="functx:get_term_name('phrase_formula_number')"/>	
+	<xsl:variable name="phrase_formula" select="functx:get_term_name('phrase_formula')"/>
+	<xsl:variable name="phrase_formula_number" select="functx:get_term_name('phrase_formula_number')"/>
 	<xsl:variable name="word_list_of_formulas" select="functx:get_term_name('word_list_of_formulas')"/>
-	
+
 	<xsl:variable name="word_listing" select="functx:get_term_name('word_listing')"/>
 	<xsl:variable name="word_listing_short" select="functx:get_term_name('word_listing_short')"/>
-	<xsl:variable name="phrase_listing" select="functx:get_term_name('phrase_listing')"/>	
-	<xsl:variable name="phrase_listing_number" select="functx:get_term_name('phrase_listing_number')"/>	
+	<xsl:variable name="phrase_listing" select="functx:get_term_name('phrase_listing')"/>
+	<xsl:variable name="phrase_listing_number" select="functx:get_term_name('phrase_listing_number')"/>
 	<xsl:variable name="word_list_of_listings" select="functx:get_term_name('word_list_of_listings')"/>
-	
+
 	<xsl:variable name="word_media" select="functx:get_term_name('word_media')"/>
 	<xsl:variable name="word_media_short" select="functx:get_term_name('word_media_short')"/>
-	<xsl:variable name="phrase_media" select="functx:get_term_name('phrase_media')"/>	
-	<xsl:variable name="phrase_media_number" select="functx:get_term_name('phrase_media_number')"/>	
+	<xsl:variable name="phrase_media" select="functx:get_term_name('phrase_media')"/>
+	<xsl:variable name="phrase_media_number" select="functx:get_term_name('phrase_media_number')"/>
 	<xsl:variable name="word_list_of_media" select="functx:get_term_name('word_list_of_media')"/>
-	
+
 	<xsl:variable name="word_table" select="functx:get_term_name('word_table')"/>
 	<xsl:variable name="word_table_short" select="functx:get_term_name('word_table_short')"/>
-	<xsl:variable name="phrase_table" select="functx:get_term_name('phrase_table')"/>	
-	<xsl:variable name="phrase_table_number" select="functx:get_term_name('phrase_table_number')"/>	
+	<xsl:variable name="phrase_table" select="functx:get_term_name('phrase_table')"/>
+	<xsl:variable name="phrase_table_number" select="functx:get_term_name('phrase_table_number')"/>
 	<xsl:variable name="word_list_of_tables" select="functx:get_term_name('word_list_of_tables')"/>
-	
+
 	<xsl:variable name="word_task" select="functx:get_term_name('word_task')"/>
 	<xsl:variable name="word_task_short" select="functx:get_term_name('word_task_short')"/>
-	<xsl:variable name="phrase_task" select="functx:get_term_name('phrase_task')"/>	
-	<xsl:variable name="phrase_task_number" select="functx:get_term_name('phrase_task_number')"/>	
+	<xsl:variable name="phrase_task" select="functx:get_term_name('phrase_task')"/>
+	<xsl:variable name="phrase_task_number" select="functx:get_term_name('phrase_task_number')"/>
 	<xsl:variable name="word_list_of_tasks" select="functx:get_term_name('word_list_of_tasks')"/>
-	
+
 	<xsl:variable name="word_appendix" select="functx:get_term_name('word_appendix')"/>
 	<xsl:variable name="word_terminology" select="functx:get_term_name('word_terminology')"/>
-	
+
 	<xsl:variable name="word_looparea_task" select="functx:get_term_name('word_looparea_task')"/>
 	<xsl:variable name="word_looparea_timerequirement" select="functx:get_term_name('word_looparea_timerequirement')"/>
 	<xsl:variable name="word_looparea_learningobjectives" select="functx:get_term_name('word_looparea_learningobjectives')"/>
@@ -128,7 +131,7 @@
 	<xsl:variable name="word_looparea_exercise" select="functx:get_term_name('word_looparea_exercise')"/>
 	<xsl:variable name="word_looparea_websource" select="functx:get_term_name('word_looparea_websource')"/>
 	<xsl:variable name="word_looparea_experiment" select="functx:get_term_name('word_looparea_experiment')"/>
-	<xsl:variable name="word_looparea_citation" select="functx:get_term_name('word_looparea_citation')"/>	
+	<xsl:variable name="word_looparea_citation" select="functx:get_term_name('word_looparea_citation')"/>
 
 	<xsl:variable name="word_spoiler_defaulttitle" select="functx:get_term_name('word_spoiler_defaulttitle')"/>
 	<xsl:variable name="phrase_syntaxhighlight" select="functx:get_term_name('phrase_syntaxhighlight')"/>
@@ -147,5 +150,6 @@
 	<xsl:variable name="phrase_youtube_video" select="functx:get_term_name('phrase_youtube_video')"/>
 	<xsl:variable name="phrase_audio" select="functx:get_term_name('phrase_audio')"/>
 	<xsl:variable name="phrase_quiz"  select="functx:get_term_name('phrase_quiz')" />
+	<xsl:variable name="phrase_math"  select="functx:get_term_name('phrase_math')" />
 
 </xsl:stylesheet>

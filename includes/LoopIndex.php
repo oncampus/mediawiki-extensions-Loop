@@ -36,7 +36,7 @@ class LoopIndex {
 			# check if a dublicate id has been used
 			if ( $input != $item->li_index || $articleId != $item->li_pageid ) {
 				$otherTitle = Title::newFromId( $item->li_pageid );
-				$e = new LoopException( wfMessage( 'loopindex-error-dublicate-id', $id, $otherTitle->mTextform, $item->li_index )->text() );
+				$e = new LoopException( wfMessage( 'loopindex-error-dublicate-id', $id, $otherTitle->getText(), $item->li_index )->text() );
 				$parser->addTrackingCategory( 'loop-tracking-category-error' );
 				$html .= $e . "\n";
 			}
@@ -211,9 +211,8 @@ class LoopIndex {
 	 * @param Content $content
 	 */
 	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
-
 	    $latestRevId = $title->getLatestRevID();
-	    $wikiPage = WikiPage::factory($title);
+	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    $fwp = new FlaggableWikiPage ( $title );
 
 	    if ( isset($fwp) ) {
@@ -232,7 +231,7 @@ class LoopIndex {
 	 * @param Title $title
 	 */
 	public static function onAfterClearStable( $title ) {
-	    $wikiPage = WikiPage::factory($title);
+	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    self::handleIndexItems( $wikiPage, $title );
 	    return true;
 	}
@@ -365,10 +364,10 @@ class SpecialLoopIndex extends SpecialPage {
 						$title = Title::newFromId( $pageId );
 						$lsi = LoopStructureItem::newFromIds( $pageId );
 						$prepend = ( $lsi && strlen( $lsi->tocNumber ) != 0 ) ? $lsi->tocNumber . " " : "";
-						$links[$letter][$index][$prepend . $title->mTextform] = $linkRenderer->makelink(
+						$links[$letter][$index][$prepend . $title->getText()] = $linkRenderer->makelink(
 							$title,
-							new HtmlArmor( $prepend . $title->mTextform ),
-							array( 'title' =>  $prepend . $title->mTextform, "class" => "index-link", "data-target" => $refId ),
+							new HtmlArmor( $prepend . $title->getText() ),
+							array( 'title' =>  $prepend . $title->getText(), "class" => "index-link", "data-target" => $refId ),
 							array()
 						);
 					}

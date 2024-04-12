@@ -8,6 +8,9 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\Shell\Shell;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Extension\Math\MathMathML;
+use MediaWiki\SyntaxHighlight\SyntaxHighlightGeSHiCompat;
+use MediaWiki\Extension\Score\Score;
 
 class LoopXsl {
 
@@ -129,13 +132,16 @@ class LoopXsl {
 		$math->render();
 		$host = $wgMathMathMLUrl."speech/";
 		$post = 'q=' . rawurlencode( $mathcontent );
+		#todo; fn changed in 1.39
+		/*
 		$math->makeRequest($host, $post, $return, $er);
 
 		if (empty($er)) {
 			return $return;
 		} else {
 			return '';
-		}
+		}*/
+		return '';
 	}
 
 	public static function xsl_error_handler($errno, $errstr, $errfile, $errline) {
@@ -465,7 +471,7 @@ class LoopXsl {
 		$id = $id_input[0]->value;
 		$articleId = str_replace( "article", "", $articleId_input[0]->value );
 		$title = Title::newFromId( $articleId );
-		$wikiPage = WikiPage::factory( $title );
+		$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 		$fwp = new FlaggableWikiPage ( $title );
 		$rev = $wikiPage->getRevisionRecord();
 		$revId = $rev->getId();
@@ -484,7 +490,8 @@ class LoopXsl {
 			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 			$parser = $parserFactory->create();
 
-			$parser->parse( $contentText, $title, new ParserOptions() );
+			$tmpUser = new User();
+			$parser->parse( $contentText, $title, new ParserOptions( $tmpUser ) );
 			if ( file_exists( $screenshotPath ) ) {
 				return $publicScreenshotPath;
 			}

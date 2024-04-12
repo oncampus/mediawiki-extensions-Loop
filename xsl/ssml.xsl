@@ -3,18 +3,18 @@
 	xmlns="http://www.w3.org/2001/10/synthesis"
 	-->
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+				xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sxl="http://www.w3.org/1999/XSL/Transform"
 
-	xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:func="http://exslt.org/functions"
-	extension-element-prefixes="func php str"
-	xmlns:functx="http://www.functx.com"
-	xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
-	xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions"
-	xmlns:xhtml="http://www.w3.org/1999/xhtml">
+				xsi:schemaLocation="http://www.w3.org/2001/10/synthesis	http://www.w3.org/TR/speech-synthesis11/synthesis.xsd"
+				xmlns:xs="http://www.w3.org/2001/XMLSchema"
+				xmlns:func="http://exslt.org/functions"
+				extension-element-prefixes="func php str"
+				xmlns:functx="http://www.functx.com"
+				xmlns:php="http://php.net/xsl" xmlns:str="http://exslt.org/strings"
+				xmlns:axf="http://www.antennahouse.com/names/XSL/Extensions"
+				xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 	<xsl:import href="terms.xsl"></xsl:import>
 
@@ -138,11 +138,17 @@
 				<xsl:call-template name="loop_area"> </xsl:call-template>
 			</xsl:when>
 
+			<xsl:when test="@extension_name='h5p'">
+				<xsl:call-template name="h5p"></xsl:call-template>
+			</xsl:when>
+
 			<xsl:when test="@extension_name='math'">
 				<xsl:call-template name="math">
+					<!--
                 	<xsl:with-param name="object">
 						<xsl:copy-of select="php:function('xsl_transform_math_ssml', .)"></xsl:copy-of>
 					</xsl:with-param>
+					-->
 				</xsl:call-template>
 			</xsl:when>
 
@@ -219,6 +225,28 @@
 	</xsl:template>
 
 
+	<xsl:template match="link">
+		<xsl:choose>
+			<xsl:when test="@type='external'">
+				<xsl:choose>
+					<xsl:when test="text()!=''">
+						<xsl:text>Url </xsl:text>
+						<xsl:value-of select="text()"></xsl:value-of>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@href"></xsl:value-of>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+
+
+	<xsl:template name="h5p">
+		<xsl:value-of select="$phrase_h5p_element"/>
+	</xsl:template>
+
+
 	<xsl:template name="loop_area">
 
 		<xsl:variable name="looparea_type">
@@ -291,12 +319,16 @@
 				</xsl:attribute>
 			</xsl:element>
 
+			<!--
 			<xsl:element name="lang">
                 <xsl:attribute name="xml:lang">
-					<xsl:text>en-GB</xsl:text><!-- todo add language support in mathoid -->
+					<xsl:text>en-GB</xsl:text> todo add language support in mathoid
 				</xsl:attribute>
 				<xsl:value-of select="$object"></xsl:value-of>
 			</xsl:element>
+			-->
+			<xsl:value-of select="$phrase_math"></xsl:value-of>
+
 
 			<xsl:element name="break">
 				<xsl:attribute name="strength">
@@ -475,7 +507,6 @@
 					</xsl:choose>
 					<xsl:value-of select="//*/loop_object[@refid = $objectid]/object_number"></xsl:value-of>
 				</xsl:element>
-				<xsl:text> </xsl:text>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
@@ -552,6 +583,9 @@
 				<xsl:text>medium</xsl:text>
 			</xsl:attribute>
 		</xsl:element>
+
+		<xsl:apply-templates/>
+
 	</xsl:template>
 
 	<xsl:template match="heading">
@@ -594,6 +628,7 @@
 					<xsl:attribute name="voice">
 						<xsl:value-of select="functx:select_voice()"/>
 					</xsl:attribute>
+
 					<xsl:apply-templates/>
 
 					<xsl:element name="break">
@@ -692,6 +727,85 @@
 
 	<xsl:template match="meta">
 
+	</xsl:template>
+
+	<xsl:template match="list">
+	<xsl:param name="parent-number"></xsl:param>
+		<xsl:apply-templates>
+			<xsl:with-param name="parent-number" select="$parent-number"></xsl:with-param>
+		</xsl:apply-templates>
+	</xsl:template>
+
+
+	<xsl:template match="listitem">
+		<xsl:param name="parent-number"></xsl:param>
+		<xsl:variable name="number" select="concat($parent-number,'.',position())"></xsl:variable>
+		<xsl:variable name="depth" select="count(ancestor::list)"></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="ancestor::paragraph">
+				<xsl:element  name="p">
+					<xsl:text> </xsl:text>
+					<xsl:choose>
+						<xsl:when test="../@type='numbered'">
+							<xsl:choose>
+								<xsl:when test="$depth=1">
+									<xsl:value-of select="position()"></xsl:value-of>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$number"></xsl:value-of>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+					</xsl:choose>
+
+					<xsl:apply-templates select="*[not(name()='list')] | text()"></xsl:apply-templates>
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>strong</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element  name="speak">
+					<xsl:attribute name="voice">
+						<xsl:value-of select="functx:select_voice()"/>
+					</xsl:attribute>
+					<xsl:text> </xsl:text>
+					<xsl:choose>
+						<xsl:when test="../@type='numbered'">
+							<xsl:choose>
+								<xsl:when test="$depth=1">
+									<xsl:value-of select="position()"></xsl:value-of>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="$number"></xsl:value-of>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:when>
+					</xsl:choose>
+
+					<xsl:apply-templates select="*[not(name()='list')] | text()"></xsl:apply-templates>
+					<xsl:element name="break">
+						<xsl:attribute name="strength">
+							<xsl:text>strong</xsl:text>
+						</xsl:attribute>
+					</xsl:element>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:choose>
+			<xsl:when test="$depth=1">
+				<xsl:apply-templates select="list">
+					<xsl:with-param name="parent-number" select="position()"></xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="list">
+					<xsl:with-param name="parent-number" select="$number"></xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 </xsl:stylesheet>
