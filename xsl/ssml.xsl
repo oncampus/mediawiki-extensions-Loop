@@ -283,21 +283,21 @@
 <!--
 	<xsl:value-of select="$phrase_looparea_start"></xsl:value-of>
 	<xsl:text> </xsl:text> -->
-	<xsl:element name="break">
-		<xsl:attribute name="strength">
-			<xsl:text>strong</xsl:text>
-		</xsl:attribute>
-	</xsl:element>
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>700ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
 	<xsl:value-of select="$looparea_type"></xsl:value-of>
-	<xsl:element name="break">
-		<xsl:attribute name="strength">
-			<xsl:text>strong</xsl:text>
-		</xsl:attribute>
-	</xsl:element>
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>700ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
 	<xsl:apply-templates/>
 	<xsl:element name="break">
-		<xsl:attribute name="strength">
-			<xsl:text>strong</xsl:text>
+		<xsl:attribute name="time">
+			<xsl:text>700ms</xsl:text>
 		</xsl:attribute>
 	</xsl:element>
 	<!-- <xsl:value-of select="$phrase_looparea_end"></xsl:value-of>
@@ -535,7 +535,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 
-
 		<xsl:choose>
 			<xsl:when test="$object/descendant::extension[@extension_name='loop_title']">
 				<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_title']" mode="loop_object"></xsl:apply-templates>
@@ -544,6 +543,13 @@
 				<xsl:value-of select="$object/@title"></xsl:value-of>
 			</xsl:otherwise>
 		</xsl:choose>
+
+		<xsl:element name="break">
+			<xsl:attribute name="time">
+				<xsl:text>800ms</xsl:text>
+			</xsl:attribute>
+		</xsl:element>
+
 		<xsl:if test="($object/@description) or ($object/descendant::extension[@extension_name='loop_description'])">
 			<xsl:element name="break">
 				<xsl:attribute name="strength">
