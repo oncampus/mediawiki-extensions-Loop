@@ -1016,8 +1016,12 @@ class LoopLiterature {
 		if ( !empty( trim( $li->doi ) ) ) {
 			$return .= "DOI: " . $li->doi.". ";
 		}
-		if ( !empty( trim( $li->url ) ) ) {
-			$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url.". ";
+		if (!empty(trim($li->url))) {
+			if ($type == 'html') {
+				$return .= wfMessage("loopliterature-text-url")->text() . " <a href=" . $li->url . ">" . $li->url . "</a>. ";
+			} else {
+				$return .= wfMessage("loopliterature-text-url")->text() . " " . $li->url . ". ";
+			}
 		}
 		if ( !empty( trim( $li->address ) ) ) {
 			$return .= $li->address.". ";
