@@ -25,7 +25,7 @@ $( document ).ready( function () {
 
     $('#itemType').on("change", function() {
         $type = $(this).val();
-        updateFields( $type ) 
+        updateFields( $type )
         checkKeyValue()
     })
 
@@ -37,7 +37,7 @@ $( document ).ready( function () {
                 "optional": [ "volume", "number", "pages", "month", "note", "url", "doi" ]
             },
             "book": {
-                "required": [ "itemKey", "author", "editor", "itemTitle", "publisher", "year" ],
+                "required": [ "itemKey","author", "itemTitle", "publisher", "year"],
                 "optional": [ "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url", "doi" ]
             },
             "booklet": {
@@ -89,7 +89,7 @@ $( document ).ready( function () {
                 "optional": [ "month", "year", "url" ]
             }
         };
-        
+
         $typeFields = $literatureTypesJSON[ $type ];
         $('#required-row .literature-field').each( function () {
             $id = $(this).find("input").attr("id");
@@ -118,7 +118,7 @@ $( document ).ready( function () {
         $('#disabled-row .literature-field').each( function () {
             $id = $(this).find("input").attr("id");
             if ( jQuery.inArray( $id, $typeFields["optional"] ) >= 0 ) { // in optional row
-                
+
                 $(this).detach().appendTo("#optional-row");
                 doOptional($(this));
             } else if ( jQuery.inArray( $id, $typeFields["required"] ) >= 0 ) { // in required row
@@ -126,7 +126,7 @@ $( document ).ready( function () {
                 doRequired($(this));
              } // else stay in disabled
         })
-        
+
         if ( $typeFields["required"].length == 0 ) {
             $('#required-row').addClass("d-none");
         } else {
@@ -134,14 +134,14 @@ $( document ).ready( function () {
         }
     }
 
-    
+
     $('#itemKey').on("change keyup click", function() {
         checkKeyValue()
     })
     $('#overwrite').on("change", function() {
         checkKeyValue()
     })
-    
+
     function checkKeyValue() {
         $val = $('#itemKey').val();
 
@@ -150,7 +150,7 @@ $( document ).ready( function () {
             $("#overwrite").parent().removeClass("d-none")
             if ( $("#overwrite").prop("checked") == true ) {
                 $("#loopliterature-submit").prop("disabled", false)
-            } else { 
+            } else {
                 $("#keymsg").show()
                 $("#loopliterature-submit").prop("disabled", true)
             }
@@ -167,7 +167,7 @@ $( document ).ready( function () {
             $("#keymsg2").show()
         }
     }
-    
+
     function doOptional( $this ) {
         $this.removeClass("d-none");
         $this.find("input").prop("required", false);
@@ -192,5 +192,5 @@ $( document ).ready( function () {
             return '';
         }
     }
-    
+
 })
