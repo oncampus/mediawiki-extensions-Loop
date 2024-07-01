@@ -886,9 +886,9 @@
 									<xsl:if test="$rendertype!='title'">
 										<xsl:if test="($object/@description) or ($object/descendant::extension[@extension_name='loop_description'])">
 											<fo:block text-align="left">
-												<!-- <xsl:if test="ancestor::extension[@extension_name='loop_area']">
+												<xsl:if test="ancestor::extension[@extension_name='loop_area']">
 													<xsl:attribute name="margin-left">15.5mm</xsl:attribute>
-												</xsl:if> -->
+												</xsl:if>
 												<xsl:choose>
 													<xsl:when test="$object/descendant::extension[@extension_name='loop_description']">
 														<xsl:apply-templates select="$object/descendant::extension[@extension_name='loop_description']" mode="loop_object"></xsl:apply-templates>
@@ -2103,7 +2103,7 @@
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" > <!-- keep-together.within-page="always" -->
-						<fo:block>
+						<fo:block keep-together.within-page="always">
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
 							<xsl:choose>
