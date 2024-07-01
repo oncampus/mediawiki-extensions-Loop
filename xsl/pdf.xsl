@@ -2097,7 +2097,7 @@
 			<fo:table-body>
 				<fo:table-row>
 					<fo:table-cell width="10mm" text-align="center" color="{$accent_color}" > <!-- keep-together.within-page="always" -->
-						<fo:block>
+						<fo:block keep-together.within-page="always">
 						<!-- ICON IMG -->
 						<fo:block font-size="25pt" padding-bottom="2mm" margin-top="1.6mm" >
 							<xsl:choose>
