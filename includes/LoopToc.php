@@ -15,21 +15,9 @@ class LoopToc extends LoopStructure {
         $parser->setHook( 'loop_toc', 'LoopToc::renderLoopToc' );
 		return true;
     }
-	              	               //$input, array $args, Parser $parser, PPFrame $frame
+
 	static function renderLoopToc( $input, array $args, Parser $parser, PPFrame $frame ) {
-
-		print_r($input);
-		var_dump($args);
-
 		$result = self::outputLoopToc( $parser->getPage()->mArticleID, "html", $args);
-
-		// test
-		$attr = [];
-		// This time, make a list of attributes and their values, and dump them, along with the user input
-		foreach( $args as $name => $value ) {
-			$attr[] = '<strong>' . htmlspecialchars( $name ) . '</strong> = ' . htmlspecialchars( $value );
-		}
-		//test end
 
         $return  = '<div class="looptoc">';
         $return .= $result;
@@ -39,27 +27,21 @@ class LoopToc extends LoopStructure {
     }
 
 
-    public static function outputLoopToc( $rootArticleId, $output = "html", array $args = [] ) {
+    public static function outputLoopToc( $rootArticleId, $output = "html", $args = [] ) {
 
 		global $wgLoopLegacyPageNumbering;
 
-		$maxLevel = 2;
+		$maxLevel = 1;
 		$html = '';
 		$xml = '';
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
-		print_r($args);
-
-		// dalem test
 		if(!empty($args)){
-
-			if(in_array('level', $args)) {
-				$html .= $args['level'];
+			if(isset($args['level'])) {
+				$maxLevel = intval($args['level']);
 			}
 		}
-
-
 
 		$lsi = LoopStructureItem::newFromIds( $rootArticleId );
 		if ( $lsi ) {
