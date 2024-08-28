@@ -15,25 +15,51 @@ class LoopToc extends LoopStructure {
         $parser->setHook( 'loop_toc', 'LoopToc::renderLoopToc' );
 		return true;
     }
-
+	              	               //$input, array $args, Parser $parser, PPFrame $frame
 	static function renderLoopToc( $input, array $args, Parser $parser, PPFrame $frame ) {
 
-		$result = self::outputLoopToc( $parser->getPage()->mArticleID, "html" );
+		print_r($input);
+		var_dump($args);
+
+		$result = self::outputLoopToc( $parser->getPage()->mArticleID, "html", $args);
+
+		// test
+		$attr = [];
+		// This time, make a list of attributes and their values, and dump them, along with the user input
+		foreach( $args as $name => $value ) {
+			$attr[] = '<strong>' . htmlspecialchars( $name ) . '</strong> = ' . htmlspecialchars( $value );
+		}
+		//test end
 
         $return  = '<div class="looptoc">';
         $return .= $result;
         $return .= '</div>';
+
         return $return;
     }
 
-    public static function outputLoopToc( $rootArticleId, $output = "html" ) {
+
+    public static function outputLoopToc( $rootArticleId, $output = "html", array $args = [] ) {
 
 		global $wgLoopLegacyPageNumbering;
 
+		$maxLevel = 2;
 		$html = '';
 		$xml = '';
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
+
+		print_r($args);
+
+		// dalem test
+		if(!empty($args)){
+
+			if(in_array('level', $args)) {
+				$html .= $args['level'];
+			}
+		}
+
+
 
 		$lsi = LoopStructureItem::newFromIds( $rootArticleId );
 		if ( $lsi ) {
@@ -57,7 +83,7 @@ class LoopToc extends LoopStructure {
 
 			while ( !empty ( $next ) ) {
 				$tmp_lsi = $next;
-				if ( $tmp_lsi->getTocLevel() == $level + 1 ) { # if next item toclevel is one higher than current level, add to output
+				if ( $tmp_lsi->getTocLevel() > $level &&  $tmp_lsi->getTocLevel() <= $level + $maxLevel) { //if ( $tmp_lsi->getTocLevel() == $level + 1 ) { # if next item toclevel is one higher than current level, add to output
 					if ( empty( $tocNumber ) || strpos ( $tmp_lsi->tocNumber, $tocNumber ) === 0 ) { # the root page's toc number must be inside the displayed toc number
 						$next = $tmp_lsi->getNextItem();
 
