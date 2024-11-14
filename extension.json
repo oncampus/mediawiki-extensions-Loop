@@ -108,11 +108,14 @@
 		"LoopBugReport": "includes/LoopBugReport.php",
 		"SpecialLoopBugReport": "includes/LoopBugReport.php",
 		"LoopFeedback": "includes/LoopFeedback.php",
+		"LoopProgress": "includes/LoopProgress.php",
 		"SpecialLoopFeedback": "includes/LoopFeedback.php",
 		"ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
+		"ApiLoopProgressSave": "includes/LoopProgressApi.php",
+		"ApiLoopProgressLoad": "includes/LoopProgressApi.php",
 		"LoopAccordion": "includes/LoopAccordion.php",
 		"SpecialLoopImprint": "includes/Loop.php",
 		"SpecialLoopPrivacy": "includes/Loop.php",
@@ -185,7 +188,8 @@
 		],
 		"BeforePageDisplay": [
 			"LoopFeedback::onBeforePageDisplay",
-			"LoopScreenshot::onBeforePageDisplay"
+			"LoopScreenshot::onBeforePageDisplay",
+			"LoopProgress::onBeforePageDisplay"
 		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
@@ -360,6 +364,12 @@
 				"loopfeedback-specialpage-feedback-info-average-stars",
 				"loopfeedback-specialpage-feedback-info-count-comments",
 				"loopfeedback-specialpage-feedback-info-no-comments"
+			]
+		},
+		"loop.progress.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.progress.js"
 			]
 		},
 		"loop.ngspice.js": {
@@ -1099,7 +1109,9 @@
 		"loopfeedback-save": "ApiLoopFeedbackSave",
 		"loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
 		"loopfeedback-structure": "ApiLoopFeedbackStructure",
-		"loopfeedback-overview": "ApiLoopFeedbackOverview"
+		"loopfeedback-overview": "ApiLoopFeedbackOverview",
+		"loopprogress-save": "ApiLoopFeedbackSave",
+		"loopprogress-load": "ApiLoopProgressLoad"
 	},
 	"manifest_version": 2
 }
