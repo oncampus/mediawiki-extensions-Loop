@@ -53,7 +53,11 @@ class LoopToc extends LoopStructure {
 				new HtmlArmor( '<span class="loopstructure-number">' . $pageNumber .'</span>' . $tocText )
 			);
             $html .= '<div class="loopstructure-listitem loopstructure-level-' . $level . '">' . $headLink . '</div>';
-            $xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="article'.$rootArticleId.'"><bold>'. $pageNumber .'</bold>  ' . $tocText . '</php_link_internal></loop_toc_list>';
+
+			// dalem test
+			//$html .= ' ✓';
+
+			$xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="article'.$rootArticleId.'"><bold>'. $pageNumber .'</bold>  ' . $tocText . '</php_link_internal></loop_toc_list>';
 
 			while ( !empty ( $next ) ) {
 				$tmp_lsi = $next;

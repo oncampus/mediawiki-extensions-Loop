@@ -7,7 +7,8 @@
 		"Dennis Krohn",
     	"Dustin Neß",
 		"Marc Vorreiter",
-		"Kevin Berg"
+		"Kevin Berg",
+		"Daniel Lembcke"
 	],
 	"version": "2.2.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
@@ -110,12 +111,15 @@
 		"LoopFeedback": "includes/LoopFeedback.php",
 		"LoopProgress": "includes/LoopProgress.php",
 		"SpecialLoopFeedback": "includes/LoopFeedback.php",
+		"SpecialLoopNote": "includes/LoopProgress.php",
 		"ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
 		"ApiLoopProgressSave": "includes/LoopProgressApi.php",
 		"ApiLoopProgressLoad": "includes/LoopProgressApi.php",
+		"ApiLoopProgressSaveNote": "includes/LoopProgressApi.php",
+		"ApiLoopProgressLoadNote": "includes/LoopProgressApi.php",
 		"LoopAccordion": "includes/LoopAccordion.php",
 		"SpecialLoopImprint": "includes/Loop.php",
 		"SpecialLoopPrivacy": "includes/Loop.php",
@@ -222,6 +226,7 @@
 		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
 		"LoopBugReport": "SpecialLoopBugReport",
 		"LoopFeedback": "SpecialLoopFeedback",
+		"LoopNote": "SpecialLoopNote",
 		"LoopImprint": "SpecialLoopImprint",
 		"LoopPrivacy": "SpecialLoopPrivacy",
 		"LoopRSS": "SpecialLoopRSS",
@@ -1110,8 +1115,10 @@
 		"loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
 		"loopfeedback-structure": "ApiLoopFeedbackStructure",
 		"loopfeedback-overview": "ApiLoopFeedbackOverview",
-		"loopprogress-save": "ApiLoopFeedbackSave",
-		"loopprogress-load": "ApiLoopProgressLoad"
+		"loopprogress-save": "ApiLoopProgressSave",
+		"loopprogress-load": "ApiLoopProgressLoad",
+		"loopprogress-save-note": "ApiLoopProgressSaveNote",
+		"loopprogress-load-note": "ApiLoopProgressLoadNote"
 	},
 	"manifest_version": 2
 }

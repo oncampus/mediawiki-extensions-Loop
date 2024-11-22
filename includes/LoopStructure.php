@@ -32,6 +32,19 @@ class LoopStructure {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
+		// dalem
+		//todo hier das ganze uínhaltsverzeichnis wrapen um mit kind von bestimmten div zu arbeiten
+		// für das ein und ausblenden
+		$text .= '<div id=toc_filter_space class="show_all" >';
+
+		/* example css to filter
+
+		.toc_filter_space .not_edited {
+ 	 		display: none;
+		}
+		*/
+
+
 		foreach( $this->structureItems as $structureItem ) {
 
 			if( intval( $structureItem->tocLevel ) === 0 ) {
@@ -54,21 +67,46 @@ class LoopStructure {
 					$pageNumber = '';
 				}
 
+				//todo dalem
+				// hier muss noch die Anpassung der Inhaltsverzeichnisseite vollzogen werden
+				// verstanden oder nicht verstanden
+				// und noch Filterbarkeit
+
 				if ( $title ) {
+
+
+					//dalem test add progresstracker
+					$progress_extension = '';
+					$understood_class_extension = ' not_edited';
+					$progress = LoopProgress::getProgress($structureItem->article);
+					if($progress != Null) {
+						if ($progress->lp_understood == '1') {
+							$progress_extension = ' ✓';
+							$understood_class_extension = ' page_understood';
+						}
+						elseif ($progress->lp_understood == '0') {
+							$progress_extension = ' ✗';
+							$understood_class_extension = ' page_not_understood';
+						}
+					}
+
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . '</span></span>' )
+						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . $progress_extension .  '</span></span>' )
 					);
 
 				}
-				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
+				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel .   $understood_class_extension . '">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
 
 			}
 
 		}
 
-		return $text;
+		//dalem test ende extra div
+		$text .= '</div>';
 
+
+		return $text;
 	}
 
 	/**
@@ -903,6 +941,14 @@ class SpecialLoopStructure extends SpecialPage {
 	    $html = '';
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
+
+		// dalem
+		// todo add filers somewhere in this function
+		$html .= '<div class="filter_button_panel">';
+		$html .= '<button id="understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:5px">Verstanden</button>';
+		$html .= '<button id="not_understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:105px">Nicht Verstanden</button>';
+		$html .= '<button id="not_edited_filter" class="filter_button not_active" type="button" style="position: absolute; right:245px">Nicht bearbeitet</button>';
+		$html .= '</div>';
 
 	    $html .= Html::openElement(
 	        'h1',
