@@ -415,7 +415,8 @@
 			"loopfeedback-view": false,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": false
 		},
 		"user" : {
 			"read": true,
@@ -463,7 +464,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": true
+			"loopfeedback-reset": true,
+			"loopprogress": true
 		},
 		"author": {
 			"loop-toc-edit": true,

@@ -63,7 +63,7 @@ $(document).ready(function() {
 				'action': 'loopprogress-save',
 				'format': 'json'
 			} ).done( function ( data ) {
-				alert("neuer test123");
+				//alert("neuer test123");
 			});
 		}
 	});
@@ -81,6 +81,66 @@ $(document).ready(function() {
 			'format': 'json'
 		} ).done( function ( data ) {
 			// todo feedback for user
+		});
+	});
+
+
+	function resetButtonState() {
+		$("#not_edited_button").addClass('not_active');
+		$("#understood_button").addClass('not_active');
+		$("#not_understood_button").addClass('not_active');
+	}
+
+
+	// todo for this 3 buttons reset the state for not active class
+	$("#not_edited_button").click( function () {
+		var api = new mw.Api();
+		var lp_articleid = mw.config.get( 'lpArticle' ).id;
+
+		resetButtonState();
+		$(this).removeClass('not_active');
+
+		api.post( {
+			'pageid': lp_articleid,
+			"understood": 3,
+			'action': 'loopprogress-save',
+			'format': 'json'
+		} ).done( function ( data ) {
+			//alert("not_edited_button");
+		});
+	});
+
+	$("#understood_button").click( function () {
+		var api = new mw.Api();
+		var lp_articleid = mw.config.get( 'lpArticle' ).id;
+
+		resetButtonState();
+		$(this).removeClass('not_active');
+
+		api.post( {
+			'pageid': lp_articleid,
+			"understood": 1,
+			'action': 'loopprogress-save',
+			'format': 'json'
+		} ).done( function ( data ) {
+			//alert("not_edited_button");
+		});
+	});
+
+	$("#not_understood_button").click( function () {
+		var api = new mw.Api();
+		var lp_articleid = mw.config.get( 'lpArticle' ).id;
+
+		resetButtonState();
+		$(this).removeClass('not_active');
+
+		api.post( {
+			'pageid': lp_articleid,
+			"understood": 0,
+			'action': 'loopprogress-save',
+			'format': 'json'
+		} ).done( function ( data ) {
+			//alert("not_edited_button");
 		});
 	});
 

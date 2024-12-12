@@ -75,19 +75,23 @@ class LoopStructure {
 				if ( $title ) {
 
 
-					//dalem test add progresstracker
+					// todo looking for a better solution
 					$progress_extension = '';
 					$understood_class_extension = ' not_edited';
-					$progress = LoopProgress::getProgress($structureItem->article);
-					if($progress != Null) {
-						if ($progress->lp_understood == '1') {
-							$progress_extension = ' ✓';
+					if(LoopProgress::hasProgressPermission()) {
+						//dalem test add progresstracker
+
+						$progress = LoopProgress::getProgress($structureItem->article);
+						//if($progress != Null) {
+						if ($progress == 1) {
+							$progress_extension = '<span style="color:green"> ✓ </span>'; // test color
 							$understood_class_extension = ' page_understood';
 						}
-						elseif ($progress->lp_understood == '0') {
-							$progress_extension = ' ✗';
+						elseif ($progress == 0) {
+							$progress_extension = '<span style="color:red"> ✗ </span>'; // test color
 							$understood_class_extension = ' page_not_understood';
 						}
+						//}
 					}
 
 					$link = $linkRenderer->makeLink(
@@ -944,11 +948,13 @@ class SpecialLoopStructure extends SpecialPage {
 
 		// dalem
 		// todo add filers somewhere in this function
-		$html .= '<div class="filter_button_panel">';
-		$html .= '<button id="understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:5px">Verstanden</button>';
-		$html .= '<button id="not_understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:105px">Nicht Verstanden</button>';
-		$html .= '<button id="not_edited_filter" class="filter_button not_active" type="button" style="position: absolute; right:245px">Nicht bearbeitet</button>';
-		$html .= '</div>';
+		if(LoopProgress::hasProgressPermission()) {
+			$html .= '<div class="filter_button_panel">';
+			$html .= '<button id="understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:5px">Verstanden</button>';
+			$html .= '<button id="not_understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:105px">Nicht Verstanden</button>';
+			$html .= '<button id="not_edited_filter" class="filter_button not_active" type="button" style="position: absolute; right:245px">Nicht bearbeitet</button>';
+			$html .= '</div>';
+		}
 
 	    $html .= Html::openElement(
 	        'h1',

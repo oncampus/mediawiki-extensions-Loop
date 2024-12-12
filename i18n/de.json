@@ -507,6 +507,13 @@
 	"loopsearch-description": "Diese Suche durchsucht den gesamten Wikitext. Auch Tags wie 'cite' oder 'loop_figure' und deren Parameter werden durchsucht.",
 	"loopsearch-placeholder": "Suchbegriff",
 	"loopsearch-results": "Ergebnisse für die Suche nach \"$1\":",
-	"loop-maintenance": "LOOP befindet sich im Wartungsmodus. Bitte versuchen Sie es später erneut. <br>$1"
+	"loop-maintenance": "LOOP befindet sich im Wartungsmodus. Bitte versuchen Sie es später erneut. <br>$1",
+
+	"loop-progressbar-title": "Fortschritt",
+	"loopnote": "Notizen",
+	"loopprogress-not-understood": "Nicht Verstanden",
+	"loopprogress-understood": "Verstanden",
+	"loopprogress-not-edited": "Nicht Bearbeitet",
+	"loopprogress-save-notes": "Notiz speichern"
 
 }
