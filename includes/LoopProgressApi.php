@@ -50,10 +50,11 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 			);
 		}
 
-		$progress['lp_id'] = $this->generateId();
+		$progress['lp_id'] = $this->generateId(); // todo test
 		$progress['lp_page'] = $pageObj->getId();
 		$progress['lp_user'] = $user->getId();
 		$progress['lp_understood'] = $params['understood'];
+		$progress['lp_timestamp'] = wfTimestampNow();
 
 		// first look if an entry exits
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
@@ -72,12 +73,14 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		// update if there is an entry
 		if(isset($lp->lp_id) and isset($lp->lp_user))
 		{
+
 			// update the notes
 			$dbw = $dbProvider->getConnection(DB_PRIMARY);
 			$dbw->update(
 				'loop_progress',
 				[
 					'lp_understood' => $params['understood'],
+					'lp_timestamp' => $progress['lp_timestamp']
 				],
 				[
 					'lp_page' => $pageObj->getId(),
@@ -97,8 +100,7 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 			);
 		}
 
-		$result->addValue($this->getModuleName(), 'lp_id', $progress['lp_id']);
-
+		$result->addValue($this->getModuleName(), 'lp_id', $progress['lp_id']); // todo
 	}
 
 	public function getAllowedParams()
@@ -126,7 +128,6 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 			'pageid' => "ID of the page to submit feedback for. Cannot be used together with {$p}title",
 			//'anontoken' => 'Token for anonymous users',
 			'understood' => 'understood'
-			//'comment' => 'the free-form textual feedback',
 		);
 	}
 
@@ -309,6 +310,7 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 		}
 		*/
 
+
 		$user = $this->getUser();
 
 		$result   = $this->getResult();
@@ -328,7 +330,17 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 		$progress['lp_id'] = $this->generateId();
 		$progress['lp_page'] = $pageObj->getId();
 		$progress['lp_user'] = $user->getId();
-		$progress['lp_user_note'] = $params['user_note'];
+		$progress['lp_timestamp'] = wfTimestampNow();
+
+		// check max length
+		if(strlen($params['user_note']) > LoopProgress::NOTE_MAX_LENGTH) {
+			$progress['lp_user_note'] = substr($params['user_note'],0,LoopProgress::NOTE_MAX_LENGTH);
+		}
+		else {
+			$progress['lp_user_note'] = $params['user_note'];
+		}
+
+		//print_r($progress['lp_user_note']);
 
 		// first look if an entry exits
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
@@ -352,15 +364,19 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 			$dbw->update(
 				'loop_progress',
 				[
-					'lp_user_note' => $params['user_note'],
+					'lp_user_note' => $progress['lp_user_note'],
+					'lp_timestamp' => $progress['lp_timestamp']
+
 				],
 				[
 					'lp_page' => $pageObj->getId(),
-					'lp_user' => $user->getId()
+					'lp_user' => $user->getId(),
+
 				],
 				__METHOD__
 			);
 		}
+
         else //insert if there is no entry
 		{
 
@@ -400,7 +416,7 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 
 	public function mustBePosted()
 	{
-		return false; //false;
+		return false;
 	}
 
 

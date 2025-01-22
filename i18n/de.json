@@ -514,6 +514,8 @@
 	"loopprogress-not-understood": "Nicht Verstanden",
 	"loopprogress-understood": "Verstanden",
 	"loopprogress-not-edited": "Nicht Bearbeitet",
-	"loopprogress-save-notes": "Notiz speichern"
-
+	"loopprogress-save-notes": "Notiz speichern",
+	"loopsettings-personalization": "Personalisierung",
+	"loopsettings-personalization-feature-on": "An",
+	"loopsettings-personalization-feature-off": "Aus"
 }

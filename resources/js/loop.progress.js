@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-
 	$(".note_text_title").click(function () {
 		$(this).children().eq(1).toggleClass("note_text");
 	});
@@ -145,3 +144,5 @@ $(document).ready(function() {
 	});
 
 });
+
+

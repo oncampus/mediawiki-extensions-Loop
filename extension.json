@@ -508,7 +508,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": true
+			"loopfeedback-reset": true,
+			"loopprogress": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -551,7 +552,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -588,7 +590,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -607,7 +610,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"student_edit": {
 			"edit": true,
@@ -634,7 +638,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -652,7 +657,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"shared": {
 			"editmyoptions": false,
@@ -672,7 +678,8 @@
 			"loopfeedback-view": false,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": false
 		},
 		"shared_basic": {
 			"editmyoptions": false,
@@ -692,7 +699,8 @@
 			"loopfeedback-view": false,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": false
 		}
 	},
 	"DefaultUserOptions": {
