@@ -10,6 +10,14 @@ class LoopProgress
 	const  NOT_EDITED = 3;
 	const NOTE_MAX_LENGTH = 1500;
 
+	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ) {
+
+		echo($id);
+		//LoopProgressDBHandler::removeAllNotesWithId ( $id );
+
+		return true;
+	}
+
 	public static function showProgressBar(){
 		global $wgOut, $wgPersonalizationFeature;
 
@@ -54,13 +62,15 @@ class LoopProgress
 
 		// get page count
 		// use counter of loop_structure_items instead?
-		$pages = LoopProgressDBHandler::getAllPages();
+		//$pages = LoopProgressDBHandler::getAllPages();
+		$pages = LoopProgressDBHandler::getTocElementCount(); // page_count
 
 		// get understood pages
+		//$understoodPages = LoopProgressDBHandler::getPageUnderstoodCountForUser($user);
+
 		$understoodPages = LoopProgressDBHandler::getPageUnderstoodCountForUser($user);
 
-		// todo should not exceed 100 possible if a page is set to understood that is not in the loop table of contents
-		$understood_percent = round(min(($understoodPages->page_understood_count / $pages->count_pages) * 100, 100),0);
+		$understood_percent = round(min(($understoodPages->page_understood_count / $pages->page_count) * 100, 100),0);
 
 		$html .=
 			'<div class="main">
@@ -265,11 +275,15 @@ class SpecialLoopNote extends SpecialPage
 		$permissionManager = $mws->getPermissionManager();
 
 		if ($permissionManager->userHasRight($user, 'loopprogress')) {
-			$return .= '<h1>' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h1>';
+			$return .= '<div class="mb-3"><h1 style="display:inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h1>' . '<div id="extend-all" style="float:right" type="button"></div></div>'; // 1 todo transfer inline style 2 todo create label
 
+			$return .= '<div id="note-collection">';
 			$return .= SpecialLoopNote::getAllNotes();
 
-			$return .= '</button>';
+			// dalem new test
+			//getAllUserNotesWithoutTocNumber
+
+			$return .= '</div>';
 
 			$this->setHeaders();
 			$out->addHTML($return);
@@ -304,6 +318,9 @@ class SpecialLoopNote extends SpecialPage
 
 		$notes = LoopProgressDBHandler::getAllUserNotesWithTocNumber($user);
 
+		// dalme new
+		$extra_notes = LoopProgressDBHandler::getAllUserNotesWithoutTocNumber($user);
+
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
@@ -331,9 +348,34 @@ class SpecialLoopNote extends SpecialPage
 				$html .= '</div>';
 			}
 		}
+
+		foreach ($extra_notes as $note) {
+			if (isset($note->lp_user_note) and $note->lp_user_note != '') {
+
+				$article = Article::newFromId($note->lp_page);
+
+				if(isset($note->lsi_toc_number)) {
+					$link = $linkRenderer->makeLink(
+						Title::newFromID($note->lp_page),
+						new HtmlArmor($note->lsi_toc_number)
+					);
+				} else {
+					$link = ' ';
+				}
+
+				$id = uniqid();
+				$html .= '<div class="notebook-row w-100 mb-1 overflow-hidden">';
+				$html .= '<input id="note-' . $id . '" type="checkbox" name="personal-note">';
+				$html .= '<label for="note-' . $id . '" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">' . $link . ' ' . $article->getTitle() . '</label>';
+				$html .= '<div class="notebook-content overflow-hidden">';
+				$html .= '<div class="m-2 m-md-3">' . $note->lp_user_note . '</div>';
+				$html .= '</div>';
+				$html .= '</div>';
+			}
+		}
+
 		return $html;
 	}
-
 }
 
 class LoopProgressDBHandler
@@ -359,9 +401,9 @@ class LoopProgressDBHandler
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
 			->from('loop_progress')
-			->join('loop_structure_items',null,'lp_page=lsi_article')
+			->leftjoin('loop_structure_items',null,'lp_page=lsi_article')
 			->where([
-					'lp_user = "' . $user->getId() . '"',
+					'lp_user = "' . $user->getId() . '"', //
 					'lsi_toc_number != ""',
 					'lp_user_note != ""'
 				]
@@ -371,6 +413,25 @@ class LoopProgressDBHandler
 
 		return $res;
 	}
+
+	public static function getAllUserNotesWithoutTocNumber($user){
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$res = $dbr->newSelectQueryBuilder()
+			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
+			->from('loop_progress')
+			->leftjoin('loop_structure_items',null,'lp_page=lsi_article')
+			->where([
+					'lp_user = "' . $user->getId() . '"',
+					'lsi_toc_number IS NULL',
+					'lp_user_note != ""'
+				]
+			)
+			->caller(__METHOD__)->fetchResultSet();
+
+		return $res;
+	}
+
 
 	public static function getUserNoteForPage($articleId, $user) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
@@ -387,7 +448,7 @@ class LoopProgressDBHandler
 
 		return $lp;
 	}
-
+/*
 	public static function getPageUnderstoodCountForUser($user) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
@@ -399,6 +460,57 @@ class LoopProgressDBHandler
 					'lp_understood = "' . LoopProgress::UNDERSTOOD . '"'
 				]
 			)
+			->caller(__METHOD__)->fetchRow();
+
+		return $res;
+	}
+*/
+
+/*
+ * 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$res = $dbr->newSelectQueryBuilder()
+			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
+			->from('loop_progress')
+			->join('loop_structure_items',null,'lp_page=lsi_article')
+			->where([
+					'lp_user = "' . $user->getId() . '"',
+					'lsi_toc_number != ""',
+					'lp_user_note != ""'
+				]
+			)
+			->orderBy('lsi_toc_number')
+			->caller(__METHOD__)->fetchResultSet();
+
+		return $res;
+ *
+ */
+
+	public static function getPageUnderstoodCountForUser($user) {
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$res = $dbr->newSelectQueryBuilder()
+			->select([ 'Count(lp_page) as page_understood_count', 'lp_user_note'])
+			->from('loop_progress')
+			->join('loop_structure_items',null,'lp_page=lsi_article')
+			->where([
+					'lp_user = "' . $user->getId() . '"',
+					'lp_understood = "' . LoopProgress::UNDERSTOOD . '"',
+					'lsi_toc_number != ""'
+				]
+			)
+			->caller(__METHOD__)->fetchRow();
+
+		return $res;
+	}
+
+
+	public static function getTocElementCount() {
+		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$res = $dbr->newSelectQueryBuilder()
+			->select([ 'Count(lsi_id) as page_count'])
+			->from('loop_structure_items')
 			->caller(__METHOD__)->fetchRow();
 
 		return $res;
@@ -478,5 +590,20 @@ class LoopProgressDBHandler
 		);
 	}
 	*/
+
+	// dalem new
+	// todo test
+	public static function removeAllNotesWithId ( $article ) {
+
+		$dbr = wfGetDB( DB_PRIMARY );
+		$dbr->delete(
+			'loop_progress',
+			'lp_page = ' . $article,
+			__METHOD__
+		);
+
+		return true;
+	}
+
 
 }

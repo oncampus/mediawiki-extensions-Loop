@@ -143,6 +143,17 @@ $(document).ready(function() {
 		});
 	});
 
+	var clicked = false;
+	$("#extend-all").click( function () {
+		if(clicked) {
+			$('#note-collection input[type="checkbox"]').prop('checked', false);
+			clicked = false;
+		} else {
+			$('#note-collection input[type="checkbox"]').prop('checked', true);
+			clicked = true;
+		}
+	});
+
 });
 
 

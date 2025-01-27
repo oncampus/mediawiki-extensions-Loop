@@ -178,7 +178,8 @@
 		"ArticleDeleteComplete": [
 			"LoopObject::onArticleDeleteComplete",
 			"LoopLiterature::onArticleDeleteComplete",
-			"LoopIndex::onArticleDeleteComplete"
+			"LoopIndex::onArticleDeleteComplete",
+			"LoopProgress::onArticleDeleteComplete"
 		],
 		"AfterStabilizeChange": [
 			"LoopObject::onAfterStabilizeChange",

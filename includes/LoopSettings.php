@@ -246,7 +246,7 @@ class LoopSettings {
             $this->captchaBadlogin =  isset( $data['lset_captchabadlogin'] ) ? boolval($data['lset_captchabadlogin']) : $this->captchaBadlogin;
             $this->bugReportEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->bugReportEmail;
             $this->feedbackLevel =  isset( $data['lset_feedbacklevel'] ) ? $data['lset_feedbacklevel'] : $this->feedbackLevel;
-            $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode; // $wgPersonalizationFeature
+            $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode;
 			$this->personalizationFeature =  isset( $data['lset_personalizationFeature'] ) ? $data['lset_personalizationFeature'] : $this->personalizationFeature;
             $this->objectRenderOption =  isset( $data['lset_objectrenderoption'] ) ? $data['lset_objectrenderoption'] : $this->objectRenderOption;
         }
@@ -998,8 +998,8 @@ class SpecialLoopSettings extends SpecialPage {
 
 						// select
 						$html .= '<select class="form-control" name="personalization-feature" id="personalization-feature" selected="'.$currentLoopSettings->personalizationFeature.'" ' . '>';
-						$html .= '<option value="true" ' . ( $currentLoopSettings->personalizationFeature == 'true' ? "selected" : "" ) .'>' . $this->msg("loopsettings-personalization-feature-on")->text() . '</option>';
 						$html .= '<option value="false" ' . ( $currentLoopSettings->personalizationFeature == 'false' ? "selected" : "" ) .'>' . $this->msg("loopsettings-personalization-feature-off")->text() . '</option>';
+						$html .= '<option value="true" ' . ( $currentLoopSettings->personalizationFeature == 'true' ? "selected" : "" ) .'>' . $this->msg("loopsettings-personalization-feature-on")->text() . '</option>';
 						$html .= '</select>';
 
 						$html .= '</div>';
