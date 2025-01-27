@@ -519,7 +519,9 @@ class LoopLiterature {
 					)
 				);
 				if ( isset( $args["page"] ) ) {
-					$html .= ", " . wfMessage("loopliterature-text-pages", 1)->text() . " " . $args["page"];
+					if($args["page"] != "") {
+						$html .= ", " . wfMessage("loopliterature-text-pages", 1)->text() . " " . $args["page"];
+					}
 				} elseif ( isset( $args["pages"] ) ) {
 					$html .= ", " . wfMessage("loopliterature-text-pages", 2)->text() . " " . $args["pages"];
 				}
@@ -1684,7 +1686,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				);
 
 
-			$html .= '<form class="needs-validation mw-editform mt-3 mb-3" id="literature-entry-form"  enctype="multipart/form-data">';
+			$html .= '<form class="needs-validation mw-editform mt-3 mb-3" id="literature-entry-form"  enctype="multipart/form-data" method="POST">';
 			$html .= '<div class="form-group">';
 
 			$html .= '<div class="form-row">';
