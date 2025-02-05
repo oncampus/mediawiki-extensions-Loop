@@ -122,7 +122,7 @@ class LoopProgress
 			return $html;
 		}
 
-		$html .= '<button type="button" id="save_note_button" style="float:right">' . wfMessage( 'loopprogress-save-notes') . '</button>';
+		$html .= '<button type="button" id="save_note_button" class="progress-button status-saved">' .'<span id="save_note_button_img"></span><p id="status_not_saved">'. wfMessage( 'loopprogress-save-notes') . '</p><p id="status_saved" class="status-active">' . wfMessage('loopprogress-note-saved') .'</p></button>';
 
 		return $html;
 	}
@@ -144,24 +144,22 @@ class LoopProgress
 
 		$progress_state = LoopProgress::getProgress($articleId);
 
-		$html .= '<br>';
-
 		if($progress_state == LoopProgress::NOT_UNDERSTOOD) {
 			$html .= '<button id="not_edited_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button">' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
 		} else if ($progress_state == LoopProgress::UNDERSTOOD) {
 			$html .= '<button id="not_edited_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button">' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="understood_button" class="progress-button">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
 		} else if ($progress_state == LoopProgress::NOT_EDITED) {
 			$html .= '<button id="not_edited_button" class="progress-button">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
 		} else {
 			$html .= '<button id="not_edited_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
 		}
 
 		return $html;
@@ -275,13 +273,10 @@ class SpecialLoopNote extends SpecialPage
 		$permissionManager = $mws->getPermissionManager();
 
 		if ($permissionManager->userHasRight($user, 'loopprogress')) {
-			$return .= '<div class="mb-3"><h1 style="display:inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h1>' . '<div id="extend-all" style="float:right" type="button"></div></div>'; // 1 todo transfer inline style 2 todo create label
+			$return .= '<div class="mb-3"><h1 style="display:inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h1>' . '<div id="extend-all" type="button"></div></div>';
 
 			$return .= '<div id="note-collection">';
 			$return .= SpecialLoopNote::getAllNotes();
-
-			// dalem new test
-			//getAllUserNotesWithoutTocNumber
 
 			$return .= '</div>';
 
@@ -318,7 +313,6 @@ class SpecialLoopNote extends SpecialPage
 
 		$notes = LoopProgressDBHandler::getAllUserNotesWithTocNumber($user);
 
-		// dalme new
 		$extra_notes = LoopProgressDBHandler::getAllUserNotesWithoutTocNumber($user);
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
@@ -403,12 +397,12 @@ class LoopProgressDBHandler
 			->from('loop_progress')
 			->leftjoin('loop_structure_items',null,'lp_page=lsi_article')
 			->where([
-					'lp_user = "' . $user->getId() . '"', //
+					'lp_user = "' . $user->getId() . '"',
 					'lsi_toc_number != ""',
 					'lp_user_note != ""'
 				]
 			)
-			->orderBy('lsi_toc_number')
+			->orderBy('lsi_sequence')
 			->caller(__METHOD__)->fetchResultSet();
 
 		return $res;
@@ -503,7 +497,6 @@ class LoopProgressDBHandler
 
 		return $res;
 	}
-
 
 	public static function getTocElementCount() {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();

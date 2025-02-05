@@ -67,31 +67,20 @@ class LoopStructure {
 					$pageNumber = '';
 				}
 
-				//todo dalem
-				// hier muss noch die Anpassung der Inhaltsverzeichnisseite vollzogen werden
-				// verstanden oder nicht verstanden
-				// und noch Filterbarkeit
-
 				if ( $title ) {
 
-
-					// todo looking for a better solution
 					$progress_extension = '';
 					$understood_class_extension = ' not_edited';
 					if(LoopProgress::hasProgressPermission()) {
-						//dalem test add progresstracker
-
 						$progress = LoopProgress::getProgress($structureItem->article);
-						//if($progress != Null) {
 						if ($progress == 1) {
-							$progress_extension = '<span style="color:green"> ✓ </span>'; // test color
+							$progress_extension = '<span class="marked-understood"> ✓ </span>';
 							$understood_class_extension = ' page_understood';
 						}
 						elseif ($progress == 0) {
-							$progress_extension = '<span style="color:red"> ✗ </span>'; // test color
+							$progress_extension = '<span class="marked-not-understood"> ✗ </span>';
 							$understood_class_extension = ' page_not_understood';
 						}
-						//}
 					}
 
 					$link = $linkRenderer->makeLink(
@@ -106,7 +95,6 @@ class LoopStructure {
 
 		}
 
-		//dalem test ende extra div
 		$text .= '</div>';
 
 
@@ -946,13 +934,11 @@ class SpecialLoopStructure extends SpecialPage {
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
-		// dalem
-		// todo add filers somewhere in this function
 		if(LoopProgress::hasProgressPermission()) {
 			$html .= '<div class="filter_button_panel">';
-			$html .= '<button id="understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:5px">Verstanden</button>';
-			$html .= '<button id="not_understood_filter" class="filter_button not_active" type="button" style="position: absolute; right:105px">Nicht Verstanden</button>';
-			$html .= '<button id="not_edited_filter" class="filter_button not_active" type="button" style="position: absolute; right:245px">Nicht bearbeitet</button>';
+			$html .= '<button id="understood_filter" class="progress-button filter_button not_active" type="button">' . wfMessage('loopprogress-understood') .'</button>';
+			$html .= '<button id="not_understood_filter" class="progress-button filter_button not_active" type="button">' . wfMessage('loopprogress-not-understood') .'</button>';
+			$html .= '<button id="not_edited_filter" class="progress-button filter_button not_active" type="button">' . wfMessage('loopprogress-not-edited') .'</button>';
 			$html .= '</div>';
 		}
 
