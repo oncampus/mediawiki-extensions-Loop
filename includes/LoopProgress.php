@@ -190,6 +190,7 @@ class LoopProgress
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
+		//  todo remove inline css
 		echo $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopNote' ), new HtmlArmor('<div class="float-right mt-1 ml-2"><span style="color:orange; font-size: 2em;" id="notebook-logo"></span></div>'));
 	}
 
@@ -315,6 +316,15 @@ class SpecialLoopNote extends SpecialPage
 
 		$extra_notes = LoopProgressDBHandler::getAllUserNotesWithoutTocNumber($user);
 
+		//todo delete
+		// test start
+		foreach ($extra_notes as $note) {
+			var_dump($note->lp_user_note);
+		}
+		//var_dump($extra_notes);
+
+		//test ende
+
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
@@ -412,15 +422,17 @@ class LoopProgressDBHandler
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$res = $dbr->newSelectQueryBuilder()
-			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
+			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number','page_id','page_title'])
 			->from('loop_progress')
 			->leftjoin('loop_structure_items',null,'lp_page=lsi_article')
+			->join('page',null,'lp_page=page_id')
 			->where([
 					'lp_user = "' . $user->getId() . '"',
 					'lsi_toc_number IS NULL',
 					'lp_user_note != ""'
 				]
 			)
+			->orderBy('page_title')
 			->caller(__METHOD__)->fetchResultSet();
 
 		return $res;
