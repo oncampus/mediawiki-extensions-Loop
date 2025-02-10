@@ -265,7 +265,7 @@ class LoopObject {
 					$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
 				}
 				if ( $this->getCopyright() ) {
-					$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
+					$footer .= '<div class="loop_object_copyright">' . htmlspecialchars_decode( $this->getCopyright() ) . '</div>';
 				}
 			}
 
@@ -768,9 +768,8 @@ class LoopObject {
 				$this->error = $e;
 				break;
 		}
-
 		if ( $copyright = $this->GetArg('copyright') ) {
-			$this->setCopyright(htmlspecialchars($copyright));
+			$this->setCopyright($this->getParser()->recursiveTagParse(htmlspecialchars($copyright),$this->GetFrame()));
 		}
 
 		// strip other objects in the text to prevent mismatch for title, descrition and copyright

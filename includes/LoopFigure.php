@@ -65,7 +65,6 @@ class LoopFigure extends LoopObject{
 	 * @return string
 	 */
 	public static function renderLoopFigure($input, array $args, $parser, $frame) {
-
 		$figure = new LoopFigure();
 		$figure->init($input, $args, $parser, $frame);
 		$figure->parse();
