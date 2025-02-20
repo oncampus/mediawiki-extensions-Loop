@@ -5,18 +5,11 @@ use MediaWiki\MediaWikiServices;
 
 class LoopProgress
 {
- 	const  NOT_UNDERSTOOD = 0;
-	const  UNDERSTOOD = 1;
-	const  NOT_EDITED = 3;
+	const  NOT_EDITED = 0;
+	const  NOT_UNDERSTOOD = 1;
+	const  UNDERSTOOD = 2;
 	const NOTE_MAX_LENGTH = 1500;
 
-	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ) {
-
-		echo($id);
-		//LoopProgressDBHandler::removeAllNotesWithId ( $id );
-
-		return true;
-	}
 
 	public static function showProgressBar(){
 		global $wgOut, $wgPersonalizationFeature;
@@ -44,7 +37,7 @@ class LoopProgress
 		$userGroupManager = $mws->getUserGroupManager();
 		$permissionManager = $mws->getPermissionManager();
 
-		if($wgPersonalizationFeature == "false") {
+		if(!$wgPersonalizationFeature  == "true") {
 			return false;
 		}
 
@@ -60,14 +53,7 @@ class LoopProgress
 		$user = $wgOut->getUser();
 		$html = '';
 
-		// get page count
-		// use counter of loop_structure_items instead?
-		//$pages = LoopProgressDBHandler::getAllPages();
-		$pages = LoopProgressDBHandler::getTocElementCount(); // page_count
-
-		// get understood pages
-		//$understoodPages = LoopProgressDBHandler::getPageUnderstoodCountForUser($user);
-
+		$pages = LoopProgressDBHandler::getTocElementCount();
 		$understoodPages = LoopProgressDBHandler::getPageUnderstoodCountForUser($user);
 
 		$understood_percent = round(min(($understoodPages->page_understood_count / $pages->page_count) * 100, 100),0);
@@ -97,7 +83,6 @@ class LoopProgress
 		global $wgOut;
 		$user = $wgOut->getUser();
 
-		// access control
 		$mws = MediaWikiServices::getInstance();
 		$userGroupManager = $mws->getUserGroupManager();
 		$permissionManager = $mws->getPermissionManager();
@@ -122,7 +107,7 @@ class LoopProgress
 			return $html;
 		}
 
-		$html .= '<button type="button" id="save_note_button" class="progress-button status-saved">' .'<span id="save_note_button_img"></span><p id="status_not_saved">'. wfMessage( 'loopprogress-save-notes') . '</p><p id="status_saved" class="status-active">' . wfMessage('loopprogress-note-saved') .'</p></button>';
+		$html .= '<button type="button" id="save_note_button" class="progress-button status-saved ">' .'<span id="save_note_button_img"></span><p id="status_not_saved" class="progress_button_responsive_text">'. wfMessage( 'loopprogress-save-notes') . '</p><p id="status_saved" class="status-active progress_button_responsive_text">' . wfMessage('loopprogress-note-saved') .'</p></button>';
 
 		return $html;
 	}
@@ -144,30 +129,30 @@ class LoopProgress
 
 		$progress_state = LoopProgress::getProgress($articleId);
 
+		$html .= '<div class="understood_states">';
 		if($progress_state == LoopProgress::NOT_UNDERSTOOD) {
-			$html .= '<button id="not_edited_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ⬤ </span>' .'<span class="progress_button_responsive_text">' .wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' .'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button">' . '<span> X </span>' .'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		} else if ($progress_state == LoopProgress::UNDERSTOOD) {
-			$html .= '<button id="not_edited_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ⬤ </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button">' . '<span> ✓ </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		} else if ($progress_state == LoopProgress::NOT_EDITED) {
-			$html .= '<button id="not_edited_button" class="progress-button">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button">' .'<span> ⬤ </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		} else {
-			$html .= '<button id="not_edited_button" class="progress-button not_active">' . wfMessage( 'loopprogress-not-edited') . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' . wfMessage( 'loopprogress-understood') . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>' . wfMessage( 'loopprogress-not-understood') . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ⬤ </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		}
+		$html .= '</div>';
 
 		return $html;
-
 	}
 
-	// this should be the only accesspoint
-	// 0 = not understood, 1 = understood, 3 = not edited
+	// 0 = not edited, 1 = not understood, 2  = understood
 	public static function getProgress($articleId) {
 		global $wgOut;
 		$user = $wgOut->getUser();
@@ -190,8 +175,7 @@ class LoopProgress
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
-		//  todo remove inline css
-		echo $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopNote' ), new HtmlArmor('<div class="float-right mt-1 ml-2"><span style="color:orange; font-size: 2em;" id="notebook-logo"></span></div>'));
+		echo $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopNote' ), new HtmlArmor('<div class="float-right mt-1 ml-2"><span  id="notebook-logo"></span></div>'));
 	}
 
 	public static function renderProgress() {
@@ -274,7 +258,7 @@ class SpecialLoopNote extends SpecialPage
 		$permissionManager = $mws->getPermissionManager();
 
 		if ($permissionManager->userHasRight($user, 'loopprogress')) {
-			$return .= '<div class="mb-3"><h1 style="display:inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h1>' . '<div id="extend-all" type="button"></div></div>';
+			$return .= '<div class="mb-3"><h2 style="display:inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h2>' . '<div id="extend-all" type="button"></div></div>';
 
 			$return .= '<div id="note-collection">';
 			$return .= SpecialLoopNote::getAllNotes();
@@ -314,17 +298,6 @@ class SpecialLoopNote extends SpecialPage
 
 		$notes = LoopProgressDBHandler::getAllUserNotesWithTocNumber($user);
 
-		$extra_notes = LoopProgressDBHandler::getAllUserNotesWithoutTocNumber($user);
-
-		//todo delete
-		// test start
-		foreach ($extra_notes as $note) {
-			var_dump($note->lp_user_note);
-		}
-		//var_dump($extra_notes);
-
-		//test ende
-
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
@@ -333,7 +306,7 @@ class SpecialLoopNote extends SpecialPage
 
 				$article = Article::newFromId($note->lp_page);
 
-				if(isset($note->lsi_toc_number)) {
+				if(isset($note->lsi_toc_number) && $article) {
 					$link = $linkRenderer->makeLink(
 						Title::newFromID($note->lp_page),
 						new HtmlArmor($note->lsi_toc_number)
@@ -345,32 +318,12 @@ class SpecialLoopNote extends SpecialPage
 				$id = uniqid();
 				$html .= '<div class="notebook-row w-100 mb-1 overflow-hidden">';
 				$html .= '<input id="note-' . $id . '" type="checkbox" name="personal-note">';
-				$html .= '<label for="note-' . $id . '" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">' . $link . ' ' . $article->getTitle() . '</label>';
-				$html .= '<div class="notebook-content overflow-hidden">';
-				$html .= '<div class="m-2 m-md-3">' . $note->lp_user_note . '</div>';
-				$html .= '</div>';
-				$html .= '</div>';
-			}
-		}
-
-		foreach ($extra_notes as $note) {
-			if (isset($note->lp_user_note) and $note->lp_user_note != '') {
-
-				$article = Article::newFromId($note->lp_page);
-
-				if(isset($note->lsi_toc_number)) {
-					$link = $linkRenderer->makeLink(
-						Title::newFromID($note->lp_page),
-						new HtmlArmor($note->lsi_toc_number)
-					);
+				if($article){
+					$html .= '<label for="note-' . $id . '" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">' . $link . ' ' . $article->getTitle() . '</label>';
 				} else {
-					$link = ' ';
+					$html .= '<label for="note-' . $id . '" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">' . $link . ' ' . '</label>';
 				}
 
-				$id = uniqid();
-				$html .= '<div class="notebook-row w-100 mb-1 overflow-hidden">';
-				$html .= '<input id="note-' . $id . '" type="checkbox" name="personal-note">';
-				$html .= '<label for="note-' . $id . '" class="d-block cursor-pointer mb-0 mr-2 w-100 p-2 pl-2">' . $link . ' ' . $article->getTitle() . '</label>';
 				$html .= '<div class="notebook-content overflow-hidden">';
 				$html .= '<div class="m-2 m-md-3">' . $note->lp_user_note . '</div>';
 				$html .= '</div>';
@@ -384,31 +337,15 @@ class SpecialLoopNote extends SpecialPage
 
 class LoopProgressDBHandler
 {
-	public static function getAllUserNotes($user) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$res = $dbr->newSelectQueryBuilder()
-			->select([ 'lp_page', 'lp_user_note'])
-			->from('loop_progress')
-			->where([
-					'lp_user = "' . $user->getId() . '"'
-				]
-			)
-			->caller(__METHOD__)->fetchResultSet();
-
-		return $res;
-	}
-
 	public static function getAllUserNotesWithTocNumber($user){
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
 			->from('loop_progress')
-			->leftjoin('loop_structure_items',null,'lp_page=lsi_article')
+			->join('loop_structure_items',null,'lp_page=lsi_article')
 			->where([
 					'lp_user = "' . $user->getId() . '"',
-					'lsi_toc_number != ""',
 					'lp_user_note != ""'
 				]
 			)
@@ -417,27 +354,6 @@ class LoopProgressDBHandler
 
 		return $res;
 	}
-
-	public static function getAllUserNotesWithoutTocNumber($user){
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$res = $dbr->newSelectQueryBuilder()
-			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number','page_id','page_title'])
-			->from('loop_progress')
-			->leftjoin('loop_structure_items',null,'lp_page=lsi_article')
-			->join('page',null,'lp_page=page_id')
-			->where([
-					'lp_user = "' . $user->getId() . '"',
-					'lsi_toc_number IS NULL',
-					'lp_user_note != ""'
-				]
-			)
-			->orderBy('page_title')
-			->caller(__METHOD__)->fetchResultSet();
-
-		return $res;
-	}
-
 
 	public static function getUserNoteForPage($articleId, $user) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
@@ -454,55 +370,17 @@ class LoopProgressDBHandler
 
 		return $lp;
 	}
-/*
+
 	public static function getPageUnderstoodCountForUser($user) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'Count(lp_page) as page_understood_count', 'lp_user_note'])
 			->from('loop_progress')
+			->join('loop_structure_items',null,'lp_page=lsi_article')
 			->where([
 					'lp_user = "' . $user->getId() . '"',
 					'lp_understood = "' . LoopProgress::UNDERSTOOD . '"'
-				]
-			)
-			->caller(__METHOD__)->fetchRow();
-
-		return $res;
-	}
-*/
-
-/*
- * 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$res = $dbr->newSelectQueryBuilder()
-			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
-			->from('loop_progress')
-			->join('loop_structure_items',null,'lp_page=lsi_article')
-			->where([
-					'lp_user = "' . $user->getId() . '"',
-					'lsi_toc_number != ""',
-					'lp_user_note != ""'
-				]
-			)
-			->orderBy('lsi_toc_number')
-			->caller(__METHOD__)->fetchResultSet();
-
-		return $res;
- *
- */
-
-	public static function getPageUnderstoodCountForUser($user) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$res = $dbr->newSelectQueryBuilder()
-			->select([ 'Count(lp_page) as page_understood_count', 'lp_user_note'])
-			->from('loop_progress')
-			->join('loop_structure_items',null,'lp_page=lsi_article')
-			->where([
-					'lp_user = "' . $user->getId() . '"',
-					'lp_understood = "' . LoopProgress::UNDERSTOOD . '"',
-					'lsi_toc_number != ""'
 				]
 			)
 			->caller(__METHOD__)->fetchRow();
@@ -520,95 +398,4 @@ class LoopProgressDBHandler
 
 		return $res;
 	}
-
-	public static function getPageUnderstoodStatesForUser($user) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$res = $dbr->newSelectQueryBuilder()
-			->select([ 'Count(lp_page) as page_count', 'lp_understood'])
-			->from('loop_progress')
-			->where([
-					'lp_user = "' . $user->getId() . '"'
-				]
-			)->groupBy('lp_understood')
-			->caller(__METHOD__)->fetchResultSet();
-
-		return $res;
-	}
-
-	public static function getAllPages() {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$pages = $dbr->newSelectQueryBuilder()
-			->select([ 'COUNT(lsi_id) as count_pages'])
-			->from('loop_structure_items')
-			->caller(__METHOD__)->fetchRow();
-
-		return $pages;
-	}
-
-	public static function getTocNumber($pageId) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
-		$tocNumber = $dbr->newSelectQueryBuilder()
-			->select([ 'lsi_toc_number'])
-			->from('loop_structure_items')
-			->where(['lsi_article ="' . $pageId . '"'])
-			->caller(__METHOD__)->fetchRow();
-
-		return $tocNumber;
-	}
-
-	/*
-	public static function deleteAllNotesForUser($userId) {
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
-			'loop_progress',
-			'lp_user = ' . $userId,
-			__METHOD__
-		);
-
-	}
-
-	public static function deleteProgressOlderThan($xDays){ //$olderThanDays) {
-		$timestamp = '20241209000000';
-
-
-		$givenTime = wfTimestamp(TS_UNIX, $timestamp);
-		$currentTime = time();
-		$threshold = $xDays * 24 * 60 * 60;
-
-
-		$thresholdDate = $currentTime - $threshold;
-
-		if (($currentTime - $givenTime) > $threshold) {
-			echo "The timestamp is older than $xDays days.\n";
-		} else {
-			echo "The timestamp is within $xDays days.\n";
-		}
-
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
-			'loop_progress',
-			'lp_timestamp < ' . $thresholdDate,
-			__METHOD__
-		);
-	}
-	*/
-
-	// dalem new
-	// todo test
-	public static function removeAllNotesWithId ( $article ) {
-
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
-			'loop_progress',
-			'lp_page = ' . $article,
-			__METHOD__
-		);
-
-		return true;
-	}
-
-
 }

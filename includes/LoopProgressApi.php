@@ -6,7 +6,8 @@ use MediaWiki\MediaWikiServices;
 use Wikimedia\ParamValidator\ParamValidator;
 
 
-abstract class ApiLoopProgressBase extends ApiBase {
+abstract class ApiLoopProgressBase extends ApiBase
+{
 	public function __construct($main, $action)
 	{
 		parent::__construct($main, $action);
@@ -23,7 +24,25 @@ abstract class ApiLoopProgressBase extends ApiBase {
 		$id = $idGenerator->newTimestampedUID128(16);
 		return str_pad($id, 32, 0, STR_PAD_LEFT);
 	}
+
+	protected function checkPermissions($user)
+	{
+		if ($user->getBlock() != null) {
+			$this->dieWithError(
+				$this->msg('loopprogress-error-blocked')->escaped(),
+				'userblocked'
+			);
+		}
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		if (!$permissionManager->userHasRight($user, 'loopprogress')) {
+			$this->dieWithError(
+				$this->msg('loopprogress-error-nopermission')->escaped(),
+				'nopermission'
+			);
+		}
+	}
 }
+
 
 class ApiLoopProgressSave extends ApiLoopProgressBase
 {
@@ -41,16 +60,19 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		// extract params
 		$params = $this->extractRequestParams();
 
+		//check permissions
+		$this->checkPermissions($user);
+
 		// get page object
 		$pageObj = $this->getTitleOrPageId( $params, 'fromdb' );
 		if ( !$pageObj->exists() ) {
 			$this->dieWithError(
-				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
+				$this->msg( 'loopprogress-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
 		}
 
-		$progress['lp_id'] = $this->generateId(); // todo test
+		$progress['lp_id'] = $this->generateId();
 		$progress['lp_page'] = $pageObj->getId();
 		$progress['lp_user'] = $user->getId();
 		$progress['lp_understood'] = $params['understood'];
@@ -100,13 +122,12 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 			);
 		}
 
-		$result->addValue($this->getModuleName(), 'lp_id', $progress['lp_id']); // todo
+		$result->addValue($this->getModuleName(), 'lp_id', $progress['lp_id']);
 	}
 
 	public function getAllowedParams()
 	{
 		$ret = array(
-			'title' => null,
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE => 'integer',
 			),
@@ -124,9 +145,7 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 	{
 		$p = $this->getModulePrefix();
 		return array(
-			'title' => "Title of the page to submit feedback for. Cannot be used together with {$p}pageid",
-			'pageid' => "ID of the page to submit feedback for. Cannot be used together with {$p}title",
-			//'anontoken' => 'Token for anonymous users',
+			'pageid' => "ID of the page to submit progress for. Cannot be used together with {$p}title",
 			'understood' => 'understood'
 		);
 	}
@@ -147,7 +166,6 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 	public function getPossibleErrors()
 	{
 		return array_merge($this->getPossibleErrors(), array(
-			array('code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page'),
 			array('code' => 'invalidpageid', 'info' => 'Page ID is missing or invalid'),
 			array('code' => 'missinguser', 'info' => 'User info is missing')
 		));
@@ -175,7 +193,7 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 }
 
 
-class ApiLoopProgressLoad extends ApiBase
+class ApiLoopProgressLoad extends ApiLoopProgressBase
 {
 
 	public function __construct($main, $action)
@@ -185,38 +203,19 @@ class ApiLoopProgressLoad extends ApiBase
 
 	public function execute()
 	{
-		// TODO manage permissions
-		/*
-		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		//$result   = $this->getResult();
-
 		$user = $this->getUser();
-		if ( $user->getBlock() != null ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
-			);
-		}
 
-		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view' ) ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
-				'nopermission'
-			);
-		}
-		*/
+		$this->checkPermissions($user);
 
-
-		$result   = $this->getResult();
+		$result = $this->getResult();
 
 		$params = $this->extractRequestParams();
 
-		$result->addValue($this->getModuleName(), 'test', $params);
+		$result->addValue($this->getModuleName(), 'test', $params); // todo
 	}
 
 	public function getAllowedParams() {
 		$ret = array(
-			'title' => null,
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE     => 'integer',
 			),
@@ -251,7 +250,6 @@ class ApiLoopProgressLoad extends ApiBase
 	public function getPossibleErrors()
 	{
 		return array_merge($this->getPossibleErrors(), array(
-			array('code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page'),
 			array('code' => 'invalidpageid', 'info' => 'Page ID is missing or invalid'),
 			array('code' => 'missinguser', 'info' => 'User info is missing'),
 		));
@@ -289,29 +287,8 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 
 	public function execute()
 	{
-		// TODO manage permissions
-		/*
-		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		//$result   = $this->getResult();
-
 		$user = $this->getUser();
-		if ( $user->getBlock() != null ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
-			);
-		}
-
-		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view' ) ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
-				'nopermission'
-			);
-		}
-		*/
-
-
-		$user = $this->getUser();
+		$this->checkPermissions($user);
 
 		$result   = $this->getResult();
 
@@ -322,7 +299,7 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 		$pageObj = $this->getTitleOrPageId( $params, 'fromdb' );
 		if ( !$pageObj->exists() ) {
 			$this->dieWithError(
-				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
+				$this->msg( 'loopprogress-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
 		}
@@ -340,13 +317,11 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 			$progress['lp_user_note'] = $params['user_note'];
 		}
 
-		//print_r($progress['lp_user_note']);
-
 		// first look if an entry exits
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbr = $dbProvider->getConnection(DB_REPLICA);
 		$lp = $dbr->newSelectQueryBuilder()
-			->select([ 'lp_id','lp_user'])
+			->select([ 'lp_id','lp_user','lp_page'])
 			->from('loop_progress')
 			->where([
 					'lp_page = "' . $pageObj->getId() . '"',
@@ -357,7 +332,7 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 
 
 		// update if there is an entry
-        if(isset($lp->lp_id) and isset($lp->lp_user))
+        if(isset($lp->lp_id) and isset($lp->lp_user) and isset($lp->lp_page))
 		{
             // update the notes
 			$dbw = $dbProvider->getConnection(DB_PRIMARY);
@@ -394,7 +369,6 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 
 	public function getAllowedParams() {
 		$ret = array(
-			'title' => null,
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE     => 'integer',
 			),
@@ -429,7 +403,6 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 	public function getPossibleErrors()
 	{
 		return array_merge($this->getPossibleErrors(), array(
-			array('code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page'),
 			array('code' => 'invalidpageid', 'info' => 'Page ID is missing or invalid'),
 			array('code' => 'missinguser', 'info' => 'User info is missing'),
 		));
@@ -455,7 +428,7 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 	}
 }
 
-class ApiLoopProgressLoadNote extends ApiBase
+class ApiLoopProgressLoadNote extends ApiLoopProgressBase
 {
 
 	public function __construct($main, $action)
@@ -465,28 +438,8 @@ class ApiLoopProgressLoadNote extends ApiBase
 
 	public function execute()
 	{
-		// TODO manage permissions
-		/*
-		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		//$result   = $this->getResult();
-
 		$user = $this->getUser();
-		if ( $user->getBlock() != null ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
-			);
-		}
-
-		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view' ) ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
-				'nopermission'
-			);
-		}
-		*/
-
-		$user = $this->getUser();
+		$this->checkPermissions($user);
 
 		$result   = $this->getResult();
 
@@ -497,7 +450,7 @@ class ApiLoopProgressLoadNote extends ApiBase
 		$pageObj = $this->getTitleOrPageId( $params, 'fromdb' );
 		if ( !$pageObj->exists() ) {
 			$this->dieWithError(
-				$this->msg( 'loopfeedback-invalid-page-id' )->escaped(),
+				$this->msg( 'loopprogress-invalid-page-id' )->escaped(),
 				'notanarticle'
 			);
 		}
@@ -519,7 +472,6 @@ class ApiLoopProgressLoadNote extends ApiBase
 
 	public function getAllowedParams() {
 		$ret = array(
-			'title' => null,
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE     => 'integer',
 			)
@@ -550,7 +502,6 @@ class ApiLoopProgressLoadNote extends ApiBase
 	public function getPossibleErrors()
 	{
 		return array_merge($this->getPossibleErrors(), array(
-			array('code' => 'invalidpage', 'info' => 'ArticleFeedback is not enabled on this page'),
 			array('code' => 'invalidpageid', 'info' => 'Page ID is missing or invalid'),
 			array('code' => 'missinguser', 'info' => 'User info is missing'),
 		));

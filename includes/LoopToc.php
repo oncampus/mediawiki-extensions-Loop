@@ -54,8 +54,6 @@ class LoopToc extends LoopStructure {
 			);
             $html .= '<div class="loopstructure-listitem loopstructure-level-' . $level . '">' . $headLink . '</div>';
 
-			// dalem test
-			//$html .= ' ✓';
 
 			$xml .= '<loop_toc_list><php_link_internal text-decoration="no-underline" href="article'.$rootArticleId.'"><bold>'. $pageNumber .'</bold>  ' . $tocText . '</php_link_internal></loop_toc_list>';
 

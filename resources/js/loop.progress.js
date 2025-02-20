@@ -4,6 +4,10 @@ $(document).ready(function() {
 		$(this).children().eq(1).toggleClass("note_text");
 	});
 
+	$("#extra_notes_button").click(function () {
+		$("#extra_notes").toggleClass('hide_note');
+	});
+
 	function resetUnderstoodFilters() {
 		$("#not_edited_filter").addClass('not_active');
 		$("#not_understood_filter").addClass('not_active');
@@ -70,7 +74,7 @@ $(document).ready(function() {
 
 			api.post( {
 				'pageid': lp_articleid,
-				"understood": 1,
+				"understood": 2,
 				'action': 'loopprogress-save',
 				'format': 'json'
 			} );
@@ -80,7 +84,7 @@ $(document).ready(function() {
 
 			api.post( {
 				'pageid': lp_articleid,
-				"understood": 0,
+				"understood": 1,
 				'action': 'loopprogress-save',
 				'format': 'json'
 			} );
@@ -122,7 +126,7 @@ $(document).ready(function() {
 
 		api.post( {
 			'pageid': lp_articleid,
-			"understood": 3,
+			"understood": 0,
 			'action': 'loopprogress-save',
 			'format': 'json'
 		} );
@@ -137,7 +141,7 @@ $(document).ready(function() {
 
 		api.post( {
 			'pageid': lp_articleid,
-			"understood": 1,
+			"understood": 2,
 			'action': 'loopprogress-save',
 			'format': 'json'
 		} );
@@ -152,7 +156,7 @@ $(document).ready(function() {
 
 		api.post( {
 			'pageid': lp_articleid,
-			"understood": 0,
+			"understood": 1,
 			'action': 'loopprogress-save',
 			'format': 'json'
 		} );
