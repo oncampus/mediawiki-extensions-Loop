@@ -207,7 +207,11 @@ class LoopProgress
 		return $return;
 	}
 
+	public static function onPageDeleteComplete( MediaWiki\Page\ProperPageIdentity $page, MediaWiki\Permissions\Authority $deleter, string $reason, int $pageID, MediaWiki\Revision\RevisionRecord $deletedRev, ManualLogEntry $logEntry, int $archivedRevisionCount ) {
+		$pageId = $page->getId();
 
+		LoopProgressDBHandler::deleteNoteWithPageId($pageId);
+	}
 
 	public static function onBeforePageDisplay(OutputPage $out, Skin $skin)
 	{
@@ -397,5 +401,14 @@ class LoopProgressDBHandler
 			->caller(__METHOD__)->fetchRow();
 
 		return $res;
+	}
+
+	public static function deleteNoteWithPageId($pageId) {
+		$dbw = wfGetDB(DB_PRIMARY);
+		$dbw->delete(
+			'loop_progress',
+			'lp_page =' . $pageId,
+			__METHOD__
+		);
 	}
 }

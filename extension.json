@@ -201,7 +201,8 @@
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
 		"ParserBeforeInternalParse": "LoopConsent::onParserBeforeInternalParse",
-		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister",
+		"PageDeleteComplete": "LoopProgress::onPageDeleteComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",

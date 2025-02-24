@@ -95,7 +95,6 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		// update if there is an entry
 		if(isset($lp->lp_id) and isset($lp->lp_user))
 		{
-
 			// update the notes
 			$dbw = $dbProvider->getConnection(DB_PRIMARY);
 			$dbw->update(
