@@ -33,7 +33,6 @@ class LoopStructure {
 		$linkRenderer->setForceArticlePath(true);
 
 		foreach( $this->structureItems as $structureItem ) {
-
 			if( intval( $structureItem->tocLevel ) === 0 ) {
 
 				$text .= '<a href="/" class="loopstructure-home">'.$structureItem->tocText.'</a>';
@@ -57,7 +56,7 @@ class LoopStructure {
 				if ( $title ) {
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . '</span></span>' )
+						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $title->getFullText() . '</span></span>' )
 					);
 
 				}
@@ -68,7 +67,6 @@ class LoopStructure {
 		}
 
 		return $text;
-
 	}
 
 	/**
