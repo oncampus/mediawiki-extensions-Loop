@@ -9,6 +9,9 @@ class LoopProgress
 	const  NOT_UNDERSTOOD = 1;
 	const  UNDERSTOOD = 2;
 	const NOTE_MAX_LENGTH = 1500;
+	const NOT_EDITED_SYMBOL = '⬤';
+	const NOT_UNDERSTOOD_SYMBOL = 'X';
+	const UNDERSTOOD_SYMBOL = '✓';
 
 
 	public static function showProgressBar(){
@@ -129,24 +132,26 @@ class LoopProgress
 
 		$progress_state = LoopProgress::getProgress($articleId);
 
+
 		$html .= '<div class="understood_states">';
 		if($progress_state == LoopProgress::NOT_UNDERSTOOD) {
-			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ⬤ </span>' .'<span class="progress_button_responsive_text">' .wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>' .'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button">' . '<span> X </span>' .'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ' . LoopProgress::NOT_EDITED_SYMBOL . ' </span>' .'<span class="progress_button_responsive_text">' .wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ' . LoopProgress::UNDERSTOOD_SYMBOL . ' </span>' .'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button">' . '<span> ' . LoopProgress::NOT_UNDERSTOOD_SYMBOL . ' </span>' .'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		} else if ($progress_state == LoopProgress::UNDERSTOOD) {
-			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ⬤ </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
-			$html .= '<button id="understood_button" class="progress-button">' . '<span> ✓ </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ' . LoopProgress::NOT_EDITED_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button">' . '<span> ' . LoopProgress::UNDERSTOOD_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> ' . LoopProgress::NOT_UNDERSTOOD_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		} else if ($progress_state == LoopProgress::NOT_EDITED) {
-			$html .= '<button id="not_edited_button" class="progress-button">' .'<span> ⬤ </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button">' .'<span> ' . LoopProgress::NOT_EDITED_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ' . LoopProgress::UNDERSTOOD_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> ' . LoopProgress::NOT_UNDERSTOOD_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		} else {
-			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ⬤ </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
-			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ✓ </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
-			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> X </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_edited_button" class="progress-button not_active">' .'<span> ' . LoopProgress::NOT_EDITED_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">'. wfMessage( 'loopprogress-not-edited') .'</span>' . '</button>';
+			$html .= '<button id="understood_button" class="progress-button not_active">' . '<span> ' . LoopProgress::UNDERSTOOD_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-understood') .'</span>' . '</button>';
+			$html .= '<button id="not_understood_button" class="progress-button not_active">' . '<span> ' . LoopProgress::NOT_UNDERSTOOD_SYMBOL . ' </span>'.'<span class="progress_button_responsive_text">' . wfMessage( 'loopprogress-not-understood') .'</span>' . '</button>';
 		}
+
 		$html .= '</div>';
 
 		return $html;

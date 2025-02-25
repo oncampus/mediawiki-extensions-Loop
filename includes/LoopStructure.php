@@ -29,14 +29,14 @@ class LoopStructure {
 		if(LoopProgress::hasProgressPermission()) {
 			$progress = LoopProgress::getProgress($structureItem->article);
 			if ($progress == LoopProgress::UNDERSTOOD) {
-				$progress_extension = '<span class="marked-understood"> ✓ </span>';
+				$progress_extension = '<span class="marked-understood"> ' . LoopProgress::UNDERSTOOD_SYMBOL . ' </span>';
 				$understood_class_extension = ' page_understood';
 			}
 			elseif ($progress == LoopProgress::NOT_UNDERSTOOD) {
-				$progress_extension = '<span class="marked-not-understood"> ✗ </span>';
+				$progress_extension = '<span class="marked-not-understood"> ' . LoopProgress::NOT_UNDERSTOOD_SYMBOL . ' </span>';
 				$understood_class_extension = ' page_not_understood';
 			} else {
-				$progress_extension = '<span class="marked-not-edited"> ⬤ </span>';
+				$progress_extension = '<span class="marked-not-edited"> ' . LoopProgress::NOT_EDITED_SYMBOL . ' </span>';
 			}
 		}
 		return [$progress_extension, $understood_class_extension];
