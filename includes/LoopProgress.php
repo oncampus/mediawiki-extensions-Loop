@@ -267,7 +267,7 @@ class SpecialLoopNote extends SpecialPage
 		$permissionManager = $mws->getPermissionManager();
 
 		if ($permissionManager->userHasRight($user, 'loopprogress')) {
-			$return .= '<div class="mb-3"><h2 style="display:inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h2>' . '<div id="extend-all" type="button"></div></div>';
+			$return .= '<div class="mb-3"><h2 class="d-inline">' . $this->msg('loopnote') . $out->setPageTitle($this->msg('loopnote')) . '</h2>' . '<div id="extend-all" type="button"></div></div>';
 
 			$return .= '<div id="note-collection">';
 			$return .= SpecialLoopNote::getAllNotes();

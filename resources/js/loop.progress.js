@@ -51,17 +51,12 @@ $(document).ready(function() {
 		}
 	});
 
-
-
 	$("#personal_notes").on('input', function () {
 		$(this).css('height', this.scrollHeight + 'px');
 		$("#status_saved").removeClass("status-active");
 		$("#status_not_saved").addClass("status-active");
 		$("#save_note_button").removeClass("status-saved");
 	});
-
-	//$("#personal_notes").trigger('input');
-
 
 	$('#page_understood').change(function() {
 		alert($("#page_understood").val());
@@ -91,7 +86,6 @@ $(document).ready(function() {
 		}
 	});
 
-
 	$("#save_note_button").click( function () {
 		var api = new mw.Api();
 		var personal_notes = $("#personal_notes").val();
@@ -109,13 +103,11 @@ $(document).ready(function() {
 		});
 	});
 
-
 	function resetButtonState() {
 		$("#not_edited_button").addClass('not_active');
 		$("#understood_button").addClass('not_active');
 		$("#not_understood_button").addClass('not_active');
 	}
-
 
 	$("#not_edited_button").click( function () {
 		var api = new mw.Api();
@@ -174,5 +166,3 @@ $(document).ready(function() {
 	});
 
 });
-
-
