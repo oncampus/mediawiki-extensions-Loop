@@ -9,7 +9,7 @@ class LoopProgress
 	const  NOT_UNDERSTOOD = 1;
 	const  UNDERSTOOD = 2;
 	const NOTE_MAX_LENGTH = 1500;
-	const NOT_EDITED_SYMBOL = '○';
+	const NOT_EDITED_SYMBOL = '⦁︎'; // U+2981
 	const NOT_UNDERSTOOD_SYMBOL = 'X';
 	const UNDERSTOOD_SYMBOL = '✓';
 
