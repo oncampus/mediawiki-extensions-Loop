@@ -40,7 +40,7 @@ class LoopProgress
 		$userGroupManager = $mws->getUserGroupManager();
 		$permissionManager = $mws->getPermissionManager();
 
-		if(!$wgPersonalizationFeature  == "true") {
+		if(!($wgPersonalizationFeature  == "true")) {
 			return false;
 		}
 
