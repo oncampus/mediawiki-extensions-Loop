@@ -23,6 +23,24 @@ class LoopStructure {
 	public function getId() {
 		return $this->id;
 	}
+	private function getProgressMarker($structureItem) {
+		$progress_extension = '';
+		$understood_class_extension = ' not_edited';
+		if(LoopProgress::hasProgressPermission()) {
+			$progress = LoopProgress::getProgress($structureItem->article);
+			if ($progress == LoopProgress::UNDERSTOOD) {
+				$progress_extension = '<span class="marked-understood"> ' . LoopProgress::UNDERSTOOD_SYMBOL . ' </span>';
+				$understood_class_extension = ' page_understood';
+			}
+			elseif ($progress == LoopProgress::NOT_UNDERSTOOD) {
+				$progress_extension = '<span class="marked-not-understood"> ' . LoopProgress::NOT_UNDERSTOOD_SYMBOL . ' </span>';
+				$understood_class_extension = ' page_not_understood';
+			} else {
+				$progress_extension = '<span class="marked-not-edited"> ' . LoopProgress::NOT_EDITED_SYMBOL . ' </span>';
+			}
+		}
+		return [$progress_extension, $understood_class_extension];
+	}
 
 	public function render() {
 
@@ -32,12 +50,18 @@ class LoopStructure {
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
 
+		$text .= '<div id=toc_filter_space class="show_all" >';
+
 		foreach( $this->structureItems as $structureItem ) {
 
 			if( intval( $structureItem->tocLevel ) === 0 ) {
 
-				$text .= '<a href="/" class="loopstructure-home">'.$structureItem->tocText.'</a>';
+				$marker = $this->getProgressMarker($structureItem);
 
+				$progress_extension = $marker[0];
+				$understood_class_extension = $marker[1];
+
+				$text .= '<a href="/" class="loopstructure-home ' . $understood_class_extension . '">' .$structureItem->tocText. $progress_extension .'</a>';
 			} else {
 
 				if( isset( $structureItem->tocLevel ) && $structureItem->tocLevel > 0 ) {
@@ -55,20 +79,28 @@ class LoopStructure {
 				}
 
 				if ( $title ) {
+
+					$marker = $this->getProgressMarker($structureItem);
+
+					$progress_extension = $marker[0];
+					$understood_class_extension = $marker[1];
+
 					$link = $linkRenderer->makeLink(
 						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . '</span></span>' )
+						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . $progress_extension .  '</span></span>' )
 					);
 
 				}
-				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel.'">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
+				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel .   $understood_class_extension . '">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
 
 			}
 
 		}
 
-		return $text;
+		$text .= '</div>';
 
+
+		return $text;
 	}
 
 	/**
@@ -903,6 +935,14 @@ class SpecialLoopStructure extends SpecialPage {
 	    $html = '';
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
+
+		if(LoopProgress::hasProgressPermission()) {
+			$html .= '<div class="filter_button_panel">';
+			$html .= '<button id="understood_filter" class="progress-button filter_button not_active" type="button">' . wfMessage('loopprogress-understood') .'</button>';
+			$html .= '<button id="not_understood_filter" class="progress-button filter_button not_active" type="button">' . wfMessage('loopprogress-not-understood') .'</button>';
+			$html .= '<button id="not_edited_filter" class="progress-button filter_button not_active" type="button">' . wfMessage('loopprogress-not-edited') .'</button>';
+			$html .= '</div>';
+		}
 
 	    $html .= Html::openElement(
 	        'h1',
