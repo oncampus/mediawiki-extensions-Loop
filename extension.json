@@ -7,7 +7,8 @@
 		"Dennis Krohn",
     	"Dustin Neß",
 		"Marc Vorreiter",
-		"Kevin Berg"
+		"Kevin Berg",
+		"Daniel Lembcke"
 	],
 	"version": "2.2.0",
 	"url": "https://github.com/oncampus/mediawiki-extensions-Loop",
@@ -108,11 +109,17 @@
 		"LoopBugReport": "includes/LoopBugReport.php",
 		"SpecialLoopBugReport": "includes/LoopBugReport.php",
 		"LoopFeedback": "includes/LoopFeedback.php",
+		"LoopProgress": "includes/LoopProgress.php",
 		"SpecialLoopFeedback": "includes/LoopFeedback.php",
+		"SpecialLoopNote": "includes/LoopProgress.php",
 		"ApiLoopFeedbackSave": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackPageDetails": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackStructure": "includes/LoopFeedbackApi.php",
 		"ApiLoopFeedbackOverview": "includes/LoopFeedbackApi.php",
+		"ApiLoopProgressSave": "includes/LoopProgressApi.php",
+		"ApiLoopProgressLoad": "includes/LoopProgressApi.php",
+		"ApiLoopProgressSaveNote": "includes/LoopProgressApi.php",
+		"ApiLoopProgressLoadNote": "includes/LoopProgressApi.php",
 		"LoopAccordion": "includes/LoopAccordion.php",
 		"SpecialLoopImprint": "includes/Loop.php",
 		"SpecialLoopPrivacy": "includes/Loop.php",
@@ -185,7 +192,8 @@
 		],
 		"BeforePageDisplay": [
 			"LoopFeedback::onBeforePageDisplay",
-			"LoopScreenshot::onBeforePageDisplay"
+			"LoopScreenshot::onBeforePageDisplay",
+			"LoopProgress::onBeforePageDisplay"
 		],
 		"LoopUpdateSavePage": "LoopUpdater::onLoopUpdateSavePage",
 		"EditPage::showEditForm:initial": "LoopWikiEditor::onEditPageShowEditFormInitial",
@@ -193,7 +201,8 @@
 		"PreSaveTransformComplete": "LoopHooks::onPreSaveTransformComplete",
 		"PageContentSave": "LoopConsent::onPageContentSave",
 		"ParserBeforeInternalParse": "LoopConsent::onParserBeforeInternalParse",
-		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister"
+		"ParserOptionsRegister": "LoopConsent::onParserOptionsRegister",
+		"PageDeleteComplete": "LoopProgress::onPageDeleteComplete"
 	},
 	"SpecialPages": {
 		"LoopStructure": "SpecialLoopStructure",
@@ -218,6 +227,7 @@
 		"LoopExportPdfTest": "SpecialLoopExportPdfTest",
 		"LoopBugReport": "SpecialLoopBugReport",
 		"LoopFeedback": "SpecialLoopFeedback",
+		"LoopNote": "SpecialLoopNote",
 		"LoopImprint": "SpecialLoopImprint",
 		"LoopPrivacy": "SpecialLoopPrivacy",
 		"LoopRSS": "SpecialLoopRSS",
@@ -362,6 +372,12 @@
 				"loopfeedback-specialpage-feedback-info-no-comments"
 			]
 		},
+		"loop.progress.js": {
+			"position": "bottom",
+			"scripts": [
+				"resources/js/loop.progress.js"
+			]
+		},
 		"loop.ngspice.js": {
 			"position": "bottom",
 			"scripts": [
@@ -400,7 +416,8 @@
 			"loopfeedback-view": false,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": false
 		},
 		"user" : {
 			"read": true,
@@ -448,7 +465,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": true
+			"loopfeedback-reset": true,
+			"loopprogress": true
 		},
 		"author": {
 			"loop-toc-edit": true,
@@ -491,7 +509,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": true
+			"loopfeedback-reset": true,
+			"loopprogress": true
 		},
 		"teacher_approve": {
 			"loop-toc-edit": true,
@@ -534,7 +553,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"teacher_edit": {
 			"loop-toc-edit": true,
@@ -571,7 +591,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"teacher_no_edit": {
 			"loop-export-pdf": true,
@@ -590,7 +611,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": true,
 			"loopfeedback-view-comments": true,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"student_edit": {
 			"edit": true,
@@ -617,7 +639,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"student_no_edit": {
 			"loop-export-pdf": true,
@@ -635,7 +658,8 @@
 			"loopfeedback-view": true,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": true
 		},
 		"shared": {
 			"editmyoptions": false,
@@ -655,7 +679,8 @@
 			"loopfeedback-view": false,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": false
 		},
 		"shared_basic": {
 			"editmyoptions": false,
@@ -675,7 +700,8 @@
 			"loopfeedback-view": false,
 			"loopfeedback-view-results": false,
 			"loopfeedback-view-comments": false,
-			"loopfeedback-reset": false
+			"loopfeedback-reset": false,
+			"loopprogress": false
 		}
 	},
 	"DefaultUserOptions": {
@@ -1099,7 +1125,11 @@
 		"loopfeedback-save": "ApiLoopFeedbackSave",
 		"loopfeedback-page-details": "ApiLoopFeedbackPageDetails",
 		"loopfeedback-structure": "ApiLoopFeedbackStructure",
-		"loopfeedback-overview": "ApiLoopFeedbackOverview"
+		"loopfeedback-overview": "ApiLoopFeedbackOverview",
+		"loopprogress-save": "ApiLoopProgressSave",
+		"loopprogress-load": "ApiLoopProgressLoad",
+		"loopprogress-save-note": "ApiLoopProgressSaveNote",
+		"loopprogress-load-note": "ApiLoopProgressLoadNote"
 	},
 	"manifest_version": 2
 }

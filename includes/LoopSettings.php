@@ -53,6 +53,7 @@ class LoopSettings {
     public $bugReportEmail; #wgLoopBugReportEmail
     public $feedbackLevel; #wgLoopFeedbackLevel
     public $feedbackMode; #wgLoopFeedbackMode
+	public $personalizationFeature; #wgpersonalizationFeature
     public $objectRenderOption; #wgLoopObjectDefaultRenderOption
 
     /**
@@ -101,6 +102,7 @@ class LoopSettings {
             'lset_ticketemail' => $this->bugReportEmail,
             'lset_feedbacklevel' => $this->feedbackLevel,
             'lset_feedbackmode' => $this->feedbackMode,
+			'lset_personalizationFeature' => $this->personalizationFeature,
             'lset_objectrenderoption' => $this->objectRenderOption
         );
 
@@ -158,7 +160,7 @@ class LoopSettings {
         global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon,
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering,
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
-        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption;
+        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgPersonalizationFeature ,$wgLoopObjectDefaultRenderOption;
 
         # take values from presets in extension.json and LocalSettings if there is no DB entry
         $this->imprintLink = $wgLoopImprintLink;
@@ -201,6 +203,7 @@ class LoopSettings {
         $this->bugReportEmail = $wgLoopBugReportEmail;
         $this->feedbackLevel = $wgLoopFeedbackLevel;
         $this->feedbackMode = $wgLoopFeedbackMode;
+		$this->personalizationFeature = $wgPersonalizationFeature;
         $this->objectRenderOption = $wgLoopObjectDefaultRenderOption;
 
         if ( isset($row->lset_structure) ) {
@@ -244,6 +247,7 @@ class LoopSettings {
             $this->bugReportEmail =  isset( $data['lset_ticketemail'] ) ? $data['lset_ticketemail'] : $this->bugReportEmail;
             $this->feedbackLevel =  isset( $data['lset_feedbacklevel'] ) ? $data['lset_feedbacklevel'] : $this->feedbackLevel;
             $this->feedbackMode =  isset( $data['lset_feedbackmode'] ) ? $data['lset_feedbackmode'] : $this->feedbackMode;
+			$this->personalizationFeature =  isset( $data['lset_personalizationFeature'] ) ? $data['lset_personalizationFeature'] : $this->personalizationFeature;
             $this->objectRenderOption =  isset( $data['lset_objectrenderoption'] ) ? $data['lset_objectrenderoption'] : $this->objectRenderOption;
         }
 
@@ -276,276 +280,285 @@ class LoopSettings {
      * @return Bool
      */
 
-    public function getLoopSettingsFromRequest ( $request, $user ) {
+    public function getLoopSettingsFromRequest ( $request, $user )
+	{
 
-        global $wgLoopSocialIcons, $wgLoopAvailableSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
-        $this->errors = array();
-        $this->rightsText = $request->getText( 'rights-text' ); # no validation required
+		global $wgLoopSocialIcons, $wgLoopAvailableSkinStyles, $wgAvailableLicenses, $wgLegalTitleChars;
+		$this->errors = array();
+		$this->rightsText = $request->getText('rights-text'); # no validation required
 
-        $socialArray = array(
-            'Facebook' => array(),
-            'Twitter' => array(),
-            'Youtube' => array(),
-            'Github' => array( ),
-            'Instagram' => array()
-        );
+		$socialArray = array(
+			'Facebook' => array(),
+			'Twitter' => array(),
+			'Youtube' => array(),
+			'Github' => array(),
+			'Instagram' => array()
+		);
 
-        foreach( $wgLoopSocialIcons as $socialIcons => $socialIcon ) {
+		foreach ($wgLoopSocialIcons as $socialIcons => $socialIcon) {
 
-            if ( empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) ) || $request->getText( 'footer-' . $socialIcons . '-icon' ) == $socialIcons ) {
-            $socialArray[$socialIcons]['icon'] = $request->getText( 'footer-' . $socialIcons . '-icon' );
+			if (empty($request->getText('footer-' . $socialIcons . '-icon')) || $request->getText('footer-' . $socialIcons . '-icon') == $socialIcons) {
+				$socialArray[$socialIcons]['icon'] = $request->getText('footer-' . $socialIcons . '-icon');
 
-                if ( ! empty( $request->getText( 'footer-' . $socialIcons . '-icon' ) && filter_var( $request->getText( 'footer-' . $socialIcons . '-url' ), FILTER_VALIDATE_URL ) ) ) {
-                $socialArray[$socialIcons]['link'] = $request->getText( 'footer-' . $socialIcons . '-url' );
-                } else {
-                $socialArray[$socialIcons]['link'] = '';
-                }
-            } else {
-                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . $socialIcons );
-            }
-        }
+				if (!empty($request->getText('footer-' . $socialIcons . '-icon') && filter_var($request->getText('footer-' . $socialIcons . '-url'), FILTER_VALIDATE_URL))) {
+					$socialArray[$socialIcons]['link'] = $request->getText('footer-' . $socialIcons . '-url');
+				} else {
+					$socialArray[$socialIcons]['link'] = '';
+				}
+			} else {
+				array_push($this->errors, wfMessage('loopsettings-error') . ': ' . $socialIcons);
+			}
+		}
 
-        $this->facebookIcon = $socialArray['Facebook']['icon'];
-        $this->facebookLink = $socialArray['Facebook']['link'];
-        $this->twitterIcon = $socialArray['Twitter']['icon'];
-        $this->twitterLink = $socialArray['Twitter']['link'];
-        $this->youtubeIcon = $socialArray['Youtube']['icon'];
-        $this->youtubeLink = $socialArray['Youtube']['link'];
-        $this->githubIcon = $socialArray['Github']['icon'];
-        $this->githubLink = $socialArray['Github']['link'];
-        $this->instagramIcon = $socialArray['Instagram']['icon'];
-        $this->instagramLink = $socialArray['Instagram']['link'];
+		$this->facebookIcon = $socialArray['Facebook']['icon'];
+		$this->facebookLink = $socialArray['Facebook']['link'];
+		$this->twitterIcon = $socialArray['Twitter']['icon'];
+		$this->twitterLink = $socialArray['Twitter']['link'];
+		$this->youtubeIcon = $socialArray['Youtube']['icon'];
+		$this->youtubeLink = $socialArray['Youtube']['link'];
+		$this->githubIcon = $socialArray['Github']['icon'];
+		$this->githubLink = $socialArray['Github']['link'];
+		$this->instagramIcon = $socialArray['Instagram']['icon'];
+		$this->instagramLink = $socialArray['Instagram']['link'];
 
-        $regExLoopLink = '/(['.$wgLegalTitleChars.']{1,})/';
+		$regExLoopLink = '/([' . $wgLegalTitleChars . ']{1,})/';
 
-        if ( filter_var( $request->getText( 'privacy-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'privacy-link' ) ) ) {
-            $this->privacyLink = $request->getText( 'privacy-link' );
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-privacy-label' ) );
-        }
+		if (filter_var($request->getText('privacy-link'), FILTER_VALIDATE_URL) || preg_match($regExLoopLink, $request->getText('privacy-link'))) {
+			$this->privacyLink = $request->getText('privacy-link');
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-privacy-label'));
+		}
 
-        if ( filter_var( $request->getText( 'imprint-link' ), FILTER_VALIDATE_URL ) || preg_match( $regExLoopLink, $request->getText( 'imprint-link' ) ) ) {
-            $this->imprintLink = $request->getText( 'imprint-link' );
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-imprint-label' ) );
-        }
+		if (filter_var($request->getText('imprint-link'), FILTER_VALIDATE_URL) || preg_match($regExLoopLink, $request->getText('imprint-link'))) {
+			$this->imprintLink = $request->getText('imprint-link');
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-imprint-label'));
+		}
 
-        if ( empty ( $request->getText( 'rights-type' ) ) || isset ( $wgAvailableLicenses[$request->getText( 'rights-type' )] ) ) {
-            $this->rightsType = $request->getText( 'rights-type' );
-            $this->rightsIcon = $wgAvailableLicenses[$this->rightsType]['icon'];
-            $this->rightsUrl = $wgAvailableLicenses[$this->rightsType]['url'];
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-use-cc-label' ) );
-        }
-        if ( empty( $wgLoopAvailableSkinStyles ) ) {
-            $wgLoopAvailableSkinStyles[] = "style-blue";
-        }
-        if ( in_array( $request->getText( 'skin-style' ), $wgLoopAvailableSkinStyles ) ) {
-            $this->skinStyle = $request->getText( 'skin-style' );
+		if (empty ($request->getText('rights-type')) || isset ($wgAvailableLicenses[$request->getText('rights-type')])) {
+			$this->rightsType = $request->getText('rights-type');
+			$this->rightsIcon = $wgAvailableLicenses[$this->rightsType]['icon'];
+			$this->rightsUrl = $wgAvailableLicenses[$this->rightsType]['url'];
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-use-cc-label'));
+		}
+		if (empty($wgLoopAvailableSkinStyles)) {
+			$wgLoopAvailableSkinStyles[] = "style-blue";
+		}
+		if (in_array($request->getText('skin-style'), $wgLoopAvailableSkinStyles)) {
+			$this->skinStyle = $request->getText('skin-style');
 			$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
-			$userOptionsManager->setOption( $user, 'LoopSkinStyle', $this->skinStyle );
+			$userOptionsManager->setOption($user, 'LoopSkinStyle', $this->skinStyle);
 			$userOptionsManager->saveOptions($user);
 		} else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-skin-style-label' ) );
-        }
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-skin-style-label'));
+		}
 
-        if ( $request->getText( 'extra-footer-active' ) == 'on' ) {
-                $this->extraFooter = true;
-        } elseif ( empty( $request->getText( 'extra-footer-active' ) ) ) {
-            $this->extraFooter = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-footer-label' ) );
-        }
+		if ($request->getText('extra-footer-active') == 'on') {
+			$this->extraFooter = true;
+		} elseif (empty($request->getText('extra-footer-active'))) {
+			$this->extraFooter = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-extra-footer-label'));
+		}
 
-        if ( empty( $request->getText( 'logo-use-custom' ) ) ) {
-            $this->customLogo = false;
-            $this->customLogoFileName = "";
-            $this->customLogoFilePath = "";
-        } elseif ( $request->getText( 'logo-use-custom' ) == 'on' ) {
-            $this->customLogo = true;
-            $this->customLogoFileName = $request->getText( 'custom-logo-filename' );
-            $tmpParsedResult = $this->parse( '{{filepath:' . $request->getText( 'custom-logo-filename' ) . '}}' );
-            preg_match( '/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
-            if ( isset ( $tmpOutputArray[1] ) ) {
-                $this->customLogoFilePath = $tmpOutputArray[1];
-            } else {
-                $this->customLogo = false;
-                $this->customLogoFileName = "";
-                $this->customLogoFilePath = "";
-                array_push( $this->errors, wfMessage( 'loopsettings-error-customlogo-notfound' ) );
-            }
-        } else {
-            $this->customLogo = false;
-            $this->customLogoFileName = "";
-            $this->customLogoFilePath = "";
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-customlogo-label' ) );
-        }
+		if (empty($request->getText('logo-use-custom'))) {
+			$this->customLogo = false;
+			$this->customLogoFileName = "";
+			$this->customLogoFilePath = "";
+		} elseif ($request->getText('logo-use-custom') == 'on') {
+			$this->customLogo = true;
+			$this->customLogoFileName = $request->getText('custom-logo-filename');
+			$tmpParsedResult = $this->parse('{{filepath:' . $request->getText('custom-logo-filename') . '}}');
+			preg_match('/href="(.*)"/', $tmpParsedResult, $tmpOutputArray);
+			if (isset ($tmpOutputArray[1])) {
+				$this->customLogoFilePath = $tmpOutputArray[1];
+			} else {
+				$this->customLogo = false;
+				$this->customLogoFileName = "";
+				$this->customLogoFilePath = "";
+				array_push($this->errors, wfMessage('loopsettings-error-customlogo-notfound'));
+			}
+		} else {
+			$this->customLogo = false;
+			$this->customLogoFileName = "";
+			$this->customLogoFilePath = "";
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-customlogo-label'));
+		}
 
-        # Numbering objects
-        if ( $request->getText( 'numbering-objects' ) == 'numberingObjects' ) {
-            $this->numberingObjects = true;
-        } elseif ( empty ( $request->getText( 'numbering-objects' ) ) ) {
-            $this->numberingObjects = false;
-        } else {
-            $this->numberingObjects = false;
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-numbering-objects-label' ) );
-        }
+		# Numbering objects
+		if ($request->getText('numbering-objects') == 'numberingObjects') {
+			$this->numberingObjects = true;
+		} elseif (empty ($request->getText('numbering-objects'))) {
+			$this->numberingObjects = false;
+		} else {
+			$this->numberingObjects = false;
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-numbering-objects-label'));
+		}
 
-        # Render objects
-        if ( ! empty ( $request->getText( 'render-objects' ) ) ) {
-            if ( in_array( $request->getText( 'render-objects' ), LoopObject::$mRenderOptions ) ) {
-                $this->objectRenderOption = $request->getText( 'render-objects' );
-            } else {
-                array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-render-objects-label' ) );
-            }
-        }
+		# Render objects
+		if (!empty ($request->getText('render-objects'))) {
+			if (in_array($request->getText('render-objects'), LoopObject::$mRenderOptions)) {
+				$this->objectRenderOption = $request->getText('render-objects');
+			} else {
+				array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-render-objects-label'));
+			}
+		}
 
-        # Numbering type
-        if ( ! empty ( $request->getText( 'numbering-type' ) ) ) {
-            if ( $request->getText( 'numbering-type' ) == "ongoing" ) {
-                $this->numberingType = "ongoing";
-            } else {
-                $this->numberingType = "chapter";
-            }
-        }
+		# Numbering type
+		if (!empty ($request->getText('numbering-type'))) {
+			if ($request->getText('numbering-type') == "ongoing") {
+				$this->numberingType = "ongoing";
+			} else {
+				$this->numberingType = "chapter";
+			}
+		}
 
-        # citation style
-        if ( ! empty ( $request->getText( 'citation-style' ) ) ) {
-            if ( $request->getText( 'citation-style' ) == "vancouver" ) {
-                $this->citationStyle = "vancouver";
-            } else {
-                $this->citationStyle = "harvard";
-            }
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-citation-style-label' ) );
-        }
+		# citation style
+		if (!empty ($request->getText('citation-style'))) {
+			if ($request->getText('citation-style') == "vancouver") {
+				$this->citationStyle = "vancouver";
+			} else {
+				$this->citationStyle = "harvard";
+			}
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-citation-style-label'));
+		}
 
-        if ( $request->getText( 'extra-sidebar-active' ) == 'on' ) {
-            $this->extraSidebar = true;
-        }  elseif ( empty( $request->getText( 'extra-sidebar-active' ) ) ) {
-            $this->extraSidebar = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-extra-sidebar-label' ) );
-        }
+		if ($request->getText('extra-sidebar-active') == 'on') {
+			$this->extraSidebar = true;
+		} elseif (empty($request->getText('extra-sidebar-active'))) {
+			$this->extraSidebar = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-extra-sidebar-label'));
+		}
 
 
-        # Export t2s
-        if ( $request->getText( 'export-t2s' ) == 'on' ) {
-            $this->exportT2s = true;
-        } elseif ( empty ( $request->getText( 'export-t2s' ) ) ) {
-            $this->exportT2s = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-t2s-label' ) );
-        }
-        # Export audio
-        if ( $request->getText( 'export-audio' ) == 'on' ) {
-            $this->exportAudio = true;
-        } elseif ( empty ( $request->getText( 'export-audio' ) ) ) {
-            $this->exportAudio = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-audio-label' ) );
-        }
-        # Export pdf
-        if ( $request->getText( 'export-pdf' ) == 'on' ) {
-            $this->exportPdf = true;
-        } elseif ( empty ( $request->getText( 'export-pdf' ) ) ) {
-            $this->exportPdf = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-pdf-label' ) );
-        }
-        # Export epub
-        if ( $request->getText( 'export-epub' ) == 'on' ) {
-            $this->exportEpub = true;
-        } elseif ( empty ( $request->getText( 'export-epub' ) ) ) {
-            $this->exportEpub = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-epub-label' ) );
-        }
-        # Export scorm
-        if ( $request->getText( 'export-scorm' ) == 'on' ) {
-            $this->exportScorm = true;
-        } elseif ( empty ( $request->getText( 'export-scorm' ) ) ) {
-            $this->exportScorm = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' )  . ': ' . wfMessage( 'loopsettings-export-scorm-label' ) );
-        }
-        # Export xml
-        if ( $request->getText( 'export-xml' ) == 'on' ) {
-            $this->exportXml = true;
-        } elseif ( empty ( $request->getText( 'export-xml' ) ) ) {
-            $this->exportXml = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-export-xml-label' ) );
-        }
-        # Export html
-        if ( $request->getText( 'export-html' ) == 'on' ) {
-            $this->exportHtml = true;
-        } elseif ( empty ( $request->getText( 'export-html' ) ) ) {
-            $this->exportHtml = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-export-html-label' ) );
-        }
+		# Export t2s
+		if ($request->getText('export-t2s') == 'on') {
+			$this->exportT2s = true;
+		} elseif (empty ($request->getText('export-t2s'))) {
+			$this->exportT2s = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-t2s-label'));
+		}
+		# Export audio
+		if ($request->getText('export-audio') == 'on') {
+			$this->exportAudio = true;
+		} elseif (empty ($request->getText('export-audio'))) {
+			$this->exportAudio = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-audio-label'));
+		}
+		# Export pdf
+		if ($request->getText('export-pdf') == 'on') {
+			$this->exportPdf = true;
+		} elseif (empty ($request->getText('export-pdf'))) {
+			$this->exportPdf = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-pdf-label'));
+		}
+		# Export epub
+		if ($request->getText('export-epub') == 'on') {
+			$this->exportEpub = true;
+		} elseif (empty ($request->getText('export-epub'))) {
+			$this->exportEpub = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-epub-label'));
+		}
+		# Export scorm
+		if ($request->getText('export-scorm') == 'on') {
+			$this->exportScorm = true;
+		} elseif (empty ($request->getText('export-scorm'))) {
+			$this->exportScorm = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-scorm-label'));
+		}
+		# Export xml
+		if ($request->getText('export-xml') == 'on') {
+			$this->exportXml = true;
+		} elseif (empty ($request->getText('export-xml'))) {
+			$this->exportXml = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-xml-label'));
+		}
+		# Export html
+		if ($request->getText('export-html') == 'on') {
+			$this->exportHtml = true;
+		} elseif (empty ($request->getText('export-html'))) {
+			$this->exportHtml = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-export-html-label'));
+		}
 
-        # Captcha edit
-        if ( $request->getText( 'captcha-edit' ) == 'on' ) {
-            $this->captchaEdit = true;
-        } elseif ( empty ( $request->getText( 'captcha-ecit' ) ) ) {
-            $this->captchaEdit = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-edit-label' ) );
-        }
-        # Captcha create
-        if ( $request->getText( 'captcha-create' ) == 'on' ) {
-            $this->captchaCreate = true;
-        } elseif ( empty ( $request->getText( 'captcha-create' ) ) ) {
-            $this->captchaCreate = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-create-label' ) );
-        }
-        # Captcha createaccount
-        if ( $request->getText( 'captcha-createaccount' ) == 'on' ) {
-            $this->captchaAddurl = true;
-        } elseif ( empty ( $request->getText( 'captcha-createaccount' ) ) ) {
-            $this->captchaAddurl = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-createaccount-label' ) );
-        }
-        # Captcha addurl
-        if ( $request->getText( 'captcha-addurl' ) == 'on' ) {
-            $this->captchaCreateAccount = true;
-        } elseif ( empty ( $request->getText( 'captcha-addurl' ) ) ) {
-            $this->captchaCreateAccount = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-addurl-label' ) );
-        }
-        # Captcha badlogin
-        if ( $request->getText( 'captcha-badlogin' ) == 'on' ) {
-            $this->captchaBadlogin = true;
-        } elseif ( empty ( $request->getText( 'captcha-badlogin' ) ) ) {
-            $this->captchaBadlogin = false;
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-captcha-badlogin-label' ) );
-        }
+		# Captcha edit
+		if ($request->getText('captcha-edit') == 'on') {
+			$this->captchaEdit = true;
+		} elseif (empty ($request->getText('captcha-ecit'))) {
+			$this->captchaEdit = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-captcha-edit-label'));
+		}
+		# Captcha create
+		if ($request->getText('captcha-create') == 'on') {
+			$this->captchaCreate = true;
+		} elseif (empty ($request->getText('captcha-create'))) {
+			$this->captchaCreate = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-captcha-create-label'));
+		}
+		# Captcha createaccount
+		if ($request->getText('captcha-createaccount') == 'on') {
+			$this->captchaAddurl = true;
+		} elseif (empty ($request->getText('captcha-createaccount'))) {
+			$this->captchaAddurl = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-captcha-createaccount-label'));
+		}
+		# Captcha addurl
+		if ($request->getText('captcha-addurl') == 'on') {
+			$this->captchaCreateAccount = true;
+		} elseif (empty ($request->getText('captcha-addurl'))) {
+			$this->captchaCreateAccount = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-captcha-addurl-label'));
+		}
+		# Captcha badlogin
+		if ($request->getText('captcha-badlogin') == 'on') {
+			$this->captchaBadlogin = true;
+		} elseif (empty ($request->getText('captcha-badlogin'))) {
+			$this->captchaBadlogin = false;
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-captcha-badlogin-label'));
+		}
 
-        # Bugreport Mail
-        if  ( empty ( $request->getText( 'ticket-email' ) ) ) {
-            $this->bugReportEmail = null;
-        } elseif ( filter_var( $request->getText( 'ticket-email' ), FILTER_VALIDATE_EMAIL ) ) {
-            $this->bugReportEmail = $request->getText( 'ticket-email' );
-        } else {
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-ticket-email-label' ) );
-        }
+		# Bugreport Mail
+		if (empty ($request->getText('ticket-email'))) {
+			$this->bugReportEmail = null;
+		} elseif (filter_var($request->getText('ticket-email'), FILTER_VALIDATE_EMAIL)) {
+			$this->bugReportEmail = $request->getText('ticket-email');
+		} else {
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-ticket-email-label'));
+		}
 
-        # Feedback mode
-        if  ( empty ( $request->getText( 'feedback-mode' ) ) ) {
-            $this->feedbackMode = "second_half";
-        } elseif ( in_array( $request->getText( 'feedback-mode' ), array( "always", "last_sublevel", "second_half" ) ) ) {
-            $this->feedbackMode = $request->getText( 'feedback-mode' );
-        } else {
-            global $wgLoopFeedbackMode;
-            $this->feedbackMode = $wgLoopFeedbackMode;
-            array_push( $this->errors, wfMessage( 'loopsettings-error' ) . ': ' . wfMessage( 'loopsettings-feedback-mode-label' ) );
-        }
+		# Feedback mode
+		if (empty ($request->getText('feedback-mode'))) {
+			$this->feedbackMode = "second_half";
+		} elseif (in_array($request->getText('feedback-mode'), array("always", "last_sublevel", "second_half"))) {
+			$this->feedbackMode = $request->getText('feedback-mode');
+		} else {
+			global $wgLoopFeedbackMode;
+			$this->feedbackMode = $wgLoopFeedbackMode;
+			array_push($this->errors, wfMessage('loopsettings-error') . ': ' . wfMessage('loopsettings-feedback-mode-label'));
+		}
+
+		if (empty($request->getText('personalization-feature'))) {
+			$this->personalizationFeature = 'false';
+		} else {
+			if(in_array($request->getText('personalization-feature'), array("false", "true"))) {
+				$this->personalizationFeature = $request->getText('personalization-feature');
+			}
+	    }
 
         # Feedback level
         if  ( empty ( $request->getText( 'feedback-level' ) ) ) {
@@ -569,7 +582,7 @@ class LoopSettings {
 		global $wgLoopImprintLink, $wgLoopPrivacyLink, $wgRightsText, $wgLoopRightsType, $wgRightsUrl, $wgRightsIcon,
         $wgLoopCustomLogo, $wgLoopExtraFooter, $wgDefaultUserOptions, $wgLoopSocialIcons, $wgLoopObjectNumbering,
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
-        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption, $wgLoopUnprotectedRSS;
+        $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption, $wgLoopUnprotectedRSS, $wgPersonalizationFeature;
 
 		$dbr = wfGetDB( DB_REPLICA );
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
@@ -621,6 +634,7 @@ class LoopSettings {
 				$wgLoopBugReportEmail = ( !isset( $data['lset_ticketemail'] ) ? $wgLoopBugReportEmail : $data['lset_ticketemail'] );
 				$wgLoopFeedbackLevel = ( !isset( $data['lset_feedbacklevel'] ) ? $wgLoopFeedbackLevel : $data['lset_feedbacklevel'] );
 				$wgLoopFeedbackMode = ( !isset( $data['lset_feedbackmode'] ) ? $wgLoopFeedbackMode : $data['lset_feedbackmode'] );
+				$wgPersonalizationFeature = ( !isset( $data['lset_personalizationFeature'] ) ? $wgPersonalizationFeature : $data['lset_personalizationFeature'] );
 				$wgLoopUnprotectedRSS = ( !isset( $data['lset_rssunprotected'] ) ? $wgLoopUnprotectedRSS : $data['lset_rssunprotected'] );
 				$wgLoopObjectDefaultRenderOption = ( !isset( $data['lset_objectrenderoption'] ) ? $wgLoopObjectDefaultRenderOption : $data['lset_objectrenderoption'] );
 			}
@@ -978,6 +992,17 @@ class SpecialLoopSettings extends SpecialPage {
                         $html .= '</select>';
 
                         $html .= '</div>';
+
+						$html .= '<div class="col-6">';
+						$html .= '<h3>' . $this->msg( 'loopsettings-personalization' )->text() . '</h3>';
+
+						// select
+						$html .= '<select class="form-control" name="personalization-feature" id="personalization-feature" selected="'.$currentLoopSettings->personalizationFeature.'" ' . '>';
+						$html .= '<option value="false" ' . ( $currentLoopSettings->personalizationFeature == 'false' ? "selected" : "" ) .'>' . $this->msg("loopsettings-personalization-feature-off")->text() . '</option>';
+						$html .= '<option value="true" ' . ( $currentLoopSettings->personalizationFeature == 'true' ? "selected" : "" ) .'>' . $this->msg("loopsettings-personalization-feature-on")->text() . '</option>';
+						$html .= '</select>';
+
+						$html .= '</div>';
 
                     ### BUGREPORT ###
                     if ( LoopBugReport::isAvailable() != "external" ) {

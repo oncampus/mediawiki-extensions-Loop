@@ -30,6 +30,7 @@ class LoopUpdater {
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_literature_references', $schemaPath . 'loop_literature_references.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_index', $schemaPath . 'loop_index.sql', true ) );
 		$updater->addExtensionUpdate(array( 'addTable', 'loop_feedback', $schemaPath . 'loop_feedback.sql', true ) );
+		$updater->addExtensionUpdate(array( 'addTable', 'loop_progress', $schemaPath . 'loop_progress.sql', true ) );
 
 		if ( $updater->tableExists( 'actor' ) ) {
 			$user = User::newFromName( 'LOOP_SYSTEM' );
