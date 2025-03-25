@@ -67,7 +67,7 @@ class LoopToc extends LoopStructure {
 
 			while ( !empty ( $next ) ) {
 				$tmp_lsi = $next;
-				if ( $tmp_lsi->getTocLevel() > $level &&  $tmp_lsi->getTocLevel() <= $level + $maxLevel) { //if ( $tmp_lsi->getTocLevel() == $level + 1 ) { # if next item toclevel is one higher than current level, add to output
+				if ( $tmp_lsi->getTocLevel() > $level &&  $tmp_lsi->getTocLevel() <= $level + $maxLevel) {
 					if ( empty( $tocNumber ) || strpos ( $tmp_lsi->tocNumber, $tocNumber ) === 0 ) { # the root page's toc number must be inside the displayed toc number
 						$next = $tmp_lsi->getNextItem();
 
