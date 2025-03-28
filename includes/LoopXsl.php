@@ -229,7 +229,7 @@ class LoopXsl {
 			$wgPygmentizePath,
 			'-l', $lexer,
 			'-f', 'html',
-			'-O',implode( ' ', $command )
+			'-O ' . $options
 		)
 			->input( $code )
 			->restrict( Shell::RESTRICT_DEFAULT | Shell::NO_NETWORK )
@@ -254,8 +254,6 @@ class LoopXsl {
 		restore_error_handler();
 
 		return $return;
-
-
 	}
 
 	/**
