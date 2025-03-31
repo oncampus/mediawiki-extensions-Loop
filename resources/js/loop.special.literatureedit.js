@@ -37,7 +37,7 @@ $( document ).ready( function () {
                 "optional": [ "volume", "number", "pages", "month", "note", "url", "doi" ]
             },
             "book": {
-                "required": [ "itemKey", "author", "itemTitle", "publisher", "year" ],
+                "required": [ "itemKey","author", "itemTitle", "publisher", "year"],
                 "optional": [ "volume", "number", "series", "address", "edition", "month", "note", "isbn", "url", "doi" ]
             },
             "booklet": {

@@ -68,6 +68,7 @@
 	<xsl:variable name="word_state" select="functx:get_term_name('word_state')"/>
 	<xsl:variable name="word_content" select="functx:get_term_name('word_content')"/>
 	<xsl:variable name="phrase_h5p_element" select="functx:get_term_name('phrase_h5p_element')"/>
+	<xsl:variable name="phrase_audio_element" select="functx:get_term_name('phrase_audio_element')"/>
 
 	<xsl:variable name="word_figure" select="functx:get_term_name('word_figure')"/>
 	<xsl:variable name="word_figure_short" select="functx:get_term_name('word_figure_short')"/>
