@@ -391,6 +391,8 @@
 	"loopwikieditor-loop-snippets-sidenote": "Wikieditor LOOP : Template Marginalie",
 	"loopwikieditor-loop-snippets-print": "Wikieditor LOOP : Template Print area",
 	"loopwikieditor-loop-snippets-noprint": "Wikieditor LOOP : Template No-print area",
+	"loopwikieditor-loop-snippets-nospeech": "Wikieditor LOOP : Template No-speech area",
+	"loopwikieditor-loop-snippets-speech": "Wikieditor LOOP : Template speech area",
 	"loopwikieditor-loop-snippets-accordion": "Wikieditor LOOP : Template accordion",
 	"loopwikieditor-loop-snippets-syntaxhighlight": "Wikieditor LOOP : Template Syntaxhighlighted code",
 	"loopwikieditor-loop-contents": "Wikieditor LOOP section: Label for dropdown - Media",

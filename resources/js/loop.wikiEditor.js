@@ -720,6 +720,28 @@ var customizeWikiEditor = function () {
                                             }
                                         }
                                     },
+									'loopsnippets-nospeech': {
+										labelMsg: 'loopwikieditor-loop-snippets-nospeech',
+										action: {
+											type: 'encapsulate',
+											options: {
+												pre: '<loop_nospeech>',
+												peri: 'No-speech',
+												post: '</loop_nospeech>'
+											}
+										}
+									},
+									'loopsnippets-speech': {
+										labelMsg: 'loopwikieditor-loop-snippets-speech',
+										action: {
+											type: 'encapsulate',
+											options: {
+												pre: '<loop_speech>',
+												peri: 'Speech',
+												post: '</loop_speech>'
+											}
+										}
+									},
                                     'loopsnippets-screenshot': {
                                         labelMsg: 'loopscreenshot',
                                         action: {

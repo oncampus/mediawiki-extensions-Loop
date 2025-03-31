@@ -57,6 +57,7 @@
 	<msg name="word_state" lang="en">state</msg>
 	<msg name="word_content" lang="en">Content</msg>
 	<msg name="phrase_h5p_element" lang="en">Here is a media element</msg>
+	<msg name="phrase_audio_element" lang="en">Here is a media element</msg>
 	<msg name="word_figure" lang="en">Figure</msg>
 	<msg name="word_figure_short" lang="en">Fig.</msg>
 	<msg name="phrase_figure" lang="en">Here is a figure.</msg>
@@ -136,6 +137,7 @@
 	<msg name="word_state" lang="de">Stand</msg>
 	<msg name="word_content" lang="de">Inhalt</msg>
 	<msg name="phrase_h5p_element" lang="de">Hier befindet sich ein Medienelement</msg>
+	<msg name="phrase_audio_element" lang="de">Hier befindet sich ein Medienelement</msg>
 	<msg name="word_figure" lang="de">Abbildung</msg>
 	<msg name="word_figure_short" lang="de">Abb.</msg>
 	<msg name="phrase_figure" lang="de">Hier befindet sich eine Abbildung.</msg>
