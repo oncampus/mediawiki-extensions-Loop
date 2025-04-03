@@ -223,8 +223,6 @@ class LoopXsl {
 			$options .= ",startinline=true";
 		}
 
-		$command = [ "-l", $lexer, "-f", "html", "-O", $options ];
-
 		$result = Shell::command(
 			$wgPygmentizePath,
 			'-l', $lexer,
