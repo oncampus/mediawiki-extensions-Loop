@@ -17,23 +17,31 @@ class LoopToc extends LoopStructure {
     }
 
 	static function renderLoopToc( $input, array $args, Parser $parser, PPFrame $frame ) {
-
-		$result = self::outputLoopToc( $parser->getPage()->mArticleID, "html" );
+		$result = self::outputLoopToc( $parser->getPage()->mArticleID, "html", $args);
 
         $return  = '<div class="looptoc">';
         $return .= $result;
         $return .= '</div>';
+
         return $return;
     }
 
-    public static function outputLoopToc( $rootArticleId, $output = "html" ) {
+
+    public static function outputLoopToc( $rootArticleId, $output = "html", $args = [] ) {
 
 		global $wgLoopLegacyPageNumbering;
 
+		$maxLevel = 1;
 		$html = '';
 		$xml = '';
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
+
+		if(!empty($args)){
+			if(isset($args['level'])) {
+				$maxLevel = intval($args['level']);
+			}
+		}
 
 		$lsi = LoopStructureItem::newFromIds( $rootArticleId );
 		if ( $lsi ) {
@@ -59,7 +67,7 @@ class LoopToc extends LoopStructure {
 
 			while ( !empty ( $next ) ) {
 				$tmp_lsi = $next;
-				if ( $tmp_lsi->getTocLevel() == $level + 1 ) { # if next item toclevel is one higher than current level, add to output
+				if ( $tmp_lsi->getTocLevel() > $level &&  $tmp_lsi->getTocLevel() <= $level + $maxLevel) {
 					if ( empty( $tocNumber ) || strpos ( $tmp_lsi->tocNumber, $tocNumber ) === 0 ) { # the root page's toc number must be inside the displayed toc number
 						$next = $tmp_lsi->getNextItem();
 
