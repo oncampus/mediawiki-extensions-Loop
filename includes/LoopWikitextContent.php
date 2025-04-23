@@ -11,6 +11,23 @@ use MediaWiki\MediaWikiServices;
 
 class LoopWikitextContentHandler extends WikitextContentHandler {
 
+	public function __construct(string $modelId)
+	{
+		$services = MediaWikiServices::getInstance();
+
+		parent::__construct(
+			$modelId,
+			$services->getTitleFactory(),
+			$services->getParserFactory(),
+			$services->getGlobalIdGenerator(),
+			$services->getLanguageNameUtils(),
+			$services->getLinkRenderer(),
+			$services->getMagicWordFactory(),
+			$services->getParsoidParserFactory()
+		);
+	}
+
+
 /*
 	* Copied from WikitextContent.php, overriding it with our own content and a custom Hook
 	* Used for adding LOOP reference IDs
