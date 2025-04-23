@@ -762,7 +762,9 @@ class LoopLiterature {
 
 		$items = array();
 
-        $dbr = wfGetDB( DB_REPLICA );
+        //$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
         $res = $dbr->select(
             'loop_literature_items',
