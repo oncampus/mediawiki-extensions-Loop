@@ -60,7 +60,7 @@ class LoopSpoiler {
 	}
 
 	public static function renderLoopSpoiler( $input, array $args, Parser $parser, PPFrame $frame ) {
-		$parser->getOutput()->addModules( 'loop.spoiler.js' );
+		$parser->getOutput()->addModules( ['loop.spoiler.js'] );
 
 		$input = trim($input);
 		$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
