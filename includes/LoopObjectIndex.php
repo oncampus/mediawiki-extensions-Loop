@@ -2,6 +2,8 @@
 
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
+use MediaWiki\MediaWikiServices;
+
 class LoopObjectIndex {
 
     public $id; // id of the indexed item
@@ -19,7 +21,9 @@ class LoopObjectIndex {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
-        $dbw = wfGetDB( DB_PRIMARY );
+        //$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
 
         $dbw->insert(
             'loop_object_index',
@@ -43,8 +47,10 @@ class LoopObjectIndex {
 	// deletes all objects of a page
     public static function removeAllPageItemsFromDb ( $article ) {
 
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
+		//$dbr = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
+		$dbw->delete(
 			'loop_object_index',
 			'loi_pageid = ' . $article,
 			__METHOD__
@@ -56,9 +62,11 @@ class LoopObjectIndex {
     // returns ALL objects of a type in the wiki.
     public static function getObjectsOfType ( $type ) {
 
-        $dbr = wfGetDB( DB_REPLICA );
+        //$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
-        $res = $dbr->select(
+		$res = $dbr->select(
             'loop_object_index',
             array(
                 'loi_pageid',
@@ -97,7 +105,9 @@ class LoopObjectIndex {
 
         global $wgLoopObjectNumbering;
 
-        $dbr = wfGetDB( DB_REPLICA );
+        //$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
         $res = $dbr->select(
             'loop_object_index',
@@ -194,7 +204,9 @@ class LoopObjectIndex {
 			$return[$objectType] = 0;
 		}
 
-		$dbr = wfGetDB( DB_REPLICA );
+		//$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
 		$res = $dbr->select(
 			'loop_object_index',
@@ -266,7 +278,9 @@ class LoopObjectIndex {
                 $return[$objectType] = 0;
             }
 
-            $dbr = wfGetDB( DB_REPLICA );
+            //$dbr = wfGetDB( DB_REPLICA );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbr = $dbProvider->getReplicaDatabase();
 
             $res = $dbr->select(
                 'loop_object_index',
@@ -297,7 +311,10 @@ class LoopObjectIndex {
 
 	public function checkDublicates( $refId ) {
 
-		$dbr = wfGetDB( DB_REPLICA );
+		//$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
+
 		$res = $dbr->select(
 			'loop_object_index',
 			array(
@@ -321,7 +338,10 @@ class LoopObjectIndex {
 
     public static function getObjectData( $refId ) {
 
-        $dbr = wfGetDB( DB_REPLICA );
+        //$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
+
 		$res = $dbr->select(
 			'loop_object_index',
 			array(
