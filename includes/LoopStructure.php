@@ -464,13 +464,15 @@ class LoopStructureItem {
 	public $parentArticle; // article id from the parent page
 	public $tocLevel; // Level within the corresponding structure
 	public $sequence; // Sequential number within the corresponding structure
-	public $tocNumber; // string rrepresentation of the chapter number
+	public $tocNumber; // string representation of the chapter number
 	public $tocText; // page title
+
 
 	/**
 	 * Add structure item to the database
 	 * @return bool true
 	 */
+	/*
 	function addToDatabase() {
 
 		if ($this->article!=0) {
@@ -494,6 +496,58 @@ class LoopStructureItem {
 				__METHOD__
 			);
 			$this->id = $dbw->insertId();
+		}
+
+		return true;
+
+	}
+	*/
+
+
+	/**
+	 * Add structure item to the database
+	 * @return bool true
+	 */
+	function addToDatabase() {
+
+		if ($this->article!=0) {
+			$dbw = MediaWikiServices::getInstance()->getConnectionProvider()->getPrimaryDatabase();
+
+			$tmpTocText = Title::newFromText( $this->tocText );
+
+			$dbw->newInsertQueryBuilder()
+				->insertInto('loop_structure_items')
+				->row(array(
+					'lsi_article' => $this->article,
+					'lsi_previous_article' => $this->previousArticle,
+					'lsi_next_article' => $this->nextArticle,
+					'lsi_parent_article' => $this->parentArticle,
+					'lsi_toc_level' => $this->tocLevel,
+					'lsi_sequence' => $this->sequence,
+					'lsi_toc_number' => $this->tocNumber,
+					'lsi_toc_text' => $tmpTocText->getText()
+				))
+				->caller(__METHOD__)->execute();
+
+			//$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
+			//$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase
+			/*
+			$dbw->insert(
+				'loop_structure_items',
+				array(
+					'lsi_article' => $this->article,
+					'lsi_previous_article' => $this->previousArticle,
+					'lsi_next_article' => $this->nextArticle,
+					'lsi_parent_article' => $this->parentArticle,
+					'lsi_toc_level' => $this->tocLevel,
+					'lsi_sequence' => $this->sequence,
+					'lsi_toc_number' => $this->tocNumber,
+					'lsi_toc_text' => $tmpTocText->getText()
+				),
+				__METHOD__
+			);
+			*/
+			//$this->id = $dbw->insertId();
 		}
 
 		return true;
