@@ -584,7 +584,10 @@ class LoopSettings {
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
         $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption, $wgLoopUnprotectedRSS, $wgPersonalizationFeature;
 
-		$dbr = wfGetDB( DB_REPLICA );
+		// $dbr = wfGetDB( DB_REPLICA ); // old
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
+
 		# Check if table exists. SetupAfterCache hook fails if there is no loop_settings table.
 		# maintenance/update.php can't create loop_settings table if SetupAfterCache Hook fails, so this check is nescessary.
 		if ( $dbr->tableExists( 'loop_settings' ) ) {
