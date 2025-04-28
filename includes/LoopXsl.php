@@ -353,7 +353,7 @@ class LoopXsl {
 				global $wgCanonicalServer, $wgArticlePath;
 				$title = Title::newFromId( $articleId );
 				if ( isset( $title ) ) {
-					$url = $wgCanonicalServer . str_replace( "$1", $title->mUrlform, $wgArticlePath );
+					$url = $wgCanonicalServer . str_replace( "$1", $title->getPartialURL(), $wgArticlePath );
 					return $url;
 				}
 			}
