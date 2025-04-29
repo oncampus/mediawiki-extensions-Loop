@@ -1688,7 +1688,7 @@ class SpecialLoopLiteratureEdit extends SpecialPage {
 				);
 
 
-			$html .= '<form class="needs-validation mw-editform mt-3 mb-3" id="literature-entry-form"  enctype="multipart/form-data">';
+			$html .= '<form class="needs-validation mw-editform mt-3 mb-3" id="literature-entry-form"  enctype="multipart/form-data"  method="post">';
 			$html .= '<div class="form-group">';
 
 			$html .= '<div class="form-row">';
