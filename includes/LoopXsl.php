@@ -9,6 +9,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 use MediaWiki\Shell\Shell;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Extension\Math\MathMathML;
+use MediaWiki\Extension\Math\MathLaTeXML;
 use MediaWiki\SyntaxHighlight\SyntaxHighlightGeSHiCompat;
 use MediaWiki\Extension\Score\Score;
 
@@ -80,9 +81,12 @@ class LoopXsl {
 		$mathcontent = $input_object->textContent;
 
 		try {
-		    $math = new MathMathML($mathcontent);
-		    $math->render();
-			$return = $math->getHtmlOutput();
+			$math = new MathLaTeXML($mathcontent);
+			$math->render();
+			$return = $math->getHtmlOutput(true);
+		    //$math = new MathMathML($mathcontent);
+		    //$math->render();
+			//$return = $math->getHtmlOutput();
 		} catch (Exception $e) {
 			# empty math-tag would cause error message "graphic file format unknown"
 			return false;
