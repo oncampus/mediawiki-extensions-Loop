@@ -1330,7 +1330,9 @@ class LoopLiteratureReference {
         global $wgLoopLiteratureCiteType;
         $term = $vancouver ? array('llr_firstitemglobal = 1') : array();
 
-		$dbr = wfGetDB( DB_REPLICA );
+		//$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
         $res = $dbr->select(
             'loop_literature_references',
