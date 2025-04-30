@@ -141,7 +141,7 @@ class SpecialLoopGlossary extends SpecialPage {
 
 			if ( $editMode && $user->isAllowed('edit') ) {
 
-				$html .= '<form class="mw-editform mt-3 mb-3" id="glossary-entry-form"  enctype="multipart/form-data">';
+				$html .= '<form class="mw-editform mt-3 mb-3" id="glossary-entry-form"  enctype="multipart/form-data"  method="post">';
 
 				$html .= '<div class="form-row">';
 				$html .= '<input type="hidden" name="t" id="loopglossary-token" value="' . $saltedToken . '"></input>';
