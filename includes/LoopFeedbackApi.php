@@ -58,7 +58,7 @@ class ApiLoopFeedbackSave extends ApiBase {
 
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbw = $dbProvider->getConnection(DB_PRIMARY);
-		//$dbw = wfGetDB( DB_PRIMARY );
+
 		$dbw->insert(
 			'loop_feedback',
 			$feedback,
@@ -425,7 +425,7 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		}
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
 		$dbr = $dbProvider->$dbProvider();
-		//$dbr = wfGetDB( DB_REPLICA );
+
 		$res = $dbr->select(
 				'loop_feedback',
 				array(
