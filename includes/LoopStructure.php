@@ -268,7 +268,6 @@ class LoopStructure {
 	 * Load items from database
 	 */
 	public function loadStructureItems() {
-		//$dbr = wfGetDB( DB_REPLICA ); // old
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -349,8 +348,6 @@ class LoopStructure {
 
 		LoopObject::updateStructurePageTouched(); # update page_touched on structure pages.
 
-		//$dbw = wfGetDB( DB_PRIMARY );
-
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbw = $dbProvider->getPrimaryDatabase();
 
@@ -370,7 +367,6 @@ class LoopStructure {
 
 
 	public function lastChanged() {
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -485,7 +481,8 @@ class LoopStructureItem {
 
 		if ($this->article!=0) {
 
-			$dbw = wfGetDB( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 			$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
 			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase
 			$dbw->insert(
@@ -569,7 +566,6 @@ class LoopStructureItem {
 	 */
 	public static function newFromIds( $article ) {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -625,7 +621,6 @@ class LoopStructureItem {
 	*/
 	public static function newFromText( $title ) {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -683,7 +678,6 @@ class LoopStructureItem {
 	 */
 	public static function newFromToctext( $toctext ) {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -734,7 +728,6 @@ class LoopStructureItem {
 
 	public function getPreviousChapterItem () {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -762,7 +755,6 @@ class LoopStructureItem {
 
 	public function getNextChapterItem () {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -888,7 +880,6 @@ class LoopStructureItem {
 
 	public function lastChanged() {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -938,7 +929,6 @@ class LoopStructureItem {
 
 		$childs = array();
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -1329,7 +1319,6 @@ class SpecialLoopPagesNotInStructure extends SpecialPage {
 		$out->setPageTitle( $this->msg( 'looppagesnotinstructure' ) );
 		$html = "<h2>" . $this->msg( 'looppagesnotinstructure' ) . "</h2>";
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
