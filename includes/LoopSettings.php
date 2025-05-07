@@ -106,7 +106,8 @@ class LoopSettings {
             'lset_objectrenderoption' => $this->objectRenderOption
         );
 
-        $dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
 
         try {
             $dbw->delete(
@@ -138,7 +139,6 @@ class LoopSettings {
      */
     public function loadSettings() {
 
-        //$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -587,7 +587,6 @@ class LoopSettings {
         $wgLoopNumberingType, $wgLoopLiteratureCiteType, $wgLoopExtraSidebar, $wgCaptchaTriggers, $wgLoopBugReportEmail,
         $wgLoopFeedbackLevel, $wgLoopFeedbackMode, $wgLoopObjectDefaultRenderOption, $wgLoopUnprotectedRSS, $wgPersonalizationFeature;
 
-		// $dbr = wfGetDB( DB_REPLICA ); // old
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
