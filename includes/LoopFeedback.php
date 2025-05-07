@@ -968,7 +968,6 @@ class SpecialLoopFeedback extends SpecialPage {
 	function resetPage ( $page ) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbw = $dbProvider->getConnection(DB_PRIMARY);
-		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(
@@ -982,7 +981,6 @@ class SpecialLoopFeedback extends SpecialPage {
 	function resetAll () {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
 		$dbw = $dbProvider->getConnection(DB_PRIMARY);
-		//$dbw = wfGetDB( DB_PRIMARY );
 		$dbw->update( 'loop_feedback',
 		array( 'lf_archive_timestamp' => wfTimestampNow() ),
 		array(
