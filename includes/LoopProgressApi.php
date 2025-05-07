@@ -113,7 +113,8 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		else //insert if there is no entry
 		{
 
-			$dbw = wfGetDB( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 			$dbw->insert(
 				'loop_progress',
 				$progress,
@@ -354,7 +355,8 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
         else //insert if there is no entry
 		{
 
-			$dbw = wfGetDB( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 			$dbw->insert(
 				'loop_progress',
 				$progress,

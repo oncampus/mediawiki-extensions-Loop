@@ -46,7 +46,8 @@ class SpecialLoopSearch extends SpecialPage {
 			if ( ! empty ( $term ) ) {
 
 				$html .= $this->msg( 'loopsearch-results', $term ) . "<br>";
-				$dbr = wfGetDB( DB_REPLICA );
+				$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+				$dbr = $dbProvider->getReplicaDatabase();
 				$res = $dbr->select(
 					array(
 						'page'
