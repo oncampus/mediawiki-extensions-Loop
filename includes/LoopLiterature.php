@@ -121,7 +121,8 @@ class LoopLiterature {
      */
     function addToDatabase() {
 
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
 
 		$dbw->insert(
 			'loop_literature_items',
@@ -161,8 +162,10 @@ class LoopLiterature {
 
 	// deletes all literature references of a page
     public static function removeFromDatabase ( $key ) {
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
+
+		$dbw->delete(
 			'loop_literature_items',
 			'lit_itemkey = "' . $key .'"',
 			__METHOD__
@@ -311,8 +314,8 @@ class LoopLiterature {
 	 * 			"keys" -> will only return keys
      */
     public static function getAllLiteratureItems( $data = null ) {
-
-        $dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
         $res = $dbr->select(
             'loop_literature_items',
@@ -396,7 +399,8 @@ class LoopLiterature {
 			return false;
 		}
 
-        $dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
         $res = $dbr->select(
             'loop_literature_items',
@@ -759,10 +763,8 @@ class LoopLiterature {
 
 	 // returns all literature items from table
 	 public static function getAllItems ( $returnType = null ) {
-
 		$items = array();
 
-        //$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -1114,7 +1116,8 @@ class LoopLiteratureReference {
 		if ( $this->refId === null ) {
 			return false;
 		}
-		$dbw = wfGetDB( DB_PRIMARY );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
 
         $dbw->insert(
             'loop_literature_references',
@@ -1136,8 +1139,10 @@ class LoopLiteratureReference {
 
 	// deletes all literature references of a page
     public static function removeAllPageItemsFromDb ( $article ) {
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
+
+		$dbw->delete(
 			'loop_literature_references',
 			'llr_pageid = ' . $article,
 			__METHOD__
@@ -1147,8 +1152,8 @@ class LoopLiteratureReference {
 	}
 
 	public static function getItemData( $refId, $object = false ) {
-
-        $dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->select(
 			'loop_literature_references',
 			array(
@@ -1193,8 +1198,9 @@ class LoopLiteratureReference {
 	}
 
 	public function checkDublicates( $refId ) {
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
-		$dbr = wfGetDB( DB_REPLICA );
 		$res = $dbr->select(
 			'loop_literature_references',
 			array(
@@ -1239,7 +1245,9 @@ class LoopLiteratureReference {
 		}
 		if ( $this->firstItemGlobal === null ) {
 
-			$dbr = wfGetDB( DB_REPLICA );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbr = $dbProvider->getReplicaDatabase();
+
 			$res = $dbr->select(
 				'loop_literature_references',
 				array(
@@ -1297,7 +1305,9 @@ class LoopLiteratureReference {
 						if ( $itemdata["firstItemGlobal"] != $val )
 							if ( isset ( $itemdata["refId"] ) ) {
 								$item = self::getItemData( $itemdata["refId"], true );
-								$dbw = wfGetDB( DB_PRIMARY );
+								$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+								$dbw = $dbProvider->getPrimaryDatabase();
+
 								$dbw->delete(
 									'loop_literature_references',
 									'llr_refid = "' . $itemdata["refId"] .'"',
@@ -1330,7 +1340,6 @@ class LoopLiteratureReference {
         global $wgLoopLiteratureCiteType;
         $term = $vancouver ? array('llr_firstitemglobal = 1') : array();
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
