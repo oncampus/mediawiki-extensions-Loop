@@ -21,7 +21,6 @@ class LoopObjectIndex {
 	 * @return bool true
 	 */
 	public function addToDatabase() {
-        //$dbw = wfGetDB( DB_PRIMARY );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbw = $dbProvider->getPrimaryDatabase();
 
@@ -47,7 +46,6 @@ class LoopObjectIndex {
 	// deletes all objects of a page
     public static function removeAllPageItemsFromDb ( $article ) {
 
-		//$dbr = wfGetDB( DB_PRIMARY );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbw = $dbProvider->getPrimaryDatabase();
 		$dbw->delete(
@@ -62,7 +60,6 @@ class LoopObjectIndex {
     // returns ALL objects of a type in the wiki.
     public static function getObjectsOfType ( $type ) {
 
-        //$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -105,7 +102,6 @@ class LoopObjectIndex {
 
         global $wgLoopObjectNumbering;
 
-        //$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -204,7 +200,6 @@ class LoopObjectIndex {
 			$return[$objectType] = 0;
 		}
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -278,7 +273,6 @@ class LoopObjectIndex {
                 $return[$objectType] = 0;
             }
 
-            //$dbr = wfGetDB( DB_REPLICA );
 			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 			$dbr = $dbProvider->getReplicaDatabase();
 
@@ -311,7 +305,6 @@ class LoopObjectIndex {
 
 	public function checkDublicates( $refId ) {
 
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -338,7 +331,6 @@ class LoopObjectIndex {
 
     public static function getObjectData( $refId ) {
 
-        //$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
