@@ -71,7 +71,8 @@ class LoopIndex {
 	public function addToDatabase() {
 		if ( $this->refId !== null ) {
 
-			$dbw = wfGetDB( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 
 			$dbw->insert(
 				'loop_index',
@@ -94,7 +95,8 @@ class LoopIndex {
 	 * @return bool true
 	 */
 	public static function getIndexItem( $refId ) {
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->select(
 			'loop_index',
 			array(
@@ -118,8 +120,9 @@ class LoopIndex {
 
 	// deletes all index items of a page
     public static function removeAllPageItemsFromDb ( $article ) {
-		$dbr = wfGetDB( DB_PRIMARY );
-		$dbr->delete(
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
+		$dbw->delete(
 			'loop_index',
 			'li_pageid = ' . $article,
 			__METHOD__
@@ -130,7 +133,8 @@ class LoopIndex {
 
 	public function checkDublicates( $refId ) {
 
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->select(
 			'loop_index',
 			array(
@@ -154,8 +158,6 @@ class LoopIndex {
 
     // returns all index items
     public static function getAllItems ( $loopStructure, $letter = false ) {
-
-        //$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
