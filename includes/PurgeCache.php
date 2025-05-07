@@ -51,7 +51,8 @@ class SpecialPurgeCache extends SpecialPage {
 		global $wgOut, $wgUploadDirectory;
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		if ( $permissionManager->userHasRight( $wgOut->getUser(), 'purgecache' ) ) {
-			$dbw = wfGetDB( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 			$dbw->delete( 'objectcache', "keyname NOT LIKE '%MWSession%'", __METHOD__ );
 
 			$exportPath = $wgUploadDirectory . "/export/";
