@@ -348,7 +348,7 @@ class LoopProgressDBHandler
 {
 	public static function getAllUserNotesWithTocNumber($user){
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
 			->from('loop_progress')
@@ -366,7 +366,7 @@ class LoopProgressDBHandler
 
 	public static function getUserNoteForPage($articleId, $user) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$dbr = $dbProvider->getReplicaDatabase();
 		$lp = $dbr->newSelectQueryBuilder()
 			->select([ 'lp_understood','lp_user_note'])
 			->from('loop_progress')
@@ -382,7 +382,7 @@ class LoopProgressDBHandler
 
 	public static function getPageUnderstoodCountForUser($user) {
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'Count(lp_page) as page_understood_count', 'lp_user_note'])
 			->from('loop_progress')
@@ -398,8 +398,9 @@ class LoopProgressDBHandler
 	}
 
 	public static function getTocElementCount() {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$dbr = $dbProvider->getConnection(DB_REPLICA);
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
+
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'Count(lsi_id) as page_count'])
 			->from('loop_structure_items')
@@ -409,7 +410,9 @@ class LoopProgressDBHandler
 	}
 
 	public static function deleteNoteWithPageId($pageId) {
-		$dbw = wfGetDB(DB_PRIMARY);
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
+
 		$dbw->delete(
 			'loop_progress',
 			'lp_page =' . $pageId,
