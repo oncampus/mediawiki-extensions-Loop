@@ -1004,7 +1004,9 @@ class LoopObject {
 			# $cond = "lsi_article=" . $title->getArticleID();
 		}
 
-		$dbr = wfGetDB ( DB_REPLICA );
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
+
 		$article_ids = array ();
 		$structuresResult = $dbr->select ( array (
 				'loop_structure_items'
@@ -1035,7 +1037,8 @@ class LoopObject {
 		// Update page_touched
 		if ( $article_ids ) {
 			$article_ids = array_unique ( $article_ids );
-			$dbw = wfGetDB ( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 
 			$dbPageTouchedResult = $dbw->update ( 'page', array (
 					'page_touched' => $dbw->timestamp()
@@ -1094,6 +1097,11 @@ class LoopObject {
 					$objectid = $matches[2][$i];
 					$pageData = array( "structure", $lsi, $loopStructure );
 					$numbering = self::getObjectNumberingOutput($objectid, $pageData, $previousObjects);
+
+					// TEST
+					if(is_null($numbering)) {
+						$numbering = "";
+					}
 
 					$text = preg_replace ( "/" . $objectmarker . "/", $numbering, $text );
 					$i++;
