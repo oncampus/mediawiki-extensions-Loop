@@ -33,7 +33,6 @@ class LoopGlossary {
 	public static function getGlossaryPages( $returnType = null ) {
 		#$loadBalancer = new LoadBalancer([]);
 		#$dbr = $loadBalancer->getConnection( DB_REPLICA );
-		//$dbr = wfGetDB( DB_REPLICA );
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
@@ -73,7 +72,8 @@ class LoopGlossary {
 		// Update page_touched
 		if ( $article_ids ) {
 			$article_ids = array_unique ( $article_ids );
-			$dbw = wfGetDB ( DB_PRIMARY );
+			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+			$dbw = $dbProvider->getPrimaryDatabase();
 
 			$dbPageTouchedResult = $dbw->update ( 'page', array (
 					'page_touched' => $dbw->timestamp()
@@ -141,7 +141,7 @@ class SpecialLoopGlossary extends SpecialPage {
 
 			if ( $editMode && $user->isAllowed('edit') ) {
 
-				$html .= '<form class="mw-editform mt-3 mb-3" id="glossary-entry-form"  enctype="multipart/form-data"  method="post">';
+				$html .= '<form class="mw-editform mt-3 mb-3" id="glossary-entry-form"  enctype="multipart/form-data" method="post">';
 
 				$html .= '<div class="form-row">';
 				$html .= '<input type="hidden" name="t" id="loopglossary-token" value="' . $saltedToken . '"></input>';
