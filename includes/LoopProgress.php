@@ -347,7 +347,7 @@ class SpecialLoopNote extends SpecialPage
 class LoopProgressDBHandler
 {
 	public static function getAllUserNotesWithTocNumber($user){
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
@@ -365,7 +365,7 @@ class LoopProgressDBHandler
 	}
 
 	public static function getUserNoteForPage($articleId, $user) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 		$lp = $dbr->newSelectQueryBuilder()
 			->select([ 'lp_understood','lp_user_note'])
@@ -381,7 +381,7 @@ class LoopProgressDBHandler
 	}
 
 	public static function getPageUnderstoodCountForUser($user) {
-		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancer();
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->newSelectQueryBuilder()
 			->select([ 'Count(lp_page) as page_understood_count', 'lp_user_note'])
