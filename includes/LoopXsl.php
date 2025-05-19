@@ -460,6 +460,15 @@ class LoopXsl {
 		$xml .= LoopToc::outputLoopToc( $id, "xml" );
 		$xml .= '</paragraph>';
 
+		// for debugging
+		/*
+		if (!$dom->loadXML($xml)) {
+			foreach (libxml_get_errors() as $error) {
+				echo "XML error: ", $error->message, "\n";
+			}
+		}
+		*/
+
 		$dom->loadXML($xml);
 
 		return $dom;
