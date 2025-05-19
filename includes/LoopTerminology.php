@@ -142,7 +142,10 @@ class LoopTerminology {
         $contentWikitext = '';
         if ( $revision ) {
 			$content = $wikiPage->getContent( MediaWiki\Revision\RevisionRecord::RAW );
-			$contentWikitext = ContentHandler::getContentText( $content );
+			$contentWikitext = "";
+			if ( $content instanceof TextContent ) {
+				$contentWikitext = $content->getText();
+			}
         }
 
         return $contentWikitext;
