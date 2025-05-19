@@ -15,19 +15,18 @@
 	"descriptionmsg": "loop-desc",
 	"licence-name": "GPL-3.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.39",
+		"MediaWiki": ">= 1.43",
 		"extensions": {
 			"Cite": "*",
-			"ConfirmEdit": ">= 1.6.0",
 			"EmbedVideo": ">= 3.1.0",
 			"FlaggedRevs": "*",
-			"Lingo": ">= 3.1.2",
-			"Math": ">= 3.0.0",
-			"MsUpload": ">= 13.5",
-			"Quiz": ">= 1.2.0",
+			"Lingo": ">= 3.2.2",
+			"Math": "*",
+			"MsUpload": ">= 14.1",
+			"Quiz": ">= 1.2.1",
 			"Score": ">= 0.3.0",
-			"Widgets": ">= 1.4.1",
-			"WikiEditor": ">= 0.5.3"
+			"Widgets": ">= 1.6.0",
+			"WikiEditor": ">= 0.5.4"
 		}
 	},
 	"callback": "Loop::onExtensionLoad",
