@@ -745,7 +745,7 @@ class SpecialLoopSettings extends SpecialPage {
 							$selected = '';
 						}
 						if ( $license == '' ) {
-							$licenseText = $this->msg( 'Htmlform-chosen-placeholder' );
+							$licenseText = ''; //$this->msg( 'Htmlform-chosen-placeholder' );
 						} else {
 							$licenseText = $license;
 						}
