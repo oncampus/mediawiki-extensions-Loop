@@ -165,4 +165,8 @@ $(document).ready(function() {
 		}
 	});
 
+	if ($("#personal_notes").length) {
+		let contentHeight = $("#personal_notes")[0].scrollHeight;
+		$("#personal_notes").css('height', contentHeight + 'px');
+	}
 });
