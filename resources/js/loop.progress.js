@@ -168,5 +168,10 @@ $(document).ready(function() {
 	if ($("#personal_notes").length) {
 		let contentHeight = $("#personal_notes")[0].scrollHeight;
 		$("#personal_notes").css('height', contentHeight + 'px');
+		if($("#personal_notes").val() == '') {
+			$("#save_note_button").removeClass("status-saved");
+			$("#status_saved").removeClass("status-active");
+			$("#status_not_saved").addClass("status-active");
+		}
 	}
 });
