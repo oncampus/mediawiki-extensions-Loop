@@ -51,11 +51,18 @@ $(document).ready(function() {
 		}
 	});
 
+	function warnBeforeUnload(event){
+		event.preventDefault();
+	};
+
 	$("#personal_notes").on('input', function () {
 		$(this).css('height', this.scrollHeight + 'px');
 		$("#status_saved").removeClass("status-active");
 		$("#status_not_saved").addClass("status-active");
 		$("#save_note_button").removeClass("status-saved");
+
+		window.addEventListener("beforeunload", warnBeforeUnload);
+
 	});
 
 	$('#page_understood').change(function() {
@@ -101,6 +108,7 @@ $(document).ready(function() {
 			$("#status_saved").addClass("status-active");
 			$("#status_not_saved").removeClass("status-active");
 		});
+		window.removeEventListener("beforeunload", warnBeforeUnload);
 	});
 
 	function resetButtonState() {
