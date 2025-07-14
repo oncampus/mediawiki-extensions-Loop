@@ -3124,14 +3124,14 @@
 		</xsl:if>
 	</xsl:template>
 
-
 	<!-- Extension:Cite - Footnotes -->
 	<xsl:template match="extension[@extension_name='ref']">
 
 		<fo:footnote>
 			<fo:inline baseline-shift="super" font-size="70%">
 				<xsl:text>[</xsl:text>
-					<xsl:value-of select="count(preceding-sibling::extension[@extension_name='ref'])+1"/>
+					<!--<xsl:value-of select="count(preceding-sibling::extension[@extension_name='ref'])+1"/>-->
+					<xsl:value-of select="count(preceding::extension[@extension_name='ref'])+1"/>
 				<xsl:text>]</xsl:text>
 			</fo:inline>
 			<fo:footnote-body>
@@ -3141,7 +3141,8 @@
 							<fo:block>
 								<fo:inline baseline-shift="super" font-size="60%">
 									<xsl:text>[</xsl:text>
-										<xsl:value-of select="count(preceding-sibling::extension[@extension_name='ref'])+1"/>
+									<!--<xsl:value-of select="count(preceding-sibling::extension[@extension_name='ref'])+1"/> -->
+										<xsl:value-of select="count(preceding::extension[@extension_name='ref'])+1"/>
 									<xsl:text>]</xsl:text>
 								</fo:inline>
 							</fo:block>
