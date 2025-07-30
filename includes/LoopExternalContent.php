@@ -38,7 +38,7 @@ class LoopExternalContent {
         $id = array_key_exists( 'id', $args ) ? $args['id'] : '';
         $width = array_key_exists( 'width', $args ) ? $args['width'] : '800';
         $height = array_key_exists( 'height', $args ) ? $args['height'] : '450';
-        $parser->getOutput()->addModules("skins.loop-h5p-resizer.js");
+        $parser->getOutput()->addModules(["skins.loop-h5p-resizer.js"]);
 
         if ( !empty( $id ) ) {
             $return = Html::rawElement(
@@ -112,7 +112,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
 
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop-resizer.js");
+            $parser->getOutput()->addModules(["skins.loop-resizer.js"]);
             $scaleClass = "scale-frame";
         }
 
@@ -161,7 +161,7 @@ class LoopExternalContent {
 		$scaleClass = 'responsive-iframe';
 
 		if ( $scale ) {
-			$parser->getOutput()->addModules("skins.loop-resizer.js");
+			$parser->getOutput()->addModules(["skins.loop-resizer.js"]);
 			$scaleClass = "scale-frame";
 		}
 
@@ -212,7 +212,7 @@ class LoopExternalContent {
 	$scaleClass = 'responsive-iframe';
 
 	if ( $scale ) {
-		$parser->getOutput()->addModules("skins.loop-resizer.js");
+		$parser->getOutput()->addModules(["skins.loop-resizer.js"]);
 		$scaleClass = "scale-frame";
 	}
 
@@ -269,7 +269,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
 
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop-resizer.js");
+            $parser->getOutput()->addModules(["skins.loop-resizer.js"]);
             $scaleClass = "scale-frame";
         }
 
@@ -326,7 +326,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
 
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop-resizer.js");
+            $parser->getOutput()->addModules(["skins.loop-resizer.js"]);
             $scaleClass = "scale-frame";
         }
 
@@ -377,7 +377,7 @@ class LoopExternalContent {
         $scaleClass = 'responsive-iframe';
 
         if ( $scale ) {
-            $parser->getOutput()->addModules("skins.loop-resizer.js");
+            $parser->getOutput()->addModules(["skins.loop-resizer.js"]);
             $scaleClass = "scale-frame";
         }
 
