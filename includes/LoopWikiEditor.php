@@ -11,7 +11,7 @@ class LoopWikiEditor {
 
 	public static function onEditPageShowEditFormInitial ( EditPage $editPage, OutputPage $outputPage ) {
 
-		$outputPage->addModules("loop.wikiEditor.js");
+		$outputPage->addModules(["loop.wikiEditor.js"]);
 		$loopStructure = new LoopStructure();
 		$loopStructure->loadStructureItems();
         $script = self::addLiteratureScript($loopStructure);

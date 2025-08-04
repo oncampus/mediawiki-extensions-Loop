@@ -673,7 +673,7 @@ class SpecialLoopSettings extends SpecialPage {
 
 			$this->setHeaders();
 
- 			$out->addModules( 'loop.special.settings.js' );
+ 			$out->addModules( ['loop.special.settings.js'] );
 			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
 
 			$requestToken = $request->getText( 't' );

@@ -42,7 +42,7 @@ class LoopZip {
 					if ( file_exists( $startfile ) ) {
 						$starturl = $wgUploadPath . '/' . $hashpath . $zipfilename . '.extracted/' . $loopzip->start;
 						if ( $loopzip->scale ) {
-							$parser->getOutput()->addModules("skins.loop-resizer.js");
+							$parser->getOutput()->addModules(["skins.loop-resizer.js"]);
 							$scaleClass = "scale-frame";
 						}
 						$iframe = Html::rawElement(

@@ -263,7 +263,7 @@ class LoopFeedback {
 						'view_comments' => $view_comments
 					);
 
-					$out->addModules( "loop.feedback.js" );
+					$out->addModules( ["loop.feedback.js"] );
 					$out->addJsConfigVars( 'lfArticle', $lf_arcticle );
 				}
 			}

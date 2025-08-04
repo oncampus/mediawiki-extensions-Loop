@@ -227,7 +227,7 @@ class LoopProgress
 		);
 
 		$out->addJsConfigVars('lpArticle', $lp_arcticle);
-		$out->addModules("loop.progress.js");
+		$out->addModules(["loop.progress.js"]);
 
 		return true;
 	}
