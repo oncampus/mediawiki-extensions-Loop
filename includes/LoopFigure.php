@@ -273,6 +273,12 @@ class SpecialLoopFigures extends SpecialPage {
 	            foreach ( $figure_tags[$article_id] as $figure_tag ) {
 	                $figure = new LoopFigure();
 	                $figure->init($figure_tag["thumb"], $figure_tag["args"]);
+
+					$figure_parser = $figure->getParser();
+					$title = Title::newFromText( wfMessage( 'loopfigures-specialpage-title')->text());
+					$options = ParserOptions::newFromAnon();
+					$figure_parser->startExternalParse( $title, $options, Parser::OT_HTML );
+
 	                $figure->parse();
 	                $figure->setNumber ( $figure_tag["nthoftype"] );
 					$figure->setArticleId ( $article_id );
