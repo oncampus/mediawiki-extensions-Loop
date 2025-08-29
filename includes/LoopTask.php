@@ -110,6 +110,11 @@ class SpecialLoopTasks extends SpecialPage {
 	                $task = new LoopTask();
 	                $task->init($task_tag["thumb"], $task_tag["args"]);
 
+					$task_parser = $task->getParser();
+					$title = Title::newFromText( wfMessage( 'looptasks-specialpage-title')->text());
+					$options = ParserOptions::newFromAnon();
+					$task_parser->startExternalParse( $title, $options, Parser::OT_HTML );
+
 	                $task->parse();
 	                if ( $wgLoopNumberingType == "chapter" ) {
 	                    $task->setNumber ( $task_tag["nthoftype"] );
