@@ -121,7 +121,11 @@ class LoopMedia extends LoopObject{
 			$this->error = $e;
 		}
 
-		$this->setContent($this->getParser()->recursiveTagParse($this->getInput()) );
+		$content = $this->getInput();
+		if ($content === null) {
+			$content = '';
+		}
+		$this->setContent($this->getParser()->recursiveTagParse($content) );
 	}
 }
 
@@ -181,6 +185,11 @@ class SpecialLoopMedia extends SpecialPage {
 	            foreach ( $media_tags[$article_id] as $media_tag ) {
 	                $media = new LoopMedia();
 	                $media->init($media_tag ["thumb"], $media_tag ["args"]);
+
+					$media_parser = $media->getParser();
+					$title = Title::newFromText( wfMessage( 'loopmedia-specialpage-title')->text());
+					$options = ParserOptions::newFromAnon();
+					$media_parser->startExternalParse( $title, $options, Parser::OT_HTML );
 
 	                $media->parse();
 	                if ( $wgLoopNumberingType == "chapter" ) {
