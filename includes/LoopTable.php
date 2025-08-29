@@ -110,6 +110,11 @@ class SpecialLoopTables extends SpecialPage {
 	                $table = new LoopTable();
 	                $table->init($table_tag["thumb"], $table_tag["args"]);
 
+					$table_parser = $table->getParser();
+					$title = Title::newFromText( wfMessage( 'looptables-specialpage-title')->text());
+					$options = ParserOptions::newFromAnon();
+					$table_parser->startExternalParse( $title, $options, Parser::OT_HTML );
+
 	                $table->parse();
 	                if ( $wgLoopNumberingType == "chapter" ) {
 	                    $table->setNumber ( $table_tag["nthoftype"] );
