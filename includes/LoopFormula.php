@@ -118,6 +118,11 @@ class SpecialLoopFormulas extends SpecialPage {
 	                $formula = new LoopFormula();
 	                $formula->init($formula_tag ["thumb"], $formula_tag ["args"]);
 
+					$formula_parser = $formula->getParser();
+					$title = Title::newFromText( wfMessage( 'loopformulas-specialpage-title')->text());
+					$options = ParserOptions::newFromAnon();
+					$formula_parser->startExternalParse( $title, $options, Parser::OT_HTML );
+
 	                $formula->parse();
 	                if ( $wgLoopNumberingType == "chapter" ) {
 	                    $formula->setNumber ( $formula_tag["nthoftype"] );
