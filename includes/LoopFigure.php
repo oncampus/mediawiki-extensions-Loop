@@ -101,22 +101,52 @@ class LoopFigure extends LoopObject{
 		}
 
 		$striped_text = $this->getParser()->killMarkers ( $text );
+
 		$this->setInput($striped_text);
 
 		$pattern = '@src="(.*?)"@';
 		$this->setContent($this->getParser()->recursiveTagParse ( $this->getInput()) );
 		$file_found = preg_match ( $pattern, $this->getContent(), $matches );
+
+		/*
+		Based on the known upload folder structure of MediaWiki, the first two values of an image's hashed title are used
+		to distribute images evenly across different folders. Assuming this pattern holds true,
+		the next value should correspond to the correct image.
+		*/
 		if ($matches) {
 			$tmp_src = $matches [1];
 			$tmp_src_array = explode ( '/', $tmp_src );
+
+			for ($i = 0; $i < count($tmp_src_array); $i++) {
+				if($i > 2) {
+					if(strlen($tmp_src_array[$i]) == 2) {
+						if(strlen($tmp_src_array[$i - 1]) == 1 and $tmp_src_array[$i][0] == $tmp_src_array[$i - 1][0]) {
+							try {
+								$filename = $tmp_src_array[$i + 1];
+							} catch (Exception $exception) {
+								// todo report to error-log
+								$filename = "";
+							}
+						}
+					}
+				}
+			}
+
+			/*
+			// this solution only works on eduloop and is dependent on the file structure of the mediawiki installation
 			if (isset ( $tmp_src_array [7] )) {
 				$filename = $tmp_src_array [7];
 			} elseif (isset ( $tmp_src_array [6] )) {
 				$filename = $tmp_src_array [6];
+			} elseif (isset ( $tmp_src_array [5] )) {
+				$filename = $tmp_src_array [5];
 			} else {
 				$filename = "";
 			}
+			*/
+
 			$filename = urldecode ( $filename );
+
 			$this->setFile($filename);
 		}
 
@@ -140,6 +170,7 @@ class LoopFigure extends LoopObject{
 		$html = '<tr scope="row" class="ml-1 pb-3">';
 		$html .= '<td scope="col" class="pl-0 pr-0 loop-listofobjects-image">';
 		$localRepo = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo();
+
 		if ( $this->mFile && $localRepo->newFile( $this->mFile ) ) {
 
 			$file = $localRepo->newFile( $this->mFile );
@@ -242,7 +273,7 @@ class SpecialLoopFigures extends SpecialPage {
 	}
 
 	public static function renderLoopFigureSpecialPage() {
-	    global $wgParserConf;
+	    global $wgParserConf; //, $wgOut;
 
 	    $html = '<h1>';
 	    $html .= wfMessage( 'loopfigures-specialpage-title')->text();
@@ -274,9 +305,11 @@ class SpecialLoopFigures extends SpecialPage {
 	                $figure = new LoopFigure();
 	                $figure->init($figure_tag["thumb"], $figure_tag["args"]);
 
+					//$user = $wgOut->getUser();
+
 					$figure_parser = $figure->getParser();
 					$title = Title::newFromText( wfMessage( 'loopfigures-specialpage-title')->text());
-					$options = ParserOptions::newFromAnon();
+					$options = ParserOptions::newFromAnon(); //::newFromUser($user);
 					$figure_parser->startExternalParse( $title, $options, Parser::OT_HTML );
 
 	                $figure->parse();
@@ -284,6 +317,7 @@ class SpecialLoopFigures extends SpecialPage {
 					$figure->setArticleId ( $article_id );
 
 	                if ( !empty( $thumbFile ) ) {
+
 						$pattern = '@src="(.*?)"@';
 						$parsedInput = $parser->recursiveTagParse ( $thumbFile );
 						$file_found = preg_match ( $pattern, $parsedInput, $matches );
