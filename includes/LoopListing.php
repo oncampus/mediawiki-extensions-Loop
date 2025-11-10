@@ -109,6 +109,11 @@ class SpecialLoopListings extends SpecialPage {
 	            foreach ( $listing_tags[$article_id] as $listing_tag ) {
 	                $listing = new LoopListing();
 	                $listing->init($listing_tag["thumb"], $listing_tag["args"]);
+			
+			$listing_parser = $listing->getParser();
+			$title = Title::newFromText( wfMessage( 'looplisting-specialpage-title')->text());
+			$options = ParserOptions::newFromAnon(); //::newFromUser($user);
+			$listing_parser->startExternalParse( $title, $options, Parser::OT_HTML );
 
 	                $listing->parse();
 	                if ( $wgLoopNumberingType == "chapter" ) {
