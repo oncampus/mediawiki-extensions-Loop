@@ -61,7 +61,10 @@ class LoopStructure {
 				$progress_extension = $marker[0];
 				$understood_class_extension = $marker[1];
 
-				$text .= '<a href="/" class="loopstructure-home ' . $understood_class_extension . '">' .$structureItem->tocText. $progress_extension .'</a>';
+				$title = Title::newFromID($structureItem->article);
+				$title_text = $title->getFullText();
+
+				$text .= '<a href="/" class="loopstructure-home ' . $understood_class_extension . '">' .$title_text. $progress_extension .'</a>';
 			} else {
 
 				if( isset( $structureItem->tocLevel ) && $structureItem->tocLevel > 0 ) {
@@ -85,13 +88,17 @@ class LoopStructure {
 					$progress_extension = $marker[0];
 					$understood_class_extension = $marker[1];
 
+					$title_text = $title->getFullText();
+
 					$link = $linkRenderer->makeLink(
-						Title::newFromID( $structureItem->article ),
-						new HtmlArmor( '<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $structureItem->tocText . $progress_extension .  '</span></span>' )
+						Title::newFromID($structureItem->article),
+						new HtmlArmor('<span class="loopstructure-wrap">' . $pageNumber . '<span class="loopstructure-title">' . $title_text . $progress_extension . '</span></span>')
 					);
 
+				} else {
+					$link = '<del>' . $structureItem->tocNumber . ' '. $structureItem->tocText . '</del>';
 				}
-				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel .   $understood_class_extension . '">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
+				$text .= '<div class="loopstructure-listitem loopstructure-level-'.$structureItem->tocLevel . $understood_class_extension . '">' . str_repeat(' ',  $tabLevel ) . $link . '</div>';
 
 			}
 
@@ -121,6 +128,7 @@ class LoopStructure {
 		}
 
 		return $wikiText;
+
 
 	}
 
@@ -476,43 +484,6 @@ class LoopStructureItem {
 	 * Add structure item to the database
 	 * @return bool true
 	 */
-	/*
-	function addToDatabase() {
-
-		if ($this->article!=0) {
-
-			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
-			$dbw = $dbProvider->getPrimaryDatabase();
-			$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
-			$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase
-			$dbw->insert(
-				'loop_structure_items',
-				array(
-					'lsi_id' => $this->id,
-					'lsi_article' => $this->article,
-					'lsi_previous_article' => $this->previousArticle,
-					'lsi_next_article' => $this->nextArticle,
-					'lsi_parent_article' => $this->parentArticle,
-					'lsi_toc_level' => $this->tocLevel,
-					'lsi_sequence' => $this->sequence,
-					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => $tmpTocText->getText()
-				),
-				__METHOD__
-			);
-			$this->id = $dbw->insertId();
-		}
-
-		return true;
-
-	}
-	*/
-
-
-	/**
-	 * Add structure item to the database
-	 * @return bool true
-	 */
 	function addToDatabase() {
 
 		if ($this->article!=0) {
@@ -533,26 +504,6 @@ class LoopStructureItem {
 					'lsi_toc_text' => $tmpTocText->getText()
 				))
 				->caller(__METHOD__)->execute();
-
-			//$this->id = $dbw->nextSequenceValue( 'LoopStructureItem_id_seq' );
-			//$tmpTocText = Title::newFromText( $this->tocText ); # Save TOC text as MW does it, possibly first letter uppercase
-			/*
-			$dbw->insert(
-				'loop_structure_items',
-				array(
-					'lsi_article' => $this->article,
-					'lsi_previous_article' => $this->previousArticle,
-					'lsi_next_article' => $this->nextArticle,
-					'lsi_parent_article' => $this->parentArticle,
-					'lsi_toc_level' => $this->tocLevel,
-					'lsi_sequence' => $this->sequence,
-					'lsi_toc_number' => $this->tocNumber,
-					'lsi_toc_text' => $tmpTocText->getText()
-				),
-				__METHOD__
-			);
-			*/
-			//$this->id = $dbw->insertId();
 		}
 
 		return true;
@@ -866,9 +817,11 @@ class LoopStructureItem {
 			} else {
 				$pageNumber = '';
 			}
-
-			$link = $linkRenderer->makeLink( $title, new HtmlArmor( $pageNumber . $link_text ) );
-
+			try {
+				$link = $linkRenderer->makeLink( $title, new HtmlArmor( $pageNumber . $link_text ) );
+			} catch (Exception $e) {
+				$link = '<del>' . $link_text . '</del>';
+			}
 			$breadcrumb = '<li>' . $link .'</li>' . $breadcrumb;
 
 		}
