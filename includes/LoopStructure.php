@@ -62,7 +62,11 @@ class LoopStructure {
 				$understood_class_extension = $marker[1];
 
 				$title = Title::newFromID($structureItem->article);
-				$title_text = $title->getFullText();
+				if($title) {
+					$title_text = $title->getFullText();
+				} else {
+					$title_text = '<del>' . $structureItem->tocText . '</del>';  // todo create a warning no mainpage set
+				}
 
 				$text .= '<a href="/" class="loopstructure-home ' . $understood_class_extension . '">' .$title_text. $progress_extension .'</a>';
 			} else {
@@ -146,7 +150,7 @@ class LoopStructure {
 			$rootTitleText = "";
 			#dd();
 		}
-
+		
 		$rootTitle = Title::newFromText( $rootTitleText );
 		if( is_object( $rootTitle )) {
 			$this->mainPage = $rootTitle->getArticleID();
