@@ -523,9 +523,13 @@ class LoopLiterature {
 					)
 				);
 				if ( isset( $args["page"] ) ) {
-					$html .= ", " . wfMessage("loopliterature-text-pages", 1)->text() . " " . $args["page"];
+					if($args["page"] != "") {
+						$html .= ", " . wfMessage("loopliterature-text-pages", 1)->text() . " " . $args["page"];
+					}
 				} elseif ( isset( $args["pages"] ) ) {
-					$html .= ", " . wfMessage("loopliterature-text-pages", 2)->text() . " " . $args["pages"];
+					if($args["pages"] != "") {
+						$html .= ", " . wfMessage("loopliterature-text-pages", 2)->text() . " " . $args["pages"];
+					}
 				}
 			} elseif ( $wgLoopLiteratureCiteType == "vancouver" ) {
 				$refId = '';
