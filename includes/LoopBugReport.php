@@ -164,7 +164,7 @@ class SpecialLoopBugReport extends SpecialPage {
                         $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text();
                         $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $email, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
                         $header[] = 'MIME-Version: 1.0';
-                        $header[] = 'Content-type: text/html; charset=iso-8859-1';
+                        $header[] = 'Content-type: text/html; charset=UTF-8';
 
                         $success = mail( $wgLoopBugReportEmail, $subject, $email, implode("\r\n", $header) );
 
