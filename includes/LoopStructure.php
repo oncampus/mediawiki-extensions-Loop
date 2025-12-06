@@ -126,9 +126,15 @@ class LoopStructure {
 			if( intval( $structureItem->tocLevel ) === 0 ) {
 				$wikiText .= '[['.$structureItem->tocText.']]'.PHP_EOL.PHP_EOL;
 			} else {
-				$wikiText .= str_repeat( '=', $structureItem->tocLevel ).' '.$structureItem->tocText.' '.str_repeat( '=', $structureItem->tocLevel ).PHP_EOL;
-			}
 
+				$titleText = $structureItem->tocText;;
+				$title = Title::newFromID( $structureItem->article );
+				if($title != Null) {
+					$titleText = $title->getFullText();
+				}
+
+				$wikiText .= str_repeat( '=', $structureItem->tocLevel ).' '.$titleText.' '.str_repeat( '=', $structureItem->tocLevel ).PHP_EOL;
+			}
 		}
 
 		return $wikiText;
@@ -150,7 +156,7 @@ class LoopStructure {
 			$rootTitleText = "";
 			#dd();
 		}
-		
+
 		$rootTitle = Title::newFromText( $rootTitleText );
 		if( is_object( $rootTitle )) {
 			$this->mainPage = $rootTitle->getArticleID();
