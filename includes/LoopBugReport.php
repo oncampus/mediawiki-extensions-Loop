@@ -163,12 +163,12 @@ class SpecialLoopBugReport extends SpecialPage {
 
                         $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text();
                         $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $email, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
-                        $header[] = 'MIME-Version: 1.0';
-                        $header[] = 'Content-type: text/html; charset=UTF-8';
+						$options['contentType'] = 'text/html; charset=UTF-8';
+						$to = new MailAddress($wgLoopBugReportEmail);
+						$from = new MailAddress($wgLoopBugReportEmail);
+						$status = UserMailer::send($to, $from, $subject, $email, $options);
 
-                        $success = mail( $wgLoopBugReportEmail, $subject, $email, implode("\r\n", $header) );
-
-                        if ( $success ) {
+                        if ( $status->isOK() ) {
                             if( $wgCaptchaTriggers['bugreport'] && !$captchaSuccess) {
                                 $html .= '<div class="alert alert-warning" role="alert">' . $this->msg( "loopbugreport-error-nocaptcha" )->text() .'</div>';
                                     $showForm = true;
