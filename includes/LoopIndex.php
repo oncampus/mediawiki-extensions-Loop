@@ -202,7 +202,15 @@ class LoopIndex {
         if ( !empty( $objects ) ) {
             ksort( $objects, SORT_STRING );
 		}
-		#dd($objects);
+
+		if($letter) {
+			foreach ($objects as &$array) {
+				uksort($array, function ($a, $b) {
+					return strcasecmp($a, $b);
+				});
+			}
+		}
+		
         return $objects;
     }
 
