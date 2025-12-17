@@ -188,8 +188,8 @@ class LoopIndex {
         foreach( $res as $row ) {
 			if ( $letter ) {
 				if ( in_array( $row->li_pageid, $pageSequence ) && !empty ( $row->li_index ) ) {
-					$letter = ucFirst(substr($row->li_index, 0, 1));
-					preg_match('/([A-Z]{1})/', $letter, $output_array);
+					$letter = ucFirst(mb_substr($row->li_index, 0, 1, 'UTF-8'));
+					preg_match('/([A-ZÄÖÜ]{1})/', $letter, $output_array);
 					if ( ! isset($output_array[0] ) ) {
 						$letter = "#";
 					}
@@ -210,10 +210,9 @@ class LoopIndex {
 				});
 			}
 		}
-		
+
         return $objects;
     }
-
 
 	/**
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
