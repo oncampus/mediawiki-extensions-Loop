@@ -30,7 +30,8 @@
 		<xsl:param name="terminology_exists"><xsl:call-template name="terminology_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="index_exists"><xsl:call-template name="index_exists"></xsl:call-template></xsl:param>
 		<xsl:param name="glossary_exists"><xsl:call-template name="glossary_exists"></xsl:call-template></xsl:param>
-		<fo:root>
+		<fo:root xml:lang="{$lang}"
+				 language="{$lang}">
 			<xsl:attribute name="hyphenate">true</xsl:attribute>
 
 			<fo:layout-master-set>
