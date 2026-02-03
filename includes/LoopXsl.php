@@ -10,6 +10,7 @@ use MediaWiki\Shell\Shell;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Extension\Math\MathMathML;
 use MediaWiki\Extension\Math\MathLaTeXML;
+use MediaWiki\Extension\Math\MathNativeMML;
 use MediaWiki\SyntaxHighlight\SyntaxHighlightGeSHiCompat;
 use MediaWiki\Extension\Score\Score;
 
@@ -69,6 +70,30 @@ class LoopXsl {
 	}
 
 
+	public static function removeMathJaxAttributes(string $xml): string
+	{
+		libxml_use_internal_errors(true);
+
+		$dom = new DOMDocument();
+		$dom->preserveWhiteSpace = false;
+		$dom->formatOutput = false;
+
+		// Load as XML (not HTML!)
+		$dom->loadXML($xml, LIBXML_NOBLANKS);
+
+		$xpath = new DOMXPath($dom);
+
+		// Select all attributes starting with "data-mjx-"
+		$attributes = $xpath->query('//@*[starts-with(name(), "data-mjx-")]');
+
+		/** @var DOMAttr $attr */
+		foreach ($attributes as $attr) {
+			$attr->ownerElement->removeAttributeNode($attr);
+		}
+
+		return $dom->saveXML($dom->documentElement);
+	}
+
 	/**
 	 * Transforms math tag into math text
 	 * Called for PDF process
@@ -81,12 +106,12 @@ class LoopXsl {
 		$mathcontent = $input_object->textContent;
 
 		try {
-			$math = new MathLaTeXML($mathcontent);
+			$math = new MathNativeMML($mathcontent);
 			$math->render();
-			$return = $math->getHtmlOutput(true);
-		    //$math = new MathMathML($mathcontent);
-		    //$math->render();
-			//$return = $math->getHtmlOutput();
+			$return = $math->getHtmlOutput(false);
+
+			// removes Mathjax specific elements that lead to an error in the AHF-Formatter
+			$return = LoopXsl::removeMathJaxAttributes($return);
 		} catch (Exception $e) {
 			# empty math-tag would cause error message "graphic file format unknown"
 			return false;
