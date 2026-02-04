@@ -69,6 +69,72 @@ class LoopXsl {
 		}
 	}
 
+	public static function sanitizeMathMLForAntennaHouse(string $xml): string
+	{
+		libxml_use_internal_errors(true);
+
+		$dom = new DOMDocument();
+		$dom->preserveWhiteSpace = false;
+		$dom->formatOutput = false;
+
+		$dom->loadXML($xml, LIBXML_NOBLANKS);
+		$xpath = new DOMXPath($dom);
+
+		/*
+		 * 1) Remove all data-* attributes (MathJax metadata)
+		 */
+		$dataAttrs = $xpath->query('//@*[starts-with(name(), "data-")]');
+		foreach ($dataAttrs as $attr) {
+			$attr->ownerElement->removeAttributeNode($attr);
+		}
+
+		/*
+		 * 2) Remove known MathJax-only classes
+		 */
+		$classAttrs = $xpath->query('//@class');
+		foreach ($classAttrs as $attr) {
+			if (str_contains($attr->value, 'mwe-math')) {
+				$attr->ownerElement->removeAttribute('class');
+			}
+		}
+
+		/*
+		 * 3) Remove invisible Unicode operators that AH dislikes
+		 */
+		$badMos = $xpath->query(
+			'//mo[normalize-space(.)="⁡"
+            or normalize-space(.)="⁣"
+            or normalize-space(.)="⁢"]'
+		);
+		foreach ($badMos as $mo) {
+			$mo->parentNode->removeChild($mo);
+		}
+
+		/*
+		 * 4) Remove browser-only / noisy attributes
+		 */
+		$badAttrs = [
+			'accent',
+			'form',
+		];
+
+		foreach ($badAttrs as $attrName) {
+			$attrs = $xpath->query('//@' . $attrName);
+			foreach ($attrs as $attr) {
+				$attr->ownerElement->removeAttributeNode($attr);
+			}
+		}
+
+		/*
+		 * 5) Remove empty mrow elements
+		 */
+		$emptyMrows = $xpath->query('//mrow[not(node())]');
+		foreach ($emptyMrows as $mrow) {
+			$mrow->parentNode->removeChild($mrow);
+		}
+
+		return $dom->saveXML($dom->documentElement);
+	}
 
 	public static function removeMathJaxAttributes(string $xml): string
 	{
@@ -111,7 +177,7 @@ class LoopXsl {
 			$return = $math->getHtmlOutput(false);
 
 			// removes Mathjax specific elements that lead to an error in the AHF-Formatter
-			$return = LoopXsl::removeMathJaxAttributes($return);
+			$return = LoopXsl::sanitizeMathMLForAntennaHouse($return);
 		} catch (Exception $e) {
 			# empty math-tag would cause error message "graphic file format unknown"
 			return false;
