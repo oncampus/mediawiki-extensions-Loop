@@ -787,7 +787,7 @@ var customizeWikiEditor = function () {
                 action: {
                     type: 'encapsulate',
                     options: {
-                        pre: "<cite>" + $key + "</cite>" }
+                        pre: '<cite page="">' + $key + "</cite>" }
                     }
                 }
         }
