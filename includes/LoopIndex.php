@@ -160,17 +160,15 @@ class LoopIndex {
     public static function getAllItems ( $loopStructure, $letter = false ) {
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
-
-        $res = $dbr->select(
-            'loop_index',
-            array(
-                'li_index',
-                'li_pageid',
-                'li_refid'
-            ),
-            array(),
-            __METHOD__
-            );
+		$res = $dbr->newSelectQueryBuilder()
+			->select(array(
+				'li_index',
+				'li_pageid',
+				'li_refid'
+			))
+			->from('loop_index')
+			->orderBy('li_index')
+			->caller( __METHOD__ )->fetchResultSet();
 
         $objects = array();
 
