@@ -405,26 +405,23 @@ class ApiLoopFeedbackOverview extends ApiBase {
 	}
 
 	public function execute() {
+		global $wgFeedbackOverviewToken;
 
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
-		$result   = $this->getResult();
+		$result = $this->getResult();
 
-		$user = $this->getUser();
-		if ( $user->getBlock() != null ) {
-			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-blocked' )->escaped(),
-				'userblocked'
-			);
-		}
+		$params = $this->extractRequestParams();
+		$paramToken = $params['token'];
 
-		if (!$permissionManager->userHasRight( $user, 'loopfeedback-view-results' ) ) {
+		if($wgFeedbackOverviewToken != $paramToken)
+		{
 			$this->dieWithError(
 				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
-				'nopermission'
-			);
+				'nopermission');
 		}
+
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
-		$dbr = $dbProvider->$dbProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
 
 		$res = $dbr->select(
 				'loop_feedback',
@@ -447,35 +444,37 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		}
 
 		$result_array = array();
+
 		for ( $i = 1; $i < 6; $i++ ) {
 			if ( array_key_exists( $i, $fr ) ) {
 				$result_array[$i] = $fr[$i];
 			} else {
-				$result_array[$i] = 0;
+				$result_array[$i] = "0";
 			}
 		}
 
-
-		$result->addValue( $this->getModuleName(), 'ratings', $result_array);
-
-
+		$result->addValue( null, 'ratings', $result_array); // $this->getModuleName()
 	}
 
 	public function getAllowedParams() {
-		return array();
+		return [
+			'token' => [
+				ParamValidator::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_REQUIRED => false,
+			],
+		];
 	}
-
 
 	public function getParamDescription() {
 		return array();
 	}
 
-
 	public function mustBePosted() { return false; }
 
 
-	public function isWriteMode() { return true; }
-
+	// mediawiki should not check for read and write permissions
+	public function isWriteMode() { return false; }
+	public function isReadMode() { return false; }
 
 	public function getPossibleErrors() {
 		return array_merge( $this->getPossibleErrors(), array(
