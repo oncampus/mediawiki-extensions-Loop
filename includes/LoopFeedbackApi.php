@@ -407,6 +407,12 @@ class ApiLoopFeedbackOverview extends ApiBase {
 	public function execute() {
 		global $wgFeedbackOverviewToken;
 
+		if(!isset($wgFeedbackOverviewToken)) {
+			$this->dieWithError(
+				[ 'apierror-internalerror' ],
+				'misconfigured');
+		}
+
 		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 		$result = $this->getResult();
 
@@ -416,8 +422,8 @@ class ApiLoopFeedbackOverview extends ApiBase {
 		if($wgFeedbackOverviewToken != $paramToken)
 		{
 			$this->dieWithError(
-				$this->msg( 'loopfeedback-error-nopermission' )->escaped(),
-				'nopermission');
+				$this->msg( [ 'apierror-permissiondenied' ], 'permissiondenied')
+			);
 		}
 
 		$dbProvider = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
