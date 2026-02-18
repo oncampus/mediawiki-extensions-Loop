@@ -2564,6 +2564,17 @@
 			</fo:inline>
 	</xsl:template>
 
+
+	<xsl:template match="extension[@extension_name='nowiki_pre']">
+		<fo:block white-space="pre"
+				  line-height="1.2"
+				  padding="4pt"
+				  border="0.5pt solid #ddd">
+			<xsl:value-of select="."/>
+		</fo:block>
+	</xsl:template>
+
+
 	<xsl:template name="glossary_exists">
 		<xsl:choose>
 			<xsl:when test="//*/glossary/article">

@@ -131,7 +131,7 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
-		
+
 		# remove table headlines - these make the process crash otherwise!
 		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
@@ -1561,7 +1561,7 @@ class wiki2xml
 			if ( !$this->p_html_tag ( $b , $x2 , $tag2 , $closing , $selfclosing ) )
 			{
 				$dummy = "";
-				if ( $tag != "nowiki" && (mb_substr ( $this->w , $b , 1 , 'UTF-8' )) == '{' && $this->p_template ( $b , $dummy ) )
+				if ( ($tag != "nowiki" || $tag != "nowiki_pre") && (mb_substr ( $this->w , $b , 1 , 'UTF-8' )) == '{' && $this->p_template ( $b , $dummy ) )
 					continue ;
 					$b++ ;
 					continue ;
@@ -1577,7 +1577,7 @@ class wiki2xml
 		# What happens in between?
 		$between = mb_substr ( $this->w , $begin , $last - $begin ) ;
 
-		if ( $tag != "nowiki" && $tag != "math" && $tag != "source" && $tag != "syntaxhighlight")
+		if ( $tag != "nowiki" && $tag != "nowiki_pre" && $tag != "math" && $tag != "source" && $tag != "syntaxhighlight")
 		{
 			if ( $tag == 'gallery' ) {
 				$this->gallery2wiki ( $between ) ;
