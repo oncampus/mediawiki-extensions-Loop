@@ -120,6 +120,9 @@ class LoopXml {
 		$content = html_entity_decode($contentText);
 		$objectTypes = LoopObject::$mObjectTypes;
 
+		# replace the line attribute with "", because a line without a value is not a valid XML attribute and will be removed in a following step
+		$content = preg_replace('/(<syntaxhighlight\b[^>]*?)\sline(\s|>)/', '$1 line="1"$2', $content);
+
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
 
@@ -131,7 +134,7 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
-		
+
 		# remove table headlines - these make the process crash otherwise!
 		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
