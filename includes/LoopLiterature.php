@@ -506,7 +506,7 @@ class LoopLiterature {
 
 		if ( ! $loopLiteratureItem ) {
 
-			$e = new LoopException( wfMessage( 'loopliterature-error-keyunknown', $input )->text() );
+			$e = new LoopException( wfMessage( 'loopliterature-error-keyunknown', $input ) );
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 
 			return $e;
@@ -544,7 +544,7 @@ class LoopLiterature {
 				if ( isset ( $allReferences[$articleId] ) && isset( $allReferences[$articleId][$refId] ) ) {
 					if ( $refId != $allReferences[$articleId][$refId]["refId"] || $articleId != $allReferences[$articleId][$refId]["articleId"] || $input != $allReferences[$articleId][$refId]["itemKey"] ) {
 						$otherTitle = Title::newFromId( $allReferences[$articleId][$refId]["articleId"] );
-						$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->getText(), $allReferences[$articleId][$refId]["itemKey"] )->text() );
+						$e = new LoopException( wfMessage( 'loopliterature-error-dublicate-id', $refId, $otherTitle->getText(), $allReferences[$articleId][$refId]["itemKey"] ) );
 						$parser->addTrackingCategory( 'loop-tracking-category-error' );
 						$html .= $e;
 						$objectNumber = '';
@@ -618,7 +618,7 @@ class LoopLiterature {
 						unset($allItems[$key]);
 					}
 				} elseif ( isset( $parser ) ) {
-					$htmlElements[$key] = new LoopException( wfMessage( 'loopliterature-error-keyunknown', $key )->text() );
+					$htmlElements[$key] = new LoopException( wfMessage( 'loopliterature-error-keyunknown', $key ) );
 					$parser->addTrackingCategory( 'loop-tracking-category-error' );
 
 				}
@@ -1176,7 +1176,6 @@ class LoopLiteratureReference {
 				$return->pageId = $row->llr_pageid;
 				$return->itemKey = $row->llr_itemkey;
 				$return->refId = $row->llr_refid;
-				$return->itemKey = $row->llr_itemkey;
 				$return->nthItem = $row->llr_nthitem;
 				$return->firstItemGlobal = boolval($row->llr_firstitemglobal);
 			} else {
@@ -1807,7 +1806,7 @@ class SpecialLoopLiteratureImport extends SpecialPage {
 		parent::__construct( 'LoopLiteratureImport' );
 	}
 
-	public function execute( $sub ) {
+	public function execute( $subPage ) {
 		global $wgSecretKey;
 
 		$out = $this->getOutput();
@@ -2013,7 +2012,7 @@ class SpecialLoopLiteratureExport extends SpecialPage {
 		parent::__construct( 'LoopLiteratureExport' );
 	}
 
-	public function execute( $sub ) {
+	public function execute( $subPage ) {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
