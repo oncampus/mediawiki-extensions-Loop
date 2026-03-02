@@ -49,7 +49,7 @@ class SpecialLoopBugReport extends SpecialPage {
 		parent::__construct ( 'LoopBugReport' );
 	}
 
-	public function execute( $sub ) {
+	public function execute( $subPage ) {
         global $wgReCaptchaSiteKey, $wgReCaptchaSecretKey, $wgCaptchaTriggers;
 
 		$out = $this->getOutput();
