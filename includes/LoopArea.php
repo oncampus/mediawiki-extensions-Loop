@@ -69,7 +69,7 @@ class LoopArea {
 				} else {
 					$argtype = 'area';
 					$iconimg = $argtype;
-					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "type", $args['type'], implode( ', ', self::$typeOptions ), 'area' )->text() );
+					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "type", $args['type'], implode( ', ', self::$typeOptions ), 'area' ) );
 				}
 			} else {
 				// ... set default type
@@ -93,7 +93,7 @@ class LoopArea {
 				} elseif ( $args['render'] === 'marked') {
 					$cssrender = 'rendermarked';
 				} else {
-					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "render", $args['render'], implode( ', ', self::$renderOptions ), "marked" )->text() );
+					throw new LoopException( wfMessage( "loop-error-unknown-param", "<loop_area>", "render", $args['render'], implode( ', ', self::$renderOptions ), "marked" ) );
 				}
 			}
 
@@ -145,7 +145,7 @@ class LoopArea {
 					#$owniconurl = LoopHtml::getInstance()->resolveUrl($title->mUrlform, '.html');;
 					#dd( , $renderMode);
 				} else {
-					throw new LoopException( wfMessage( "loop-error-missingfile", "loop_area", $args['icon'], 0 )->text() );
+					throw new LoopException( wfMessage( "loop-error-missingfile", "loop_area", $args['icon'], 0 ) );
 				}
 			} catch( Exception $e) {
 				$parser->addTrackingCategory( 'loop-tracking-category-error' );
