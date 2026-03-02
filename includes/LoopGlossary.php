@@ -92,7 +92,7 @@ class SpecialLoopGlossary extends SpecialPage {
 		parent::__construct( 'LoopGlossary' );
 	}
 
-	public function execute( $sub ) {
+	public function execute( $subPage ) {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
