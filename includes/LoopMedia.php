@@ -116,7 +116,7 @@ class LoopMedia extends LoopObject{
 
 		if ( ! in_array ( $this->getMediaType(), self::$mMediaTypes ) ) {
 			$this->setMediaType('media');
-			$e = new LoopException( wfMessage ( "loop-error-unknown-param", "<loop_media>", "type", $this->GetArg('type'), implode ( ', ', self::$mMediaTypes ), 'media' )->text() );
+			$e = new LoopException( wfMessage ( "loop-error-unknown-param", "<loop_media>", "type", $this->GetArg('type'), implode ( ', ', self::$mMediaTypes ), 'media' ) );
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 			$this->error = $e;
 		}
