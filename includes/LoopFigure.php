@@ -261,7 +261,7 @@ class SpecialLoopFigures extends SpecialPage {
 		parent::__construct ( 'LoopFigures' );
 	}
 
-	public function execute($sub) {
+	public function execute($subPage) {
 		$out = $this->getOutput();
 		$request = $this->getRequest();
 		$user = $this->getUser();
