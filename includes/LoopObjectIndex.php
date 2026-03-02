@@ -84,11 +84,11 @@ class LoopObjectIndex {
         $objects = array(  );
         foreach( $res as $row ) {
             $objects[$row->loi_pageid][$row->loi_nthoftype] = array(
-                "args" => array("id" => $row->loi_refid,
+                "args" => array(
+					"id" => $row->loi_refid,
                     "title" => $row->loi_itemtitle,
                     "description" => $row->loi_itemdesc,
-                    "type" => $row->loi_itemtype,
-                    "id" => $row->loi_refid
+                    "type" => $row->loi_itemtype
                 ),
                 "thumb" => $row->loi_itemthumb,
                 "nthoftype" => $row->loi_nthoftype
