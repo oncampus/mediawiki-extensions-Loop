@@ -24,70 +24,70 @@ class LoopLegacy {
 
     # Replaced by loop_literature. Will be removed later.
     public static function renderLegacyBiblio ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-biblio' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-biblio' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyCapira ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'capira', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'capira', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyReferences ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-references' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-references' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyInlinecode ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'inline-code', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'inline-code', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyHarverdreferences ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'harvardreferences', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'harvardreferences', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyMscgen ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'mscgen', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'mscgen', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacNocite ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'nocite', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'nocite', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyTalkpage ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'talkpage', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'talkpage', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyThread ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'thread', 'LOOP2' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'thread', 'LOOP2' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
 
     # No replacement. Will be removed later.
     public static function renderLegacyGraphwiz ( $input, array $args, Parser $parser, PPFrame $frame ) {
-        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'GraphWiz', 'MediaWiki 1.33 (LOOP 2)' )->text() );
+        $e = new LoopException( wfMessage( 'looplegacy-error-unsupported', 'GraphWiz', 'MediaWiki 1.33 (LOOP 2)' ) );
         $parser->addTrackingCategory( 'looplegacy-tracking-category' );
         return $e;
     }
