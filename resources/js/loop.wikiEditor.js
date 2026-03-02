@@ -526,7 +526,7 @@ var customizeWikiEditor = function () {
                                             options: {
                                                 pre: '<panopto id="',
                                                 peri: 'ID',
-                                                post: '" width="´720px" height="405px"/>'
+                                                post: '" width="720px" height="405px"/>'
                                             }
                                         }
                                     },
@@ -787,7 +787,7 @@ var customizeWikiEditor = function () {
                 action: {
                     type: 'encapsulate',
                     options: {
-                        pre: "<cite>" + $key + "</cite>" }
+                        pre: '<cite page="">' + $key + "</cite>" }
                     }
                 }
         }
