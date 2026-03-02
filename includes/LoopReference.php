@@ -40,11 +40,11 @@ class LoopReference {
 				$refId = $args["id"];
 				$objectData = LoopObjectIndex::getObjectData( $refId );
 			} else {
-				throw new LoopException( wfMessage( 'loopreference-error-no-refid' )->text());
+				throw new LoopException( wfMessage( 'loopreference-error-no-refid' ));
 			}
 
 			if ( ! $objectData ) {
-				throw new LoopException( wfMessage( 'loopreference-error-unknown-refid', $refId )->text());
+				throw new LoopException( wfMessage( 'loopreference-error-unknown-refid', $refId ));
 			}
 			# with title = true args or no numbering, the title is shown in link.
 			if ( (isset($args["title"]) && strtolower($args["title"]) == "true") || !$wgLoopObjectNumbering ) {
@@ -53,7 +53,7 @@ class LoopReference {
 				$showTitle = false;
 			} else {
 				$showTitle = false;
-				throw new LoopException( wfMessage ( "loop-error-unknown-param", "<loop_reference>", "title", $args["title"], "true, false", 'false' )->text() );
+				throw new LoopException( wfMessage ( "loop-error-unknown-param", "<loop_reference>", "title", $args["title"], "true, false", 'false' ) );
 			}
 		} catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
