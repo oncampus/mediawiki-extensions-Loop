@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * This file defines the <code></code> tag behavior for the Loop instance.
+ */
+
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopCode {
