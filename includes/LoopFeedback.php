@@ -420,7 +420,7 @@ class SpecialLoopFeedback extends SpecialPage {
 		parent::__construct( 'LoopFeedback' );
 	}
 
-	function execute( $par ) {
+	function execute( $subPage ) {
 		global $wgLoopFeedbackLevel;
 
 		$out = $this->getOutput();
