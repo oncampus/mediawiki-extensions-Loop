@@ -102,7 +102,7 @@ class LoopScreenshot {
 				$html .= '</div>';
 			}
 		} else {
-			$html = new LoopException( wfMessage( 'loopscreenshot-error-noservice', $input )->text() );
+			$html = new LoopException( wfMessage( 'loopscreenshot-error-noservice', $input ) );
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
 		}
 
