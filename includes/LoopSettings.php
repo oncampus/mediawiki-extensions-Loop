@@ -674,7 +674,7 @@ class SpecialLoopSettings extends SpecialPage {
 			$this->setHeaders();
 
  			$out->addModules( ['loop.special.settings.js'] );
-			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' ) );
+			$out->setPageTitle( $this->msg( 'loopsettings-specialpage-title' )->text() );
 
 			$requestToken = $request->getText( 't' );
 			$uploadButton = $this->msg( 'loopsettings-upload-hint' ) .
