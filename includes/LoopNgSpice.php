@@ -492,7 +492,7 @@ class LoopNgSpice {
 
 	/**
 	 * Reads xml tags and returns the values and attributes as array.
-	 * @param $tagString the xml tags as string
+	 * @param $tagString string the xml tags as string
 	 * @return $tagArray
 	 */
 	function tagsToArray($tagString) {
