@@ -43,13 +43,13 @@ class LoopMediaHandler {
                     if ( is_object( $file ) && $file->exists() ) {
                         $source = $file->getFullUrl();
                     } else {
-                        throw new LoopException( wfMessage( "loop-error-missingfile", "loop_video", $args["source"], 0 )->text() );
+                        throw new LoopException( wfMessage( "loop-error-missingfile", "loop_video", $args["source"], 0 ) );
                     }
                 } else {
-                    throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_video", "source" )->text() );
+                    throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_video", "source" ) );
                 }
             } else {
-                throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_video", "source" )->text() );
+                throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_video", "source" ) );
             }
 
             if ( array_key_exists('image', $args ) ) {
@@ -58,7 +58,7 @@ class LoopMediaHandler {
                     if ( is_object( $file ) && $file->exists() ) {
                         $image = $file->getFullUrl();
                     } else {
-                        throw new LoopException( wfMessage( "loop-error-missingfile", "loop_video", $args["image"], 1 )->text() );
+                        throw new LoopException( wfMessage( "loop-error-missingfile", "loop_video", $args["image"], 1 ) );
                     }
                 }
             }
@@ -101,13 +101,13 @@ class LoopMediaHandler {
                     if ( is_object( $file ) && $file->exists() ) {
                         $source = $file->getFullUrl();
                     } else {
-                        throw new LoopException( wfMessage( "loop-error-missingfile", "loop_audio", $args["source"], 0 )->text() );
+                        throw new LoopException( wfMessage( "loop-error-missingfile", "loop_audio", $args["source"], 0 ) );
                     }
                 } else {
-                    throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_audio", "source" )->text() );
+                    throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_audio", "source" ) );
                 }
             } else {
-                throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_audio", "source" )->text() );
+                throw new LoopException( wfMessage( "loop-error-missingrequired", "loop_audio", "source" ) );
             }
         } catch ( LoopException $e ) {
 			$parser->addTrackingCategory( 'loop-tracking-category-error' );
