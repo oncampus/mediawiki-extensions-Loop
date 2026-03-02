@@ -65,7 +65,7 @@ class SpecialLoopFormulas extends SpecialPage {
 		parent::__construct ( 'LoopFormulas' );
 	}
 
-	public function execute($sub) {
+	public function execute($subPage) {
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
