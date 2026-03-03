@@ -183,10 +183,14 @@ class LoopXml {
 		$errors = libxml_get_errors();
 
 		if(!empty($errors)) {
-			LoggerFactory::getInstance( 'LoopPdf' )->debug("Errors");
+			$logger = LoggerFactory::getInstance( 'LoopPdf' ); // ->debug("$contentText");
+			$logger->debug("Errors in input  \n");
+			$logger->debug($contentText);
+			$logger->debug("with errors: \n");
 			foreach($errors as $error) {
 				LoggerFactory::getInstance( 'LoopPdf' )->debug("$error->message in line: $error->line column: $error->column");
 			}
+			LoggerFactory::getInstance( 'LoopPdf' )->debug("$contentText");
 		}
 
 		$selector = new DOMXPath( $dom );
