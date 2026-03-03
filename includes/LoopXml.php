@@ -101,6 +101,7 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = []) {
+		global $wgPdfExportDebugging;
 
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
@@ -155,10 +156,27 @@ class LoopXml {
 		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
+
 		if ($title->getArticleID() == 248) { # debug for specific pages
 			#dd( $content, $xml);
 		}
 		$xml .= "\n</article>\n";
+
+		if($wgPdfExportDebugging)
+		libxml_use_internal_errors(true);
+		$dom = new DOMDocument( "1.0", "utf-8" );
+		$test_xml = '<root xmlns:xhtml="http://www.w3.org/1999/xhtml">'. $xml .'</root>';
+		$dom->loadXml($test_xml);
+		$errors = libxml_get_errors();
+		if(!empty($errors)) {
+			$logger = LoggerFactory::getInstance( 'LoopPdf' );
+			$page_title = $structureItem->getTocText();
+			$logger->debug("Errors on page  $page_title \n");
+			foreach($errors as $error) {
+				LoggerFactory::getInstance( 'LoopPdf' )->debug("$error->message in line: $error->line column: $error->column");
+			}
+			libxml_clear_errors();
+		}
 
 		return $xml;
 	}
@@ -170,8 +188,6 @@ class LoopXml {
 	 * @param String $contentText
 	 */
 	public static function handleDublicateIds( $contentText ) {
-		libxml_use_internal_errors(true);
-
 		$idCache = array();
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
@@ -179,19 +195,6 @@ class LoopXml {
 		$contentTags = array( 'h5p', 'learningapp', 'padlet','taskcard', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
-
-		$errors = libxml_get_errors();
-
-		if(!empty($errors)) {
-			$logger = LoggerFactory::getInstance( 'LoopPdf' ); // ->debug("$contentText");
-			$logger->debug("Errors in input  \n");
-			$logger->debug($contentText);
-			$logger->debug("with errors: \n");
-			foreach($errors as $error) {
-				LoggerFactory::getInstance( 'LoopPdf' )->debug("$error->message in line: $error->line column: $error->column");
-			}
-			LoggerFactory::getInstance( 'LoopPdf' )->debug("$contentText");
-		}
 
 		$selector = new DOMXPath( $dom );
 		$nodes = $selector->query( '//extension' );
@@ -220,7 +223,6 @@ class LoopXml {
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\\?\>\n)/", "", $newContentText);
 
-		libxml_clear_errors();
 		if ( empty( $newContentText ) ) {
 			return false;
 		} elseif ( $contentText != $newContentText ) {
