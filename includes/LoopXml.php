@@ -162,20 +162,21 @@ class LoopXml {
 		}
 		$xml .= "\n</article>\n";
 
-		if($wgPdfExportDebugging)
-		libxml_use_internal_errors(true);
-		$dom = new DOMDocument( "1.0", "utf-8" );
-		$test_xml = '<root xmlns:xhtml="http://www.w3.org/1999/xhtml">'. $xml .'</root>';
-		$dom->loadXml($test_xml);
-		$errors = libxml_get_errors();
-		if(!empty($errors)) {
-			$logger = LoggerFactory::getInstance( 'LoopPdf' );
-			$page_title = $structureItem->getTocText();
-			$logger->debug("Errors on page  $page_title \n");
-			foreach($errors as $error) {
-				LoggerFactory::getInstance( 'LoopPdf' )->debug("$error->message in line: $error->line column: $error->column");
+		if($wgPdfExportDebugging) {
+			libxml_use_internal_errors(true);
+			$dom = new DOMDocument("1.0", "utf-8");
+			$test_xml = '<root xmlns:xhtml="http://www.w3.org/1999/xhtml">' . $xml . '</root>';
+			$dom->loadXml($test_xml);
+			$errors = libxml_get_errors();
+			if (!empty($errors)) {
+				$logger = LoggerFactory::getInstance('LoopPdf');
+				$page_title = $structureItem->getTocText();
+				$logger->debug("Errors on page  $page_title \n");
+				foreach ($errors as $error) {
+					LoggerFactory::getInstance('LoopPdf')->debug("$error->message in line: $error->line column: $error->column");
+				}
+				libxml_clear_errors();
 			}
-			libxml_clear_errors();
 		}
 
 		return $xml;
@@ -195,6 +196,7 @@ class LoopXml {
 		$contentTags = array( 'h5p', 'learningapp', 'padlet','taskcard', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
+
 
 		$selector = new DOMXPath( $dom );
 		$nodes = $selector->query( '//extension' );
