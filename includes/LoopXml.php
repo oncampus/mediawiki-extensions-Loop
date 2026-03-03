@@ -8,6 +8,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Logger\LoggerFactory;
 
 class LoopXml {
 
@@ -131,7 +132,7 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
-		
+
 		# remove table headlines - these make the process crash otherwise!
 		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
@@ -169,6 +170,7 @@ class LoopXml {
 	 * @param String $contentText
 	 */
 	public static function handleDublicateIds( $contentText ) {
+		libxml_use_internal_errors(true);
 
 		$idCache = array();
 		$objectTags = array(  );
@@ -177,6 +179,16 @@ class LoopXml {
 		$contentTags = array( 'h5p', 'learningapp', 'padlet','taskcard', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
+
+		$errors = libxml_get_errors();
+
+		if(!empty($errors)) {
+			LoggerFactory::getInstance( 'LoopPdf' )->debug("Errors");
+			foreach($errors as $error) {
+				LoggerFactory::getInstance( 'LoopPdf' )->debug("$error->message in line: $error->line column: $error->column");
+			}
+		}
+
 		$selector = new DOMXPath( $dom );
 		$nodes = $selector->query( '//extension' );
 
@@ -204,10 +216,9 @@ class LoopXml {
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\ encoding=\"utf-8\"\?\>\n)/", "", $dom->saveXML());
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\\?\>\n)/", "", $newContentText);
 
+		libxml_clear_errors();
 		if ( empty( $newContentText ) ) {
-			echo "<script>console.log('Articles XML Invalid');</script>"; # when the given XML is invalid, no domdocument doesn't load it. this is a hidden error message
 			return false;
-			$contentText = $newContentText;
 		} elseif ( $contentText != $newContentText ) {
 			$contentText = $newContentText;
 		}
