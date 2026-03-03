@@ -122,6 +122,9 @@ class LoopXml {
 		$content = html_entity_decode($contentText);
 		$objectTypes = LoopObject::$mObjectTypes;
 
+		# replace the line attribute with "", because a line without a value is not a valid XML attribute and will be removed in a following step
+		$content = preg_replace('/(<syntaxhighlight\b[^>]*?)\sline(\s|>)/', '$1 line="1"$2', $content);
+
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
 
