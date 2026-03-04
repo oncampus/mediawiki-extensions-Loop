@@ -212,7 +212,7 @@ class SpecialLoopBugReport extends SpecialPage {
         }
 
         $html = '<p>' . $this->msg( 'loopbugreport-desc' ) . '</p>';
-        $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2" id="bugreport-form" enctype="multipart/form-data">';
+        $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2" id="bugreport-form" enctype="multipart/form-data" method="post">';
         $html .= '<div class="form-group">';
 
         $html .= '<div class="form-row">';
@@ -223,7 +223,7 @@ class SpecialLoopBugReport extends SpecialPage {
 
         $html .= '<div class="form-row">';
         $html .= '<label for="email" class="font-weight-bold">'. $this->msg("email")->text().'</label>';
-        $html .= '<input class="mb-2 form-control" type="email" name="email" value="' . $email . '" required/>';
+        $html .= '<input class="mb-2 form-control" type="email" name="email" value="' . $email . '">';
         $html .= '</div>';
 
         $html .= '<div class="form-row">';
