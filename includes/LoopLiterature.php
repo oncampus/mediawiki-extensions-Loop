@@ -478,9 +478,9 @@ class LoopLiterature {
 	}
 
 	# returns whether to show literature in TOC or not
-	public static function getShowLiterature() {
-
+	public static function getShowLiterature($calledForPdf=false) {
 		global $wgOut;
+
 		$user = $wgOut->getUser();
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
@@ -488,7 +488,8 @@ class LoopLiterature {
 
 		if ( $literatureItems ) {
 			return true;
-		} elseif ( $editMode ) {
+		}
+		elseif (!$calledForPdf && $editMode ) { // don't show it in the pdf if it's empty
 			return "empty";
 		} else {
 			return false;
