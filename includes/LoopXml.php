@@ -66,7 +66,9 @@ class LoopXml {
 
 		$xml .= "</glossary>\n";
 
-		$xml .= self::bibliography2xml ();
+		if(LoopLiterature::getShowLiterature(true)) {
+			$xml .= self::bibliography2xml ();
+		}
 
 		$xml .= self::terminology2xml ();
 
