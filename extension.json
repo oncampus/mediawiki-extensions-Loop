@@ -24,7 +24,6 @@
 			"Math": "*",
 			"MsUpload": ">= 14.1",
 			"Quiz": ">= 1.2.1",
-			"Score": ">= 0.3.0",
 			"Widgets": ">= 1.6.0",
 			"WikiEditor": ">= 0.5.4"
 		}

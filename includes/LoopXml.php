@@ -8,6 +8,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Logger\LoggerFactory;
 
 class LoopXml {
 
@@ -65,7 +66,9 @@ class LoopXml {
 
 		$xml .= "</glossary>\n";
 
-		$xml .= self::bibliography2xml ();
+		if(LoopLiterature::getShowLiterature(true)) {
+			$xml .= self::bibliography2xml ();
+		}
 
 		$xml .= self::terminology2xml ();
 
@@ -100,6 +103,7 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = []) {
+		global $wgPdfExportDebugging;
 
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
@@ -120,6 +124,9 @@ class LoopXml {
 		$content = html_entity_decode($contentText);
 		$objectTypes = LoopObject::$mObjectTypes;
 
+		# replace the line attribute with "", because a line without a value is not a valid XML attribute and will be removed in a following step
+		$content = preg_replace('/(<syntaxhighlight\b[^>]*?)\sline(\s|>)/', '$1 line="1"$2', $content);
+
 		# modify content for resolving space issues with syntaxhighlight in pdf
 		$content = preg_replace('/(<syntaxhighlight.*)(>)(.*)(<\/syntaxhighlight>)/iU', "$1$2$3\n$4", $content);
 
@@ -131,7 +138,7 @@ class LoopXml {
 
 		# remove loop comments - these may cause the whole page to vanish from XML and PDF
 		$content = preg_replace('/(<loop_comment.*>)(.*)(<\/loop_comment>)/msiU', "", $content);
-		
+
 		# remove table headlines - these make the process crash otherwise!
 		$content = preg_replace('/\|\+[^\|\+]*?\|\-/', '|-', $content);
 
@@ -154,10 +161,28 @@ class LoopXml {
 		$xml .= 'toctext="'.htmlspecialchars($structureItem->getTocText(), ENT_XML1 | ENT_COMPAT, 'UTF-8').'" ';
 		$xml .= ">\n";
 		$xml .= $wiki2xml->parse ( $content );
+
 		if ($title->getArticleID() == 248) { # debug for specific pages
 			#dd( $content, $xml);
 		}
 		$xml .= "\n</article>\n";
+
+		if($wgPdfExportDebugging) {
+			libxml_use_internal_errors(true);
+			$dom = new DOMDocument("1.0", "utf-8");
+			$test_xml = '<root xmlns:xhtml="http://www.w3.org/1999/xhtml">' . $xml . '</root>';
+			$dom->loadXml($test_xml);
+			$errors = libxml_get_errors();
+			if (!empty($errors)) {
+				$logger = LoggerFactory::getInstance('LoopPdf');
+				$page_title = $structureItem->getTocText();
+				$logger->debug("Errors on page  $page_title \n");
+				foreach ($errors as $error) {
+					LoggerFactory::getInstance('LoopPdf')->debug("$error->message in line: $error->line column: $error->column");
+				}
+				libxml_clear_errors();
+			}
+		}
 
 		return $xml;
 	}
@@ -169,7 +194,6 @@ class LoopXml {
 	 * @param String $contentText
 	 */
 	public static function handleDublicateIds( $contentText ) {
-
 		$idCache = array();
 		$objectTags = array(  );
 		$dom = new DOMDocument( "1.0", "utf-8" );
@@ -177,6 +201,8 @@ class LoopXml {
 		$contentTags = array( 'h5p', 'learningapp', 'padlet','taskcard', 'prezi', 'slideshare', 'quizlet', 'youtube' );
 		$xml = $contentText;
 		$dom->loadXml($xml);
+
+
 		$selector = new DOMXPath( $dom );
 		$nodes = $selector->query( '//extension' );
 
@@ -205,9 +231,7 @@ class LoopXml {
 		$newContentText = preg_replace("/^(\<\?xml version=\"1.0\"\\?\>\n)/", "", $newContentText);
 
 		if ( empty( $newContentText ) ) {
-			echo "<script>console.log('Articles XML Invalid');</script>"; # when the given XML is invalid, no domdocument doesn't load it. this is a hidden error message
 			return false;
-			$contentText = $newContentText;
 		} elseif ( $contentText != $newContentText ) {
 			$contentText = $newContentText;
 		}
