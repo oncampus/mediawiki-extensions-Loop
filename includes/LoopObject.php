@@ -265,10 +265,9 @@ class LoopObject {
 					$footer .= '<div class="loop_object_description">' . htmlspecialchars_decode( $this->getDescription() ) . '</div>';
 				}
 				if ( $this->getCopyright() ) {
-					$footer .= '<div class="loop_object_copyright">' . $this->getCopyright() . '</div>';
+					$footer .= '<div class="loop_object_copyright">' . $this->getParser()->recursiveTagParse($this->getCopyright()) . '</div>';
 				}
 			}
-
 			$footer .= '</div>';
 		}
 
