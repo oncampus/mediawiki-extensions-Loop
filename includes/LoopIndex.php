@@ -369,7 +369,6 @@ class SpecialLoopIndex extends SpecialPage {
 			foreach ( $indexArray as $index => $indexPages ) {
 				foreach ($indexPages as $pageId => $page) {
 					foreach ( $page as $refId ) {
-						#dd($pages);
 						$title = Title::newFromId( $pageId );
 						$lsi = LoopStructureItem::newFromIds( $pageId );
 						$prepend = ( $lsi && strlen( $lsi->tocNumber ) != 0 ) ? $lsi->tocNumber . " " : "";
