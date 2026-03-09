@@ -92,7 +92,7 @@ class LoopObject {
 	 * @param Frame $frame
 	 * @return string
 	 */
-	public static function renderLoopTitle($input, array $args, $parser, $frame) {
+	public static function renderLoopTitle($input, array $args, $parser, $frame): string {
 		return '';
 	}
 
@@ -106,7 +106,7 @@ class LoopObject {
 	 * @param Frame $frame
 	 * @return string
 	 */
-	public static function renderLoopDescription($input, array $args, $parser, $frame) {
+	public static function renderLoopDescription($input, array $args, $parser, $frame): string {
 		return '';
 	}
 
@@ -120,7 +120,7 @@ class LoopObject {
 	 * @param Frame $frame
 	 * @return string
 	 */
-	public static function renderLoopCopyright($input, array $args, $parser, $frame) {
+	public static function renderLoopCopyright($input, array $args, $parser, $frame): string {
 		return '';
 	}
 	/**
@@ -194,7 +194,7 @@ class LoopObject {
 					$textform = "-";
 					if ( !is_null( $otherTitle ) && $otherTitle->getArticleId() != $articleId ) {
 						$textform = $otherTitle->getText();
-						$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform )->text() );
+						$e = new LoopException( wfMessage( 'loopobject-error-dublicate-id', $this->getId(), $textform ) );
 						$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 						$this->error .= $e . "\n";
 					} else {
@@ -209,7 +209,7 @@ class LoopObject {
 
 								if ( $latestRevId == $stableRevId && $stableRevId != null ) {
 									# the id is not in db
-									$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() )->text() );
+									$e = new LoopException( wfMessage( 'loopobject-error-unknown-id', $this->getId() ) );
 									$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 									$this->error .= $e . "\n";
 								}
@@ -326,15 +326,15 @@ class LoopObject {
 				$numberText = " " . LoopObject::getObjectNumberingOutput( $this->mId, $pageData, $previousObjects);
 			}
 		}
-		$html = '<tr scope="row" class="ml-1 pb-3">';
+		$html = '<tr class="ml-1 pb-3">';
 
 		if ( $wgLoopObjectDefaultRenderOption == "marked" ) {
-			$html .= '<td scope="col" class="pl-1 pr-1 loop-listofobjects-type">';
+			$html .= '<th scope="col" class="pl-1 pr-1 loop-listofobjects-type">';
 			$html .= '<span class="font-weight-bold">';
 			$html .= wfMessage ( $this->getTag().'-name-short' )->inContentLanguage ()->text () . $numberText . ': ';
 			$html .= '</span></td>';
 		}
-		$html .= '<td scope="col" class="loop-listofobjects-data"><span class="font-weight-bold">';
+		$html .= '<td class="loop-listofobjects-data"><span class="font-weight-bold">';
 		if ( $type == 'loop_media' ) {
 			$html .= '<span class="ic ic-'.$this->getIcon().'"></span> ';
 		}
@@ -698,7 +698,7 @@ class LoopObject {
 			$this->setRenderOption($this->getDefaultRenderOption());
 		}
 		if ( ! in_array ( $this->getRenderOption(), self::$mRenderOptions ) ) {
-			$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "render", $this->GetArg('render'), implode( ', ', self::$mRenderOptions ), $this->getDefaultRenderOption() )->text() );
+			$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "render", $this->GetArg('render'), implode( ', ', self::$mRenderOptions ), $this->getDefaultRenderOption() ) );
 			$this->setRenderOption($this->getDefaultRenderOption());
 
 			$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
@@ -714,7 +714,7 @@ class LoopObject {
 
 			if ( ! in_array ( $this->getAlignment(), self::$mAlignmentOptions ) ) {
 				$this->setAlignment('none');
-				throw new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "align", $this->GetArg('align'), implode( ', ', self::$mAlignmentOptions ), 'none' )->text() );
+				throw new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "align", $this->GetArg('align'), implode( ', ', self::$mAlignmentOptions ), 'none' ) );
 
 			}
 		} catch ( LoopException $e ) {
@@ -743,7 +743,7 @@ class LoopObject {
 				$this->setShowCopyright(false);
 				break;
 			default:
-				$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "show_copyright", $this->GetArg('show_copyright'), implode( ', ', self::$mShowCopyrightOptions  ), "false" )->text() );
+				$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "show_copyright", $this->GetArg('show_copyright'), implode( ', ', self::$mShowCopyrightOptions  ), "false" ) );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error = $e;
 		}
@@ -763,7 +763,7 @@ class LoopObject {
 				break;
 			default:
 				$this->setIndexing(true);
-				$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "index", $this->GetArg('index'), implode( ', ', self::$mIndexingOptions ), "true" )->text() );
+				$e = new LoopException( wfMessage( "loop-error-unknown-param", "<".$this->getTag().">", "index", $this->GetArg('index'), implode( ', ', self::$mIndexingOptions ), "true" ) );
 				$this->getParser()->addTrackingCategory( 'loop-tracking-category-error' );
 				$this->error = $e;
 				break;
