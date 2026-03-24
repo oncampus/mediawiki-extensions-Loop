@@ -188,8 +188,8 @@ class LoopIndex {
         foreach( $res as $row ) {
 			if ( $letter ) {
 				if ( in_array( $row->li_pageid, $pageSequence ) && !empty ( $row->li_index ) ) {
-					$letter = ucFirst(substr($row->li_index, 0, 1));
-					preg_match('/([A-Z]{1})/', $letter, $output_array);
+					$letter = ucFirst(mb_substr($row->li_index, 0, 1, 'UTF-8'));
+					preg_match('/([A-ZÄÖÜ]{1})/', $letter, $output_array);
 					if ( ! isset($output_array[0] ) ) {
 						$letter = "#";
 					}
@@ -202,10 +202,17 @@ class LoopIndex {
         if ( !empty( $objects ) ) {
             ksort( $objects, SORT_STRING );
 		}
-		#dd($objects);
+
+		if($letter) {
+			foreach ($objects as &$array) {
+				uksort($array, function ($a, $b) {
+					return strcasecmp($a, $b);
+				});
+			}
+		}
+
         return $objects;
     }
-
 
 	/**
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
@@ -362,7 +369,6 @@ class SpecialLoopIndex extends SpecialPage {
 			foreach ( $indexArray as $index => $indexPages ) {
 				foreach ($indexPages as $pageId => $page) {
 					foreach ( $page as $refId ) {
-						#dd($pages);
 						$title = Title::newFromId( $pageId );
 						$lsi = LoopStructureItem::newFromIds( $pageId );
 						$prepend = ( $lsi && strlen( $lsi->tocNumber ) != 0 ) ? $lsi->tocNumber . " " : "";
