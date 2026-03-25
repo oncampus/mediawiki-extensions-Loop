@@ -1981,7 +1981,7 @@
 
 	<!-- synthaxhighlight -->
 	<!-- hier import -->
-	<!-- <xsl:include href="pdf/syntaxhighlight.xsl"></xsl:include> -->
+	<xsl:include href="pdf/syntaxhighlight.xsl"></xsl:include>
 	<!-- synthaxhighlight -->
 
 	<!-- Sidebar -->
