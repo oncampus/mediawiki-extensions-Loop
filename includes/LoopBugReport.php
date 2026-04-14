@@ -63,13 +63,13 @@ class SpecialLoopBugReport extends SpecialPage {
                     global $wgCanonicalServer;
 
                     if ( $service == "internal" ) {
-                        global $wgLoopBugReportEmail;
+                        global $wgLoopBugReportEmail, $wgPasswordSender;
 
                         $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text();
                         $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $userEmail, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
 						$options['contentType'] = 'text/html; charset=UTF-8';
 						$to = new MailAddress($wgLoopBugReportEmail);
-						$from = new MailAddress($wgLoopBugReportEmail);
+						$from = new MailAddress($wgPasswordSender);
 						$status = UserMailer::send($to, $from, $subject, $email, $options);
 
                         if ( $status->isOK() ) {
