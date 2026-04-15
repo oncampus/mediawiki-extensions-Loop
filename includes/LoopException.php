@@ -22,22 +22,20 @@ class LoopException extends Exception {
 	 *
 	 * @return string Error message HTML.
 	 */
-	public function __toString() {
-
+	public function __toString(): string
+	{
 		global $wgOut;
 		$user = $wgOut->getUser();
 
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 		$editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
 
-		if ( $editMode == true ) {
-			global $wgFrame;
+		if ($editMode) {
 
 			$parserFactory = MediaWikiServices::getInstance()->getParserFactory();
 			$parser = $parserFactory->create();
 			$tmpTitle = Title::newFromText('NO_TITLE');
 			$parserOptions = ParserOptions::newFromUser ( $user );
-			$parser->getOptions ( $parserOptions );
 			$parsedMsg = $parser->parse( $this->getMessage(), $tmpTitle, $parserOptions );
 
 			return Html::rawElement( 'div',	array( 'class' => 'errorbox' ), $parsedMsg->getText() );
