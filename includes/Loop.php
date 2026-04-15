@@ -16,7 +16,7 @@ class Loop {
 	 * This is called by 'MediaWikiPerformAction' hook.
 	 *
 	 * @param OutputPage $output
-	 * @param Request $request
+	 * @param WebRequest $request
 	 * @param User $user
 	 */
 	public static function handleLoopRequest( $output, $request, $user ) {
