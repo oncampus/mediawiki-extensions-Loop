@@ -36,7 +36,7 @@ class LoopIndex {
 			# check if a dublicate id has been used
 			if ( $input != $item->li_index || $articleId != $item->li_pageid ) {
 				$otherTitle = Title::newFromId( $item->li_pageid );
-				$e = new LoopException( wfMessage( 'loopindex-error-dublicate-id', $id, $otherTitle->getText(), $item->li_index )->text() );
+				$e = new LoopException( wfMessage( 'loopindex-error-dublicate-id', $id, $otherTitle->getText(), $item->li_index ) );
 				$parser->addTrackingCategory( 'loop-tracking-category-error' );
 				$html .= $e . "\n";
 			}
