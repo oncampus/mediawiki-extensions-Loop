@@ -20,6 +20,8 @@ class LoopXml {
 	public static function structure2xml(LoopStructure $loopStructure, Array $modifiers = []) {
 		global $wgCanonicalServer, $wgLanguageCode;
 
+		wfDebugLog('LoopPdf', 'XML: structure2xml START - Loop: ' . $loopStructure->getTitle());
+
 		set_time_limit(1601); // set_time_limit(601);
 		ini_set('memory_limit', '1024M');
 
@@ -42,37 +44,64 @@ class LoopXml {
 		$xml .= "</meta>\n";
 
 
+		wfDebugLog('LoopPdf', 'XML: TPC generation START');
 		$toc = self::structureItemToc($loopStructureItems[0]);
+		wfDebugLog('LoopPdf', 'XML: TPC generation DONE');
+
 		$xml .= "<toc>".$toc."</toc>\n";
 
 		$articles = '<articles xmlns:xhtml="http://www.w3.org/1999/xhtml">';
+
+		wfDebugLog('LoopPdf', 'XML: articles START');
 		foreach ( $loopStructureItems as $loopStructureItem ) {
+			$articleId = $loopStructureItem->getArticleId();
+			wfDebugLog('LoopPdf', 'XML: article START id '.$articleId);
 		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
+			wfDebugLog('LoopPdf', 'XML: article DONE id=' . $articleId);
 		}
+		wfDebugLog('LoopPdf', 'XML: articles DONE');
+
 		$articles .= "</articles>\n";
 
+		wfDebugLog('LoopPdf', 'XML: handleDuplicateIds START');
 		$xml .= self::handleDublicateIds( $articles ); # double ids of various items are eliminated
+		wfDebugLog('LoopPdf', 'XML: handleDuplicateIds END');
 
 		$xml .= "<loop_objects>\n";
 
+		wfDebugLog('LoopPdf', 'XML: loop_objects START');
 		$xml .= self::objectsTable2xml ( $loopStructureItems, $loopStructure );
+		wfDebugLog('LoopPdf', 'XML: loop_objects DONE');
 
 		$xml .= "</loop_objects>\n";
 
 
 		$xml .= "<glossary>\n";
 
+		wfDebugLog('LoopPdf', 'XML: glossary START');
 		$xml .= self::glossary2xml ();
+		wfDebugLog('LoopPdf', 'XML: glossary DONE');
 
 		$xml .= "</glossary>\n";
 
+<<<<<<< Updated upstream
 		if(LoopLiterature::getShowLiterature(true)) {
 			$xml .= self::bibliography2xml ();
 		}
+=======
+		wfDebugLog('LoopPdf', 'XML: bibliography START');
+		$xml .= self::bibliography2xml ();
+		wfDebugLog('LoopPdf', 'XML: biobliography DONE');
+>>>>>>> Stashed changes
 
+
+		wfDebugLog('LoopPdf', 'XML: START');
 		$xml .= self::terminology2xml ();
+		wfDebugLog('LoopPdf', 'XML: DONE');
 
 		$xml .= "</loop>";
+
+		wfDebugLog('LoopPdf', 'XML: structure2xml DONE');
 
 		return $xml;
 	}
@@ -103,8 +132,11 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = []) {
+<<<<<<< Updated upstream
 		global $wgPdfExportDebugging;
 
+=======
+>>>>>>> Stashed changes
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
