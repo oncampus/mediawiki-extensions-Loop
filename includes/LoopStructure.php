@@ -42,6 +42,35 @@ class LoopStructure {
 		return [$progress_extension, $understood_class_extension];
 	}
 
+
+	 function getArticleIdsFromStructure() {
+		$articleIds = [];
+		foreach ($this->structureItems as $lsi) {
+			$articleIds[] = $lsi->article;
+		}
+		return $articleIds;
+	}
+
+	public static function batch_retrieve_title_objects($pageIds) {
+		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase(); //->getReplicaDatabase();
+
+		$res = $dbr->newSelectQueryBuilder()
+			->select( [ 'page_id', 'page_namespace', 'page_title' ] )
+			->from( 'page' )
+			->where( [ 'page_id' => $pageIds ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
+
+		$titlesById = [];
+		foreach ( $res as $row ) {
+			$titlesById[(int)$row->page_id] = Title::newFromRow( $row );
+		}
+
+		return $titlesById;
+	}
+
+
+
 	public function render() {
 
 		global $wgLoopLegacyPageNumbering;
