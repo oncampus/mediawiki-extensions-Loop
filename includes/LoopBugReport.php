@@ -57,20 +57,19 @@ class SpecialLoopBugReport extends SpecialPage {
 
         if ( $user->isRegistered() ) {
             if ( $service != false ) {
-                if ( !empty( $page ) && !empty( $url ) ) {
+                if ( empty($message) && !empty( $page ) && !empty( $url ) ) {
                     $html .= $this->makeForm( $request, $page, $url );
                 } elseif (!empty( $message ) && !empty( $url )) {
                     global $wgCanonicalServer;
-
                     if ( $service == "internal" ) {
                         global $wgLoopBugReportEmail, $wgPasswordSender;
 
                         $subject = $this->msg( "loopbugreport-email-subject", str_replace( "https://", "", $wgCanonicalServer ), date("YmdHis") )->text();
                         $email = '<html><head><title>'.$subject.'</title></head><body>' . $this->msg("loopbugreport-email", $wgCanonicalServer, $userEmail, $wgCanonicalServer . $url, $message )->parse() . '</body></html>';
-						$options['contentType'] = 'text/html; charset=UTF-8';
-						$to = new MailAddress($wgLoopBugReportEmail);
-						$from = new MailAddress($wgPasswordSender);
-						$status = UserMailer::send($to, $from, $subject, $email, $options);
+			$options['contentType'] = 'text/html; charset=UTF-8';
+			$to = new MailAddress($wgLoopBugReportEmail);
+			$from = new MailAddress($wgPasswordSender);
+                        $status = UserMailer::send($to, $from, $subject, $email, $options);
 
                         if ( $status->isOK() ) {
 							$html .= '<div class="alert alert-success" role="alert">' . $this->msg( "loopbugreport-success" )->text() .'</div>';
@@ -107,13 +106,21 @@ class SpecialLoopBugReport extends SpecialPage {
             $page = urldecode( $url );
         }
 
+	$formTitle = SpecialPage::getTitleFor( 'LoopBugReport' );
+
         $html = '<p>' . $this->msg( 'loopbugreport-desc' ) . '</p>';
-        $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2" id="bugreport-form" enctype="multipart/form-data" >';
+
+        $html .= '<form class="mw-editform mt-3 mb-3 ml-2 mr-2"
+    		id="bugreport-form"
+    		enctype="multipart/form-data"
+    		method="post"
+    		action="' . htmlspecialchars( $formTitle->getLocalURL(), ENT_QUOTES ) . '">';
+
         $html .= '<div class="form-group">';
 
         $html .= '<div class="form-row">';
         $html .= '<label for="page" class="font-weight-bold">'. $this->msg("loopbugreport-page-label")->text().'</label>';
-        $html .= '<input class="mb-2 form-control" type="text" name="page" value="' . $page . '" disabled/>';
+        $html .= '<input class="mb-2 form-control" type="text" name="page" value="' . $page . '" readonly/>';
         $html .= '<input class="d-none" type="text" name="url" value="' . $url . '"/>';
         $html .= '</div>';
 
