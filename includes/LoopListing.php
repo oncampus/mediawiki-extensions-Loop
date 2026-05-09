@@ -36,17 +36,15 @@ class LoopListing extends LoopObject{
 	 * @param string $input
 	 * @param array $args
 	 * @param Parser $parser
-	 * @param Frame $frame
+	 * @param PPFrame $frame
 	 * @return string
 	 */
-	public static function renderLoopListing($input, array $args, $parser, $frame) {
-
+	public static function renderLoopListing(string $input, array $args, Parser $parser, PPFrame $frame): string
+	{
 		$listing = new LoopListing();
 		$listing->init($input, $args, $parser, $frame);
 		$listing->parse();
-		$html = $listing->render();
-
-		return  $html ;
+		return $listing->render();
 	}
 
 }
@@ -58,12 +56,12 @@ class LoopListing extends LoopObject{
  *
  */
 class SpecialLoopListings extends SpecialPage {
-
 	public function __construct() {
 		parent::__construct ( 'LoopListings' );
 	}
 
-	public function execute($sub) {
+	public function execute($subPage): void
+	{
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -77,7 +75,8 @@ class SpecialLoopListings extends SpecialPage {
 
 	}
 
-	public static function renderLoopListingSpecialPage() {
+	public static function renderLoopListingSpecialPage(): string
+	{
 	    global $wgLoopNumberingType;
 	    $html = '<h1>';
 	    $html .= wfMessage( 'looplistings-specialpage-title' );
@@ -86,8 +85,7 @@ class SpecialLoopListings extends SpecialPage {
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
 
-	    $listings = array ();
-	    $structureItems = $loopStructure->getStructureItems();
+		$structureItems = $loopStructure->getStructureItems();
 	    $glossaryItems = LoopGlossary::getGlossaryPages();
 	    $listing_number = 1;
 	    $articleIds = array();
@@ -109,7 +107,7 @@ class SpecialLoopListings extends SpecialPage {
 	            foreach ( $listing_tags[$article_id] as $listing_tag ) {
 	                $listing = new LoopListing();
 	                $listing->init($listing_tag["thumb"], $listing_tag["args"]);
-			
+
 			$listing_parser = $listing->getParser();
 			$title = Title::newFromText( wfMessage( 'looplisting-specialpage-title')->text());
 			$options = ParserOptions::newFromAnon(); //::newFromUser($user);
@@ -132,7 +130,8 @@ class SpecialLoopListings extends SpecialPage {
 	    return $html;
 	}
 
-	protected function getGroupName() {
+	protected function getGroupName(): string
+	{
 		return 'loop';
 	}
 }
