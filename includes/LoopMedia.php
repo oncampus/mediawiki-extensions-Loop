@@ -12,9 +12,9 @@ class LoopMedia extends LoopObject{
 	public static $mTag = 'loop_media';
 	public static $mIcon = 'media';
 
-	public $mMediaType;
+	public string $mMediaType;
 
-	public static $mMediaTypes = array(
+	public static array $mMediaTypes = array(
 			'rollover',
 			'video',
 			'interaction',
@@ -27,7 +27,7 @@ class LoopMedia extends LoopObject{
 	);
 
 
-	public static $mMediaTypeClass = array(
+	public static array $mMediaTypeClass = array(
 			'rollover' => 'rollover',
 			'video' => 'video',
 			'interaction' => 'click',
@@ -61,7 +61,8 @@ class LoopMedia extends LoopObject{
 	 * {@inheritDoc}
 	 * @see LoopObject::getIcon()
 	 */
-	public function getIcon() {
+	public function getIcon(): string
+	{
 		return self::$mMediaTypeClass[$this->getMediaType()];
 	}
 
@@ -70,7 +71,8 @@ class LoopMedia extends LoopObject{
 	 * Set the media type
 	 * @param string $mediatype
 	 */
-	public function setMediaType($mediatype) {
+	public function setMediaType(string $mediatype): void
+	{
 		$this->mMediaType = $mediatype;
 	}
 
@@ -78,7 +80,8 @@ class LoopMedia extends LoopObject{
 	 * Get the media type
 	 * @return string
 	 */
-	public function getMediaType() {
+	public function getMediaType(): string
+	{
 		return $this->mMediaType;
 	}
 
@@ -88,25 +91,25 @@ class LoopMedia extends LoopObject{
 	 * @param string $input
 	 * @param array $args
 	 * @param Parser $parser
-	 * @param Frame $frame
+	 * @param PPFrame $frame
 	 * @return string
 	 */
-	public static function renderLoopMedia($input, array $args, $parser, $frame) {
+	public static function renderLoopMedia(string $input, array $args, Parser $parser, PPFrame $frame): string
+	{
 
 		$media = new LoopMedia();
 		$media->init($input, $args, $parser, $frame);
 		$media->parse();
-		$html = $media->render();
-
-		return  $html;
+		return $media->render();
 	}
 
 	/**
 	 * Parse additional args for loop_media
 	 * @param bool $fullparse
 	 */
-	public function parse($fullparse = false) {
-		$this->preParse($fullparse);
+	public function parse(bool $fullparse = false): void
+	{
+		$this->preParse();
 
 		if ($mediatype = $this->GetArg('type')) {
 			$this->setMediaType(htmlspecialchars($mediatype));
@@ -141,7 +144,8 @@ class SpecialLoopMedia extends SpecialPage {
 		parent::__construct ( 'LoopMedia' );
 	}
 
-	public function execute($sub) {
+	public function execute($subPage): void
+	{
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -154,7 +158,8 @@ class SpecialLoopMedia extends SpecialPage {
 		$out->addHtml ( $html );
 	}
 
-	public static function renderLoopMediaSpecialPage() {
+	public static function renderLoopMediaSpecialPage(): string
+	{
 	    global $wgLoopNumberingType;
 	    $loopStructure = new LoopStructure();
 	    $loopStructure->loadStructureItems();
@@ -208,7 +213,8 @@ class SpecialLoopMedia extends SpecialPage {
 	    return $html;
 	}
 
-	protected function getGroupName() {
+	protected function getGroupName(): string
+	{
 		return 'loop';
 	}
 }
