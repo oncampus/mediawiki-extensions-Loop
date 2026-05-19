@@ -13,7 +13,7 @@ abstract class ApiLoopProgressBase extends ApiBase
 		parent::__construct($main, $action);
 	}
 
-	protected function generateId()
+	protected function generateId(): string
 	{
 		/*
 		 * This will return a 128-bit string in base-16, resulting
@@ -25,7 +25,10 @@ abstract class ApiLoopProgressBase extends ApiBase
 		return str_pad($id, 32, 0, STR_PAD_LEFT);
 	}
 
-	protected function checkPermissions($user)
+	/**
+	 * @throws \MediaWiki\Api\ApiUsageException
+	 */
+	protected function checkPermissions($user): void
 	{
 		if ($user->getBlock() != null) {
 			$this->dieWithError(
@@ -51,7 +54,10 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		parent::__construct($main, $action);
 	}
 
-	public function execute()
+	/**
+	 * @throws \MediaWiki\Api\ApiUsageException
+	 */
+	public function execute(): void
 	{
 		$user = $this->getUser();
 
@@ -125,9 +131,9 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		$result->addValue($this->getModuleName(), 'lp_id', $progress['lp_id']);
 	}
 
-	public function getAllowedParams()
+	public function getAllowedParams(): array
 	{
-		$ret = array(
+		return array(
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE => 'integer',
 			),
@@ -136,12 +142,10 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 				ParamValidator::PARAM_REQUIRED => false,
 			)
 		);
-
-		return $ret;
 	}
 
 
-	public function getParamDescription()
+	public function getParamDescription(): array
 	{
 		$p = $this->getModulePrefix();
 		return array(
@@ -151,13 +155,13 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 	}
 
 
-	public function mustBePosted()
+	public function mustBePosted(): bool
 	{
 		return false;
 	}
 
 
-	public function isWriteMode()
+	public function isWriteMode(): bool
 	{
 		return true;
 	}
@@ -171,21 +175,21 @@ class ApiLoopProgressSave extends ApiLoopProgressBase
 		));
 	}
 
-	public function getDescription()
+	public function getDescription(): array
 	{
 		return array(
 			'Save loop progress'
 		);
 	}
 
-	protected function getExamples()
+	protected function getExamples(): array
 	{
 		return array(
 			'api.php?action=loopprogress-save'
 		);
 	}
 
-	public function getVersion()
+	public function getVersion(): string
 	{
 		return __CLASS__ . ': version 1.0';
 	}
@@ -201,7 +205,10 @@ class ApiLoopProgressLoad extends ApiLoopProgressBase
 		parent::__construct($main, $action);
 	}
 
-	public function execute()
+	/**
+	 * @throws \MediaWiki\Api\ApiUsageException
+	 */
+	public function execute(): void
 	{
 		$user = $this->getUser();
 
@@ -214,8 +221,9 @@ class ApiLoopProgressLoad extends ApiLoopProgressBase
 		$result->addValue($this->getModuleName(), 'test', $params); // todo
 	}
 
-	public function getAllowedParams() {
-		$ret = array(
+	public function getAllowedParams(): array
+	{
+		return array(
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE     => 'integer',
 			),
@@ -224,24 +232,22 @@ class ApiLoopProgressLoad extends ApiLoopProgressBase
 				ParamValidator::PARAM_REQUIRED => false,
 			)
 		);
-
-		return $ret;
 	}
 
 
-	public function getParamDescription()
+	public function getParamDescription(): array
 	{
 		return array();
 	}
 
 
-	public function mustBePosted()
+	public function mustBePosted(): bool
 	{
 		return false;
 	}
 
 
-	public function isWriteMode()
+	public function isWriteMode(): bool
 	{
 		return true;
 	}
@@ -255,21 +261,21 @@ class ApiLoopProgressLoad extends ApiLoopProgressBase
 		));
 	}
 
-	public function getDescription()
+	public function getDescription(): array
 	{
 		return array(
 			'Get LOOP Progress'
 		);
 	}
 
-	protected function getExamples()
+	protected function getExamples(): array
 	{
 		return array(
 			'api.php?action=loopprogress-load'
 		);
 	}
 
-	public function getVersion()
+	public function getVersion(): string
 	{
 		return __CLASS__ . ': version 1.0';
 	}
@@ -285,7 +291,10 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 		parent::__construct($main, $action);
 	}
 
-	public function execute()
+	/**
+	 * @throws \MediaWiki\Api\ApiUsageException
+	 */
+	public function execute(): void
 	{
 		$user = $this->getUser();
 		$this->checkPermissions($user);
@@ -368,8 +377,9 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 	}
 
 
-	public function getAllowedParams() {
-		$ret = array(
+	public function getAllowedParams(): array
+	{
+		return array(
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE     => 'integer',
 			),
@@ -378,24 +388,22 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 				ParamValidator::PARAM_REQUIRED => false,
 			)
 		);
-
-		return $ret;
 	}
 
 
-	public function getParamDescription()
+	public function getParamDescription(): array
 	{
 		return array();
 	}
 
 
-	public function mustBePosted()
+	public function mustBePosted(): bool
 	{
 		return false;
 	}
 
 
-	public function isWriteMode()
+	public function isWriteMode(): bool
 	{
 		return true;
 	}
@@ -409,21 +417,21 @@ class ApiLoopProgressSaveNote extends ApiLoopProgressBase
 		));
 	}
 
-	public function getDescription()
+	public function getDescription(): array
 	{
 		return array(
 			'Save LOOP Progress Note'
 		);
 	}
 
-	protected function getExamples()
+	protected function getExamples(): array
 	{
 		return array(
 			'api.php?action=loopprogress-save-note'
 		);
 	}
 
-	public function getVersion()
+	public function getVersion(): string
 	{
 		return __CLASS__ . ': version 1.0';
 	}
@@ -437,7 +445,10 @@ class ApiLoopProgressLoadNote extends ApiLoopProgressBase
 		parent::__construct($main, $action);
 	}
 
-	public function execute()
+	/**
+	 * @throws \MediaWiki\Api\ApiUsageException
+	 */
+	public function execute(): void
 	{
 		$user = $this->getUser();
 		$this->checkPermissions($user);
@@ -471,30 +482,29 @@ class ApiLoopProgressLoadNote extends ApiLoopProgressBase
 		$result->addValue($this->getModuleName(), 'lp_note', $lp->lp_user_note);
 	}
 
-	public function getAllowedParams() {
-		$ret = array(
+	public function getAllowedParams(): array
+	{
+		return array(
 			'pageid' => array(
 				ParamValidator::PARAM_TYPE     => 'integer',
 			)
 		);
-
-		return $ret;
 	}
 
 
-	public function getParamDescription()
+	public function getParamDescription(): array
 	{
 		return array();
 	}
 
 
-	public function mustBePosted()
+	public function mustBePosted(): bool
 	{
 		return false;
 	}
 
 
-	public function isWriteMode()
+	public function isWriteMode(): bool
 	{
 		return true;
 	}
@@ -508,21 +518,21 @@ class ApiLoopProgressLoadNote extends ApiLoopProgressBase
 		));
 	}
 
-	public function getDescription()
+	public function getDescription(): array
 	{
 		return array(
 			'Get LOOP  Note'
 		);
 	}
 
-	protected function getExamples()
+	protected function getExamples(): array
 	{
 		return array(
 			'api.php?action=loopprogress-load-note'
 		);
 	}
 
-	public function getVersion()
+	public function getVersion(): string
 	{
 		return __CLASS__ . ': version 1.0';
 	}
