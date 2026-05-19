@@ -11,12 +11,14 @@ use MediaWiki\MediaWikiServices;
 
 class LoopPrint {
 
-	public static function onParserSetup( Parser $parser ) {
+	public static function onParserSetup( Parser $parser ): bool
+	{
 		$parser->setHook( 'loop_print', 'LoopPrint::renderLoopPrint' );
 		return true;
 	}
 
-	static function renderLoopPrint( $input, array $args, Parser $parser, PPFrame $frame ) {
+	static function renderLoopPrint( $input, array $args, Parser $parser, PPFrame $frame ): string
+	{
 		global $wgOut;
 		$user = $wgOut->getUser();
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
@@ -28,7 +30,6 @@ class LoopPrint {
 			if( $editMode || $button !== "false" ) {
 				$btnId = uniqid();
 				$btnIcon = '<span class="ic ic-print-area float-none"></span>';
-				$editModeClass = $editMode ? " loopeditmode-hint" : "";
 				$html = '<div class="loopprint-container loopprint-button">';
 				$html .= '<input id="'. $btnId .'" type="checkbox">';
 				$html .= '<label for="'. $btnId .'" class="mb-0"><span data-title="'.wfMessage('loopprint-printingarea')->text().'" class="loopprint-tag '. $btnId;
