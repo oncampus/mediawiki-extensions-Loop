@@ -2,18 +2,20 @@
 /**
  * @description Adds citations via loop_paragraph
  * @ingroup Extensions
- * @author Dustin Neß <dustin.ness@th-luebeck.de> 
+ * @author Dustin Neß <dustin.ness@th-luebeck.de>
  */
 
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopParagraph {
-    static function onParserSetup( Parser $parser ) {
+    static function onParserSetup( Parser $parser ): bool
+	{
         $parser->setHook( 'loop_paragraph', 'LoopParagraph::renderParagraph' );
         return true;
     }
 
-    static function renderParagraph( $input, array $args, Parser $parser, PPFrame $frame ) {
+    static function renderParagraph( $input, array $args, Parser $parser, PPFrame $frame ): string
+	{
 
         // for now loop_paragraph only supports citations
         $html = '<div class="loopparagraph">';
@@ -23,7 +25,7 @@ class LoopParagraph {
         $html .= '<div class="loopparagraph_right"><blockquote>';
         $html .= $parser->recursiveTagParseFully( $input );
         $html .= '</div>';
-        
+
         if( isset( $args['copyright'] ) ) {
             $html .= '<span class="loopparagraph_copyright">' . $args['copyright'] . '</span>';
         }
