@@ -84,15 +84,11 @@ class LoopXml {
 
 		$xml .= "</glossary>\n";
 
-<<<<<<< Updated upstream
-		if(LoopLiterature::getShowLiterature(true)) {
-			$xml .= self::bibliography2xml ();
-		}
-=======
 		wfDebugLog('LoopPdf', 'XML: bibliography START');
-		$xml .= self::bibliography2xml ();
-		wfDebugLog('LoopPdf', 'XML: biobliography DONE');
->>>>>>> Stashed changes
+		if(LoopLiterature::getShowLiterature(true)) {
+			$xml .= self::bibliography2xml();
+		}
+		wfDebugLog('LoopPdf', 'XML: bibliography DONE');
 
 
 		wfDebugLog('LoopPdf', 'XML: START');
@@ -132,11 +128,10 @@ class LoopXml {
 	 * 		"mp3" => true; modifies XML Output for MP3 export, adds additional breaks for loop_objects
 	 */
 	public static function structureItem2xml(LoopStructureItem $structureItem, Array $modifiers = []) {
-<<<<<<< Updated upstream
+
 		global $wgPdfExportDebugging;
 
-=======
->>>>>>> Stashed changes
+
 		$title = Title::newFromId( $structureItem->getArticle () );
 		$fwp = new FlaggableWikiPage ( $title );
 		$stableRev = $fwp->getStable();
