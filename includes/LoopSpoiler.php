@@ -65,18 +65,7 @@ class LoopSpoiler {
 		$input = trim($input);
 		$spoiler = LoopSpoiler::newFromTag( $input, $args, $parser, $frame );
 
-		$span = "";
-		$parser->extractTagsAndParams( ["math"], $input, $math_tags );
-		$j = 0;
-		foreach ( $math_tags as $i => $math ) {
-			$span .=  "<span class='replacemath' id='mathreplace$j'>" .$parser->recursiveTagParseFully( "<math>".$math[1]."</math>", $frame )."</span>";
-			$j++;
-		}
-		$span = str_replace("<p>", "", $span);
-		$span = str_replace("</p>", "", $span);
-		$spoiler->btnAppend = $span;
-
-		$spoiler->setContent( $parser->recursiveTagParseFully( $input, $frame ) );
+		$spoiler->setContent( $parser->recursiveTagParse( $input, $frame ) );
 
 		$return = "";
 		if ( !empty ( $spoiler->mErrors ) ) {
@@ -89,17 +78,30 @@ class LoopSpoiler {
 
 	public function render() {
 		$content = $this->getContent();
-		while ( substr( $content, -1, 2 ) == "\n" ) { # remove newlines at the end of content for cleaner html output
-			$content = substr( $content, 0, -1 );
-		}
-		# replace math uniq markers
-		$content = preg_replace('/(\'"`UNIQ--postMath-)(\w{8})(-QINU`"\')/', '<span class="loopspoiler_math_replace" data-marker="$2"></span>', $content);
+		$type = $this->getType();
 
 		return Html::rawElement(
-			'button',
-			[ 'data-spoilercontent' => $content,'type' => 'button', 'id' => $this->getId(), 'class' => 'btn loopspoiler loopspoiler_type_' . $this->getType() . ' ' . $this->getId(),],
-			$this->getBtnText() . $this->btnAppend
-		) ;
+			'div',
+			[ 'class' => 'loopspoiler_content_wrapper' ],
+			Html::rawElement(
+				'button',
+				[
+					'type'  => 'button',
+					'id'    => $this->getId(),
+					'class' => 'btn loopspoiler loopspoiler_type_' . $type . ' ' . $this->getId(),
+				],
+				$this->getBtnText() . $this->btnAppend
+			) .
+			Html::rawElement(
+				'div',
+				[
+					'id'    => $this->getId() . '-content',
+					'class' => 'loopspoiler_' . $type . '_content ' . $this->getId(),
+					'style' => 'display:none',
+				],
+				$content
+			)
+		);
 	}
 
 	public static function newFromTag( $input, array $args, Parser $parser, PPFrame $frame ) {
