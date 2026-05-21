@@ -2,18 +2,20 @@
 /**
  * @description Adds sidenotes via loop_sidenote
  * @ingroup Extensions
- * @author Dustin Neß <dustin.ness@th-luebeck.de> 
+ * @author Dustin Neß <dustin.ness@th-luebeck.de>
  */
 
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopSidenote {
-    static function onParserSetup( Parser $parser ) {
+    static function onParserSetup( Parser $parser ): bool
+	{
         $parser->setHook( 'loop_sidenote', 'LoopSidenote::renderSidenote' );
         return true;
     }
 
-    static function renderSidenote( $input, array $args, Parser $parser, PPFrame $frame ) {
+    static function renderSidenote( $input, array $args, Parser $parser, PPFrame $frame ): string
+	{
         $type = '';
 
         if( isset( $args['type'] ) ) {
