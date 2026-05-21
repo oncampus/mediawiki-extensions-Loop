@@ -8,16 +8,18 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopSpeech {
-	var $input='';
-	var $args=array();
+	var string $input='';
+	var array $args=array();
 
-	public static function onParserSetup( Parser $parser) {
+	public static function onParserSetup( Parser $parser): bool
+	{
 		$parser->setHook( 'loop_speech', 'LoopSpeech::renderLoopSpeech' );
 
 		return true;
 	}
 
-	static function renderLoopSpeech( $input, array $args, Parser $parser, PPFrame $frame ) {
+	static function renderLoopSpeech( $input, array $args, Parser $parser, PPFrame $frame ): string
+	{
 		$return='';
 		$speech_id=uniqid();
 		$return.='<div style="display:none" class="speecharea" id="'.$speech_id.'">';
