@@ -14,7 +14,9 @@ class SpecialLoopSearch extends SpecialPage {
 		parent::__construct( 'LoopSearch' );
 	}
 
-	function execute( $par ) {
+	function execute( $subPage ): void
+	{
+		$contentText = '';
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
@@ -36,7 +38,7 @@ class SpecialLoopSearch extends SpecialPage {
 			$html .= "<p>". $this->msg( 'loopsearch-description' ) ."</p>";
 			$html .= '<form class="mw-editform mt-3 mb-3" id="loopupdate-form" method="post" novalidate enctype="multipart/form-data">';
 			$html .= '<input placeholder="'.$this->msg( 'loopsearch-label' ).'" type="text" name="term" id="term" class="mr-1 form-control">';
-			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'search' ) . '"></input>';
+			$html .= '<input type="submit" class="mw-htmlform-submit mw-ui-button mw-ui-primary mw-ui-progressive mt-2 d-block" id="submit" value="' . $this->msg( 'search' ) . '">';
 
 			$html .= '</div>';
 			$html .= '</div>';
@@ -64,42 +66,35 @@ class SpecialLoopSearch extends SpecialPage {
 
 				foreach( $res as $row ) {
 					$title = Title::newFromId( $row->page_id, NS_MAIN );
-					$tmpFPage = new FlaggableWikiPage ( Title::newFromId( $row->page_id, NS_MAIN ) );
-					$stableRev = $tmpFPage->getStable();
-					if ( $stableRev == 0 ) {
-						$stableRev = $tmpFPage->getRevisionRecord()->getId();
-					}
-
-					$latestRevId = $title->getLatestRevID();
 					$wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
 					$fwp = new FlaggableWikiPage ( $title );
 
 
-					if ( isset( $fwp ) ) {
-						$stableRevId = $fwp->getStable();
+					$stableRevId = $fwp->getStable();
 
-						if ( $stableRevId == null ) { # page is stable or does not have any stable version
-							$pageContent = $wikiPage->getContent(); #latest, but not stable
-							$contentText = ContentHandler::getContentText( $pageContent );
-						} else {
-							$revision = $wikiPage->getRevisionRecord();
+					if ( $stableRevId == null ) { # page is stable or does not have any stable version
+						$pageContent = $wikiPage->getContent(); #latest, but not stable
+					} else {
+						$revision = $wikiPage->getRevisionRecord();
 
-							$pageContent = $revision->getContent( SlotRecord::MAIN );
-							$contentText = ContentHandler::getContentText( $pageContent );
-						}
+						$pageContent = $revision->getContent( SlotRecord::MAIN );
+					}
 
-						preg_match_all("/($term)/i", $contentText, $output_array); #br with id
+					if ($pageContent instanceof TextContent ) {
+						$contentText = $pageContent->getText();
+					}
 
-						if ( !empty( $output_array[0] ) ) {
+					preg_match_all("/($term)/i", $contentText, $output_array); #br with id
 
-							$html .= $linkRenderer->makelink(
-								$title,
-								new HtmlArmor( $title->getText() ),
-								array(),
-								array("action"=>"edit")
-							)."<br>";
+					if ( !empty( $output_array[0] ) ) {
 
-						}
+						$html .= $linkRenderer->makelink(
+							$title,
+							new HtmlArmor( $title->getText() ),
+							array(),
+							array("action"=>"edit")
+						)."<br>";
+
 					}
 				}
 			}
@@ -109,7 +104,8 @@ class SpecialLoopSearch extends SpecialPage {
 		}
 		$out->addHTML( $html );
 	}
-	protected function getGroupName() {
+	protected function getGroupName(): string
+	{
 		return 'loop';
 	}
 }
