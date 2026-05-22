@@ -8,14 +8,16 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopSidebar {
-	public static function onParserSetup( Parser &$parser ) {
+	public static function onParserSetup( Parser $parser ): bool
+	{
 		$parser->setHook( 'loop_sidebar', 'LoopSidebar::renderSidebar' );
 		return true;
     }
-    public static function renderSidebar( $input, array $args, Parser $parser, PPFrame $frame ) {
+    public static function renderSidebar( $input, array $args, Parser $parser, PPFrame $frame ): Exception|LoopException|string
+	{
         $html = "";
         try {
-            if ( isset ( $args[ "page" ] ) && !empty( $args[ "page" ] ) ) {
+            if (!empty( $args[ "page" ] )) {
                 $sidebarTitle = Title::newFromText( $args["page"] );
                 if ( is_object($sidebarTitle) ) {
                     $sidebarWP = new WikiPage( $sidebarTitle );
@@ -25,8 +27,8 @@ class LoopSidebar {
                 }
 
             } else {
-                throw new LoopException( wfMessage("loopsidebar-error-nopage")->text() );
-                $parser->addTrackingCategory( 'loop-tracking-category-error' );
+				$parser->addTrackingCategory( 'loop-tracking-category-error' );
+                throw new LoopException( wfMessage("loopsidebar-error-nopage") );
             }
         } catch ( LoopException $e) {
             $parser->addTrackingCategory( 'loop-tracking-category-error' );
