@@ -155,4 +155,28 @@ class LoopHooks {
 
 	}
 
+	// restrict api access
+	public static function onApiCheckCanExecute( ApiBase $module, User $user, string &$message ): bool {
+		$restrictedModules = [
+			'recentchanges',
+			'tags',
+			'logevents',
+			'usercontribs',
+			'allpages',
+			'allrevisions',
+			'allusers',
+			'alldeletedrevisions',
+			'watchlist',
+			'siteinfo',
+			'revisions',
+			'search',
+		];
+
+		if ( $user->isAnon() && in_array( $module->getModuleName(), $restrictedModules ) ) {
+			$message = 'permissiondenied';
+			return false;
+		}
+		return true;
+	}
+
 }
