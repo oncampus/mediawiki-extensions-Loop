@@ -54,10 +54,7 @@ class LoopXml {
 
 		wfDebugLog('LoopPdf', 'XML: articles START');
 		foreach ( $loopStructureItems as $loopStructureItem ) {
-			$articleId = $loopStructureItem->getArticleId();
-			wfDebugLog('LoopPdf', 'XML: article START id '.$articleId);
 		    $articles .= self::structureItem2xml ( $loopStructureItem, $modifiers );
-			wfDebugLog('LoopPdf', 'XML: article DONE id=' . $articleId);
 		}
 		wfDebugLog('LoopPdf', 'XML: articles DONE');
 
