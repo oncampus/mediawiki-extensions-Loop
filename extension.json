@@ -131,6 +131,8 @@
 		"SpecialLoopSearch": "includes/LoopSearch.php"
 	},
 	"Hooks": {
+		"ApiCheckCanExecute":
+			"LoopHooks::onApiCheckCanExecute",
 		"LoadExtensionSchemaUpdates":[
 			"LoopUpdater::onLoadExtensionSchemaUpdates"
 		],

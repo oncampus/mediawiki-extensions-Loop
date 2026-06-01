@@ -11,17 +11,18 @@ use MediaWiki\MediaWikiServices;
 
 class LoopIndex {
 
-	public $index;
-    public $refId;
-	public $pageId;
+	public string $index;
+    public string $refId;
+	public string $pageId;
 
-    public static function onParserSetup( Parser $parser ) {
+    public static function onParserSetup( Parser $parser ): bool
+	{
 		$parser->setHook ( 'loop_index', 'LoopIndex::renderLoopIndex' );
 		return true;
     }
 
-	static function renderLoopIndex( $input, array $args, Parser $parser, PPFrame $frame ) {
-
+	static function renderLoopIndex( $input, array $args, Parser $parser, PPFrame $frame ): string
+	{
 		$html = '';
         if ( isset ( $args["id"] ) ) {
 			$id = $args["id"];
@@ -31,8 +32,9 @@ class LoopIndex {
 		}
 
 		$item = self::getIndexItem( $id );
-		if ( is_object( $item ) ) {
-			$articleId = $parser->getTitle()->getArticleID();
+		if ( $item !== null ) {
+			$title = Title::castFromPageReference($parser->getPage());
+			$articleId = $title->getArticleID();
 			# check if a dublicate id has been used
 			if ( $input != $item->li_index || $articleId != $item->li_pageid ) {
 				$otherTitle = Title::newFromId( $item->li_pageid );
@@ -41,15 +43,14 @@ class LoopIndex {
 				$html .= $e . "\n";
 			}
 		}
-        $htmlid = "";
         $html .= "<span class='loop_index_anchor' $htmlid></span>";
         return $html;
     }
 
 
 	# returns whether to show index in TOC or not
-	public static function getShowIndex() {
-
+	public static function getShowIndex(): bool
+	{
 		$showIndex = false;
 
 		$loopStructure = new LoopStructure();
@@ -68,33 +69,29 @@ class LoopIndex {
 	 * Add index item to the database
 	 * @return bool true
 	 */
-	public function addToDatabase() {
-		if ( $this->refId !== null ) {
+	public function addToDatabase(): bool
+	{
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbw = $dbProvider->getPrimaryDatabase();
 
-			$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
-			$dbw = $dbProvider->getPrimaryDatabase();
-
-			$dbw->insert(
-				'loop_index',
-				array(
-					'li_index' => $this->index,
-					'li_pageid' => $this->pageId,
-					'li_refid' => $this->refId
-				),
-				__METHOD__
-			);
-			# SpecialPurgeCache::purge();
-
-			return true;
-		}
-		return false;
+		$dbw->insert(
+			'loop_index',
+			array(
+				'li_index' => $this->index,
+				'li_pageid' => $this->pageId,
+				'li_refid' => $this->refId
+			),
+			__METHOD__
+		);
+		return true;
 	}
 
     /**
 	 * Returns index item
-	 * @return bool true
+	 * @return ?object true
 	 */
-	public static function getIndexItem( $refId ) {
+	public static function getIndexItem( $refId ): ?object
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->select(
@@ -110,16 +107,12 @@ class LoopIndex {
 			__METHOD__
 		);
 
-        foreach( $res as $row ) {
-			return $row;
-		}
-
-        return false;
-
+		return $res->numRows() > 0 ? $res->fetchObject() : null;
     }
 
 	// deletes all index items of a page
-    public static function removeAllPageItemsFromDb ( $article ) {
+    public static function removeAllPageItemsFromDb ( $article ): bool
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbw = $dbProvider->getPrimaryDatabase();
 		$dbw->delete(
@@ -131,8 +124,8 @@ class LoopIndex {
         return true;
     }
 
-	public function checkDublicates( $refId ) {
-
+	public function checkDublicates( $refId ): bool
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->select(
@@ -145,19 +138,12 @@ class LoopIndex {
 			),
 			__METHOD__
 		);
-
-		foreach( $res as $row ) {
-            # if res has rows,
-			# given refId is already in use.
-			return false;
-
-		}
-		# id is unique in index
-		return true;
+		return $res->numRows() === 0;
     }
 
     // returns all index items
-    public static function getAllItems ( $loopStructure, $letter = false ) {
+    public static function getAllItems ( $loopStructure, $letter = false ): array
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 		$res = $dbr->newSelectQueryBuilder()
@@ -189,7 +175,7 @@ class LoopIndex {
 			if ( $letter ) {
 				if ( in_array( $row->li_pageid, $pageSequence ) && !empty ( $row->li_index ) ) {
 					$letter = ucFirst(mb_substr($row->li_index, 0, 1, 'UTF-8'));
-					preg_match('/([A-ZÄÖÜ]{1})/', $letter, $output_array);
+					preg_match('/([A-ZÄÖÜ])/', $letter, $output_array);
 					if ( ! isset($output_array[0] ) ) {
 						$letter = "#";
 					}
@@ -218,28 +204,34 @@ class LoopIndex {
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->updateStableVersion()
 	 * @param Title $title
 	 * @param Content $content
+	 * @param $userId
+	 * @return bool
 	 */
-	public static function onAfterStabilizeChange ( $title, $content, $userId ) {
+	public static function onAfterStabilizeChange (Title $title, Content $content, $userId ): bool
+	{
+		$contentText = '';
 	    $latestRevId = $title->getLatestRevID();
 	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    $fwp = new FlaggableWikiPage ( $title );
 
-	    if ( isset($fwp) ) {
-	        $stableRevId = $fwp->getStable();
+		$stableRevId = $fwp->getStable();
 
-	        if ( $latestRevId == $stableRevId || $stableRevId == null ) {
-				$contentText = ContentHandler::getContentText( $content );
-	            self::handleIndexItems( $wikiPage, $title, $contentText );
-	        }
-	    }
-	    return true;
+		if ( $latestRevId == $stableRevId || $stableRevId == null ) {
+			if ($content instanceof TextContent) {
+				$contentText = $content->getText();
+			}
+			self::handleIndexItems( $wikiPage, $title, $contentText );
+		}
+		return true;
 	}
 
 	/**
 	 * Custom hook called after stabilization changes of pages in FlaggableWikiPage->clearStableVersion()
 	 * @param Title $title
+	 * @return bool
 	 */
-	public static function onAfterClearStable( $title ) {
+	public static function onAfterClearStable(Title $title ): bool
+	{
 	    $wikiPage = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle($title);
 	    self::handleIndexItems( $wikiPage, $title );
 	    return true;
@@ -249,8 +241,8 @@ class LoopIndex {
 	 * When deleting a page, remove all Reference entries from DB.
 	 * Attached to ArticleDeleteComplete hook.
 	 */
-	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ) {
-
+	public static function onArticleDeleteComplete( &$article, User &$user, $reason, $id, $content, LogEntry $logEntry, $archivedRevisionCount ): bool
+	{
 	    LoopIndex::removeAllPageItemsFromDb ( $id );
 
 	    return true;
@@ -260,13 +252,16 @@ class LoopIndex {
 	 * Adds index items to db. Called by onLinksUpdateConstructed and onAfterStabilizeChange (custom Hook)
 	 * @param WikiPage $wikiPage
 	 * @param Title $title
-	 * @param String $contentText
+	 * @param String|null $contentText
+	 * @return string|null
 	 */
-	public static function handleIndexItems( &$wikiPage, $title, $contentText = null ) {
-
+	public static function handleIndexItems(WikiPage $wikiPage, Title $title, string $contentText = null ): ?string
+	{
 		$content = $wikiPage->getContent();
 		if ($contentText == null) {
-			$contentText = ContentHandler::getContentText( $content );
+			if ($content instanceof TextContent) {
+				$contentText = $content->getText();
+			}
 		}
 
 		if ( $title->getNamespace() == NS_MAIN || $title->getNamespace() == NS_GLOSSARY ) {
@@ -295,7 +290,6 @@ class LoopIndex {
 				$forbiddenTags = array( 'nowiki', 'code', '!--', 'syntaxhighlight', 'source' ); # don't save ids when in here
 				$extractTags = array_merge( array('loop_index'), $forbiddenTags );
 				$parser->extractTagsAndParams( $extractTags, $contentText, $object_tags );
-				$newContentText = $contentText;
 				$loopStructure = new LoopStructure();
 				$loopStructure->loadStructureItems();
 				foreach ( $object_tags as $object ) {
@@ -325,9 +319,6 @@ class LoopIndex {
 				} elseif ( $title->getNamespace() == NS_GLOSSARY ) {
 					LoopGlossary::updateGlossaryPageTouched();
 				}
-				if ( $contentText !== $newContentText ) {
-					return $newContentText;
-				}
 			}
 		}
 		return $contentText;
@@ -341,7 +332,8 @@ class SpecialLoopIndex extends SpecialPage {
 		parent::__construct( 'LoopIndex' );
 	}
 
-	public function execute( $sub ) {
+	public function execute( $subPage ): void
+	{
 
 		$out = $this->getOutput();
 		$request = $this->getRequest();
@@ -354,7 +346,8 @@ class SpecialLoopIndex extends SpecialPage {
         $out->addHtml( $html );
 	}
 
-	public static function renderLoopIndexSpecialPage () {
+	public static function renderLoopIndexSpecialPage (): string
+	{
 
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true); #required for readable links
@@ -375,17 +368,16 @@ class SpecialLoopIndex extends SpecialPage {
 						$links[$letter][$index][$prepend . $title->getText()] = $linkRenderer->makelink(
 							$title,
 							new HtmlArmor( $prepend . $title->getText() ),
-							array( 'title' =>  $prepend . $title->getText(), "class" => "index-link", "data-target" => $refId ),
-							array()
+							array( 'title' =>  $prepend . $title->getText(), "class" => "index-link", "data-target" => $refId )
 						);
 					}
 				}
 				sort( $links[$letter][$index], SORT_STRING ); # sorts links of an index term
 				$ucIndex = ucFirst($index);
-				$indexlinks[$letter][$ucIndex] = '<tr scope="row" class="ml-1 pb-3">';
-				$indexlinks[$letter][$ucIndex] .= '<td scope="col" class="pl-1 pr-1 font-weight-bold"></td>';
-				$indexlinks[$letter][$ucIndex] .= '<td scope="col" class="pl-1 pr-1">'.$index.'</td>';
-				$indexlinks[$letter][$ucIndex] .= '<td scope="col" class="pl-1 pr-1">';
+				$indexlinks[$letter][$ucIndex] = '<tr class="ml-1 pb-3">';
+				$indexlinks[$letter][$ucIndex] .= '<td class="pl-1 pr-1 font-weight-bold"></td>';
+				$indexlinks[$letter][$ucIndex] .= '<td class="pl-1 pr-1">'.$index.'</td>';
+				$indexlinks[$letter][$ucIndex] .= '<td class="pl-1 pr-1">';
 				$i = 1;
 				foreach ( $links[$letter][$index] as $link ) {
 					$indexlinks[$letter][$ucIndex] .= ( $i == 1 ? " " : ", "  ) . $link;
@@ -418,7 +410,8 @@ class SpecialLoopIndex extends SpecialPage {
 	 *
 	 * @return string
 	 */
-	protected function getGroupName() {
+	protected function getGroupName(): string
+	{
 		return 'loop';
 	}
 }

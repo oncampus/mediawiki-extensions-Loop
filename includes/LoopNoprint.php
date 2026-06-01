@@ -8,16 +8,18 @@
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
 
 class LoopNoprint {
-	var $input='';
-	var $args=array();
+	var string $input='';
+	var array $args=array();
 
-    public static function onParserSetup( Parser $parser) {
+    public static function onParserSetup( Parser $parser): bool
+	{
         $parser->setHook( 'loop_noprint', 'LoopNoprint::renderLoopNoprint' );
 
 		return true;
     }
 
-	static function renderLoopNoprint( $input, array $args, Parser $parser, PPFrame $frame ) {
+	static function renderLoopNoprint( $input, array $args, Parser $parser, PPFrame $frame ): string
+	{
 		$return='';
 		$noprint_id=uniqid();
 		$return.='<div class="noprintarea" id="'.$noprint_id.'">';

@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use Wikimedia\Rdbms\IResultWrapper;
 
 
 class LoopProgress
@@ -14,13 +15,13 @@ class LoopProgress
 	const UNDERSTOOD_SYMBOL = '✓';
 
 
-	public static function showProgressBar(){
+	public static function showProgressBar(): bool
+	{
 		global $wgOut, $wgPersonalizationFeature;
 
 		$user = $wgOut->getUser();
 
 		$mws = MediaWikiServices::getInstance();
-		$userGroupManager = $mws->getUserGroupManager();
 		$permissionManager = $mws->getPermissionManager();
 
 		if ( !$permissionManager->userHasRight( $user, 'loopprogress' ) ) {
@@ -32,12 +33,13 @@ class LoopProgress
 		return true;
 	}
 
-	public static function hasProgressPermission() {
+	public static function hasProgressPermission(): bool
+	{
 		global $wgOut, $wgPersonalizationFeature;
 		$user = $wgOut->getUser();
 
 		$mws = MediaWikiServices::getInstance();
-		$userGroupManager = $mws->getUserGroupManager();
+
 		$permissionManager = $mws->getPermissionManager();
 
 		if(!($wgPersonalizationFeature  == "true")) {
@@ -50,7 +52,8 @@ class LoopProgress
 		return true;
 	}
 
-	public static function renderProgressBar() {
+	public static function renderProgressBar(): string
+	{
 		global $wgOut;
 
 		$user = $wgOut->getUser();
@@ -59,7 +62,7 @@ class LoopProgress
 		$pages = LoopProgressDBHandler::getTocElementCount();
 		$understoodPages = LoopProgressDBHandler::getPageUnderstoodCountForUser($user);
 
-		$understood_percent = round(min(($understoodPages->page_understood_count / $pages->page_count) * 100, 100),0);
+		$understood_percent = round(min(($understoodPages->page_understood_count / $pages->page_count) * 100, 100));
 
 		$html .=
 			'<div class="main">
@@ -82,12 +85,13 @@ class LoopProgress
 		return $html;
 	}
 
-	public static function showProgress() {
+	public static function showProgress(): bool
+	{
 		global $wgOut;
 		$user = $wgOut->getUser();
 
 		$mws = MediaWikiServices::getInstance();
-		$userGroupManager = $mws->getUserGroupManager();
+
 		$permissionManager = $mws->getPermissionManager();
 
 		if ( !$permissionManager->userHasRight( $user, 'loopprogress' ) ) {
@@ -96,7 +100,8 @@ class LoopProgress
 		return true;
 	}
 
-	public static function getNoteSaveButton() {
+	public static function getNoteSaveButton(): string
+	{
 		global $wgOut;
 		$html = '';
 
@@ -115,7 +120,8 @@ class LoopProgress
 		return $html;
 	}
 
-	public static function getUnderstoodSelection() {
+	public static function getUnderstoodSelection(): string
+	{
 		global $wgOut;
 		$html = '';
 		$title = $wgOut->getTitle();
@@ -171,7 +177,7 @@ class LoopProgress
 		return $lp->lp_understood;
 	}
 
-	public static function createNotebookLink()
+	public static function createNotebookLink(): void
 	{
 		if(!LoopProgress::hasProgressPermission()) {
 			return;
@@ -183,7 +189,8 @@ class LoopProgress
 		echo $linkRenderer->makeLink( new TitleValue( NS_SPECIAL, 'LoopNote' ), new HtmlArmor('<div class="float-right mt-1 ml-2"><span  id="notebook-logo"></span></div>'));
 	}
 
-	public static function renderProgress() {
+	public static function renderProgress(): string
+	{
 		global $wgOut;
 
 		$return = '';
@@ -212,13 +219,14 @@ class LoopProgress
 		return $return;
 	}
 
-	public static function onPageDeleteComplete( MediaWiki\Page\ProperPageIdentity $page, MediaWiki\Permissions\Authority $deleter, string $reason, int $pageID, MediaWiki\Revision\RevisionRecord $deletedRev, ManualLogEntry $logEntry, int $archivedRevisionCount ) {
+	public static function onPageDeleteComplete( MediaWiki\Page\ProperPageIdentity $page, MediaWiki\Permissions\Authority $deleter, string $reason, int $pageID, MediaWiki\Revision\RevisionRecord $deletedRev, ManualLogEntry $logEntry, int $archivedRevisionCount ): void
+	{
 		$pageId = $page->getId();
 
 		LoopProgressDBHandler::deleteNoteWithPageId($pageId);
 	}
 
-	public static function onBeforePageDisplay(OutputPage $out, Skin $skin)
+	public static function onBeforePageDisplay(OutputPage $out, Skin $skin): bool
 	{
 		$arcticle_id = $out->getTitle()->getArticleID();
 
@@ -241,7 +249,7 @@ class SpecialLoopNote extends SpecialPage
 		parent::__construct('LoopNote');
 	}
 
-	function execute($sub)
+	function execute($subPage): void
 	{
 		$linkRenderer = MediaWikiServices::getInstance()->getLinkRenderer();
 		$linkRenderer->setForceArticlePath(true);
@@ -253,17 +261,13 @@ class SpecialLoopNote extends SpecialPage
 		$user = $this->getUser();
 
 		Loop::handleLoopRequest($out, $request, $user); #handle editmode
-		// $userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
-		// $editMode = $userOptionsLookup->getOption( $user, 'LoopEditMode', false, true );
-
-		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
 
 		global $wgOut;
 		$user = $wgOut->getUser();
 
 		// access control
 		$mws = MediaWikiServices::getInstance();
-		$userGroupManager = $mws->getUserGroupManager();
+
 		$permissionManager = $mws->getPermissionManager();
 
 		if ($permissionManager->userHasRight($user, 'loopprogress')) {
@@ -284,19 +288,19 @@ class SpecialLoopNote extends SpecialPage
 	 *
 	 * @return string
 	 */
-	protected function getGroupName()
+	protected function getGroupName(): string
 	{
 		return 'loop';
 	}
 
-	private static function getAllNotes()
+	private static function getAllNotes(): string
 	{
 		global $wgOut;
 
 		$html = '';
 
 		$mws = MediaWikiServices::getInstance();
-		$userGroupManager = $mws->getUserGroupManager();
+
 		$permissionManager = $mws->getPermissionManager();
 
 		$user = $wgOut->getUser();
@@ -346,10 +350,11 @@ class SpecialLoopNote extends SpecialPage
 
 class LoopProgressDBHandler
 {
-	public static function getAllUserNotesWithTocNumber($user){
+	public static function getAllUserNotesWithTocNumber($user): IResultWrapper
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
-		$res = $dbr->newSelectQueryBuilder()
+		return $dbr->newSelectQueryBuilder()
 			->select([ 'lp_page', 'lp_user_note','lsi_article,lsi_toc_number'])
 			->from('loop_progress')
 			->join('loop_structure_items',null,'lp_page=lsi_article')
@@ -360,14 +365,13 @@ class LoopProgressDBHandler
 			)
 			->orderBy('lsi_sequence')
 			->caller(__METHOD__)->fetchResultSet();
-
-		return $res;
 	}
 
-	public static function getUserNoteForPage($articleId, $user) {
+	public static function getUserNoteForPage($articleId, $user): bool|stdClass
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
-		$lp = $dbr->newSelectQueryBuilder()
+		return $dbr->newSelectQueryBuilder()
 			->select([ 'lp_understood','lp_user_note'])
 			->from('loop_progress')
 			->where([
@@ -376,14 +380,13 @@ class LoopProgressDBHandler
 				]
 			)
 			->caller(__METHOD__)->fetchRow();
-
-		return $lp;
 	}
 
-	public static function getPageUnderstoodCountForUser($user) {
+	public static function getPageUnderstoodCountForUser($user): bool|stdClass
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
-		$res = $dbr->newSelectQueryBuilder()
+		return $dbr->newSelectQueryBuilder()
 			->select([ 'Count(lp_page) as page_understood_count', 'lp_user_note'])
 			->from('loop_progress')
 			->join('loop_structure_items',null,'lp_page=lsi_article')
@@ -393,23 +396,21 @@ class LoopProgressDBHandler
 				]
 			)
 			->caller(__METHOD__)->fetchRow();
-
-		return $res;
 	}
 
-	public static function getTocElementCount() {
+	public static function getTocElementCount(): bool|stdClass
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbr = $dbProvider->getReplicaDatabase();
 
-		$res = $dbr->newSelectQueryBuilder()
+		return $dbr->newSelectQueryBuilder()
 			->select([ 'Count(lsi_id) as page_count'])
 			->from('loop_structure_items')
 			->caller(__METHOD__)->fetchRow();
-
-		return $res;
 	}
 
-	public static function deleteNoteWithPageId($pageId) {
+	public static function deleteNoteWithPageId($pageId): void
+	{
 		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
 		$dbw = $dbProvider->getPrimaryDatabase();
 
