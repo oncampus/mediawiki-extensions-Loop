@@ -420,4 +420,23 @@ class LoopProgressDBHandler
 			__METHOD__
 		);
 	}
+
+	public static function getAllProgressForUser($user): array {
+		$dbProvider = MediaWikiServices::getInstance()->getConnectionProvider();
+		$dbr = $dbProvider->getReplicaDatabase();
+		$rows = $dbr->newSelectQueryBuilder()
+			->select([ 'lp_page', 'lp_understood','lp_user_note'])
+			->from('loop_progress')
+				->where([
+					'lp_user = "' . $user->getId() . '"'
+				]
+			)
+			->caller(__METHOD__)->fetchResultSet();
+
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row->lp_page] = $row;
+		}
+		return $result;
+	}
 }
