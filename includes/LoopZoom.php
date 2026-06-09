@@ -2,7 +2,7 @@
 /**
  * @description Adds zoom functionality to choosen images or content
  * @ingroup Extensions
- * @author Dustin Neß <dustin.ness@th-luebeck.de> 
+ * @author Dustin Neß <dustin.ness@th-luebeck.de>
  */
 
 if ( !defined( 'MEDIAWIKI' ) ) die ( "This file cannot be run standalone.\n" );
@@ -14,11 +14,11 @@ class LoopZoom {
     }
 
     static function renderLoopZoom( $input, array $args, Parser $parser, PPFrame $frame ) {
-        
+
         $unique_id = uniqid();
-        
+
         $html = '<div id="loopzoom-'. $unique_id .'" class="loopzoom" data-toggle="modal" data-target=".loopzoom-'.$unique_id.'-modal">';
-        $html .= $parser->recursiveTagParseFully( $input );
+        $html .= $parser->recursiveTagParse( $input );
         $html .= '</div>';
         $html .= '<div class="modal fade loopzoom-modal loopzoom-' . $unique_id . '-modal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
