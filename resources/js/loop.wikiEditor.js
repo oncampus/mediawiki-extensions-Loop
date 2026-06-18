@@ -714,7 +714,7 @@ var customizeWikiEditor = function () {
                                         action: {
                                             type: 'encapsulate',
                                             options: {
-                                                pre: '<loop_noprint button="true">',
+                                                pre: '<loop_noprint>',
                                                 peri: 'No-print',
                                                 post: '</loop_noprint>'
                                             }
