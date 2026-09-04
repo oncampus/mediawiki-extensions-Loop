@@ -170,6 +170,7 @@ class LoopXsl {
 		global $IP;
 		$input_object = $input[0];
 		$mathcontent = $input_object->textContent;
+		$mathcontent = preg_replace('/\\\\overline\s*(?={)/', '\\\\bar', $mathcontent);
 
 		try {
 			$math = new MathNativeMML($mathcontent);
