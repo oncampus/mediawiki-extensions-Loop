@@ -171,6 +171,7 @@ class LoopXsl {
 		$input_object = $input[0];
 		$mathcontent = $input_object->textContent;
 		$mathcontent = preg_replace('/\\\\overline\s*(?={)/', '\\\\bar', $mathcontent);
+		$mathcontent = preg_replace('/\\\\overline\s*([a-zA-Z])(?![a-zA-Z0-9])/', '\\\\bar $1', $mathcontent);
 
 		try {
 			$math = new MathNativeMML($mathcontent);
